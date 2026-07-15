@@ -32,6 +32,17 @@ Last updated: 2026-07-15
 - Material 3 theme and Android launcher label added.
 - Navigation widget test covers all destinations and branch switching.
 
+### Task 1.2 - SQLite, migrations and local files
+
+- SQLite database factory and versioned schema `v1` added.
+- New and existing unversioned databases are covered by migration tests.
+- Foreign keys are enabled and metadata queries use bound arguments.
+- Failed database transactions roll back all writes.
+- UTC date codec, project context, audit metadata and pagination contracts added.
+- Project files use local `originals`, `previews` and `exports` directories.
+- Imports reject path traversal and symbolic-link escapes, serialize duplicate targets,
+  recover stale partial files and never overwrite completed files.
+
 ## Verified baseline
 
 ```text
@@ -39,6 +50,9 @@ Flutter 3.44.4
 Dart 3.12.2
 flutter_riverpod 3.3.2
 go_router 17.3.0
+sqflite 2.4.3
+sqflite_common_ffi 2.4.2
+path_provider 2.1.6
 ```
 
 Quality gate:
@@ -50,7 +64,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-15. Debug APK:
+All commands passed on 2026-07-15 with 26 tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -58,11 +72,12 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 1.2 from `IMPLEMENTATION_PLAN.md`:
+Task 1.3 from `IMPLEMENTATION_PLAN.md`:
 
-1. Define database and file service contracts.
-2. Write failing migration and transactional file tests.
-3. Add SQLite `v1` foundation and project-scoped local file layout.
-4. Pass the complete quality gate before Task 1.3.
+1. Define project domain entities, templates and repository contracts.
+2. Write failing tests for project CRUD and template creation.
+3. Add project schema migration and SQLite repository.
+4. Build the project selector and settings for currency, dates and current stage.
+5. Pass the complete quality gate before Task 1.4.
 
-Do not start cost, OCR or dashboard modules before Tasks 1.2 and 1.3 are green.
+Do not start cost, OCR or dashboard modules before Task 1.3 is green.
