@@ -119,11 +119,16 @@ Contracts are defined in domain and implemented in data.
 
 ```dart
 abstract interface class CostRepository {
-  Future<CostItem> create(CostDraft draft);
-  Future<CostItem> update(CostItemId id, CostPatch patch);
-  Future<CostItem?> findById(CostItemId id);
-  Future<Page<CostItem>> list(CostQuery query, PageRequest page);
-  Future<CostSummary> summarize(CostQuery query);
+  Future<CostEntry> create(ConfirmedCostEntryInput input);
+  Future<CostEntry> saveDraft(CostDraftInput input);
+  Future<CostEntry> replaceDraft(...);
+  Future<CostEntry> confirmDraft(...);
+  Future<CostEntry> changeStatus(...);
+  Future<CostCorrection> addCorrection(CostCorrectionInput input);
+  Future<CostEntry?> findById(...);
+  Future<Page<CostEntry>> list(CostQuery query, PageRequest page);
+  Future<CostSummary> summarize(CostSummaryQuery query);
+  Future<void> deleteDraft(...);
 }
 
 abstract interface class CaptureDraftRepository {
@@ -146,8 +151,8 @@ List queries are paginated from the first implementation. Summaries are aggregat
 ## Money Contract
 
 ```dart
-class Money {
-  const Money(this.minorUnits, this.currencyCode);
+final class Money {
+  factory Money({required int minorUnits, required String currencyCode});
 
   final int minorUnits;
   final String currencyCode;
@@ -157,9 +162,12 @@ class Money {
 Rules:
 
 - no `double` for persisted monetary amounts,
+- calculations use checked `BigInt` intermediates before returning SQLite `int64`,
 - project has one base currency in MVP,
-- gross/net/VAT rounding policy is centralized and tested,
-- cost status separates `planned`, `committed`, `paid`, `returned` and `disputed`,
+- gross/net/VAT rounding is centralized and uses half-up to full minor units,
+- cost status separates `planned`, `ordered`, `due`, `paid`, `returned` and `disputed`,
+- drafts and offers never contribute to financial summaries,
+- corrections and approved decision impacts are append-only deltas,
 - OCR data enters as a draft and cannot directly create a paid cost.
 
 ## Capture And OCR State Machine

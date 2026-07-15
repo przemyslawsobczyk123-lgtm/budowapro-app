@@ -4,7 +4,7 @@ Last updated: 2026-07-15
 
 ## Current release
 
-`R0 Fundament - complete`
+`R1 MVP Core - in progress`
 
 ## Completed
 
@@ -57,6 +57,18 @@ Last updated: 2026-07-15
 - R0 maps one versioned template to each compatible project type. Multiple and
   custom templates remain deferred to Task 3.1, where stage checklists are added.
 
+### Task 2.1 - financial domain
+
+- `Money` stores signed SQLite `int64` minor units and a validated project currency.
+- Arithmetic and VAT use checked `BigInt` intermediates; no persisted amount uses `double`.
+- VAT 0%, 8% and 23% share one tested half-up rounding rule for net and gross input.
+- Cost, offer and planned entry types are separate from financial and draft statuses.
+- Quantity uses an integer scale; unit, payment method, source and attachment IDs are preserved.
+- Returns and price/VAT changes are append-only corrections; decision impacts remain separate deltas.
+- Summary calculation excludes drafts and offers, applies approved impacts and reports
+  `difference = actual - planned`.
+- Repository contracts require project context, paginate lists and reserve summaries for aggregate SQL.
+
 ## Verified baseline
 
 ```text
@@ -78,7 +90,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-15 with 58 tests. Debug APK:
+All commands passed on 2026-07-15 with 95 tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -86,12 +98,12 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 2.1 from `IMPLEMENTATION_PLAN.md`:
+Task 2.2 from `IMPLEMENTATION_PLAN.md`:
 
-1. Define the `Money` value object using minor units and project currency.
-2. Add VAT rates, financial item types and lifecycle statuses.
-3. Test net, VAT, gross, corrections and rounding boundaries.
-4. Define repository contracts without adding the cost UI yet.
-5. Pass the complete quality gate before Task 2.2.
+1. Add the SQLite cost schema and repository implementation.
+2. Build the manual add/edit cost form from the approved mockup.
+3. Save drafts and confirmed costs with attachments atomically.
+4. Add payment status, copy and delete flows with confirmation.
+5. Verify persistence after restart and pass the complete quality gate.
 
 Do not start OCR or dashboard modules before the manual cost flow is green.
