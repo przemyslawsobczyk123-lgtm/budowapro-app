@@ -1,0 +1,67 @@
+{
+  "@@locale": "pl",
+  "appTitle": "BudowaPRO",
+  "@appTitle": {
+    "description": "Nazwa aplikacji."
+  },
+  "navStart": "Start",
+  "@navStart": {
+    "description": "Etykieta glownej zakladki Start."
+  },
+  "navPlan": "Plan",
+  "@navPlan": {
+    "description": "Etykieta glownej zakladki Plan."
+  },
+  "navBudget": "Budżet",
+  "@navBudget": {
+    "description": "Etykieta glownej zakladki Budzet."
+  },
+  "navBuild": "Budowa",
+  "@navBuild": {
+    "description": "Etykieta glownej zakladki Budowa."
+  },
+  "navMore": "Więcej",
+  "@navMore": {
+    "description": "Etykieta glownej zakladki Wiecej."
+  },
+  "startTitle": "Centrum budowy",
+  "@startTitle": {
+    "description": "Tytul ekranu Start."
+  },
+  "startSubtitle": "Brak aktywnego projektu.",
+  "@startSubtitle": {
+    "description": "Opis pustego ekranu Start podczas pierwszego przyrostu."
+  },
+  "planTitle": "Plan budowy",
+  "@planTitle": {
+    "description": "Tytul ekranu Plan."
+  },
+  "planSubtitle": "Brak etapów dla aktywnego projektu.",
+  "@planSubtitle": {
+    "description": "Opis pustego ekranu Plan podczas pierwszego przyrostu."
+  },
+  "budgetTitle": "Budżet inwestycji",
+  "@budgetTitle": {
+    "description": "Tytul ekranu Budzet."
+  },
+  "budgetSubtitle": "Brak kosztów dla aktywnego projektu.",
+  "@budgetSubtitle": {
+    "description": "Opis pustego ekranu Budzet podczas pierwszego przyrostu."
+  },
+  "buildTitle": "Dokumentacja budowy",
+  "@buildTitle": {
+    "description": "Tytul ekranu Budowa."
+  },
+  "buildSubtitle": "Brak dokumentów dla aktywnego projektu.",
+  "@buildSubtitle": {
+    "description": "Opis pustego ekranu Budowa podczas pierwszego przyrostu."
+  },
+  "moreTitle": "Narzędzia projektu",
+  "@moreTitle": {
+    "description": "Tytul ekranu Wiecej."
+  },
+  "moreSubtitle": "Brak dodatkowych danych projektu.",
+  "@moreSubtitle": {
+    "description": "Opis pustego ekranu Wiecej podczas pierwszego przyrostu."
+  }
+}

@@ -1,0 +1,1568 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BudowaPro - makiety docelowe</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./extended.css">
+  </head>
+  <body>
+    <svg class="svg-defs" aria-hidden="true">
+      <symbol id="icon-home" viewBox="0 0 24 24">
+        <path d="M3 11.5 12 4l9 7.5"></path>
+        <path d="M5.5 10.5V20h13v-9.5"></path>
+        <path d="M9.5 20v-6h5v6"></path>
+      </symbol>
+      <symbol id="icon-wallet" viewBox="0 0 24 24">
+        <path d="M4 7.5h15a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6.5A2.5 2.5 0 0 1 5.5 4H18"></path>
+        <path d="M16 13h5"></path>
+      </symbol>
+      <symbol id="icon-plus" viewBox="0 0 24 24">
+        <path d="M12 5v14"></path>
+        <path d="M5 12h14"></path>
+      </symbol>
+      <symbol id="icon-scan" viewBox="0 0 24 24">
+        <path d="M4 8V5a1 1 0 0 1 1-1h3"></path>
+        <path d="M16 4h3a1 1 0 0 1 1 1v3"></path>
+        <path d="M20 16v3a1 1 0 0 1-1 1h-3"></path>
+        <path d="M8 20H5a1 1 0 0 1-1-1v-3"></path>
+        <path d="M7 12h10"></path>
+      </symbol>
+      <symbol id="icon-checks" viewBox="0 0 24 24">
+        <path d="m4 7 2 2 4-4"></path>
+        <path d="M12 8h8"></path>
+        <path d="m4 15 2 2 4-4"></path>
+        <path d="M12 16h8"></path>
+      </symbol>
+      <symbol id="icon-users" viewBox="0 0 24 24">
+        <path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path>
+        <path d="M3 21v-2a6 6 0 0 1 12 0v2"></path>
+        <path d="M17 11a3 3 0 1 0 0-6"></path>
+        <path d="M17 15a5 5 0 0 1 4 4.9V21"></path>
+      </symbol>
+      <symbol id="icon-file" viewBox="0 0 24 24">
+        <path d="M6 3h8l4 4v14H6V3Z"></path>
+        <path d="M14 3v5h4"></path>
+      </symbol>
+      <symbol id="icon-chart" viewBox="0 0 24 24">
+        <path d="M4 20V4"></path>
+        <path d="M4 20h16"></path>
+        <path d="M8 16v-5"></path>
+        <path d="M12 16V8"></path>
+        <path d="M16 16v-9"></path>
+      </symbol>
+      <symbol id="icon-settings" viewBox="0 0 24 24">
+        <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"></path>
+        <path d="M4 12h2"></path>
+        <path d="M18 12h2"></path>
+        <path d="m6.3 6.3 1.4 1.4"></path>
+        <path d="m16.3 16.3 1.4 1.4"></path>
+        <path d="M12 4v2"></path>
+        <path d="M12 18v2"></path>
+        <path d="m17.7 6.3-1.4 1.4"></path>
+        <path d="m7.7 16.3-1.4 1.4"></path>
+      </symbol>
+      <symbol id="icon-search" viewBox="0 0 24 24">
+        <path d="m20 20-4-4"></path>
+        <circle cx="11" cy="11" r="7"></circle>
+      </symbol>
+      <symbol id="icon-filter" viewBox="0 0 24 24">
+        <path d="M4 6h16"></path>
+        <path d="M7 12h10"></path>
+        <path d="M10 18h4"></path>
+      </symbol>
+      <symbol id="icon-camera" viewBox="0 0 24 24">
+        <path d="M4 8h4l2-3h4l2 3h4v12H4V8Z"></path>
+        <circle cx="12" cy="14" r="4"></circle>
+      </symbol>
+      <symbol id="icon-calendar" viewBox="0 0 24 24">
+        <path d="M7 3v4"></path>
+        <path d="M17 3v4"></path>
+        <path d="M4 8h16"></path>
+        <path d="M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"></path>
+      </symbol>
+      <symbol id="icon-phone" viewBox="0 0 24 24">
+        <path d="M7 4h3l1.5 4-2 1.2a12 12 0 0 0 5.3 5.3l1.2-2 4 1.5v3a2 2 0 0 1-2.2 2A16 16 0 0 1 5 6.2 2 2 0 0 1 7 4Z"></path>
+      </symbol>
+      <symbol id="icon-alert" viewBox="0 0 24 24">
+        <path d="M12 4 3 20h18L12 4Z"></path>
+        <path d="M12 9v5"></path>
+        <path d="M12 17h.01"></path>
+      </symbol>
+      <symbol id="icon-shield" viewBox="0 0 24 24">
+        <path d="M12 3 5 6v5c0 5 3 8 7 10 4-2 7-5 7-10V6l-7-3Z"></path>
+        <path d="m9 12 2 2 4-5"></path>
+      </symbol>
+      <symbol id="icon-export" viewBox="0 0 24 24">
+        <path d="M12 3v12"></path>
+        <path d="m8 7 4-4 4 4"></path>
+        <path d="M5 15v5h14v-5"></path>
+      </symbol>
+    </svg>
+
+    <div class="prototype-shell">
+      <aside class="nav-rail" aria-label="Makiety docelowe">
+        <div class="brand">
+          <span class="brand-mark">BP</span>
+          <div>
+            <strong>BudowaPro</strong>
+            <span>Target UI</span>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <span class="nav-group-label">Glowne zakladki</span>
+          <button class="nav-item nav-primary is-active" type="button" data-target="overview" aria-current="page">
+            <svg><use href="#icon-home"></use></svg>
+            <span>Start</span>
+          </button>
+          <button class="nav-item nav-primary" type="button" data-target="stages">
+            <svg><use href="#icon-checks"></use></svg>
+            <span>Plan</span>
+          </button>
+          <button class="nav-item nav-primary" type="button" data-target="costs">
+            <svg><use href="#icon-wallet"></use></svg>
+            <span>Budzet</span>
+          </button>
+          <button class="nav-item nav-primary" type="button" data-target="technical">
+            <svg><use href="#icon-camera"></use></svg>
+            <span>Budowa</span>
+          </button>
+          <button class="nav-item nav-primary" type="button" data-target="more">
+            <svg><use href="#icon-settings"></use></svg>
+            <span>Wiecej</span>
+          </button>
+
+          <span class="nav-group-label">Widoki szczegolowe</span>
+          <button class="nav-item" type="button" data-target="add-cost">
+            <svg><use href="#icon-plus"></use></svg>
+            <span>Dodaj koszt</span>
+          </button>
+          <button class="nav-item" type="button" data-target="scan">
+            <svg><use href="#icon-scan"></use></svg>
+            <span>Skan OCR</span>
+          </button>
+          <button class="nav-item" type="button" data-target="diary">
+            <svg><use href="#icon-calendar"></use></svg>
+            <span>Dziennik i decyzje</span>
+          </button>
+          <button class="nav-item" type="button" data-target="assistant">
+            <svg><use href="#icon-shield"></use></svg>
+            <span>Asystent</span>
+          </button>
+          <button class="nav-item" type="button" data-target="contacts">
+            <svg><use href="#icon-users"></use></svg>
+            <span>Ekipy</span>
+          </button>
+          <button class="nav-item" type="button" data-target="documents">
+            <svg><use href="#icon-file"></use></svg>
+            <span>Dokumenty</span>
+          </button>
+          <button class="nav-item" type="button" data-target="rooms">
+            <svg><use href="#icon-home"></use></svg>
+            <span>Pomieszczenia</span>
+          </button>
+          <button class="nav-item" type="button" data-target="materials">
+            <svg><use href="#icon-wallet"></use></svg>
+            <span>Zakupy</span>
+          </button>
+          <button class="nav-item" type="button" data-target="punchlist">
+            <svg><use href="#icon-checks"></use></svg>
+            <span>Odbiory</span>
+          </button>
+          <button class="nav-item" type="button" data-target="reports">
+            <svg><use href="#icon-chart"></use></svg>
+            <span>Raporty</span>
+          </button>
+          <button class="nav-item" type="button" data-target="home-record">
+            <svg><use href="#icon-home"></use></svg>
+            <span>Karta domu</span>
+          </button>
+          <button class="nav-item" type="button" data-target="settings">
+            <svg><use href="#icon-settings"></use></svg>
+            <span>Ustawienia</span>
+          </button>
+        </nav>
+      </aside>
+
+      <main class="mockup-stage">
+        <section class="phone-frame" aria-label="Podglad aplikacji BudowaPro">
+          <div class="status-bar">
+            <span>09:41</span>
+            <span>Offline 82%</span>
+          </div>
+
+          <header class="app-topbar">
+            <div>
+              <label class="project-picker" for="projectSelect">Projekt</label>
+              <select id="projectSelect" aria-label="Wybierz projekt">
+                <option>Dom 132 m2 - Stan 0</option>
+                <option>Remont mieszkania 58 m2</option>
+              </select>
+              <h1 id="screenTitle">Centrum budowy</h1>
+            </div>
+            <button class="icon-button" type="button" aria-label="Dodaj koszt" data-shortcut="add-cost">
+              <svg><use href="#icon-plus"></use></svg>
+            </button>
+          </header>
+
+          <div class="screen-stack">
+            <section class="screen is-active" data-screen="overview" aria-labelledby="overview-title">
+              <div class="hero-panel">
+                <div>
+                  <span class="chip strong">Stan 0</span>
+                  <h2 id="overview-title">Budzet pod kontrola</h2>
+                  <p>86 420 zl wydane z 420 000 zl. Do konca etapu brakuje 7 decyzji.</p>
+                </div>
+                <div class="budget-donut" aria-label="21 procent budzetu wykorzystane">
+                  <strong>21%</strong>
+                  <span>budzetu</span>
+                </div>
+              </div>
+
+              <button class="health-strip" type="button" data-shortcut="assistant">
+                <span class="health-score">B+</span>
+                <span>
+                  <strong>Kondycja projektu: uwaga</strong>
+                  <small>2 rzeczy przed betonem, 1 decyzja blokuje elektryke</small>
+                </span>
+                <b>Sprawdz</b>
+              </button>
+
+              <div class="kpi-grid">
+                <article class="kpi-card">
+                  <span>Wydano</span>
+                  <strong>86 420 zl</strong>
+                  <small>+4 900 zl vs etap</small>
+                </article>
+                <article class="kpi-card">
+                  <span>Plan 30 dni</span>
+                  <strong>48 700 zl</strong>
+                  <small>SSO + okna zaliczka</small>
+                </article>
+                <article class="kpi-card">
+                  <span>Nieoplacone</span>
+                  <strong>4 750 zl</strong>
+                  <small>3 pozycje</small>
+                </article>
+              </div>
+
+              <div class="quick-grid" aria-label="Najczestsze akcje">
+                <button class="quick-action" type="button" data-shortcut="add-cost">
+                  <svg><use href="#icon-wallet"></use></svg>
+                  <span>Dodaj koszt</span>
+                </button>
+                <button class="quick-action" type="button" data-shortcut="scan">
+                  <svg><use href="#icon-camera"></use></svg>
+                  <span>Skan paragonu</span>
+                </button>
+                <button class="quick-action" type="button" data-shortcut="stages">
+                  <svg><use href="#icon-checks"></use></svg>
+                  <span>Checklisty</span>
+                </button>
+                <button class="quick-action" type="button" data-shortcut="technical">
+                  <svg><use href="#icon-camera"></use></svg>
+                  <span>Zdjecia etapow</span>
+                </button>
+                <button class="quick-action" type="button" data-shortcut="punchlist">
+                  <svg><use href="#icon-checks"></use></svg>
+                  <span>Odbior / usterka</span>
+                </button>
+                <button class="quick-action" type="button" data-shortcut="assistant">
+                  <svg><use href="#icon-shield"></use></svg>
+                  <span>Zapytaj asystenta</span>
+                </button>
+              </div>
+
+              <button class="capture-inbox" type="button" data-shortcut="more">
+                <svg><use href="#icon-plus"></use></svg>
+                <span>
+                  <strong>Szybki zapis</strong>
+                  <small>Zdjecie, paragon, glos, decyzja lub usterka</small>
+                </span>
+                <b>3 szkice</b>
+              </button>
+
+              <div class="section-head">
+                <h2>Krytyczne przed betonem</h2>
+                <span>2 dzisiaj</span>
+              </div>
+              <div class="issue-list">
+                <article class="issue-row risk">
+                  <svg><use href="#icon-alert"></use></svg>
+                  <div>
+                    <strong>Bednarka / uziom fundamentowy</strong>
+                    <span>Dodaj zdjecie ciaglosci przed zalaniem.</span>
+                  </div>
+                  <b>Dzis</b>
+                </article>
+                <article class="issue-row risk">
+                  <svg><use href="#icon-alert"></use></svg>
+                  <div>
+                    <strong>Przepust pod prad, wode i internet</strong>
+                    <span>Hydraulik jutro 08:00, elektryk 11:30.</span>
+                  </div>
+                  <b>Jutro</b>
+                </article>
+              </div>
+
+              <div class="stage-timeline">
+                <div class="stage-point done"><span>Formal</span></div>
+                <div class="stage-point active"><span>Stan 0</span></div>
+                <div class="stage-point"><span>SSO</span></div>
+                <div class="stage-point"><span>SSZ</span></div>
+                <div class="stage-point"><span>Inst.</span></div>
+              </div>
+
+              <div class="section-head">
+                <h2>Dzisiaj na budowie</h2>
+                <span>3 wpisy</span>
+              </div>
+              <div class="timeline-list">
+                <article class="timeline-item">
+                  <time>08:30</time>
+                  <div>
+                    <strong>Odbior zbrojenia</strong>
+                    <span>Kierownik budowy, wymagane zdjecia i notatka.</span>
+                  </div>
+                </article>
+                <article class="timeline-item">
+                  <time>12:00</time>
+                  <div>
+                    <strong>Dostawa betonu B25</strong>
+                    <span>Zapisz WZ jako dokument kosztu.</span>
+                  </div>
+                </article>
+                <article class="timeline-item">
+                  <time>16:00</time>
+                  <div>
+                    <strong>Aktualizacja budzetu</strong>
+                    <span>Sprawdz przekroczenie w kategorii materialy.</span>
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            <section class="screen" data-screen="costs" aria-labelledby="costs-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Rejestr kosztow</span>
+                  <h2 id="costs-title">Wszystkie pozycje</h2>
+                </div>
+                <button class="icon-button" type="button" aria-label="Filtruj koszty">
+                  <svg><use href="#icon-filter"></use></svg>
+                </button>
+              </div>
+
+              <label class="search-field">
+                <svg><use href="#icon-search"></use></svg>
+                <input type="search" value="fundament" aria-label="Szukaj kosztow">
+              </label>
+
+              <div class="filter-row" aria-label="Filtry kosztow">
+                <button class="filter-chip is-active" type="button" aria-pressed="true">Stan 0</button>
+                <button class="filter-chip" type="button" aria-pressed="false">Oplacone</button>
+                <button class="filter-chip" type="button" aria-pressed="false">Materialy</button>
+                <button class="filter-chip" type="button" aria-pressed="false">Paragon</button>
+              </div>
+
+              <div class="summary-strip">
+                <article>
+                  <span>Plan etapu</span>
+                  <strong>26 380 zl</strong>
+                </article>
+                <article>
+                  <span>Faktycznie</span>
+                  <strong>31 280 zl</strong>
+                </article>
+                <article>
+                  <span>Roznica</span>
+                  <strong class="danger">+4 900 zl</strong>
+                </article>
+              </div>
+
+              <div class="cost-list">
+                <article class="cost-row">
+                  <div class="cost-icon concrete"></div>
+                  <div>
+                    <strong>Beton B25 fundament</strong>
+                    <span>Betoniarnia Nowak | 18 m3 | faktura</span>
+                  </div>
+                  <b>12 960 zl</b>
+                </article>
+                <article class="cost-row">
+                  <div class="cost-icon steel"></div>
+                  <div>
+                    <strong>Stal zbrojeniowa</strong>
+                    <span>Fi 12, strzemiona, drut | dostarczone</span>
+                  </div>
+                  <b>8 740 zl</b>
+                </article>
+                <article class="cost-row">
+                  <div class="cost-icon labor"></div>
+                  <div>
+                    <strong>Robocizna fundament</strong>
+                    <span>Etap 1/2 | gotowka | niepelny opis</span>
+                  </div>
+                  <b>6 500 zl</b>
+                </article>
+                <article class="cost-row flagged">
+                  <div class="cost-icon pipe"></div>
+                  <div>
+                    <strong>Rury przepustowe</strong>
+                    <span>Paragon OCR | wymaga korekty VAT</span>
+                  </div>
+                  <b>1 420 zl</b>
+                </article>
+              </div>
+
+              <div class="inline-state warning">
+                <svg><use href="#icon-alert"></use></svg>
+                <span>2 koszty maja brakujacy dokument. Dodaj paragon lub fakture przed eksportem.</span>
+              </div>
+            </section>
+
+            <section class="screen" data-screen="add-cost" aria-labelledby="add-cost-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Nowa pozycja</span>
+                  <h2 id="add-cost-title">Dodaj koszt budowy</h2>
+                </div>
+                <span class="chip">Manual</span>
+              </div>
+
+              <div class="segmented" role="group" aria-label="Typ kosztu">
+                <button class="is-active" type="button">Koszt</button>
+                <button type="button">Oferta</button>
+                <button type="button">Plan</button>
+              </div>
+
+              <form class="mock-form">
+                <label>
+                  <span>Nazwa pozycji</span>
+                  <input value="Przepusty pod instalacje">
+                </label>
+                <div class="form-grid">
+                  <label>
+                    <span>Kwota brutto</span>
+                    <input value="1 420,00 zl">
+                  </label>
+                  <label>
+                    <span>VAT</span>
+                    <select>
+                      <option>23%</option>
+                      <option>8%</option>
+                      <option>0%</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    <span>Etap</span>
+                    <select>
+                      <option>Stan 0</option>
+                      <option>SSO</option>
+                      <option>Instalacje</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Kategoria</span>
+                    <select>
+                      <option>Materialy</option>
+                      <option>Robocizna</option>
+                      <option>Sprzet</option>
+                    </select>
+                  </label>
+                </div>
+                <label>
+                  <span>Dostawca / ekipa</span>
+                  <input value="Market Budowlany">
+                </label>
+                <label>
+                  <span>Notatka</span>
+                  <textarea>Woda, prad, internet, zapas pod brame i ogrod.</textarea>
+                </label>
+              </form>
+
+              <div class="attachment-drop">
+                <svg><use href="#icon-file"></use></svg>
+                <div>
+                  <strong>Dodaj paragon, fakture lub zdjecie</strong>
+                  <span>Plik zostaje lokalnie w telefonie.</span>
+                </div>
+              </div>
+
+              <div class="bottom-actions">
+                <button class="secondary-button" type="button">Zapisz szkic</button>
+                <button class="primary-button" type="button">Zapisz koszt</button>
+              </div>
+            </section>
+
+            <section class="screen" data-screen="scan" aria-labelledby="scan-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Skan paragonu</span>
+                  <h2 id="scan-title">OCR z potwierdzeniem</h2>
+                </div>
+                <span class="chip strong">On-device</span>
+              </div>
+
+              <div class="scanner-card">
+                <div class="receipt-paper">
+                  <span>MARKET BUDOWLANY</span>
+                  <strong>RURY PVC 110</strong>
+                  <strong>PESZEL 50 MM</strong>
+                  <strong>TASMA IZOLACYJNA</strong>
+                  <b>SUMA 428,70</b>
+                </div>
+                <div class="scan-frame"></div>
+              </div>
+
+              <div class="inline-state">
+                <svg><use href="#icon-shield"></use></svg>
+                <span>OCR nie zmienia budzetu automatycznie. Najpierw potwierdzasz dane.</span>
+              </div>
+
+              <div class="ocr-review">
+                <div class="review-head">
+                  <div>
+                    <span>Rozpoznano</span>
+                    <strong>3 pozycje | 428,70 zl</strong>
+                  </div>
+                  <b>92%</b>
+                </div>
+                <article class="review-row ok">
+                  <div>
+                    <strong>Rury PVC 110</strong>
+                    <span>Stan 0 / przepusty / materialy</span>
+                  </div>
+                  <b>219,90 zl</b>
+                </article>
+                <article class="review-row ok">
+                  <div>
+                    <strong>Peszel 50 mm</strong>
+                    <span>Instalacje / materialy</span>
+                  </div>
+                  <b>138,80 zl</b>
+                </article>
+                <article class="review-row warning">
+                  <div>
+                    <strong>Tasma izolacyjna</strong>
+                    <span>Niska pewnosc kwoty, sprawdz recznie</span>
+                  </div>
+                  <b>70,00 zl</b>
+                </article>
+              </div>
+
+              <div class="bottom-actions">
+                <button class="secondary-button" type="button">Popraw OCR</button>
+                <button class="primary-button" type="button">Zapisz 3 pozycje</button>
+              </div>
+            </section>
+
+            <section class="screen" data-screen="stages" aria-labelledby="stages-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Etapy i checklisty</span>
+                  <h2 id="stages-title">Stan 0</h2>
+                </div>
+                <div class="small-progress">6/14</div>
+              </div>
+
+              <div class="stage-tabs" role="tablist" aria-label="Etapy budowy">
+                <button class="stage-tab done" type="button" role="tab" aria-selected="false">Formal</button>
+                <button class="stage-tab is-active" type="button" role="tab" aria-selected="true">Stan 0</button>
+                <button class="stage-tab" type="button" role="tab" aria-selected="false">SSO</button>
+                <button class="stage-tab" type="button" role="tab" aria-selected="false">SSZ</button>
+                <button class="stage-tab" type="button" role="tab" aria-selected="false">Instalacje</button>
+              </div>
+
+              <article class="stage-detail">
+                <div>
+                  <span>Ryzyko etapu</span>
+                  <strong>Rzeczy, ktorych nie widac po zasypaniu</strong>
+                </div>
+                <svg class="plan-svg" viewBox="0 0 320 160" role="img" aria-label="Schemat fundamentu i przepustow">
+                  <rect x="16" y="16" width="288" height="128"></rect>
+                  <rect x="40" y="42" width="108" height="76"></rect>
+                  <rect x="178" y="42" width="86" height="76"></rect>
+                  <path d="M148 80h30"></path>
+                  <circle cx="52" cy="132" r="8"></circle>
+                  <circle cx="288" cy="126" r="8"></circle>
+                  <circle class="missing" cx="164" cy="24" r="8"></circle>
+                  <path class="missing" d="M164 24v34"></path>
+                </svg>
+              </article>
+
+              <div class="checklist">
+                <article class="check-row done">
+                  <span class="check-box"></span>
+                  <div>
+                    <strong>Badania gruntu</strong>
+                    <small>PDF dodany, wynik: glina pylasta</small>
+                  </div>
+                </article>
+                <article class="check-row done">
+                  <span class="check-box"></span>
+                  <div>
+                    <strong>Geodeta wytyczyl budynek</strong>
+                    <small>Zdjecia punktow w dokumentach</small>
+                  </div>
+                </article>
+                <article class="check-row risk">
+                  <span class="check-box"></span>
+                  <div>
+                    <strong>Przepust pod wode</strong>
+                    <small>Wymagane przed betonem, przypisany hydraulik</small>
+                  </div>
+                  <svg><use href="#icon-alert"></use></svg>
+                </article>
+                <article class="check-row risk">
+                  <span class="check-box"></span>
+                  <div>
+                    <strong>Bednarka / uziom fundamentowy</strong>
+                    <small>Dodaj zdjecie i potwierdzenie ciaglosci</small>
+                  </div>
+                  <svg><use href="#icon-alert"></use></svg>
+                </article>
+                <article class="check-row">
+                  <span class="check-box"></span>
+                  <div>
+                    <strong>Przepust pod prad, internet, brame</strong>
+                    <small>Uzgodnic trase z elektrykiem</small>
+                  </div>
+                </article>
+              </div>
+
+              <div class="section-head">
+                <h2>Plan na 7 dni</h2>
+                <button class="text-link" type="button" data-shortcut="diary">Dziennik</button>
+              </div>
+              <div class="plan-week">
+                <article>
+                  <time>WT 14</time>
+                  <div>
+                    <strong>Odbior zbrojenia</strong>
+                    <span>Warunek: zdjecia bednarki i przepustow</span>
+                  </div>
+                  <b>08:30</b>
+                </article>
+                <article class="blocked">
+                  <time>CZW 16</time>
+                  <div>
+                    <strong>Zalanie fundamentow</strong>
+                    <span>Blokuje: brak decyzji o przepuscie pompy ciepla</span>
+                  </div>
+                  <b>Ryzyko</b>
+                </article>
+              </div>
+            </section>
+
+            <section class="screen" data-screen="contacts" aria-labelledby="contacts-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Ekipy i wizyty</span>
+                  <h2 id="contacts-title">Kontakty budowy</h2>
+                </div>
+                <button class="icon-button" type="button" aria-label="Dodaj kontakt">
+                  <svg><use href="#icon-plus"></use></svg>
+                </button>
+              </div>
+
+              <article class="visit-card">
+                <div class="date-block">
+                  <span>JUTRO</span>
+                  <strong>08:00</strong>
+                </div>
+                <div>
+                  <strong>Hydraulik - przepust wody</strong>
+                  <span>Cel: srednica, spadek, zdjecie przed betonem.</span>
+                </div>
+              </article>
+
+              <div class="contact-list">
+                <article class="contact-card">
+                  <div class="avatar">EL</div>
+                  <div>
+                    <strong>Marek S. | elektryk</strong>
+                    <span>Stan 0, instalacje, alarm | oferta zaakceptowana</span>
+                  </div>
+                  <button class="icon-button small" type="button" aria-label="Zadzwon do elektryka">
+                    <svg><use href="#icon-phone"></use></svg>
+                  </button>
+                </article>
+                <article class="contact-card">
+                  <div class="avatar green">HY</div>
+                  <div>
+                    <strong>Instal-Hydro</strong>
+                    <span>Woda, kanalizacja, podlogowka | czeka na pomiar</span>
+                  </div>
+                  <button class="icon-button small" type="button" aria-label="Umow termin hydraulika">
+                    <svg><use href="#icon-calendar"></use></svg>
+                  </button>
+                </article>
+                <article class="contact-card">
+                  <div class="avatar amber">KB</div>
+                  <div>
+                    <strong>Anna P. | kierownik</strong>
+                    <span>Odbiory etapow, notatki, protokoly</span>
+                  </div>
+                  <button class="icon-button small" type="button" aria-label="Zadzwon do kierownika">
+                    <svg><use href="#icon-phone"></use></svg>
+                  </button>
+                </article>
+              </div>
+
+              <div class="section-head">
+                <h2>Porownanie ofert</h2>
+                <span>Elektryka</span>
+              </div>
+              <div class="quote-table">
+                <div><span>Marek S.</span><b>18 500 zl</b><small>pelny zakres</small></div>
+                <div><span>VoltDom</span><b>16 900 zl</b><small>bez alarmu</small></div>
+                <div><span>El-Pro</span><b>21 200 zl</b><small>z materialem</small></div>
+              </div>
+            </section>
+
+            <section class="screen" data-screen="documents" aria-labelledby="documents-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Dokumenty lokalne</span>
+                  <h2 id="documents-title">Paragony, faktury, gwarancje</h2>
+                </div>
+                <button class="icon-button" type="button" aria-label="Dodaj dokument">
+                  <svg><use href="#icon-file"></use></svg>
+                </button>
+              </div>
+
+              <div class="doc-tabs" role="tablist" aria-label="Typ dokumentow">
+                <button class="is-active" type="button">Wszystkie</button>
+                <button type="button">Faktury</button>
+                <button type="button">Zdjecia</button>
+                <button type="button">Gwarancje</button>
+              </div>
+
+              <div class="doc-list">
+                <article class="doc-row">
+                  <div class="doc-icon pdf">PDF</div>
+                  <div>
+                    <strong>Faktura beton B25</strong>
+                    <span>Powiazane z kosztem 12 960 zl</span>
+                  </div>
+                  <b>Stan 0</b>
+                </article>
+                <article class="doc-row">
+                  <div class="doc-icon photo">IMG</div>
+                  <div>
+                    <strong>Bednarka przed zalaniem</strong>
+                    <span>Dowod do checklisty, 6 zdjec</span>
+                  </div>
+                  <b>Wazne</b>
+                </article>
+                <article class="doc-row">
+                  <div class="doc-icon warranty">GW</div>
+                  <div>
+                    <strong>Gwarancja pompa ciepla</strong>
+                    <span>Wygasa za 23 miesiace</span>
+                  </div>
+                  <b>Aktywna</b>
+                </article>
+              </div>
+
+              <div class="inline-state">
+                <svg><use href="#icon-shield"></use></svg>
+                <span>Dokumenty sa przechowywane lokalnie. Eksport i backup tylko po Twojej akcji.</span>
+              </div>
+
+              <button class="module-link" type="button" data-shortcut="home-record">
+                <span>
+                  <strong>Karta domu po odbiorze</strong>
+                  <small>Gwarancje, urzadzenia, instrukcje i historia serwisu</small>
+                </span>
+                <b>Otworz</b>
+              </button>
+            </section>
+
+            <section class="screen" data-screen="technical" aria-labelledby="technical-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Dokumentacja techniczna</span>
+                  <h2 id="technical-title">Zdjecia etapow i instalacji</h2>
+                </div>
+                <button class="icon-button" type="button" aria-label="Dodaj zdjecie techniczne">
+                  <svg><use href="#icon-camera"></use></svg>
+                </button>
+              </div>
+
+              <label class="search-field">
+                <svg><use href="#icon-search"></use></svg>
+                <input type="search" value="kuchnia woda prad" aria-label="Szukaj w dokumentacji technicznej">
+              </label>
+
+              <div class="stage-tabs" role="tablist" aria-label="Etapy dokumentacji technicznej">
+                <button class="stage-tab done" type="button" role="tab" aria-selected="false">Stan 0</button>
+                <button class="stage-tab is-active" type="button" role="tab" aria-selected="true">Instalacje</button>
+                <button class="stage-tab" type="button" role="tab" aria-selected="false">Tynki</button>
+                <button class="stage-tab" type="button" role="tab" aria-selected="false">Wykonczenie</button>
+              </div>
+
+              <article class="tech-hero">
+                <div>
+                  <span>Album aktywny</span>
+                  <strong>Instalacje przed tynkiem</strong>
+                  <small>42 zdjecia, 8 pomieszczen, 5 dokumentow PDF</small>
+                </div>
+                <b>Lokalnie</b>
+              </article>
+
+              <div class="photo-grid" aria-label="Zdjecia techniczne instalacji">
+                <article class="photo-card ground">
+                  <div class="evidence-photo evidence-ground" role="img" aria-label="Bednarka i zbrojenie fundamentu przed betonem"></div>
+                  <strong>Uziom fundamentowy</strong>
+                  <small>Stan 0, przed betonem</small>
+                </article>
+                <article class="photo-card power">
+                  <div class="evidence-photo evidence-install" role="img" aria-label="Rury wody i przewody elektryczne przed tynkiem"></div>
+                  <strong>Kuchnia - instalacje</strong>
+                  <small>woda, prad, przed tynkiem</small>
+                </article>
+                <article class="photo-card heat">
+                  <div class="evidence-photo evidence-heat" role="img" aria-label="Petle ogrzewania podlogowego przed wylewka"></div>
+                  <strong>Podlogowka</strong>
+                  <small>salon, przed wylewka</small>
+                </article>
+                <article class="photo-card water">
+                  <div class="evidence-photo evidence-waterproof" role="img" aria-label="Hydroizolacja prysznica przed ulozeniem plytek"></div>
+                  <strong>Hydroizolacja</strong>
+                  <small>lazienka, przed plytkami</small>
+                </article>
+              </div>
+
+              <div class="section-head">
+                <h2>Mapa instalacji</h2>
+                <span>Parter v3</span>
+              </div>
+              <article class="plan-pin-card" aria-label="Plan parteru z punktami dokumentacji">
+                <div class="plan-room room-a">Salon</div>
+                <div class="plan-room room-b">Kuchnia</div>
+                <div class="plan-room room-c">Lazienka</div>
+                <button class="plan-pin pin-power" type="button" aria-label="Punkt elektryki, 12 zdjec">12</button>
+                <button class="plan-pin pin-water" type="button" aria-label="Punkt instalacji wodnej, 8 zdjec">8</button>
+                <button class="plan-pin pin-defect" type="button" aria-label="Otwarta usterka przy odplywie">!</button>
+              </article>
+
+              <div class="section-head">
+                <h2>Mapy i dokumenty</h2>
+                <span>Powykonawcze</span>
+              </div>
+              <div class="doc-list">
+                <article class="doc-row">
+                  <div class="doc-icon pdf">PDF</div>
+                  <div>
+                    <strong>Mapa przewodow - parter</strong>
+                    <span>Instalacje elektryczne, wersja po zmianach</span>
+                  </div>
+                  <b>PDF</b>
+                </article>
+                <article class="doc-row">
+                  <div class="doc-icon photo">IMG</div>
+                  <div>
+                    <strong>Zdjecia przed tynkami</strong>
+                    <span>Salon, kuchnia, lazienki, kotlownia</span>
+                  </div>
+                  <b>42</b>
+                </article>
+                <article class="doc-row">
+                  <div class="doc-icon warranty">GW</div>
+                  <div>
+                    <strong>Protokol proby cisnieniowej</strong>
+                    <span>Podlogowka i woda uzytkowa</span>
+                  </div>
+                  <b>OK</b>
+                </article>
+              </div>
+
+              <div class="inline-state">
+                <svg><use href="#icon-shield"></use></svg>
+                <span>Zdjecia sa tagowane etapem, pomieszczeniem i typem instalacji. Dziala offline na telefonie.</span>
+              </div>
+            </section>
+
+            <section class="screen" data-screen="rooms" aria-labelledby="rooms-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Remont i wykonczenie</span>
+                  <h2 id="rooms-title">Pomieszczenia</h2>
+                </div>
+                <button class="icon-button" type="button" aria-label="Dodaj pomieszczenie">
+                  <svg><use href="#icon-plus"></use></svg>
+                </button>
+              </div>
+
+              <div class="room-overview">
+                <article>
+                  <span>Budzet pomieszczen</span>
+                  <strong>96 400 zl</strong>
+                  <small>kuchnia, 2 lazienki, salon, garderoba</small>
+                </article>
+                <article>
+                  <span>Decyzje otwarte</span>
+                  <strong>11</strong>
+                  <small>plytki, drzwi, oswietlenie, armatura</small>
+                </article>
+              </div>
+
+              <div class="room-list">
+                <article class="room-card kitchen">
+                  <div class="room-plan">
+                    <span class="fixture sink"></span>
+                    <span class="fixture island"></span>
+                    <span class="fixture door"></span>
+                  </div>
+                  <div>
+                    <strong>Kuchnia</strong>
+                    <span>18 900 zl / plan 24 000 zl</span>
+                  </div>
+                  <b>5 decyzji</b>
+                </article>
+                <article class="room-card bath">
+                  <div class="room-plan">
+                    <span class="fixture shower"></span>
+                    <span class="fixture sink"></span>
+                    <span class="fixture door"></span>
+                  </div>
+                  <div>
+                    <strong>Lazienka parter</strong>
+                    <span>12 400 zl / plan 18 000 zl</span>
+                  </div>
+                  <b>hydro OK</b>
+                </article>
+                <article class="room-card living">
+                  <div class="room-plan">
+                    <span class="fixture tv"></span>
+                    <span class="fixture sofa"></span>
+                    <span class="fixture door"></span>
+                  </div>
+                  <div>
+                    <strong>Salon</strong>
+                    <span>9 800 zl / plan 22 000 zl</span>
+                  </div>
+                  <b>gniazda</b>
+                </article>
+              </div>
+
+              <div class="section-head">
+                <h2>Karty wyborow</h2>
+                <span>Do zamowienia</span>
+              </div>
+              <div class="decision-list">
+                <article>
+                  <strong>Plytki lazienka parter</strong>
+                  <span>60x120, 28 m2, zapas 10%, termin dostawy 9 dni</span>
+                  <b>4 860 zl</b>
+                </article>
+                <article>
+                  <strong>Drzwi wewnetrzne</strong>
+                  <span>8 sztuk, pomiar po posadzkach, oferta do porownania</span>
+                  <b>12 300 zl</b>
+                </article>
+              </div>
+            </section>
+
+            <section class="screen" data-screen="materials" aria-labelledby="materials-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Zakupy i dostawy</span>
+                  <h2 id="materials-title">Materialy na budowie</h2>
+                </div>
+                <button class="icon-button" type="button" aria-label="Dodaj material">
+                  <svg><use href="#icon-plus"></use></svg>
+                </button>
+              </div>
+
+              <div class="material-status">
+                <article>
+                  <span>Zamowione</span>
+                  <strong>38 600 zl</strong>
+                </article>
+                <article>
+                  <span>Do zwrotu</span>
+                  <strong>1 240 zl</strong>
+                </article>
+                <article>
+                  <span>Opoznione</span>
+                  <strong>2</strong>
+                </article>
+              </div>
+
+              <div class="delivery-list">
+                <article class="delivery-row arriving">
+                  <div class="delivery-step">14</div>
+                  <div>
+                    <strong>Okna - zaliczka i pomiar</strong>
+                    <span>Oknoplast | SSZ | oczekuje na potwierdzenie wymiarow</span>
+                  </div>
+                  <b>18 000 zl</b>
+                </article>
+                <article class="delivery-row">
+                  <div class="delivery-step">16</div>
+                  <div>
+                    <strong>Welna mineralna 20 cm</strong>
+                    <span>120 m2 | dostawa piatek | miejsce: garaz</span>
+                  </div>
+                  <b>7 480 zl</b>
+                </article>
+                <article class="delivery-row return">
+                  <div class="delivery-step">ZW</div>
+                  <div>
+                    <strong>Nadmiar peszla i zlaczek</strong>
+                    <span>Zwrot do marketu, paragon przypiety</span>
+                  </div>
+                  <b>340 zl</b>
+                </article>
+              </div>
+
+              <div class="section-head">
+                <h2>Kalkulatory</h2>
+                <span>Remont</span>
+              </div>
+              <div class="calc-grid">
+                <button type="button">Plytki + zapas</button>
+                <button type="button">Farba / m2</button>
+                <button type="button">Beton m3</button>
+                <button type="button">Welna / dach</button>
+              </div>
+            </section>
+
+            <section class="screen" data-screen="punchlist" aria-labelledby="punchlist-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Odbiory i usterki</span>
+                  <h2 id="punchlist-title">Lista poprawek</h2>
+                </div>
+                <button class="icon-button" type="button" aria-label="Dodaj usterke">
+                  <svg><use href="#icon-plus"></use></svg>
+                </button>
+              </div>
+
+              <div class="punch-summary">
+                <article>
+                  <span>Otwarte</span>
+                  <strong>9</strong>
+                </article>
+                <article>
+                  <span>Krytyczne</span>
+                  <strong>2</strong>
+                </article>
+                <article>
+                  <span>Po terminie</span>
+                  <strong>1</strong>
+                </article>
+              </div>
+
+              <div class="punch-list">
+                <article class="punch-row critical">
+                  <div class="punch-photo leak"></div>
+                  <div>
+                    <strong>Wilgoc przy przepuscie wody</strong>
+                    <span>Stan 0 | Hydraulik | termin: jutro 08:00</span>
+                  </div>
+                  <b>Krytyczne</b>
+                </article>
+                <article class="punch-row">
+                  <div class="punch-photo wall"></div>
+                  <div>
+                    <strong>Puszka elektryczna za nisko</strong>
+                    <span>Kuchnia | Elektryk | zdjecie i pomiar dodane</span>
+                  </div>
+                  <b>Otwarte</b>
+                </article>
+                <article class="punch-row done">
+                  <div class="punch-photo floor"></div>
+                  <div>
+                    <strong>Rysa na posadzce w garazu</strong>
+                    <span>Poprawione, protokol podpisany</span>
+                  </div>
+                  <b>Zamkniete</b>
+                </article>
+              </div>
+
+              <div class="inline-state warning">
+                <svg><use href="#icon-alert"></use></svg>
+                <span>Kazda usterka ma zdjecie, osobe odpowiedzialna, termin i status do protokolu odbioru.</span>
+              </div>
+            </section>
+
+            <section class="screen" data-screen="reports" aria-labelledby="reports-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Raporty i eksport</span>
+                  <h2 id="reports-title">Budzet vs wykonanie</h2>
+                </div>
+                <button class="icon-button" type="button" aria-label="Eksportuj raport">
+                  <svg><use href="#icon-export"></use></svg>
+                </button>
+              </div>
+
+              <article class="report-total">
+                <span>Pozostalo w budzecie</span>
+                <strong>333 580 zl</strong>
+                <small>Plan calkowity 420 000 zl</small>
+              </article>
+
+              <div class="bar-chart" aria-label="Koszty wedlug etapow">
+                <div class="bar-row">
+                  <span>Stan 0</span>
+                  <div><i style="width: 78%"></i></div>
+                  <b>31 280</b>
+                </div>
+                <div class="bar-row">
+                  <span>SSO</span>
+                  <div><i style="width: 44%"></i></div>
+                  <b>18 400</b>
+                </div>
+                <div class="bar-row">
+                  <span>SSZ</span>
+                  <div><i style="width: 24%"></i></div>
+                  <b>9 800</b>
+                </div>
+                <div class="bar-row">
+                  <span>Inst.</span>
+                  <div><i style="width: 15%"></i></div>
+                  <b>6 120</b>
+                </div>
+              </div>
+
+              <div class="report-grid">
+                <article>
+                  <span>Top dostawca</span>
+                  <strong>Betoniarnia Nowak</strong>
+                  <small>12 960 zl</small>
+                </article>
+                <article>
+                  <span>Paragony OCR</span>
+                  <strong>18 skanow</strong>
+                  <small>2 do poprawy</small>
+                </article>
+                <article>
+                  <span>Gwarancje</span>
+                  <strong>5 aktywnych</strong>
+                  <small>najblizsza: 28 dni</small>
+                </article>
+                <article>
+                  <span>Eksport</span>
+                  <strong>CSV + PDF</strong>
+                  <small>lokalny plik</small>
+                </article>
+              </div>
+
+              <div class="export-row">
+                <button class="secondary-button" type="button">CSV kosztow</button>
+                <button class="primary-button" type="button">PDF dla banku</button>
+              </div>
+            </section>
+
+            <section class="screen" data-screen="more" aria-labelledby="more-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Szybki zapis i narzedzia</span>
+                  <h2 id="more-title">Wiecej</h2>
+                </div>
+                <span class="chip">3 szkice</span>
+              </div>
+
+              <div class="capture-panel">
+                <strong>Co chcesz zapisac?</strong>
+                <div class="capture-actions" aria-label="Rodzaje szybkiego zapisu">
+                  <button type="button" data-shortcut="scan">
+                    <svg><use href="#icon-scan"></use></svg>
+                    <span>Paragon</span>
+                  </button>
+                  <button type="button">
+                    <svg><use href="#icon-camera"></use></svg>
+                    <span>Zdjecie</span>
+                  </button>
+                  <button type="button" data-shortcut="diary">
+                    <svg><use href="#icon-file"></use></svg>
+                    <span>Notatka</span>
+                  </button>
+                  <button type="button" data-shortcut="punchlist">
+                    <svg><use href="#icon-alert"></use></svg>
+                    <span>Usterka</span>
+                  </button>
+                </div>
+                <button class="voice-capture" type="button">
+                  <span class="voice-dot"></span>
+                  <span>
+                    <strong>Przytrzymaj i powiedz</strong>
+                    <small>np. "Hydraulik jutro o osmej"</small>
+                  </span>
+                </button>
+              </div>
+
+              <div class="section-head">
+                <h2>Skrzynka szkicow</h2>
+                <span>Nie zmienia budzetu</span>
+              </div>
+              <div class="draft-list">
+                <article>
+                  <span class="draft-type photo">IMG</span>
+                  <div>
+                    <strong>Rozdzielacz - zdjecie bez opisu</strong>
+                    <small>Dzis 11:42 | wybierz etap i pomieszczenie</small>
+                  </div>
+                  <b>Uzupelnij</b>
+                </article>
+                <article>
+                  <span class="draft-type receipt">OCR</span>
+                  <div>
+                    <strong>Paragon 486,20 zl</strong>
+                    <small>Niska pewnosc sprzedawcy | wymaga kontroli</small>
+                  </div>
+                  <b>Sprawdz</b>
+                </article>
+              </div>
+
+              <div class="section-head">
+                <h2>Narzedzia projektu</h2>
+                <span>Wedlug kontekstu</span>
+              </div>
+              <div class="tool-grid">
+                <button type="button" data-shortcut="diary"><svg><use href="#icon-calendar"></use></svg><span>Dziennik</span></button>
+                <button type="button" data-shortcut="assistant"><svg><use href="#icon-shield"></use></svg><span>Asystent</span></button>
+                <button type="button" data-shortcut="rooms"><svg><use href="#icon-home"></use></svg><span>Pomieszczenia</span></button>
+                <button type="button" data-shortcut="contacts"><svg><use href="#icon-users"></use></svg><span>Ekipy</span></button>
+                <button type="button" data-shortcut="materials"><svg><use href="#icon-wallet"></use></svg><span>Zakupy</span></button>
+                <button type="button" data-shortcut="punchlist"><svg><use href="#icon-checks"></use></svg><span>Odbiory</span></button>
+                <button type="button" data-shortcut="reports"><svg><use href="#icon-chart"></use></svg><span>Raporty</span></button>
+                <button type="button" data-shortcut="home-record"><svg><use href="#icon-file"></use></svg><span>Karta domu</span></button>
+                <button type="button" data-shortcut="settings"><svg><use href="#icon-settings"></use></svg><span>Ustawienia</span></button>
+              </div>
+            </section>
+
+            <section class="screen" data-screen="diary" aria-labelledby="diary-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Postep, rozmowy i zmiany</span>
+                  <h2 id="diary-title">Dziennik i decyzje</h2>
+                </div>
+                <button class="icon-button" type="button" aria-label="Dodaj wpis do dziennika">
+                  <svg><use href="#icon-plus"></use></svg>
+                </button>
+              </div>
+
+              <article class="day-log">
+                <header>
+                  <div>
+                    <span>Poniedzialek, 13 lipca</span>
+                    <strong>Fundamenty i przepusty</strong>
+                  </div>
+                  <b>18 C | sucho</b>
+                </header>
+                <div class="day-stats">
+                  <span><strong>6</strong> osob</span>
+                  <span><strong>2</strong> ekipy</span>
+                  <span><strong>14</strong> zdjec</span>
+                </div>
+                <p>Domknieto zbrojenie law. Hydraulik przesunal przepust wody o 35 cm zgodnie z projektem kuchni. Kierownik potwierdzil odbior jutro.</p>
+                <div class="log-tags"><span>Stan 0</span><span>Hydraulik</span><span>Odbior</span></div>
+              </article>
+
+              <div class="section-head">
+                <h2>Decyzje blokujace</h2>
+                <span>2 otwarte</span>
+              </div>
+              <div class="change-list">
+                <article class="change-card waiting">
+                  <div class="change-head">
+                    <span>Czeka na decyzje</span>
+                    <b>do jutra 10:00</b>
+                  </div>
+                  <strong>Przepust pod pompe ciepla</strong>
+                  <p>Opcja A: elewacja wschodnia. Opcja B: kotlownia + dluzsza trasa.</p>
+                  <div class="impact-row">
+                    <span>Koszt <b>+1 250 zl</b></span>
+                    <span>Termin <b>+0 dni</b></span>
+                  </div>
+                  <small>Blokuje: zalanie fundamentow | decyzja: inwestor + projektant</small>
+                </article>
+                <article class="change-card approved">
+                  <div class="change-head">
+                    <span>Zatwierdzona</span>
+                    <b>12.07, 18:20</b>
+                  </div>
+                  <strong>Dodatkowy przewod do bramy</strong>
+                  <p>Dodano zasilanie awaryjne i peszel rezerwowy.</p>
+                  <div class="impact-row">
+                    <span>Koszt <b>+420 zl</b></span>
+                    <span>Termin <b>bez zmiany</b></span>
+                  </div>
+                </article>
+              </div>
+
+              <button class="module-link" type="button" data-shortcut="reports">
+                <span>
+                  <strong>Historia zmian budzetu</strong>
+                  <small>7 decyzji, laczny wplyw +4 860 zl</small>
+                </span>
+                <b>Raport</b>
+              </button>
+            </section>
+
+            <section class="screen" data-screen="assistant" aria-labelledby="assistant-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Reguly projektu, offline</span>
+                  <h2 id="assistant-title">Asystent BudowaPRO</h2>
+                </div>
+                <span class="chip strong">Lokalnie</span>
+              </div>
+
+              <article class="assistant-summary">
+                <span class="assistant-mark"><svg><use href="#icon-shield"></use></svg></span>
+                <div>
+                  <strong>3 rzeczy wymagaja uwagi</strong>
+                  <p>Sprawdzilem terminy, checklisty, dowody i decyzje. Nic nie zostalo automatycznie zmienione.</p>
+                </div>
+              </article>
+
+              <div class="assistant-findings">
+                <article class="finding critical">
+                  <span>01</span>
+                  <div>
+                    <strong>Brakuje dowodu ciaglosci uziomu</strong>
+                    <small>Beton zaplanowany za 2 dni. Dodaj zdjecie i potwierdzenie kierownika.</small>
+                  </div>
+                  <button type="button" data-shortcut="technical">Otworz</button>
+                </article>
+                <article class="finding warning">
+                  <span>02</span>
+                  <div>
+                    <strong>Decyzja blokuje przepust</strong>
+                    <small>Wybierz miejsce pompy ciepla przed zamknieciem zbrojenia.</small>
+                  </div>
+                  <button type="button" data-shortcut="diary">Otworz</button>
+                </article>
+                <article class="finding info">
+                  <span>03</span>
+                  <div>
+                    <strong>Zwrot materialu do 15 lipca</strong>
+                    <small>Paragon jest przypiety. Szacowany zwrot: 340 zl.</small>
+                  </div>
+                  <button type="button" data-shortcut="materials">Otworz</button>
+                </article>
+              </div>
+
+              <div class="question-box">
+                <label for="assistantQuestion">Zapytaj o wybrany etap</label>
+                <textarea id="assistantQuestion" rows="3">O co zapytac kierownika przed betonowaniem fundamentow?</textarea>
+                <div>
+                  <span>Uzyje tylko checklisty Stan 0</span>
+                  <button class="primary-button" type="button">Przygotuj pytania</button>
+                </div>
+              </div>
+
+              <div class="assistant-boundary">
+                <strong>Tryb AI jest wylaczony</strong>
+                <span>Opcjonalna analiza dokumentow wymaga wyboru danych i zgody przed wyslaniem. Asystent nie odbiera prac i nie zastepuje specjalisty.</span>
+              </div>
+            </section>
+
+            <section class="screen" data-screen="home-record" aria-labelledby="home-record-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Po odbiorze i na lata</span>
+                  <h2 id="home-record-title">Karta domu</h2>
+                </div>
+                <button class="icon-button" type="button" aria-label="Eksportuj karte domu">
+                  <svg><use href="#icon-export"></use></svg>
+                </button>
+              </div>
+
+              <article class="home-record-hero">
+                <div>
+                  <span>Kompletnosc dokumentacji</span>
+                  <strong>68%</strong>
+                  <small>Brakuje 3 protokolow i 2 numerow seryjnych</small>
+                </div>
+                <div class="record-ring" aria-label="68 procent dokumentacji uzupelnione">68%</div>
+              </article>
+
+              <div class="section-head">
+                <h2>Urzadzenia i instalacje</h2>
+                <span>8 pozycji</span>
+              </div>
+              <div class="equipment-list">
+                <article>
+                  <span class="equipment-icon heat">PC</span>
+                  <div>
+                    <strong>Pompa ciepla</strong>
+                    <small>Kotlownia | gwarancja do 12.2029 | instrukcja PDF</small>
+                  </div>
+                  <b>Serwis 34 dni</b>
+                </article>
+                <article>
+                  <span class="equipment-icon water">ZR</span>
+                  <div>
+                    <strong>Zawor glowny wody</strong>
+                    <small>Garaz | pin na planie | 4 zdjecia instalacji</small>
+                  </div>
+                  <b>Mapa</b>
+                </article>
+                <article>
+                  <span class="equipment-icon power">RE</span>
+                  <div>
+                    <strong>Rozdzielnica elektryczna</strong>
+                    <small>Wiatrolap | schemat obwodow | protokol pomiarow</small>
+                  </div>
+                  <b>Komplet</b>
+                </article>
+              </div>
+
+              <div class="section-head">
+                <h2>Najblizsze terminy</h2>
+                <span>Serwis i gwarancje</span>
+              </div>
+              <div class="service-timeline">
+                <article><time>16 SIE</time><div><strong>Przeglad pompy ciepla</strong><span>Instal-Hydro | wymagany dla gwarancji</span></div></article>
+                <article><time>30 WRZ</time><div><strong>Kontrola wentylacji</strong><span>Filtry + protokol przeplywow</span></div></article>
+                <article><time>12 GRU</time><div><strong>Koniec gwarancji okien</strong><span>Sprawdz regulacje i uszczelki</span></div></article>
+              </div>
+
+              <div class="export-row">
+                <button class="secondary-button" type="button">Pakiet serwisowy</button>
+                <button class="primary-button" type="button">PDF domu</button>
+              </div>
+            </section>
+
+            <section class="screen" data-screen="settings" aria-labelledby="settings-title" hidden>
+              <div class="section-head first">
+                <div>
+                  <span class="eyebrow">Ustawienia</span>
+                  <h2 id="settings-title">Prywatnosc i projekt</h2>
+                </div>
+                <span class="chip strong">Local-first</span>
+              </div>
+
+              <div class="settings-list">
+                <article class="setting-row">
+                  <div>
+                    <strong>Brak konta i backendu</strong>
+                    <span>Wszystko dziala lokalnie na telefonie.</span>
+                  </div>
+                  <span class="toggle is-on"></span>
+                </article>
+                <article class="setting-row">
+                  <div>
+                    <strong>OCR tylko po akcji uzytkownika</strong>
+                    <span>Skan startuje dopiero po kliknieciu.</span>
+                  </div>
+                  <span class="toggle is-on"></span>
+                </article>
+                <article class="setting-row">
+                  <div>
+                    <strong>Eksport lokalny</strong>
+                    <span>CSV/PDF bez wysylania danych.</span>
+                  </div>
+                  <span class="toggle is-on"></span>
+                </article>
+                <article class="setting-row">
+                  <div>
+                    <strong>Asystent offline</strong>
+                    <span>Reguly etapow bez wysylania danych.</span>
+                  </div>
+                  <span class="toggle is-on"></span>
+                </article>
+                <article class="setting-row">
+                  <div>
+                    <strong>Opcjonalny tryb AI</strong>
+                    <span>Wymaga osobnej zgody i wyboru danych.</span>
+                  </div>
+                  <span class="toggle"></span>
+                </article>
+                <article class="setting-row">
+                  <div>
+                    <strong>Backup projektu</strong>
+                    <span>ZIP z baza, zalacznikami i sumami kontrolnymi.</span>
+                  </div>
+                  <b>Utworz</b>
+                </article>
+                <article class="setting-row">
+                  <div>
+                    <strong>Szablon etapow</strong>
+                    <span>Dom jednorodzinny: Stan 0 -> wykonczenie.</span>
+                  </div>
+                  <b>Zmien</b>
+                </article>
+              </div>
+
+              <div class="inline-state warning">
+                <svg><use href="#icon-alert"></use></svg>
+                <span>Sync, konto i udostepnianie ekipom to osobny etap po MVP.</span>
+              </div>
+            </section>
+          </div>
+
+          <nav class="bottom-tabbar" aria-label="Glowne zakladki aplikacji">
+            <button class="is-active" type="button" data-app-target="overview" aria-current="page">
+              <svg><use href="#icon-home"></use></svg>
+              <span>Start</span>
+            </button>
+            <button type="button" data-app-target="stages">
+              <svg><use href="#icon-checks"></use></svg>
+              <span>Plan</span>
+            </button>
+            <button type="button" data-app-target="costs">
+              <svg><use href="#icon-wallet"></use></svg>
+              <span>Budzet</span>
+            </button>
+            <button type="button" data-app-target="technical">
+              <svg><use href="#icon-camera"></use></svg>
+              <span>Budowa</span>
+            </button>
+            <button type="button" data-app-target="more">
+              <svg><use href="#icon-settings"></use></svg>
+              <span>Wiecej</span>
+            </button>
+          </nav>
+        </section>
+
+        <aside class="notes-panel" aria-label="Opis ekranu">
+          <span class="panel-eyebrow">Docelowy flow</span>
+          <h2 id="panelTitle">Centrum decyzyjne inwestora</h2>
+          <p id="panelText">Pierwszy ekran pokazuje budzet, ryzyka etapu i najblizsze wizyty. Uzytkownik widzi co ma zrobic dzisiaj, bez szukania w Excelu.</p>
+
+          <div class="flow-list">
+            <article>
+              <strong>1. Koszt jako obiekt</strong>
+              <span>Etap, kategoria, dostawca, VAT, status, zalacznik, gwarancja.</span>
+            </article>
+            <article>
+              <strong>2. OCR bez ryzyka</strong>
+              <span>Paragon tworzy propozycje. Budzet zmienia sie dopiero po potwierdzeniu.</span>
+            </article>
+            <article>
+              <strong>3. Checklisty etapow</strong>
+              <span>Stan 0 pilnuje przepustow, bednarki i dowodow zdjeciowych.</span>
+            </article>
+            <article>
+              <strong>4. Lokalnie</strong>
+              <span>Brak konta, backendu i wysylki dokumentow w MVP.</span>
+            </article>
+            <article>
+              <strong>5. Jedno szybkie wejscie</strong>
+              <span>Paragon, zdjecie, glos, decyzja i usterka najpierw trafiaja do szkicow.</span>
+            </article>
+            <article>
+              <strong>6. Pelny cykl domu</strong>
+              <span>Budowa konczy sie karta domu z gwarancjami, serwisem i mapa instalacji.</span>
+            </article>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
