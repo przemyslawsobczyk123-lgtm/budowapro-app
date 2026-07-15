@@ -12,9 +12,10 @@ final class AppDatabase {
 
   AppDatabase._(this._factory, this._path);
 
-  static const int schemaVersion = 1;
+  static const int schemaVersion = 2;
   static const String databaseFileName = 'budowapro.db';
   static const String metadataTable = 'app_metadata';
+  static const String projectsTable = 'projects';
   static const String schemaVersionKey = 'schema_version';
 
   final DatabaseFactory _factory;
@@ -75,6 +76,11 @@ final class AppDatabase {
             database,
             fromVersion: oldVersion,
             toVersion: newVersion,
+          );
+        },
+        onDowngrade: (database, oldVersion, newVersion) {
+          throw StateError(
+            'Database downgrade from $oldVersion to $newVersion is unsupported',
           );
         },
       ),
@@ -166,9 +172,74 @@ final class AppDatabase {
           updated_at_utc_ms INTEGER NOT NULL
         )
       ''');
+    }
+
+    if (fromVersion < 2 && toVersion >= 2) {
+      await database.execute('''
+        CREATE TABLE $projectsTable (
+          id TEXT PRIMARY KEY NOT NULL,
+          name TEXT NOT NULL,
+          location_label TEXT,
+          project_type TEXT NOT NULL CHECK (
+            project_type IN (
+              'house_build',
+              'house_renovation',
+              'apartment_renovation'
+            )
+          ),
+          template_key TEXT NOT NULL CHECK (
+            template_key IN ('build_house', 'renovation')
+          ),
+          template_version INTEGER NOT NULL CHECK (template_version > 0),
+          currency_code TEXT NOT NULL,
+          area_square_meters INTEGER CHECK (area_square_meters > 0),
+          planned_budget_minor_units INTEGER CHECK (
+            planned_budget_minor_units >= 0
+          ),
+          planned_start_utc_ms INTEGER,
+          planned_end_utc_ms INTEGER,
+          date_format TEXT NOT NULL CHECK (
+            date_format IN ('day_month_year', 'year_month_day')
+          ),
+          current_stage_key TEXT NOT NULL CHECK (
+            current_stage_key IN (
+              'planning',
+              'formalities',
+              'state_zero',
+              'shell_open',
+              'shell_closed',
+              'demolition',
+              'installations',
+              'plaster',
+              'finishing',
+              'handover'
+            )
+          ),
+          is_archived INTEGER NOT NULL DEFAULT 0 CHECK (
+            is_archived IN (0, 1)
+          ),
+          deletion_pending INTEGER NOT NULL DEFAULT 0 CHECK (
+            deletion_pending IN (0, 1)
+          ),
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX projects_active_updated_idx
+        ON $projectsTable (
+          deletion_pending,
+          is_archived,
+          updated_at_utc_ms DESC,
+          id ASC
+        )
+      ''');
+    }
+
+    if (fromVersion < toVersion) {
       await database.insert(metadataTable, <String, Object?>{
         'key': schemaVersionKey,
-        'value': schemaVersion.toString(),
+        'value': toVersion.toString(),
         'updated_at_utc_ms': 0,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
     }

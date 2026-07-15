@@ -153,6 +153,10 @@ Kryteria odbioru:
 
 Powiazania: `PRJ-001` - `PRJ-007`, `SET-003`.
 
+Zakres R0: zmiana typu projektu przelacza przypisany, wersjonowany szablon
+`Budowa domu` albo `Remont`. Niezalezne warianty i szablony wlasne sa wdrazane
+w Task 3.1 razem z edytorem etapow i checklist.
+
 Punkt kontrolny R0: aplikacja sie instaluje, dziala offline i przechowuje wiele pustych projektow.
 
 ## 8. Faza 2 - budzet i koszty reczne

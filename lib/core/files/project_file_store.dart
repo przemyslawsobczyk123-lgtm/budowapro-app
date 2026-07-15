@@ -13,7 +13,13 @@ enum ProjectFileArea {
   final String directoryName;
 }
 
-final class ProjectFileStore {
+abstract interface class ProjectFileStorage {
+  Future<int> countProjectFiles(String projectId);
+
+  Future<void> deleteProjectFiles(String projectId);
+}
+
+final class ProjectFileStore implements ProjectFileStorage {
   ProjectFileStore({required Directory rootDirectory})
     : _rootDirectory = rootDirectory.absolute;
 
@@ -120,6 +126,85 @@ final class ProjectFileStore {
     } finally {
       _activeImportTargets.remove(importKey);
     }
+  }
+
+  @override
+  Future<int> countProjectFiles(String projectId) async {
+    final projectDirectory = await _existingProjectDirectory(projectId);
+    if (projectDirectory == null) {
+      return 0;
+    }
+
+    var count = 0;
+    await for (final entity in projectDirectory.list(
+      recursive: true,
+      followLinks: false,
+    )) {
+      final type = await FileSystemEntity.type(entity.path, followLinks: false);
+      if (type == FileSystemEntityType.link) {
+        throw const FileSystemException(
+          'Project files contain an unsupported symbolic link',
+        );
+      }
+      if (type == FileSystemEntityType.file && !entity.path.endsWith('.part')) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+  @override
+  Future<void> deleteProjectFiles(String projectId) async {
+    final projectDirectory = await _existingProjectDirectory(projectId);
+    if (projectDirectory == null) {
+      return;
+    }
+
+    await for (final entity in projectDirectory.list(
+      recursive: true,
+      followLinks: false,
+    )) {
+      final type = await FileSystemEntity.type(entity.path, followLinks: false);
+      if (type == FileSystemEntityType.link) {
+        throw const FileSystemException(
+          'Project files contain an unsupported symbolic link',
+        );
+      }
+    }
+    await projectDirectory.delete(recursive: true);
+  }
+
+  Future<Directory?> _existingProjectDirectory(String projectId) async {
+    _validatePathSegment(projectId, argumentName: 'projectId');
+    if (!await _rootDirectory.exists()) {
+      return null;
+    }
+
+    final projectDirectory = directoryFor(
+      projectId: projectId,
+      area: ProjectFileArea.originals,
+    ).parent;
+    final type = await FileSystemEntity.type(
+      projectDirectory.path,
+      followLinks: false,
+    );
+    if (type == FileSystemEntityType.notFound) {
+      return null;
+    }
+    if (type != FileSystemEntityType.directory) {
+      throw const FileSystemException('Project path is not a directory');
+    }
+
+    final resolvedRoot = p.normalize(
+      await _rootDirectory.resolveSymbolicLinks(),
+    );
+    final resolvedProject = p.normalize(
+      await projectDirectory.resolveSymbolicLinks(),
+    );
+    if (!p.isWithin(resolvedRoot, resolvedProject)) {
+      throw const FileSystemException('Project path escapes local storage');
+    }
+    return projectDirectory;
   }
 
   static Future<void> _ensureContainedDirectory(

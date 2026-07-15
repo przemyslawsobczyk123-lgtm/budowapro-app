@@ -63,5 +63,325 @@
   "moreSubtitle": "Brak dodatkowych danych projektu.",
   "@moreSubtitle": {
     "description": "Opis pustego ekranu Wiecej podczas pierwszego przyrostu."
+  },
+  "projectsLoading": "Ładowanie projektów…",
+  "@projectsLoading": {
+    "description": "Komunikat ladowania projektow."
+  },
+  "projectsLoadError": "Nie udało się wczytać projektów.",
+  "@projectsLoadError": {
+    "description": "Blad ladowania projektow."
+  },
+  "retryAction": "Spróbuj ponownie",
+  "@retryAction": {
+    "description": "Etykieta akcji ponowienia."
+  },
+  "cancelAction": "Anuluj",
+  "@cancelAction": {
+    "description": "Etykieta anulowania operacji."
+  },
+  "unsavedChangesTitle": "Niezapisane zmiany",
+  "@unsavedChangesTitle": {
+    "description": "Tytul ostrzezenia o niezapisanym formularzu."
+  },
+  "unsavedChangesMessage": "Zmiany w formularzu nie zostały zapisane. Odrzucić je?",
+  "@unsavedChangesMessage": {
+    "description": "Pytanie przed odrzuceniem zmian formularza."
+  },
+  "discardChangesAction": "Odrzuć zmiany",
+  "@discardChangesAction": {
+    "description": "Etykieta potwierdzenia odrzucenia zmian formularza."
+  },
+  "deleteAction": "Usuń",
+  "@deleteAction": {
+    "description": "Etykieta usuniecia."
+  },
+  "clearAction": "Wyczyść",
+  "@clearAction": {
+    "description": "Etykieta wyczyszczenia pola."
+  },
+  "newProjectTitle": "Nowy projekt",
+  "@newProjectTitle": {
+    "description": "Tytul formularza nowego projektu."
+  },
+  "editProjectTitle": "Edytuj projekt",
+  "@editProjectTitle": {
+    "description": "Tytul formularza edycji projektu."
+  },
+  "projectBasicsSection": "Podstawowe dane",
+  "@projectBasicsSection": {
+    "description": "Naglowek podstawowych danych projektu."
+  },
+  "projectScheduleSection": "Plan i ustawienia",
+  "@projectScheduleSection": {
+    "description": "Naglowek terminow i ustawien projektu."
+  },
+  "projectNameLabel": "Nazwa projektu",
+  "@projectNameLabel": {
+    "description": "Etykieta nazwy projektu."
+  },
+  "projectLocationLabel": "Adres lub etykieta",
+  "@projectLocationLabel": {
+    "description": "Etykieta adresu albo etykiety projektu."
+  },
+  "projectTypeLabel": "Typ projektu",
+  "@projectTypeLabel": {
+    "description": "Etykieta typu projektu."
+  },
+  "projectTemplateLabel": "Szablon etapów",
+  "@projectTemplateLabel": {
+    "description": "Etykieta szablonu projektu."
+  },
+  "projectCurrencyLabel": "Waluta",
+  "@projectCurrencyLabel": {
+    "description": "Etykieta waluty projektu."
+  },
+  "projectAreaLabel": "Powierzchnia (m²)",
+  "@projectAreaLabel": {
+    "description": "Etykieta powierzchni projektu."
+  },
+  "projectBudgetLabel": "Planowany budżet",
+  "@projectBudgetLabel": {
+    "description": "Etykieta planowanego budzetu."
+  },
+  "projectPlannedStartLabel": "Planowany start",
+  "@projectPlannedStartLabel": {
+    "description": "Etykieta planowanej daty rozpoczecia."
+  },
+  "projectPlannedEndLabel": "Planowane zakończenie",
+  "@projectPlannedEndLabel": {
+    "description": "Etykieta planowanej daty zakonczenia."
+  },
+  "projectDateFormatLabel": "Format daty",
+  "@projectDateFormatLabel": {
+    "description": "Etykieta formatu daty."
+  },
+  "projectDateFormatDmy": "DD.MM.RRRR",
+  "@projectDateFormatDmy": {
+    "description": "Etykieta polskiego formatu daty."
+  },
+  "projectDateFormatYmd": "RRRR-MM-DD",
+  "@projectDateFormatYmd": {
+    "description": "Etykieta formatu daty rok-miesiac-dzien."
+  },
+  "projectCurrentStageLabel": "Bieżący etap",
+  "@projectCurrentStageLabel": {
+    "description": "Etykieta aktualnego etapu projektu."
+  },
+  "projectCreateAction": "Utwórz projekt",
+  "@projectCreateAction": {
+    "description": "Akcja utworzenia projektu."
+  },
+  "projectSaveChangesAction": "Zapisz zmiany",
+  "@projectSaveChangesAction": {
+    "description": "Akcja zapisania zmian projektu."
+  },
+  "projectNameRequiredError": "Podaj nazwę projektu.",
+  "@projectNameRequiredError": {
+    "description": "Walidacja wymaganej nazwy projektu."
+  },
+  "projectNameTooLongError": "Nazwa może mieć maksymalnie 80 znaków.",
+  "@projectNameTooLongError": {
+    "description": "Walidacja dlugosci nazwy projektu."
+  },
+  "projectLocationTooLongError": "Adres lub etykieta może mieć maksymalnie 120 znaków.",
+  "@projectLocationTooLongError": {
+    "description": "Walidacja dlugosci lokalizacji projektu."
+  },
+  "projectAreaInvalidError": "Wpisz dodatnią liczbę całkowitą.",
+  "@projectAreaInvalidError": {
+    "description": "Walidacja powierzchni projektu."
+  },
+  "projectBudgetInvalidError": "Wpisz kwotę z maksymalnie dwiema cyframi po przecinku.",
+  "@projectBudgetInvalidError": {
+    "description": "Walidacja budzetu projektu."
+  },
+  "projectDatesInvalidError": "Data zakończenia nie może być wcześniejsza niż data rozpoczęcia.",
+  "@projectDatesInvalidError": {
+    "description": "Walidacja zakresu dat projektu."
+  },
+  "projectSaveError": "Nie udało się zapisać projektu.",
+  "@projectSaveError": {
+    "description": "Blad zapisu projektu."
+  },
+  "projectNotFoundError": "Nie znaleziono projektu.",
+  "@projectNotFoundError": {
+    "description": "Blad braku projektu podczas edycji."
+  },
+  "projectTypeHouseBuild": "Budowa domu",
+  "@projectTypeHouseBuild": {
+    "description": "Typ projektu: budowa domu."
+  },
+  "projectTypeHouseRenovation": "Remont domu",
+  "@projectTypeHouseRenovation": {
+    "description": "Typ projektu: remont domu."
+  },
+  "projectTypeApartmentRenovation": "Remont mieszkania",
+  "@projectTypeApartmentRenovation": {
+    "description": "Typ projektu: remont mieszkania."
+  },
+  "projectTemplateHouseConstruction": "Budowa domu",
+  "@projectTemplateHouseConstruction": {
+    "description": "Szablon etapow budowy domu."
+  },
+  "projectTemplateRenovation": "Remont",
+  "@projectTemplateRenovation": {
+    "description": "Szablon etapow remontu."
+  },
+  "projectStagePlanning": "Planowanie",
+  "@projectStagePlanning": {
+    "description": "Etap projektu: planowanie."
+  },
+  "projectStageFormalities": "Formalności",
+  "@projectStageFormalities": {
+    "description": "Etap projektu: formalnosci."
+  },
+  "projectStageStateZero": "Stan zero",
+  "@projectStageStateZero": {
+    "description": "Etap projektu: stan zero."
+  },
+  "projectStageShellOpen": "Stan surowy otwarty",
+  "@projectStageShellOpen": {
+    "description": "Etap projektu: stan surowy otwarty."
+  },
+  "projectStageShellClosed": "Stan surowy zamknięty",
+  "@projectStageShellClosed": {
+    "description": "Etap projektu: stan surowy zamkniety."
+  },
+  "projectStageDemolition": "Rozbiórka",
+  "@projectStageDemolition": {
+    "description": "Etap projektu: rozbiorka."
+  },
+  "projectStageInstallations": "Instalacje",
+  "@projectStageInstallations": {
+    "description": "Etap projektu: instalacje."
+  },
+  "projectStagePlaster": "Tynki i wylewki",
+  "@projectStagePlaster": {
+    "description": "Etap projektu: tynki i wylewki."
+  },
+  "projectStageFinishing": "Wykończenie",
+  "@projectStageFinishing": {
+    "description": "Etap projektu: wykonczenie."
+  },
+  "projectStageHandover": "Odbiór",
+  "@projectStageHandover": {
+    "description": "Etap projektu: odbior."
+  },
+  "projectOverviewTitle": "Projekt",
+  "@projectOverviewTitle": {
+    "description": "Tytul przegladu aktywnego projektu."
+  },
+  "projectOverviewEmptyTitle": "Brak aktywnego projektu",
+  "@projectOverviewEmptyTitle": {
+    "description": "Tytul pustego przegladu projektu."
+  },
+  "projectOverviewEmptyMessage": "Utwórz pierwszy projekt, aby rozpocząć pracę.",
+  "@projectOverviewEmptyMessage": {
+    "description": "Opis pustego przegladu projektu."
+  },
+  "projectEditAction": "Edytuj",
+  "@projectEditAction": {
+    "description": "Akcja edycji projektu."
+  },
+  "projectLocationOverviewLabel": "Lokalizacja",
+  "@projectLocationOverviewLabel": {
+    "description": "Etykieta lokalizacji w przegladzie projektu."
+  },
+  "projectBudgetOverviewLabel": "Budżet",
+  "@projectBudgetOverviewLabel": {
+    "description": "Etykieta budzetu w przegladzie projektu."
+  },
+  "projectDatesOverviewLabel": "Terminy",
+  "@projectDatesOverviewLabel": {
+    "description": "Etykieta terminow w przegladzie projektu."
+  },
+  "projectAreaValue": "{area} m²",
+  "@projectAreaValue": {
+    "description": "Wartosc powierzchni projektu.",
+    "placeholders": {
+      "area": {
+        "type": "int"
+      }
+    }
+  },
+  "projectDateRangeValue": "{start} – {end}",
+  "@projectDateRangeValue": {
+    "description": "Zakres planowanych dat projektu.",
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "projectValueNotProvided": "Nie podano",
+  "@projectValueNotProvided": {
+    "description": "Brak opcjonalnej wartosci projektu."
+  },
+  "projectDeleteDialogTitle": "Usunąć projekt „{projectName}”?",
+  "@projectDeleteDialogTitle": {
+    "description": "Tytul potwierdzenia usuniecia projektu.",
+    "placeholders": {
+      "projectName": {
+        "type": "String"
+      }
+    }
+  },
+  "projectDeleteWarning": "Tej operacji nie można cofnąć.",
+  "@projectDeleteWarning": {
+    "description": "Ostrzezenie w potwierdzeniu usuniecia projektu."
+  },
+  "projectLinkedFilesCount": "Powiązane pliki: {count}",
+  "@projectLinkedFilesCount": {
+    "description": "Liczba plikow powiazanych z projektem.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "projectLinkedRecordsCount": "Powiązane rekordy: {count}",
+  "@projectLinkedRecordsCount": {
+    "description": "Liczba rekordow powiazanych z projektem.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "projectDeletionImpactLoading": "Sprawdzanie powiązań…",
+  "@projectDeletionImpactLoading": {
+    "description": "Komunikat pobierania skutkow usuniecia projektu."
+  },
+  "projectDeletionImpactError": "Nie udało się sprawdzić skutków usunięcia.",
+  "@projectDeletionImpactError": {
+    "description": "Blad pobierania skutkow usuniecia projektu."
+  },
+  "projectDeleteError": "Nie udało się usunąć projektu.",
+  "@projectDeleteError": {
+    "description": "Blad usuwania projektu."
+  },
+  "projectSelectorLabel": "Projekt",
+  "@projectSelectorLabel": {
+    "description": "Etykieta globalnego selektora projektu."
+  },
+  "projectSelectorChoose": "Wybierz projekt",
+  "@projectSelectorChoose": {
+    "description": "Tytul listy wyboru projektu."
+  },
+  "projectSelectorNewAction": "Nowy projekt",
+  "@projectSelectorNewAction": {
+    "description": "Akcja przejscia do nowego projektu."
+  },
+  "projectSelectorError": "Nie udało się wczytać selektora projektu.",
+  "@projectSelectorError": {
+    "description": "Blad globalnego selektora projektu."
+  },
+  "projectSelectorSelectError": "Nie udało się zmienić projektu.",
+  "@projectSelectorSelectError": {
+    "description": "Blad zmiany aktywnego projektu."
   }
 }

@@ -27,7 +27,7 @@ void main() {
     }
   });
 
-  test('creates a new database at schema version 1', () async {
+  test('creates a new database at the current schema version', () async {
     appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
 
     final database = await appDatabase!.open();
@@ -39,6 +39,12 @@ void main() {
       await appDatabase!.readMetadata(AppDatabase.schemaVersionKey),
       AppDatabase.schemaVersion.toString(),
     );
+    final projectTable = await database.query(
+      'sqlite_master',
+      where: 'type = ? AND name = ?',
+      whereArgs: <Object?>['table', 'projects'],
+    );
+    expect(projectTable, hasLength(1));
   });
 
   test(
@@ -71,6 +77,42 @@ void main() {
       );
     },
   );
+
+  test('migrates version 1 and preserves existing metadata', () async {
+    final versionOneDatabase = await databaseFactoryFfi.openDatabase(
+      databasePath,
+      options: OpenDatabaseOptions(
+        version: 1,
+        onCreate: (database, version) async {
+          await database.execute('''
+            CREATE TABLE app_metadata (
+              key TEXT PRIMARY KEY NOT NULL,
+              value TEXT NOT NULL,
+              updated_at_utc_ms INTEGER NOT NULL
+            )
+          ''');
+          await database.insert('app_metadata', <String, Object?>{
+            'key': 'legacy_setting',
+            'value': 'preserve-me',
+            'updated_at_utc_ms': 0,
+          });
+        },
+      ),
+    );
+    await versionOneDatabase.close();
+
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final database = await appDatabase!.open();
+
+    expect(await database.getVersion(), AppDatabase.schemaVersion);
+    expect(await appDatabase!.readMetadata('legacy_setting'), 'preserve-me');
+    final projectTable = await database.query(
+      'sqlite_master',
+      where: 'type = ? AND name = ?',
+      whereArgs: <Object?>['table', 'projects'],
+    );
+    expect(projectTable, hasLength(1));
+  });
 
   test('uses bound arguments for metadata keys', () async {
     appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
@@ -112,5 +154,42 @@ void main() {
     final database = await opening;
 
     expect(database.isOpen, isFalse);
+  });
+
+  test('rejects a future schema without deleting its data', () async {
+    final futureDatabase = await databaseFactoryFfi.openDatabase(
+      databasePath,
+      options: OpenDatabaseOptions(
+        version: AppDatabase.schemaVersion + 1,
+        onCreate: (database, version) async {
+          await database.execute(
+            'CREATE TABLE future_marker (value TEXT NOT NULL)',
+          );
+          await database.insert('future_marker', <String, Object?>{
+            'value': 'preserve-me',
+          });
+        },
+      ),
+    );
+    await futureDatabase.close();
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+
+    await expectLater(appDatabase!.open(), throwsStateError);
+
+    final preserved = await databaseFactoryFfi.openDatabase(databasePath);
+    expect(await preserved.query('future_marker'), <Map<String, Object?>>[
+      <String, Object?>{'value': 'preserve-me'},
+    ]);
+    await preserved.close();
+  });
+
+  test('reports a corrupt database without replacing its file', () async {
+    final corruptBytes = <int>[0, 1, 2, 3, 4, 5, 6, 7];
+    await File(databasePath).writeAsBytes(corruptBytes, flush: true);
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+
+    await expectLater(appDatabase!.open(), throwsA(isA<DatabaseException>()));
+
+    expect(await File(databasePath).readAsBytes(), corruptBytes);
   });
 }

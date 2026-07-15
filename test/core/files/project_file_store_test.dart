@@ -269,6 +269,37 @@ void main() {
     expect(await target.readAsString(), 'existing bytes');
     expect(await File('${target.path}.part').exists(), isFalse);
   });
+
+  test('counts and deletes only files from the requested project', () async {
+    await store.ensureProjectDirectories('project-123');
+    await store.ensureProjectDirectories('project-other');
+    await store
+        .fileFor(
+          projectId: 'project-123',
+          area: ProjectFileArea.originals,
+          fileName: 'receipt.pdf',
+        )
+        .writeAsString('receipt');
+    await store
+        .fileFor(
+          projectId: 'project-123',
+          area: ProjectFileArea.previews,
+          fileName: 'preview.jpg',
+        )
+        .writeAsString('preview');
+    final otherFile = store.fileFor(
+      projectId: 'project-other',
+      area: ProjectFileArea.originals,
+      fileName: 'keep.pdf',
+    );
+    await otherFile.writeAsString('keep');
+
+    expect(await store.countProjectFiles('project-123'), 2);
+    await store.deleteProjectFiles('project-123');
+
+    expect(await store.countProjectFiles('project-123'), 0);
+    expect(await otherFile.readAsString(), 'keep');
+  });
 }
 
 Future<bool> _createDirectoryLink({

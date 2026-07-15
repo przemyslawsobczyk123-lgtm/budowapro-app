@@ -189,6 +189,444 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Brak dodatkowych danych projektu.'**
   String get moreSubtitle;
+
+  /// Komunikat ladowania projektow.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ładowanie projektów…'**
+  String get projectsLoading;
+
+  /// Blad ladowania projektow.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać projektów.'**
+  String get projectsLoadError;
+
+  /// Etykieta akcji ponowienia.
+  ///
+  /// In pl, this message translates to:
+  /// **'Spróbuj ponownie'**
+  String get retryAction;
+
+  /// Etykieta anulowania operacji.
+  ///
+  /// In pl, this message translates to:
+  /// **'Anuluj'**
+  String get cancelAction;
+
+  /// Tytul ostrzezenia o niezapisanym formularzu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Niezapisane zmiany'**
+  String get unsavedChangesTitle;
+
+  /// Pytanie przed odrzuceniem zmian formularza.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmiany w formularzu nie zostały zapisane. Odrzucić je?'**
+  String get unsavedChangesMessage;
+
+  /// Etykieta potwierdzenia odrzucenia zmian formularza.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odrzuć zmiany'**
+  String get discardChangesAction;
+
+  /// Etykieta usuniecia.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń'**
+  String get deleteAction;
+
+  /// Etykieta wyczyszczenia pola.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyczyść'**
+  String get clearAction;
+
+  /// Tytul formularza nowego projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowy projekt'**
+  String get newProjectTitle;
+
+  /// Tytul formularza edycji projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj projekt'**
+  String get editProjectTitle;
+
+  /// Naglowek podstawowych danych projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podstawowe dane'**
+  String get projectBasicsSection;
+
+  /// Naglowek terminow i ustawien projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plan i ustawienia'**
+  String get projectScheduleSection;
+
+  /// Etykieta nazwy projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa projektu'**
+  String get projectNameLabel;
+
+  /// Etykieta adresu albo etykiety projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Adres lub etykieta'**
+  String get projectLocationLabel;
+
+  /// Etykieta typu projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Typ projektu'**
+  String get projectTypeLabel;
+
+  /// Etykieta szablonu projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szablon etapów'**
+  String get projectTemplateLabel;
+
+  /// Etykieta waluty projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Waluta'**
+  String get projectCurrencyLabel;
+
+  /// Etykieta powierzchni projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powierzchnia (m²)'**
+  String get projectAreaLabel;
+
+  /// Etykieta planowanego budzetu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowany budżet'**
+  String get projectBudgetLabel;
+
+  /// Etykieta planowanej daty rozpoczecia.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowany start'**
+  String get projectPlannedStartLabel;
+
+  /// Etykieta planowanej daty zakonczenia.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowane zakończenie'**
+  String get projectPlannedEndLabel;
+
+  /// Etykieta formatu daty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Format daty'**
+  String get projectDateFormatLabel;
+
+  /// Etykieta polskiego formatu daty.
+  ///
+  /// In pl, this message translates to:
+  /// **'DD.MM.RRRR'**
+  String get projectDateFormatDmy;
+
+  /// Etykieta formatu daty rok-miesiac-dzien.
+  ///
+  /// In pl, this message translates to:
+  /// **'RRRR-MM-DD'**
+  String get projectDateFormatYmd;
+
+  /// Etykieta aktualnego etapu projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bieżący etap'**
+  String get projectCurrentStageLabel;
+
+  /// Akcja utworzenia projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utwórz projekt'**
+  String get projectCreateAction;
+
+  /// Akcja zapisania zmian projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz zmiany'**
+  String get projectSaveChangesAction;
+
+  /// Walidacja wymaganej nazwy projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podaj nazwę projektu.'**
+  String get projectNameRequiredError;
+
+  /// Walidacja dlugosci nazwy projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa może mieć maksymalnie 80 znaków.'**
+  String get projectNameTooLongError;
+
+  /// Walidacja dlugosci lokalizacji projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Adres lub etykieta może mieć maksymalnie 120 znaków.'**
+  String get projectLocationTooLongError;
+
+  /// Walidacja powierzchni projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz dodatnią liczbę całkowitą.'**
+  String get projectAreaInvalidError;
+
+  /// Walidacja budzetu projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz kwotę z maksymalnie dwiema cyframi po przecinku.'**
+  String get projectBudgetInvalidError;
+
+  /// Walidacja zakresu dat projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data zakończenia nie może być wcześniejsza niż data rozpoczęcia.'**
+  String get projectDatesInvalidError;
+
+  /// Blad zapisu projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać projektu.'**
+  String get projectSaveError;
+
+  /// Blad braku projektu podczas edycji.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie znaleziono projektu.'**
+  String get projectNotFoundError;
+
+  /// Typ projektu: budowa domu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Budowa domu'**
+  String get projectTypeHouseBuild;
+
+  /// Typ projektu: remont domu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Remont domu'**
+  String get projectTypeHouseRenovation;
+
+  /// Typ projektu: remont mieszkania.
+  ///
+  /// In pl, this message translates to:
+  /// **'Remont mieszkania'**
+  String get projectTypeApartmentRenovation;
+
+  /// Szablon etapow budowy domu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Budowa domu'**
+  String get projectTemplateHouseConstruction;
+
+  /// Szablon etapow remontu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Remont'**
+  String get projectTemplateRenovation;
+
+  /// Etap projektu: planowanie.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowanie'**
+  String get projectStagePlanning;
+
+  /// Etap projektu: formalnosci.
+  ///
+  /// In pl, this message translates to:
+  /// **'Formalności'**
+  String get projectStageFormalities;
+
+  /// Etap projektu: stan zero.
+  ///
+  /// In pl, this message translates to:
+  /// **'Stan zero'**
+  String get projectStageStateZero;
+
+  /// Etap projektu: stan surowy otwarty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Stan surowy otwarty'**
+  String get projectStageShellOpen;
+
+  /// Etap projektu: stan surowy zamkniety.
+  ///
+  /// In pl, this message translates to:
+  /// **'Stan surowy zamknięty'**
+  String get projectStageShellClosed;
+
+  /// Etap projektu: rozbiorka.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozbiórka'**
+  String get projectStageDemolition;
+
+  /// Etap projektu: instalacje.
+  ///
+  /// In pl, this message translates to:
+  /// **'Instalacje'**
+  String get projectStageInstallations;
+
+  /// Etap projektu: tynki i wylewki.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tynki i wylewki'**
+  String get projectStagePlaster;
+
+  /// Etap projektu: wykonczenie.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykończenie'**
+  String get projectStageFinishing;
+
+  /// Etap projektu: odbior.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odbiór'**
+  String get projectStageHandover;
+
+  /// Tytul przegladu aktywnego projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Projekt'**
+  String get projectOverviewTitle;
+
+  /// Tytul pustego przegladu projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak aktywnego projektu'**
+  String get projectOverviewEmptyTitle;
+
+  /// Opis pustego przegladu projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utwórz pierwszy projekt, aby rozpocząć pracę.'**
+  String get projectOverviewEmptyMessage;
+
+  /// Akcja edycji projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj'**
+  String get projectEditAction;
+
+  /// Etykieta lokalizacji w przegladzie projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Lokalizacja'**
+  String get projectLocationOverviewLabel;
+
+  /// Etykieta budzetu w przegladzie projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Budżet'**
+  String get projectBudgetOverviewLabel;
+
+  /// Etykieta terminow w przegladzie projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Terminy'**
+  String get projectDatesOverviewLabel;
+
+  /// Wartosc powierzchni projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'{area} m²'**
+  String projectAreaValue(int area);
+
+  /// Zakres planowanych dat projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'{start} – {end}'**
+  String projectDateRangeValue(String start, String end);
+
+  /// Brak opcjonalnej wartosci projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie podano'**
+  String get projectValueNotProvided;
+
+  /// Tytul potwierdzenia usuniecia projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunąć projekt „{projectName}”?'**
+  String projectDeleteDialogTitle(String projectName);
+
+  /// Ostrzezenie w potwierdzeniu usuniecia projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tej operacji nie można cofnąć.'**
+  String get projectDeleteWarning;
+
+  /// Liczba plikow powiazanych z projektem.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiązane pliki: {count}'**
+  String projectLinkedFilesCount(int count);
+
+  /// Liczba rekordow powiazanych z projektem.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiązane rekordy: {count}'**
+  String projectLinkedRecordsCount(int count);
+
+  /// Komunikat pobierania skutkow usuniecia projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdzanie powiązań…'**
+  String get projectDeletionImpactLoading;
+
+  /// Blad pobierania skutkow usuniecia projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się sprawdzić skutków usunięcia.'**
+  String get projectDeletionImpactError;
+
+  /// Blad usuwania projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się usunąć projektu.'**
+  String get projectDeleteError;
+
+  /// Etykieta globalnego selektora projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Projekt'**
+  String get projectSelectorLabel;
+
+  /// Tytul listy wyboru projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz projekt'**
+  String get projectSelectorChoose;
+
+  /// Akcja przejscia do nowego projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowy projekt'**
+  String get projectSelectorNewAction;
+
+  /// Blad globalnego selektora projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać selektora projektu.'**
+  String get projectSelectorError;
+
+  /// Blad zmiany aktywnego projektu.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zmienić projektu.'**
+  String get projectSelectorSelectError;
 }
 
 class _AppLocalizationsDelegate

@@ -1,3 +1,4 @@
+import 'package:budowapro/features/projects/presentation/project_selector.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:budowapro/shared/widgets/app_content_states.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,28 @@ class AppShell extends StatelessWidget {
     final localizations = AppLocalizations.of(context);
 
     return Scaffold(
-      body: navigationShell,
+      body: Column(
+        children: [
+          SafeArea(
+            bottom: false,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                border: Border(
+                  bottom: BorderSide(
+                    color: Theme.of(context).colorScheme.outlineVariant,
+                  ),
+                ),
+              ),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                child: ProjectSelector(),
+              ),
+            ),
+          ),
+          Expanded(child: navigationShell),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationShell.currentIndex,
         onDestinationSelected: (index) {
@@ -44,32 +66,12 @@ class ProjectSectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       body: SafeArea(
+        top: false,
         child: CustomScrollView(
           slivers: [
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-              sliver: SliverToBoxAdapter(
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.construction_rounded,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      localizations.appTitle,
-                      style: textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
             SliverFillRemaining(
               hasScrollBody: false,
               child: AppEmptyState(

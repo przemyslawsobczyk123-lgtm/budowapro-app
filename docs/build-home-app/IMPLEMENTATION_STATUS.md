@@ -4,7 +4,7 @@ Last updated: 2026-07-15
 
 ## Current release
 
-`R0 Fundament`
+`R0 Fundament - complete`
 
 ## Completed
 
@@ -43,6 +43,20 @@ Last updated: 2026-07-15
 - Imports reject path traversal and symbolic-link escapes, serialize duplicate targets,
   recover stale partial files and never overwrite completed files.
 
+### Task 1.3 - projects and templates
+
+- Schema `v2` adds project persistence and a tested migration from `v1`.
+- Project domain validates type, template, stage, currency, area, budget and UTC dates.
+- House construction and renovation templates use stable persisted stage keys.
+- SQLite repository covers CRUD, archive, pagination and selected-project persistence.
+- Multiple projects remain isolated and the selected project survives database reopening.
+- Global selector, create/edit form and compact project overview are implemented.
+- Delete confirmation reports linked records and local files before removing the project.
+- Interrupted file deletion is recoverable and never removes the project record first.
+- Currency, date format, planned dates, budget and current stage are editable.
+- R0 maps one versioned template to each compatible project type. Multiple and
+  custom templates remain deferred to Task 3.1, where stage checklists are added.
+
 ## Verified baseline
 
 ```text
@@ -64,7 +78,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-15 with 26 tests. Debug APK:
+All commands passed on 2026-07-15 with 58 tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -72,12 +86,12 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 1.3 from `IMPLEMENTATION_PLAN.md`:
+Task 2.1 from `IMPLEMENTATION_PLAN.md`:
 
-1. Define project domain entities, templates and repository contracts.
-2. Write failing tests for project CRUD and template creation.
-3. Add project schema migration and SQLite repository.
-4. Build the project selector and settings for currency, dates and current stage.
-5. Pass the complete quality gate before Task 1.4.
+1. Define the `Money` value object using minor units and project currency.
+2. Add VAT rates, financial item types and lifecycle statuses.
+3. Test net, VAT, gross, corrections and rounding boundaries.
+4. Define repository contracts without adding the cost UI yet.
+5. Pass the complete quality gate before Task 2.2.
 
-Do not start cost, OCR or dashboard modules before Task 1.3 is green.
+Do not start OCR or dashboard modules before the manual cost flow is green.
