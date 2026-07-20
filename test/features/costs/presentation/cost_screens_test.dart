@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:budowapro/core/theme/app_theme.dart';
 import 'package:budowapro/features/costs/data/cost_providers.dart';
 import 'package:budowapro/features/costs/data/cost_attachment_stager.dart';
@@ -215,6 +217,117 @@ void main() {
     expect(find.byKey(const ValueKey('costBudgetCreate')), findsOneWidget);
     expect(find.text('Beton B20'), findsOneWidget);
   });
+
+  testWidgets('keeps search text while applying a combined status filter', (
+    tester,
+  ) async {
+    final costs = _FakeCostRepository(entries: [_entry()]);
+    await tester.pumpWidget(_budgetApp(costs));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const ValueKey('costRegisterSearch')),
+      'beton',
+    );
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pumpAndSettle();
+
+    expect(costs.listQueries.last.searchText, 'beton');
+    await tester.tap(find.byKey(const ValueKey('costRegisterFilters')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('costFilterStatus-paid')));
+    await tester.tap(find.byKey(const ValueKey('costFilterApply')));
+    await tester.pumpAndSettle();
+
+    expect(costs.listQueries.last.searchText, 'beton');
+    expect(costs.listQueries.last.statuses, <CostStatus>{CostStatus.paid});
+    expect(find.text('beton'), findsOneWidget);
+  });
+
+  testWidgets('loads the next register page and fits warning rows at 320px', (
+    tester,
+  ) async {
+    final entries = List<CostEntry>.generate(
+      65,
+      (index) => _entry(id: 'cost-$index', name: 'Koszt $index'),
+    );
+    final costs = _FakeCostRepository(entries: entries);
+    await tester.binding.setSurfaceSize(const Size(320, 568));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(_budgetApp(costs));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Brak dokumentu'), findsWidgets);
+    for (var attempt = 0; attempt < 4; attempt++) {
+      if (costs.pageRequests.any((request) => request.offset == 30)) break;
+      await tester.fling(
+        find.byKey(const ValueKey('costRegisterScroll')),
+        const Offset(0, -3000),
+        3000,
+      );
+      await tester.pumpAndSettle();
+    }
+
+    expect(costs.pageRequests.any((request) => request.offset == 30), isTrue);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('filter reload cannot leave lazy loading blocked', (
+    tester,
+  ) async {
+    final costs = _FakeCostRepository(
+      entries: List<CostEntry>.generate(
+        65,
+        (index) => _entry(id: 'race-$index', name: 'Pozycja $index'),
+      ),
+    );
+    await tester.pumpWidget(_budgetApp(costs));
+    await tester.pumpAndSettle();
+    final blockedPage = Completer<void>();
+    costs.nextPageGate = blockedPage;
+
+    await tester.fling(
+      find.byKey(const ValueKey('costRegisterScroll')),
+      const Offset(0, -3000),
+      3000,
+    );
+    await tester.pump(const Duration(seconds: 1));
+    expect(costs.pageRequests.any((request) => request.offset == 30), isTrue);
+
+    await tester.fling(
+      find.byKey(const ValueKey('costRegisterScroll')),
+      const Offset(0, 3000),
+      3000,
+    );
+    await tester.pump(const Duration(seconds: 1));
+    await tester.enterText(
+      find.byKey(const ValueKey('costRegisterSearch')),
+      'pozycja',
+    );
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pump(const Duration(milliseconds: 100));
+    expect(costs.listQueries.last.searchText, 'pozycja');
+
+    blockedPage.complete();
+    await tester.pumpAndSettle();
+    for (var attempt = 0; attempt < 3; attempt++) {
+      if (costs.pageRequests.where((request) => request.offset == 30).length >=
+          2) {
+        break;
+      }
+      await tester.fling(
+        find.byKey(const ValueKey('costRegisterScroll')),
+        const Offset(0, -3000),
+        3000,
+      );
+      await tester.pumpAndSettle();
+    }
+
+    expect(
+      costs.pageRequests.where((request) => request.offset == 30).length,
+      greaterThanOrEqualTo(2),
+    );
+  });
 }
 
 Widget _gatewayApp(CostEditorGateway gateway, Widget home) {
@@ -225,6 +338,26 @@ Widget _gatewayApp(CostEditorGateway gateway, Widget home) {
       supportedLocales: AppLocalizations.supportedLocales,
       theme: AppTheme.light,
       home: home,
+    ),
+  );
+}
+
+Widget _budgetApp(_FakeCostRepository costs) {
+  final project = _project();
+  final projects = FakeProjectRepository(
+    projects: [project],
+    selectedProjectId: project.id,
+  );
+  return ProviderScope(
+    overrides: [
+      projectRepositoryProvider.overrideWith((ref) async => projects),
+      costRepositoryProvider.overrideWith((ref) async => costs),
+    ],
+    child: MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      theme: AppTheme.light,
+      home: const CostBudgetScreen(),
     ),
   );
 }
@@ -241,13 +374,15 @@ Project _project() => Project(
 );
 
 CostEntry _entry({
+  String id = 'cost-1',
+  String name = 'Beton B20',
   CostLifecycle lifecycle = CostLifecycle.confirmed,
   CostStatus status = CostStatus.paid,
 }) => CostEntry(
-  id: 'cost-1',
+  id: id,
   input: CostEntryInput(
     projectId: 'project-1',
-    name: 'Beton B20',
+    name: name,
     type: CostEntryType.cost,
     status: status,
     amount: VatBreakdown.fromGross(
@@ -341,6 +476,9 @@ class _FakeCostRepository implements CostRepository {
   _FakeCostRepository({required this.entries});
 
   final List<CostEntry> entries;
+  final List<CostQuery> listQueries = <CostQuery>[];
+  final List<PageRequest> pageRequests = <PageRequest>[];
+  Completer<void>? nextPageGate;
 
   @override
   Future<CostEntry> create(ConfirmedCostEntryInput input) async =>
@@ -390,8 +528,20 @@ class _FakeCostRepository implements CostRepository {
   }) async => entries.where((item) => item.id == costEntryId).firstOrNull;
 
   @override
-  Future<Page<CostEntry>> list(CostQuery query, PageRequest page) async =>
-      Page(items: entries, totalCount: entries.length, request: page);
+  Future<Page<CostEntry>> list(CostQuery query, PageRequest page) async {
+    listQueries.add(query);
+    pageRequests.add(page);
+    final gate = nextPageGate;
+    if (page.offset > 0 && gate != null) {
+      nextPageGate = null;
+      await gate.future;
+    }
+    final end = (page.offset + page.limit).clamp(0, entries.length);
+    final items = page.offset >= entries.length
+        ? const <CostEntry>[]
+        : entries.sublist(page.offset, end);
+    return Page(items: items, totalCount: entries.length, request: page);
+  }
 
   @override
   Future<CostSummary> summarize(CostSummaryQuery query) async =>
@@ -399,6 +549,10 @@ class _FakeCostRepository implements CostRepository {
         planned: Money.zero('PLN'),
         actual: Money.zero('PLN'),
       );
+
+  @override
+  Future<CostFilterOptions> filterOptions({required String projectId}) async =>
+      CostFilterOptions();
 
   @override
   Future<Page<CostHistoryEntry>> history({

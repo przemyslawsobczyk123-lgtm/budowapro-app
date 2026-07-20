@@ -334,6 +334,115 @@ class AppLocalizationsPl extends AppLocalizations {
   String get costBudgetDifferenceLabel => 'Różnica';
 
   @override
+  String get costRegisterSearchHint => 'Szukaj nazwy, dostawcy lub opisu';
+
+  @override
+  String get costRegisterFilterTooltip => 'Filtruj i sortuj';
+
+  @override
+  String costRegisterResultCount(int count) {
+    return 'Wyniki: $count';
+  }
+
+  @override
+  String get costRegisterNoResultsTitle => 'Brak pasujących wpisów';
+
+  @override
+  String get costRegisterNoResultsMessage =>
+      'Zmień wyszukiwanie lub usuń część filtrów.';
+
+  @override
+  String get costRegisterClearFilters => 'Wyczyść filtry';
+
+  @override
+  String get costRegisterFilterTitle => 'Filtry kosztów';
+
+  @override
+  String get costRegisterApplyFilters => 'Pokaż wyniki';
+
+  @override
+  String get costRegisterResetFilters => 'Wyczyść';
+
+  @override
+  String get costRegisterTypeSection => 'Rodzaj wpisu';
+
+  @override
+  String get costRegisterStatusSection => 'Status';
+
+  @override
+  String get costRegisterContextSection => 'Etap i wykonawca';
+
+  @override
+  String get costRegisterPaymentSection => 'Płatność i źródło';
+
+  @override
+  String get costRegisterDateSection => 'Zakres dat';
+
+  @override
+  String get costRegisterQualitySection => 'Wymaga uzupełnienia';
+
+  @override
+  String get costRegisterSortSection => 'Sortowanie';
+
+  @override
+  String get costRegisterIncludeDrafts => 'Pokaż szkice';
+
+  @override
+  String get costRegisterAllOption => 'Wszystkie';
+
+  @override
+  String get costRegisterDateFrom => 'Od';
+
+  @override
+  String get costRegisterDateTo => 'Do';
+
+  @override
+  String get costRegisterLoadingMore => 'Wczytywanie kolejnych wpisów';
+
+  @override
+  String get costRegisterLoadMoreError =>
+      'Nie udało się wczytać kolejnych wpisów.';
+
+  @override
+  String get costRegisterSortNewest => 'Najnowsze';
+
+  @override
+  String get costRegisterSortOldest => 'Najstarsze';
+
+  @override
+  String get costRegisterSortAmountDescending => 'Kwota: malejąco';
+
+  @override
+  String get costRegisterSortAmountAscending => 'Kwota: rosnąco';
+
+  @override
+  String get costRegisterSortName => 'Nazwa: A-Z';
+
+  @override
+  String get costWarningMissingDocument => 'Brak dokumentu';
+
+  @override
+  String get costWarningMissingDescription => 'Brak opisu';
+
+  @override
+  String get costWarningVatToReview => 'Sprawdź VAT 0%';
+
+  @override
+  String get costSourceManual => 'Ręcznie';
+
+  @override
+  String get costSourceReceiptOcr => 'Paragon OCR';
+
+  @override
+  String get costSourceInvoiceOcr => 'Faktura OCR';
+
+  @override
+  String get costSourceImported => 'Import';
+
+  @override
+  String get costSourceOfferConversion => 'Z oferty';
+
+  @override
   String get costFormBasicsSection => 'Wpis';
 
   @override

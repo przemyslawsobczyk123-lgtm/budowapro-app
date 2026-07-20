@@ -310,24 +310,21 @@ final class SqliteCostRepository implements CostRepository {
   @override
   Future<Page<CostEntry>> list(CostQuery query, PageRequest page) async {
     final database = await _database.open();
-    final where = query.includeDrafts
-        ? 'project_id = ?'
-        : 'project_id = ? AND lifecycle = ?';
-    final whereArgs = query.includeDrafts
-        ? <Object?>[query.projectId]
-        : <Object?>[query.projectId, 'confirmed'];
-    final countRows = await database.rawQuery(
-      'SELECT COUNT(*) AS total FROM ${AppDatabase.costEntriesTable}'
-      ' WHERE $where',
-      whereArgs,
-    );
-    final rows = await database.query(
-      AppDatabase.costEntriesTable,
-      where: where,
-      whereArgs: whereArgs,
-      orderBy: 'entry_date_utc_ms DESC, id ASC',
-      limit: page.limit,
-      offset: page.offset,
+    final predicate = _costPredicate(query, tableAlias: 'e');
+    final countRows = await database.rawQuery('''
+        SELECT COUNT(*) AS total
+        FROM ${AppDatabase.costEntriesTable} e
+        WHERE ${predicate.sql}
+      ''', predicate.arguments);
+    final rows = await database.rawQuery(
+      '''
+        SELECT e.*
+        FROM ${AppDatabase.costEntriesTable} e
+        WHERE ${predicate.sql}
+        ORDER BY ${_costOrderBy(query.sort, tableAlias: 'e')}
+        LIMIT ? OFFSET ?
+      ''',
+      <Object?>[...predicate.arguments, page.limit, page.offset],
     );
     return Page<CostEntry>(
       items: await _entriesFromRows(database, rows),
@@ -340,40 +337,32 @@ final class SqliteCostRepository implements CostRepository {
   Future<CostSummary> summarize(CostSummaryQuery query) async {
     final database = await _database.open();
     final currencyCode = await _projectCurrency(database, query.projectId);
-    final entryTotals = await database.rawQuery(
-      '''
+    final predicate = _costPredicate(query.filters, tableAlias: 'e');
+    final entryTotals = await database.rawQuery('''
         SELECT
           COALESCE(SUM(
             CASE
-              WHEN lifecycle = 'confirmed' AND entry_type = 'planned'
-              THEN gross_minor_units
+              WHEN e.entry_type = 'planned' THEN e.gross_minor_units
               ELSE 0
             END
           ), 0) AS planned,
           COALESCE(SUM(
             CASE
-              WHEN lifecycle = 'confirmed' AND entry_type = 'cost'
-              THEN gross_minor_units
+              WHEN e.entry_type = 'cost' THEN e.gross_minor_units
               ELSE 0
             END
           ), 0) AS actual
-        FROM ${AppDatabase.costEntriesTable}
-        WHERE project_id = ?
-      ''',
-      <Object?>[query.projectId],
-    );
-    final correctionTotals = await database.rawQuery(
-      '''
+        FROM ${AppDatabase.costEntriesTable} e
+        WHERE ${predicate.sql}
+      ''', predicate.arguments);
+    final correctionTotals = await database.rawQuery('''
         SELECT COALESCE(SUM(c.gross_delta_minor_units), 0) AS corrections
         FROM ${AppDatabase.costCorrectionsTable} c
         INNER JOIN ${AppDatabase.costEntriesTable} e
           ON e.id = c.cost_entry_id AND e.project_id = c.project_id
-        WHERE c.project_id = ?
-          AND e.lifecycle = 'confirmed'
+        WHERE ${predicate.sql}
           AND e.entry_type = 'cost'
-      ''',
-      <Object?>[query.projectId],
-    );
+      ''', predicate.arguments);
     final plannedMinorUnits = entryTotals.single['planned']! as int;
     final actualMinorUnits =
         BigInt.from(entryTotals.single['actual']! as int) +
@@ -384,6 +373,54 @@ final class SqliteCostRepository implements CostRepository {
         minorUnits: actualMinorUnits,
         currencyCode: currencyCode,
       ),
+    );
+  }
+
+  @override
+  Future<CostFilterOptions> filterOptions({required String projectId}) async {
+    final normalizedProjectId = CostQuery(projectId: projectId).projectId;
+    final database = await _database.open();
+    final rows = await database.rawQuery(
+      '''
+        SELECT 'stage' AS option_type, stage_id AS option_value
+        FROM ${AppDatabase.costEntriesTable}
+        WHERE project_id = ? AND stage_id IS NOT NULL
+        GROUP BY stage_id
+        UNION ALL
+        SELECT 'category' AS option_type, category_id AS option_value
+        FROM ${AppDatabase.costEntriesTable}
+        WHERE project_id = ? AND category_id IS NOT NULL
+        GROUP BY category_id
+        UNION ALL
+        SELECT 'supplier' AS option_type, supplier_id AS option_value
+        FROM ${AppDatabase.costEntriesTable}
+        WHERE project_id = ? AND supplier_id IS NOT NULL
+        GROUP BY supplier_id
+        ORDER BY option_type ASC, option_value COLLATE NOCASE ASC
+      ''',
+      <Object?>[normalizedProjectId, normalizedProjectId, normalizedProjectId],
+    );
+    final stageIds = <String>[];
+    final categoryIds = <String>[];
+    final supplierIds = <String>[];
+    for (final row in rows) {
+      final value = row['option_value']! as String;
+      switch (row['option_type']! as String) {
+        case 'stage':
+          stageIds.add(value);
+          break;
+        case 'category':
+          categoryIds.add(value);
+          break;
+        case 'supplier':
+          supplierIds.add(value);
+          break;
+      }
+    }
+    return CostFilterOptions(
+      stageIds: stageIds,
+      categoryIds: categoryIds,
+      supplierIds: supplierIds,
     );
   }
 
@@ -839,6 +876,148 @@ void _requireSameProject(String expected, String actual) {
   if (expected != actual) {
     throw ArgumentError.value(actual, 'projectId', 'must match $expected');
   }
+}
+
+_SqlPredicate _costPredicate(CostQuery query, {required String tableAlias}) {
+  String column(String name) => '$tableAlias.$name';
+
+  final clauses = <String>['${column('project_id')} = ?'];
+  final arguments = <Object?>[query.projectId];
+  if (!query.includeDrafts) {
+    clauses.add("${column('lifecycle')} = 'confirmed'");
+  }
+  final searchText = query.searchText;
+  if (searchText != null) {
+    final pattern = _likePattern(searchText);
+    clauses.add('''
+      (
+        LOWER(${column('name')}) LIKE ? ESCAPE '\\'
+        OR LOWER(COALESCE(${column('supplier_id')}, '')) LIKE ? ESCAPE '\\'
+        OR LOWER(COALESCE(${column('note')}, '')) LIKE ? ESCAPE '\\'
+        OR LOWER(COALESCE(${column('category_id')}, '')) LIKE ? ESCAPE '\\'
+        OR LOWER(COALESCE(${column('stage_id')}, '')) LIKE ? ESCAPE '\\'
+      )
+    ''');
+    arguments.addAll(List<Object?>.filled(5, pattern));
+  }
+  _addInClause(
+    clauses,
+    arguments,
+    column('entry_type'),
+    query.types.map(_typeToStorage),
+  );
+  _addInClause(
+    clauses,
+    arguments,
+    column('financial_status'),
+    query.statuses.map(_statusToStorage),
+  );
+  _addInClause(clauses, arguments, column('stage_id'), query.stageIds);
+  _addInClause(clauses, arguments, column('category_id'), query.categoryIds);
+  _addInClause(clauses, arguments, column('supplier_id'), query.supplierIds);
+  _addInClause(
+    clauses,
+    arguments,
+    column('payment_method'),
+    query.paymentMethods.map(_paymentMethodToStorage).whereType<String>(),
+  );
+  _addInClause(
+    clauses,
+    arguments,
+    column('source'),
+    query.sources.map(_sourceToStorage),
+  );
+  final fromInclusive = query.fromInclusive;
+  if (fromInclusive != null) {
+    clauses.add('${column('entry_date_utc_ms')} >= ?');
+    arguments.add(DatabaseValueCodec.dateTimeToUtcMilliseconds(fromInclusive));
+  }
+  final toExclusive = query.toExclusive;
+  if (toExclusive != null) {
+    clauses.add('${column('entry_date_utc_ms')} < ?');
+    arguments.add(DatabaseValueCodec.dateTimeToUtcMilliseconds(toExclusive));
+  }
+  if (query.warnings.isNotEmpty) {
+    final warnings = <String>[];
+    for (final warning in query.warnings) {
+      warnings.add(switch (warning) {
+        CostWarning.missingDocument =>
+          '''
+            ${column('lifecycle')} = 'confirmed'
+            AND ${column('entry_type')} = 'cost'
+            AND NOT EXISTS (
+                SELECT 1
+                FROM ${AppDatabase.costEntryAttachmentsTable} warning_link
+                WHERE warning_link.project_id = ${column('project_id')}
+                  AND warning_link.cost_entry_id = ${column('id')}
+            )
+          ''',
+        CostWarning.missingDescription =>
+          "(${column('lifecycle')} = 'confirmed' "
+              "AND ${column('entry_type')} = 'cost' "
+              "AND TRIM(COALESCE(${column('note')}, '')) = '')",
+        CostWarning.vatToReview =>
+          "(${column('lifecycle')} = 'confirmed' "
+              "AND ${column('entry_type')} = 'cost' "
+              "AND ${column('gross_minor_units')} > 0 "
+              "AND ${column('vat_rate_basis_points')} = 0)",
+      });
+    }
+    clauses.add('(${warnings.join(' OR ')})');
+  }
+  return _SqlPredicate(
+    sql: clauses.map((clause) => '($clause)').join(' AND '),
+    arguments: arguments,
+  );
+}
+
+String _costOrderBy(CostSort sort, {required String tableAlias}) {
+  String column(String name) => '$tableAlias.$name';
+
+  return switch (sort) {
+    CostSort.newest =>
+      '${column('entry_date_utc_ms')} DESC, ${column('id')} ASC',
+    CostSort.oldest =>
+      '${column('entry_date_utc_ms')} ASC, ${column('id')} ASC',
+    CostSort.amountDescending =>
+      '${column('gross_minor_units')} DESC, '
+          '${column('entry_date_utc_ms')} DESC, ${column('id')} ASC',
+    CostSort.amountAscending =>
+      '${column('gross_minor_units')} ASC, '
+          '${column('entry_date_utc_ms')} DESC, ${column('id')} ASC',
+    CostSort.nameAscending =>
+      '${column('name')} COLLATE NOCASE ASC, ${column('id')} ASC',
+  };
+}
+
+void _addInClause(
+  List<String> clauses,
+  List<Object?> arguments,
+  String column,
+  Iterable<String> values,
+) {
+  final materialized = values.toList(growable: false)..sort();
+  if (materialized.isEmpty) return;
+  clauses.add(
+    '$column IN (${List.filled(materialized.length, '?').join(', ')})',
+  );
+  arguments.addAll(materialized);
+}
+
+String _likePattern(String value) {
+  final escaped = value
+      .toLowerCase()
+      .replaceAll(r'\', r'\\')
+      .replaceAll('%', r'\%')
+      .replaceAll('_', r'\_');
+  return '%$escaped%';
+}
+
+final class _SqlPredicate {
+  const _SqlPredicate({required this.sql, required this.arguments});
+
+  final String sql;
+  final List<Object?> arguments;
 }
 
 String _typeToStorage(CostEntryType value) => value.name;

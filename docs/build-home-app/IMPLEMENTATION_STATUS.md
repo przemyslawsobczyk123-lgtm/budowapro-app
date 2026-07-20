@@ -92,6 +92,27 @@ Last updated: 2026-07-15
 - The budget branch provides a compact summary and direct access to add, inspect and edit entries.
 - Validation preserves all entered values, and SQLite reopening tests verify exact amounts and status.
 
+### Task 2.3 - cost register, search and filters
+
+- The budget branch now loads a stable 30-row page and fetches the next page near the scroll edge.
+  Search and filter state remains in the screen session and survives result reloads.
+- Combined parameterized filters cover text, type, status, stage, category, supplier, date range,
+  payment method, source and data-quality warnings. Sorting supports date, amount and name.
+- One shared SQL predicate drives the result list, total count and aggregate summary, so the active
+  plan, actual and difference always represent the same filter set. Drafts remain excluded from KPI.
+- Search treats `%`, `_` and `\` as literal user input. Filter values are normalized and bounded before
+  reaching the repository, and every query remains scoped to one project.
+- Rows visibly flag confirmed costs with no document, no description or non-zero gross using VAT 0%.
+  Each warning is also available as a filter.
+- Stage, category and supplier options are loaded as distinct project-local values. Project template
+  stages remain available even before their first cost entry.
+- Repository tests combine all supported filters and verify SQL summaries, warning predicates,
+  deterministic sorting, literal wildcard search and lazy pages over a 10,000-entry fixture.
+- Widget tests cover debounced search, applying a filter without losing text, lazy page loading and
+  warning layout on a 320 px viewport.
+- Tag and warranty filters intentionally remain deferred until their persisted document/warranty
+  models are introduced; the register does not expose controls that cannot query real data.
+
 ## Verified baseline
 
 ```text
@@ -114,7 +135,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-15 with 137 tests. Debug APK:
+All commands passed on 2026-07-20 with 148 tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -122,12 +143,12 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 2.3 from `IMPLEMENTATION_PLAN.md`:
+Task 3.1 from `IMPLEMENTATION_PLAN.md`:
 
-1. Build the paginated cost register with lazy loading.
-2. Add combined search and filters for type, status, stage, category, supplier and date.
-3. Calculate the active result summary in aggregate SQL.
-4. Surface missing-document and missing-VAT warnings.
-5. Verify combined filters and a fixture with 10,000 cost entries.
+1. Persist ordered project stages and checklist items.
+2. Seed house and renovation templates, including the complete `Stan 0` safety checklist.
+3. Add status, due date, evidence requirement and explicit waiver behavior.
+4. Build the stage timeline and checklist screens with loading, empty and error states.
+5. Verify that a required item cannot close without evidence or a documented waiver.
 
-Do not start OCR or dashboard modules before the cost register is green.
+Do not start calendar or dashboard modules before stage/checklist persistence is green.

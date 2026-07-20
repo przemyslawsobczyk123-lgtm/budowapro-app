@@ -706,6 +706,216 @@ abstract class AppLocalizations {
   /// **'Różnica'**
   String get costBudgetDifferenceLabel;
 
+  /// No description provided for @costRegisterSearchHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szukaj nazwy, dostawcy lub opisu'**
+  String get costRegisterSearchHint;
+
+  /// No description provided for @costRegisterFilterTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Filtruj i sortuj'**
+  String get costRegisterFilterTooltip;
+
+  /// No description provided for @costRegisterResultCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyniki: {count}'**
+  String costRegisterResultCount(int count);
+
+  /// No description provided for @costRegisterNoResultsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak pasujących wpisów'**
+  String get costRegisterNoResultsTitle;
+
+  /// No description provided for @costRegisterNoResultsMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień wyszukiwanie lub usuń część filtrów.'**
+  String get costRegisterNoResultsMessage;
+
+  /// No description provided for @costRegisterClearFilters.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyczyść filtry'**
+  String get costRegisterClearFilters;
+
+  /// No description provided for @costRegisterFilterTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Filtry kosztów'**
+  String get costRegisterFilterTitle;
+
+  /// No description provided for @costRegisterApplyFilters.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pokaż wyniki'**
+  String get costRegisterApplyFilters;
+
+  /// No description provided for @costRegisterResetFilters.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyczyść'**
+  String get costRegisterResetFilters;
+
+  /// No description provided for @costRegisterTypeSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rodzaj wpisu'**
+  String get costRegisterTypeSection;
+
+  /// No description provided for @costRegisterStatusSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Status'**
+  String get costRegisterStatusSection;
+
+  /// No description provided for @costRegisterContextSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap i wykonawca'**
+  String get costRegisterContextSection;
+
+  /// No description provided for @costRegisterPaymentSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Płatność i źródło'**
+  String get costRegisterPaymentSection;
+
+  /// No description provided for @costRegisterDateSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zakres dat'**
+  String get costRegisterDateSection;
+
+  /// No description provided for @costRegisterQualitySection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wymaga uzupełnienia'**
+  String get costRegisterQualitySection;
+
+  /// No description provided for @costRegisterSortSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sortowanie'**
+  String get costRegisterSortSection;
+
+  /// No description provided for @costRegisterIncludeDrafts.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pokaż szkice'**
+  String get costRegisterIncludeDrafts;
+
+  /// No description provided for @costRegisterAllOption.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie'**
+  String get costRegisterAllOption;
+
+  /// No description provided for @costRegisterDateFrom.
+  ///
+  /// In pl, this message translates to:
+  /// **'Od'**
+  String get costRegisterDateFrom;
+
+  /// No description provided for @costRegisterDateTo.
+  ///
+  /// In pl, this message translates to:
+  /// **'Do'**
+  String get costRegisterDateTo;
+
+  /// No description provided for @costRegisterLoadingMore.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytywanie kolejnych wpisów'**
+  String get costRegisterLoadingMore;
+
+  /// No description provided for @costRegisterLoadMoreError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać kolejnych wpisów.'**
+  String get costRegisterLoadMoreError;
+
+  /// No description provided for @costRegisterSortNewest.
+  ///
+  /// In pl, this message translates to:
+  /// **'Najnowsze'**
+  String get costRegisterSortNewest;
+
+  /// No description provided for @costRegisterSortOldest.
+  ///
+  /// In pl, this message translates to:
+  /// **'Najstarsze'**
+  String get costRegisterSortOldest;
+
+  /// No description provided for @costRegisterSortAmountDescending.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kwota: malejąco'**
+  String get costRegisterSortAmountDescending;
+
+  /// No description provided for @costRegisterSortAmountAscending.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kwota: rosnąco'**
+  String get costRegisterSortAmountAscending;
+
+  /// No description provided for @costRegisterSortName.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa: A-Z'**
+  String get costRegisterSortName;
+
+  /// No description provided for @costWarningMissingDocument.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak dokumentu'**
+  String get costWarningMissingDocument;
+
+  /// No description provided for @costWarningMissingDescription.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak opisu'**
+  String get costWarningMissingDescription;
+
+  /// No description provided for @costWarningVatToReview.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź VAT 0%'**
+  String get costWarningVatToReview;
+
+  /// No description provided for @costSourceManual.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ręcznie'**
+  String get costSourceManual;
+
+  /// No description provided for @costSourceReceiptOcr.
+  ///
+  /// In pl, this message translates to:
+  /// **'Paragon OCR'**
+  String get costSourceReceiptOcr;
+
+  /// No description provided for @costSourceInvoiceOcr.
+  ///
+  /// In pl, this message translates to:
+  /// **'Faktura OCR'**
+  String get costSourceInvoiceOcr;
+
+  /// No description provided for @costSourceImported.
+  ///
+  /// In pl, this message translates to:
+  /// **'Import'**
+  String get costSourceImported;
+
+  /// No description provided for @costSourceOfferConversion.
+  ///
+  /// In pl, this message translates to:
+  /// **'Z oferty'**
+  String get costSourceOfferConversion;
+
   /// No description provided for @costFormBasicsSection.
   ///
   /// In pl, this message translates to:

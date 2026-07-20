@@ -129,6 +129,7 @@ abstract interface class CostRepository {
   Future<CostEntry?> findById(...);
   Future<Page<CostEntry>> list(CostQuery query, PageRequest page);
   Future<CostSummary> summarize(CostSummaryQuery query);
+  Future<CostFilterOptions> filterOptions({required String projectId});
   Future<Page<CostHistoryEntry>> history(...);
   Future<void> delete(...);
 }
@@ -149,6 +150,16 @@ abstract interface class AttachmentRepository {
 ```
 
 List queries are paginated from the first implementation. Summaries are aggregate SQL queries, not totals calculated after loading every row.
+
+`CostQuery` owns normalized search, set-based filters, an inclusive/exclusive UTC date range,
+warning predicates and stable sorting. `CostSummaryQuery.fromCostQuery` copies the active filters but
+always removes draft inclusion. The SQLite repository builds one bound-argument predicate and reuses
+it for the page query, total count, base totals and correction totals.
+
+The cost register requests 30 rows at a time and never materializes its total result. Attachment IDs
+for one page are fetched in a single bounded follow-up query. Data-quality filters use `EXISTS` or
+`NOT EXISTS`; list rows derive the same warning rules from loaded domain data. Text search escapes SQL
+wildcards before adding its own contains-search delimiters.
 
 ## Money Contract
 
