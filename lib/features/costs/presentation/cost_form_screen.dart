@@ -4,6 +4,8 @@ import 'package:budowapro/features/costs/domain/money.dart';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 import 'package:budowapro/features/projects/domain/project_template.dart';
 import 'package:budowapro/features/projects/presentation/project_ui_text.dart';
+import 'package:budowapro/features/stages/domain/stage_plan.dart';
+import 'package:budowapro/features/stages/presentation/stage_ui_text.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:budowapro/shared/widgets/app_content_states.dart';
 import 'package:flutter/material.dart';
@@ -406,6 +408,7 @@ class _CostFormState extends State<_CostForm> {
                   children: [
                     _StageField(
                       projectTemplate: widget.initialData.project.template,
+                      projectStages: widget.initialData.stageOptions,
                       value: _stageId,
                       label: localizations.costStageLabel,
                       emptyLabel: localizations.projectValueNotProvided,
@@ -847,6 +850,7 @@ class _FormScaffold extends StatelessWidget {
 class _StageField extends StatelessWidget {
   const _StageField({
     required this.projectTemplate,
+    required this.projectStages,
     required this.value,
     required this.label,
     required this.emptyLabel,
@@ -855,6 +859,7 @@ class _StageField extends StatelessWidget {
   });
 
   final ProjectTemplate projectTemplate;
+  final List<ProjectStage> projectStages;
   final String? value;
   final String label;
   final String emptyLabel;
@@ -864,9 +869,14 @@ class _StageField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
-    final values = projectTemplate.definition.stages
-        .map(_stageStorageId)
-        .toList(growable: true);
+    final stagesById = <String, ProjectStage>{
+      for (final stage in projectStages) stage.id: stage,
+    };
+    final values = projectStages.isEmpty
+        ? projectTemplate.definition.stages
+              .map(_stageStorageId)
+              .toList(growable: true)
+        : projectStages.map((stage) => stage.id).toList(growable: true);
     if (value != null && !values.contains(value)) values.add(value!);
     return DropdownButtonFormField<String?>(
       key: ValueKey('costStage-$value'),
@@ -884,10 +894,10 @@ class _StageField extends StatelessWidget {
         ...values.map(
           (stageId) => DropdownMenuItem<String?>(
             value: stageId,
-            child: Text(
-              _stageLabel(localizations, stageId),
-              overflow: TextOverflow.ellipsis,
-            ),
+            child: Text(switch (stagesById[stageId]) {
+              final stage? => stageName(localizations, stage),
+              null => _stageLabel(localizations, stageId),
+            }, overflow: TextOverflow.ellipsis),
           ),
         ),
       ],

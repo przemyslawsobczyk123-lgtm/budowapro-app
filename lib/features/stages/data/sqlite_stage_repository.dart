@@ -229,9 +229,12 @@ final class SqliteStageRepository implements StageRepository {
       if (existing == null) {
         throw const ChecklistItemNotFoundException();
       }
+      final evidenceRequirement = existing.templateKey == null
+          ? input.evidenceRequirement
+          : existing.evidenceRequirement;
       validateChecklistResolution(
         status: input.status,
-        evidenceRequirement: input.evidenceRequirement,
+        evidenceRequirement: evidenceRequirement,
         evidenceCount: existing.evidenceIds.length,
         statusReason: input.statusReason,
         evidenceWaiverComment: input.evidenceWaiverComment,
@@ -246,7 +249,7 @@ final class SqliteStageRepository implements StageRepository {
           'note': input.note,
           'risk_if_skipped': input.riskIfSkipped,
           'status_reason': input.statusReason,
-          'evidence_requirement': _evidenceToStorage(input.evidenceRequirement),
+          'evidence_requirement': _evidenceToStorage(evidenceRequirement),
           'evidence_waiver_comment': input.evidenceWaiverComment,
           'updated_at_utc_ms': _dateToStorage(_utcNow()),
         },
@@ -597,15 +600,12 @@ ProjectStage _stageFromRow(Map<String, Object?> row) {
     plannedStart: _nullableDateFromStorage(row['planned_start_utc_ms']),
     plannedEnd: _nullableDateFromStorage(row['planned_end_utc_ms']),
     plannedBudgetMinorUnits: row['planned_budget_minor_units'] as int?,
-    progress: StageProgress.fromStatuses(<ChecklistStatus>[
-      ...List<ChecklistStatus>.filled(completed, ChecklistStatus.completed),
-      ...List<ChecklistStatus>.filled(skipped, ChecklistStatus.skipped),
-      ...List<ChecklistStatus>.filled(blocked, ChecklistStatus.blocked),
-      ...List<ChecklistStatus>.filled(
-        total - completed - skipped - blocked,
-        ChecklistStatus.todo,
-      ),
-    ]),
+    progress: StageProgress.fromCounts(
+      totalItems: total,
+      completedItems: completed,
+      skippedItems: skipped,
+      blockedItems: blocked,
+    ),
     createdAt: _dateFromStorage(row['created_at_utc_ms']! as int),
     updatedAt: _dateFromStorage(row['updated_at_utc_ms']! as int),
   );

@@ -15,6 +15,9 @@ import 'package:budowapro/features/costs/presentation/cost_form_model.dart';
 import 'package:budowapro/features/costs/presentation/cost_form_screen.dart';
 import 'package:budowapro/features/projects/data/project_providers.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
+import 'package:budowapro/features/stages/data/stage_providers.dart';
+import 'package:budowapro/features/stages/domain/stage_plan.dart';
+import 'package:budowapro/features/stages/domain/stage_repository.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:budowapro/shared/models/page.dart';
 import 'package:flutter/material.dart' hide Page;
@@ -113,6 +116,27 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('offers a custom project stage in the cost form', (tester) async {
+    final gateway = _FakeGateway(
+      data: CostEditorData(
+        project: _project(),
+        entry: null,
+        attachments: const [],
+        stageOptions: <ProjectStage>[_customStage()],
+      ),
+    );
+    await tester.pumpWidget(
+      _gatewayApp(gateway, const CostFormScreen(projectId: 'project-1')),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.byKey(const ValueKey('costStage-null')));
+    await tester.tap(find.byKey(const ValueKey('costStage-null')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Teren zewnętrzny'), findsOneWidget);
+  });
+
   testWidgets('shows details and marks a confirmed cost as paid', (
     tester,
   ) async {
@@ -203,6 +227,9 @@ void main() {
         overrides: [
           projectRepositoryProvider.overrideWith((ref) async => projects),
           costRepositoryProvider.overrideWith((ref) async => costs),
+          stageRepositoryProvider.overrideWith(
+            (ref) async => _FakeStageRepository(),
+          ),
         ],
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -352,6 +379,9 @@ Widget _budgetApp(_FakeCostRepository costs) {
     overrides: [
       projectRepositoryProvider.overrideWith((ref) async => projects),
       costRepositoryProvider.overrideWith((ref) async => costs),
+      stageRepositoryProvider.overrideWith(
+        (ref) async => _FakeStageRepository(),
+      ),
     ],
     child: MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -371,6 +401,17 @@ Project _project() => Project(
   ),
   createdAt: DateTime.utc(2026, 7, 1),
   updatedAt: DateTime.utc(2026, 7, 15),
+);
+
+ProjectStage _customStage() => ProjectStage(
+  id: 'outdoor',
+  projectId: 'project-1',
+  customName: 'Teren zewnętrzny',
+  status: StageStatus.planned,
+  sortOrder: 0,
+  progress: StageProgress.fromStatuses(const <ChecklistStatus>[]),
+  createdAt: DateTime.utc(2026, 7, 1),
+  updatedAt: DateTime.utc(2026, 7, 1),
 );
 
 CostEntry _entry({
@@ -470,6 +511,75 @@ class _FakeGateway implements CostEditorGateway {
 
   @override
   Future<StagedCostAttachment?> pickAttachment(String projectId) async => null;
+}
+
+class _FakeStageRepository implements StageRepository {
+  @override
+  Future<List<ProjectStage>> listStages({
+    required String projectId,
+    required ProjectTemplate template,
+  }) async => <ProjectStage>[_customStage()];
+
+  @override
+  Future<List<ChecklistItem>> listChecklistItems({
+    required String projectId,
+    required String stageId,
+  }) async => const <ChecklistItem>[];
+
+  @override
+  Future<ProjectStage> addCustomStage({
+    required String projectId,
+    required String name,
+  }) => throw UnimplementedError();
+
+  @override
+  Future<ChecklistItem> addChecklistItem({
+    required String projectId,
+    required String stageId,
+    required String title,
+    required ChecklistItemDetailsInput input,
+  }) => throw UnimplementedError();
+
+  @override
+  Future<ChecklistItem> attachEvidence({
+    required String projectId,
+    required String checklistItemId,
+    required String attachmentId,
+  }) => throw UnimplementedError();
+
+  @override
+  Future<ChecklistItem> detachEvidence({
+    required String projectId,
+    required String checklistItemId,
+    required String attachmentId,
+  }) => throw UnimplementedError();
+
+  @override
+  Future<void> reorderStages({
+    required String projectId,
+    required List<String> stageIds,
+  }) => throw UnimplementedError();
+
+  @override
+  Future<ProjectStage> renameStage({
+    required String projectId,
+    required String stageId,
+    required String name,
+  }) => throw UnimplementedError();
+
+  @override
+  Future<ChecklistItem> updateChecklistItem({
+    required String projectId,
+    required String checklistItemId,
+    required ChecklistItemDetailsInput input,
+  }) => throw UnimplementedError();
+
+  @override
+  Future<ProjectStage> updateStage({
+    required String projectId,
+    required String stageId,
+    required StageDetailsInput input,
+  }) => throw UnimplementedError();
 }
 
 class _FakeCostRepository implements CostRepository {

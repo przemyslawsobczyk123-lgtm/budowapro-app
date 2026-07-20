@@ -22,7 +22,7 @@ void main() {
     expect(find.text('Brak aktywnego projektu'), findsOneWidget);
 
     const destinations = <String, String>{
-      'Plan': 'Plan budowy',
+      'Plan': 'Najpierw utwórz projekt',
       'Budżet': 'Budżet inwestycji',
       'Budowa': 'Dokumentacja budowy',
       'Więcej': 'Narzędzia projektu',

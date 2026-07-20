@@ -1371,6 +1371,630 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Wybierz datę'**
   String get costDatePickerTooltip;
+
+  /// No description provided for @saveAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz'**
+  String get saveAction;
+
+  /// No description provided for @stagePlanLoading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytywanie etapów i checklisty'**
+  String get stagePlanLoading;
+
+  /// No description provided for @stagePlanLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać planu projektu.'**
+  String get stagePlanLoadError;
+
+  /// No description provided for @stagePlanNoProjectTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Najpierw utwórz projekt'**
+  String get stagePlanNoProjectTitle;
+
+  /// No description provided for @stagePlanNoProjectMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etapy i checklisty zostaną dopasowane do budowy domu albo remontu.'**
+  String get stagePlanNoProjectMessage;
+
+  /// No description provided for @stagePlanEyebrow.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etapy i checklisty'**
+  String get stagePlanEyebrow;
+
+  /// No description provided for @stageAddAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj etap'**
+  String get stageAddAction;
+
+  /// No description provided for @stageReorderAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień kolejność etapów'**
+  String get stageReorderAction;
+
+  /// No description provided for @stageEditAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj etap'**
+  String get stageEditAction;
+
+  /// No description provided for @stageRenameAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień nazwę'**
+  String get stageRenameAction;
+
+  /// No description provided for @stageNameLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa etapu'**
+  String get stageNameLabel;
+
+  /// No description provided for @stageNameRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podaj nazwę etapu.'**
+  String get stageNameRequiredError;
+
+  /// No description provided for @stageAddTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowy etap'**
+  String get stageAddTitle;
+
+  /// No description provided for @stageRenameTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa etapu'**
+  String get stageRenameTitle;
+
+  /// No description provided for @stageReorderTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kolejność etapów'**
+  String get stageReorderTitle;
+
+  /// No description provided for @stageEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plan etapu'**
+  String get stageEditTitle;
+
+  /// No description provided for @stageStatusLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Status etapu'**
+  String get stageStatusLabel;
+
+  /// No description provided for @stageStatusPlanned.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowany'**
+  String get stageStatusPlanned;
+
+  /// No description provided for @stageStatusInProgress.
+  ///
+  /// In pl, this message translates to:
+  /// **'W realizacji'**
+  String get stageStatusInProgress;
+
+  /// No description provided for @stageStatusBlocked.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zablokowany'**
+  String get stageStatusBlocked;
+
+  /// No description provided for @stageStatusCompleted.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zakończony'**
+  String get stageStatusCompleted;
+
+  /// No description provided for @stageStartDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowany start'**
+  String get stageStartDateLabel;
+
+  /// No description provided for @stageEndDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowany koniec'**
+  String get stageEndDateLabel;
+
+  /// No description provided for @stageBudgetLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Budżet etapu'**
+  String get stageBudgetLabel;
+
+  /// No description provided for @stageBudgetInvalidError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz poprawną kwotę z maksymalnie dwiema cyframi po przecinku.'**
+  String get stageBudgetInvalidError;
+
+  /// No description provided for @stageProgressLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'{resolved} z {total}'**
+  String stageProgressLabel(int resolved, int total);
+
+  /// No description provided for @stageProgressPercent.
+  ///
+  /// In pl, this message translates to:
+  /// **'Postęp {percent}%'**
+  String stageProgressPercent(int percent);
+
+  /// No description provided for @stageBlockedCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zablokowane: {count}'**
+  String stageBlockedCount(int count);
+
+  /// No description provided for @stageNoChecklistTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ten etap nie ma jeszcze checklisty'**
+  String get stageNoChecklistTitle;
+
+  /// No description provided for @stageNoChecklistMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj własny punkt, termin i osobę odpowiedzialną.'**
+  String get stageNoChecklistMessage;
+
+  /// No description provided for @stageMutationError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać zmiany.'**
+  String get stageMutationError;
+
+  /// No description provided for @checklistHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Lista kontrolna'**
+  String get checklistHeading;
+
+  /// No description provided for @checklistAddAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj punkt'**
+  String get checklistAddAction;
+
+  /// No description provided for @checklistAddTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowy punkt checklisty'**
+  String get checklistAddTitle;
+
+  /// No description provided for @checklistEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły punktu'**
+  String get checklistEditTitle;
+
+  /// No description provided for @checklistTitleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa punktu'**
+  String get checklistTitleLabel;
+
+  /// No description provided for @checklistTitleRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podaj nazwę punktu.'**
+  String get checklistTitleRequiredError;
+
+  /// No description provided for @checklistStatusLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Status'**
+  String get checklistStatusLabel;
+
+  /// No description provided for @checklistStatusTodo.
+  ///
+  /// In pl, this message translates to:
+  /// **'Do zrobienia'**
+  String get checklistStatusTodo;
+
+  /// No description provided for @checklistStatusInProgress.
+  ///
+  /// In pl, this message translates to:
+  /// **'W trakcie'**
+  String get checklistStatusInProgress;
+
+  /// No description provided for @checklistStatusBlocked.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zablokowane'**
+  String get checklistStatusBlocked;
+
+  /// No description provided for @checklistStatusCompleted.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zakończone'**
+  String get checklistStatusCompleted;
+
+  /// No description provided for @checklistStatusSkipped.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pominięte'**
+  String get checklistStatusSkipped;
+
+  /// No description provided for @checklistImportanceLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ważność'**
+  String get checklistImportanceLabel;
+
+  /// No description provided for @checklistImportanceLow.
+  ///
+  /// In pl, this message translates to:
+  /// **'Niska'**
+  String get checklistImportanceLow;
+
+  /// No description provided for @checklistImportanceNormal.
+  ///
+  /// In pl, this message translates to:
+  /// **'Normalna'**
+  String get checklistImportanceNormal;
+
+  /// No description provided for @checklistImportanceHigh.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wysoka'**
+  String get checklistImportanceHigh;
+
+  /// No description provided for @checklistImportanceCritical.
+  ///
+  /// In pl, this message translates to:
+  /// **'Krytyczna'**
+  String get checklistImportanceCritical;
+
+  /// No description provided for @checklistDueDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Termin'**
+  String get checklistDueDateLabel;
+
+  /// No description provided for @checklistAssigneeLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Osoba odpowiedzialna'**
+  String get checklistAssigneeLabel;
+
+  /// No description provided for @checklistNoteLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatka'**
+  String get checklistNoteLabel;
+
+  /// No description provided for @checklistRiskLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ryzyko pominięcia'**
+  String get checklistRiskLabel;
+
+  /// No description provided for @checklistReasonLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powód blokady lub pominięcia'**
+  String get checklistReasonLabel;
+
+  /// No description provided for @checklistReasonRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pominięcie punktu wymaga podania powodu.'**
+  String get checklistReasonRequiredError;
+
+  /// No description provided for @checklistEvidenceLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wymagany dowód'**
+  String get checklistEvidenceLabel;
+
+  /// No description provided for @checklistEvidenceNone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez dowodu'**
+  String get checklistEvidenceNone;
+
+  /// No description provided for @checklistEvidenceAny.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokument lub zdjęcie'**
+  String get checklistEvidenceAny;
+
+  /// No description provided for @checklistEvidencePhoto.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcie'**
+  String get checklistEvidencePhoto;
+
+  /// No description provided for @checklistEvidenceCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dowody: {count}'**
+  String checklistEvidenceCount(int count);
+
+  /// No description provided for @checklistEvidenceWaived.
+  ///
+  /// In pl, this message translates to:
+  /// **'Udokumentowane odstępstwo'**
+  String get checklistEvidenceWaived;
+
+  /// No description provided for @checklistEvidenceRequiredTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brakuje wymaganego dowodu'**
+  String get checklistEvidenceRequiredTitle;
+
+  /// No description provided for @checklistEvidenceRequiredMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj lokalne zdjęcie lub dokument. Możesz też jawnie odstąpić od dowodu i zapisać uzasadnienie.'**
+  String get checklistEvidenceRequiredMessage;
+
+  /// No description provided for @checklistAddEvidenceAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj dowód'**
+  String get checklistAddEvidenceAction;
+
+  /// No description provided for @checklistWaiveEvidenceAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz odstępstwo'**
+  String get checklistWaiveEvidenceAction;
+
+  /// No description provided for @checklistWaiverTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odstępstwo od dowodu'**
+  String get checklistWaiverTitle;
+
+  /// No description provided for @checklistWaiverLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzasadnienie odstępstwa'**
+  String get checklistWaiverLabel;
+
+  /// No description provided for @checklistWaiverRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz konkretne uzasadnienie odstępstwa.'**
+  String get checklistWaiverRequiredError;
+
+  /// No description provided for @checklistEvidenceImportError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się dodać dowodu. Sprawdź typ pliku i spróbuj ponownie.'**
+  String get checklistEvidenceImportError;
+
+  /// No description provided for @checklistSoilResearch.
+  ///
+  /// In pl, this message translates to:
+  /// **'Badania gruntu i warunki wodne'**
+  String get checklistSoilResearch;
+
+  /// No description provided for @checklistSoilResearchRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieznane warunki gruntowe mogą wymusić zmianę posadowienia i zwiększyć koszt fundamentów.'**
+  String get checklistSoilResearchRisk;
+
+  /// No description provided for @checklistSurveyorBuildingSetout.
+  ///
+  /// In pl, this message translates to:
+  /// **'Geodeta i wytyczenie budynku'**
+  String get checklistSurveyorBuildingSetout;
+
+  /// No description provided for @checklistSurveyorBuildingSetoutRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Błąd położenia budynku może naruszyć odległości projektowe i granice działki.'**
+  String get checklistSurveyorBuildingSetoutRisk;
+
+  /// No description provided for @checklistSiteRoadPowerWater.
+  ///
+  /// In pl, this message translates to:
+  /// **'Droga, prąd i woda na budowę'**
+  String get checklistSiteRoadPowerWater;
+
+  /// No description provided for @checklistSiteRoadPowerWaterRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak mediów lub dojazdu zatrzyma ekipy i dostawy ciężkich materiałów.'**
+  String get checklistSiteRoadPowerWaterRisk;
+
+  /// No description provided for @checklistExcavationFoundationLevels.
+  ///
+  /// In pl, this message translates to:
+  /// **'Poziomy wykopu, ław i posadowienia'**
+  String get checklistExcavationFoundationLevels;
+
+  /// No description provided for @checklistExcavationFoundationLevelsRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Błędna rzędna wpływa na wysokość budynku, spadki i odwodnienie działki.'**
+  String get checklistExcavationFoundationLevelsRisk;
+
+  /// No description provided for @checklistUnderSlabSewerAndRisers.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kanalizacja podposadzkowa i piony'**
+  String get checklistUnderSlabSewerAndRisers;
+
+  /// No description provided for @checklistUnderSlabSewerAndRisersRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak lub zła lokalizacja podejść wymaga kucia posadzki i fundamentu.'**
+  String get checklistUnderSlabSewerAndRisersRisk;
+
+  /// No description provided for @checklistWaterPenetration.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przepust wody'**
+  String get checklistWaterPenetration;
+
+  /// No description provided for @checklistWaterPenetrationRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Późniejsze wykonanie przepustu może uszkodzić hydroizolację i konstrukcję.'**
+  String get checklistWaterPenetrationRisk;
+
+  /// No description provided for @checklistPowerPenetration.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przepust prądu'**
+  String get checklistPowerPenetration;
+
+  /// No description provided for @checklistPowerPenetrationRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak trasy zasilania oznacza wiercenie w gotowym fundamencie.'**
+  String get checklistPowerPenetrationRisk;
+
+  /// No description provided for @checklistTelecomPenetration.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przepust internetu i teletechniki'**
+  String get checklistTelecomPenetration;
+
+  /// No description provided for @checklistTelecomPenetrationRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez rezerwy operator może poprowadzić kabel po elewacji lub przez część mieszkalną.'**
+  String get checklistTelecomPenetrationRisk;
+
+  /// No description provided for @checklistGasPenetration.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przepust gazu, jeżeli dotyczy'**
+  String get checklistGasPenetration;
+
+  /// No description provided for @checklistGasPenetrationRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak uzgodnionego przepustu utrudni wykonanie przyłącza zgodnie z projektem.'**
+  String get checklistGasPenetrationRisk;
+
+  /// No description provided for @checklistGateIntercomGardenReserve.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rezerwa do bramy, domofonu i ogrodu'**
+  String get checklistGateIntercomGardenReserve;
+
+  /// No description provided for @checklistGateIntercomGardenReserveRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Później potrzebne będą wykopy w gotowym podjeździe i ogrodzie.'**
+  String get checklistGateIntercomGardenReserveRisk;
+
+  /// No description provided for @checklistHeatPumpOutdoorReserve.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rezerwa do pompy ciepła i jednostek zewnętrznych'**
+  String get checklistHeatPumpOutdoorReserve;
+
+  /// No description provided for @checklistHeatPumpOutdoorReserveRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak zasilania i tras instalacyjnych ograniczy miejsce urządzeń albo wymusi przeróbki.'**
+  String get checklistHeatPumpOutdoorReserveRisk;
+
+  /// No description provided for @checklistFoundationGrounding.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bednarka i uziom fundamentowy'**
+  String get checklistFoundationGrounding;
+
+  /// No description provided for @checklistFoundationGroundingRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po betonowaniu nie da się poprawić ciągłości i połączeń uziomu fundamentowego.'**
+  String get checklistFoundationGroundingRisk;
+
+  /// No description provided for @checklistContinuityMeasurement.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomiar ciągłości przed betonowaniem'**
+  String get checklistContinuityMeasurement;
+
+  /// No description provided for @checklistContinuityMeasurementRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Niewykryta przerwa w uziomie pozostanie ukryta w konstrukcji.'**
+  String get checklistContinuityMeasurementRisk;
+
+  /// No description provided for @checklistWaterproofing.
+  ///
+  /// In pl, this message translates to:
+  /// **'Izolacje poziome, pionowe i hydroizolacje'**
+  String get checklistWaterproofing;
+
+  /// No description provided for @checklistWaterproofingRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieszczelności mogą powodować trwałe zawilgocenie ścian i podłogi.'**
+  String get checklistWaterproofingRisk;
+
+  /// No description provided for @checklistDrainage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odwodnienie i drenaż, jeżeli wynika z projektu'**
+  String get checklistDrainage;
+
+  /// No description provided for @checklistDrainageRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Woda przy fundamencie zwiększa ryzyko przecieków i uszkodzeń izolacji.'**
+  String get checklistDrainageRisk;
+
+  /// No description provided for @checklistConcealedWorksPhotos.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcia zbrojenia, przepustów i uziomu przed zakryciem'**
+  String get checklistConcealedWorksPhotos;
+
+  /// No description provided for @checklistConcealedWorksPhotosRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po zasypaniu nie będzie wiadomo, gdzie przebiegają instalacje i jak wykonano elementy ukryte.'**
+  String get checklistConcealedWorksPhotosRisk;
+
+  /// No description provided for @checklistConcreteDeliveryAndAcceptance.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokument WZ betonu i protokół odbioru'**
+  String get checklistConcreteDeliveryAndAcceptance;
+
+  /// No description provided for @checklistConcreteDeliveryAndAcceptanceRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez dokumentów trudno potwierdzić klasę betonu, dostawę i odbiór robót.'**
+  String get checklistConcreteDeliveryAndAcceptanceRisk;
+
+  /// No description provided for @checklistPostFoundationSurvey.
+  ///
+  /// In pl, this message translates to:
+  /// **'Inwentaryzacja po wykonaniu fundamentów'**
+  String get checklistPostFoundationSurvey;
+
+  /// No description provided for @checklistPostFoundationSurveyRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odchyłki położenia mogą ujawnić się dopiero przy kolejnych etapach lub odbiorze.'**
+  String get checklistPostFoundationSurveyRisk;
 }
 
 class _AppLocalizationsDelegate

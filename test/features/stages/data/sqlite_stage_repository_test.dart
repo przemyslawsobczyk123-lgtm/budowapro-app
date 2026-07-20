@@ -148,6 +148,18 @@ void main() {
       ),
       throwsA(isA<ChecklistEvidenceRequiredException>()),
     );
+    await expectLater(
+      repository.updateChecklistItem(
+        projectId: 'project-1',
+        checklistItemId: grounding.id,
+        input: ChecklistItemDetailsInput(
+          status: ChecklistStatus.completed,
+          importance: grounding.importance,
+          evidenceRequirement: EvidenceRequirement.none,
+        ),
+      ),
+      throwsA(isA<ChecklistEvidenceRequiredException>()),
+    );
 
     final rawDatabase = await database.open();
     await rawDatabase

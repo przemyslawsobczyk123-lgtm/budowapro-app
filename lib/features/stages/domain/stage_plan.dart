@@ -34,11 +34,32 @@ final class StageProgress {
           break;
       }
     }
-    return StageProgress._(
+    return StageProgress.fromCounts(
       totalItems: total,
       completedItems: completed,
       skippedItems: skipped,
       blockedItems: blocked,
+    );
+  }
+
+  factory StageProgress.fromCounts({
+    required int totalItems,
+    required int completedItems,
+    required int skippedItems,
+    required int blockedItems,
+  }) {
+    if (totalItems < 0 ||
+        completedItems < 0 ||
+        skippedItems < 0 ||
+        blockedItems < 0 ||
+        completedItems + skippedItems + blockedItems > totalItems) {
+      throw ArgumentError('invalid checklist progress counts');
+    }
+    return StageProgress._(
+      totalItems: totalItems,
+      completedItems: completedItems,
+      skippedItems: skippedItems,
+      blockedItems: blockedItems,
     );
   }
 

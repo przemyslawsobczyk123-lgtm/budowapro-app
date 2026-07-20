@@ -676,4 +676,359 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get costDatePickerTooltip => 'Wybierz datę';
+
+  @override
+  String get saveAction => 'Zapisz';
+
+  @override
+  String get stagePlanLoading => 'Wczytywanie etapów i checklisty';
+
+  @override
+  String get stagePlanLoadError => 'Nie udało się wczytać planu projektu.';
+
+  @override
+  String get stagePlanNoProjectTitle => 'Najpierw utwórz projekt';
+
+  @override
+  String get stagePlanNoProjectMessage =>
+      'Etapy i checklisty zostaną dopasowane do budowy domu albo remontu.';
+
+  @override
+  String get stagePlanEyebrow => 'Etapy i checklisty';
+
+  @override
+  String get stageAddAction => 'Dodaj etap';
+
+  @override
+  String get stageReorderAction => 'Zmień kolejność etapów';
+
+  @override
+  String get stageEditAction => 'Edytuj etap';
+
+  @override
+  String get stageRenameAction => 'Zmień nazwę';
+
+  @override
+  String get stageNameLabel => 'Nazwa etapu';
+
+  @override
+  String get stageNameRequiredError => 'Podaj nazwę etapu.';
+
+  @override
+  String get stageAddTitle => 'Nowy etap';
+
+  @override
+  String get stageRenameTitle => 'Nazwa etapu';
+
+  @override
+  String get stageReorderTitle => 'Kolejność etapów';
+
+  @override
+  String get stageEditTitle => 'Plan etapu';
+
+  @override
+  String get stageStatusLabel => 'Status etapu';
+
+  @override
+  String get stageStatusPlanned => 'Planowany';
+
+  @override
+  String get stageStatusInProgress => 'W realizacji';
+
+  @override
+  String get stageStatusBlocked => 'Zablokowany';
+
+  @override
+  String get stageStatusCompleted => 'Zakończony';
+
+  @override
+  String get stageStartDateLabel => 'Planowany start';
+
+  @override
+  String get stageEndDateLabel => 'Planowany koniec';
+
+  @override
+  String get stageBudgetLabel => 'Budżet etapu';
+
+  @override
+  String get stageBudgetInvalidError =>
+      'Wpisz poprawną kwotę z maksymalnie dwiema cyframi po przecinku.';
+
+  @override
+  String stageProgressLabel(int resolved, int total) {
+    return '$resolved z $total';
+  }
+
+  @override
+  String stageProgressPercent(int percent) {
+    return 'Postęp $percent%';
+  }
+
+  @override
+  String stageBlockedCount(int count) {
+    return 'Zablokowane: $count';
+  }
+
+  @override
+  String get stageNoChecklistTitle => 'Ten etap nie ma jeszcze checklisty';
+
+  @override
+  String get stageNoChecklistMessage =>
+      'Dodaj własny punkt, termin i osobę odpowiedzialną.';
+
+  @override
+  String get stageMutationError => 'Nie udało się zapisać zmiany.';
+
+  @override
+  String get checklistHeading => 'Lista kontrolna';
+
+  @override
+  String get checklistAddAction => 'Dodaj punkt';
+
+  @override
+  String get checklistAddTitle => 'Nowy punkt checklisty';
+
+  @override
+  String get checklistEditTitle => 'Szczegóły punktu';
+
+  @override
+  String get checklistTitleLabel => 'Nazwa punktu';
+
+  @override
+  String get checklistTitleRequiredError => 'Podaj nazwę punktu.';
+
+  @override
+  String get checklistStatusLabel => 'Status';
+
+  @override
+  String get checklistStatusTodo => 'Do zrobienia';
+
+  @override
+  String get checklistStatusInProgress => 'W trakcie';
+
+  @override
+  String get checklistStatusBlocked => 'Zablokowane';
+
+  @override
+  String get checklistStatusCompleted => 'Zakończone';
+
+  @override
+  String get checklistStatusSkipped => 'Pominięte';
+
+  @override
+  String get checklistImportanceLabel => 'Ważność';
+
+  @override
+  String get checklistImportanceLow => 'Niska';
+
+  @override
+  String get checklistImportanceNormal => 'Normalna';
+
+  @override
+  String get checklistImportanceHigh => 'Wysoka';
+
+  @override
+  String get checklistImportanceCritical => 'Krytyczna';
+
+  @override
+  String get checklistDueDateLabel => 'Termin';
+
+  @override
+  String get checklistAssigneeLabel => 'Osoba odpowiedzialna';
+
+  @override
+  String get checklistNoteLabel => 'Notatka';
+
+  @override
+  String get checklistRiskLabel => 'Ryzyko pominięcia';
+
+  @override
+  String get checklistReasonLabel => 'Powód blokady lub pominięcia';
+
+  @override
+  String get checklistReasonRequiredError =>
+      'Pominięcie punktu wymaga podania powodu.';
+
+  @override
+  String get checklistEvidenceLabel => 'Wymagany dowód';
+
+  @override
+  String get checklistEvidenceNone => 'Bez dowodu';
+
+  @override
+  String get checklistEvidenceAny => 'Dokument lub zdjęcie';
+
+  @override
+  String get checklistEvidencePhoto => 'Zdjęcie';
+
+  @override
+  String checklistEvidenceCount(int count) {
+    return 'Dowody: $count';
+  }
+
+  @override
+  String get checklistEvidenceWaived => 'Udokumentowane odstępstwo';
+
+  @override
+  String get checklistEvidenceRequiredTitle => 'Brakuje wymaganego dowodu';
+
+  @override
+  String get checklistEvidenceRequiredMessage =>
+      'Dodaj lokalne zdjęcie lub dokument. Możesz też jawnie odstąpić od dowodu i zapisać uzasadnienie.';
+
+  @override
+  String get checklistAddEvidenceAction => 'Dodaj dowód';
+
+  @override
+  String get checklistWaiveEvidenceAction => 'Zapisz odstępstwo';
+
+  @override
+  String get checklistWaiverTitle => 'Odstępstwo od dowodu';
+
+  @override
+  String get checklistWaiverLabel => 'Uzasadnienie odstępstwa';
+
+  @override
+  String get checklistWaiverRequiredError =>
+      'Wpisz konkretne uzasadnienie odstępstwa.';
+
+  @override
+  String get checklistEvidenceImportError =>
+      'Nie udało się dodać dowodu. Sprawdź typ pliku i spróbuj ponownie.';
+
+  @override
+  String get checklistSoilResearch => 'Badania gruntu i warunki wodne';
+
+  @override
+  String get checklistSoilResearchRisk =>
+      'Nieznane warunki gruntowe mogą wymusić zmianę posadowienia i zwiększyć koszt fundamentów.';
+
+  @override
+  String get checklistSurveyorBuildingSetout => 'Geodeta i wytyczenie budynku';
+
+  @override
+  String get checklistSurveyorBuildingSetoutRisk =>
+      'Błąd położenia budynku może naruszyć odległości projektowe i granice działki.';
+
+  @override
+  String get checklistSiteRoadPowerWater => 'Droga, prąd i woda na budowę';
+
+  @override
+  String get checklistSiteRoadPowerWaterRisk =>
+      'Brak mediów lub dojazdu zatrzyma ekipy i dostawy ciężkich materiałów.';
+
+  @override
+  String get checklistExcavationFoundationLevels =>
+      'Poziomy wykopu, ław i posadowienia';
+
+  @override
+  String get checklistExcavationFoundationLevelsRisk =>
+      'Błędna rzędna wpływa na wysokość budynku, spadki i odwodnienie działki.';
+
+  @override
+  String get checklistUnderSlabSewerAndRisers =>
+      'Kanalizacja podposadzkowa i piony';
+
+  @override
+  String get checklistUnderSlabSewerAndRisersRisk =>
+      'Brak lub zła lokalizacja podejść wymaga kucia posadzki i fundamentu.';
+
+  @override
+  String get checklistWaterPenetration => 'Przepust wody';
+
+  @override
+  String get checklistWaterPenetrationRisk =>
+      'Późniejsze wykonanie przepustu może uszkodzić hydroizolację i konstrukcję.';
+
+  @override
+  String get checklistPowerPenetration => 'Przepust prądu';
+
+  @override
+  String get checklistPowerPenetrationRisk =>
+      'Brak trasy zasilania oznacza wiercenie w gotowym fundamencie.';
+
+  @override
+  String get checklistTelecomPenetration => 'Przepust internetu i teletechniki';
+
+  @override
+  String get checklistTelecomPenetrationRisk =>
+      'Bez rezerwy operator może poprowadzić kabel po elewacji lub przez część mieszkalną.';
+
+  @override
+  String get checklistGasPenetration => 'Przepust gazu, jeżeli dotyczy';
+
+  @override
+  String get checklistGasPenetrationRisk =>
+      'Brak uzgodnionego przepustu utrudni wykonanie przyłącza zgodnie z projektem.';
+
+  @override
+  String get checklistGateIntercomGardenReserve =>
+      'Rezerwa do bramy, domofonu i ogrodu';
+
+  @override
+  String get checklistGateIntercomGardenReserveRisk =>
+      'Później potrzebne będą wykopy w gotowym podjeździe i ogrodzie.';
+
+  @override
+  String get checklistHeatPumpOutdoorReserve =>
+      'Rezerwa do pompy ciepła i jednostek zewnętrznych';
+
+  @override
+  String get checklistHeatPumpOutdoorReserveRisk =>
+      'Brak zasilania i tras instalacyjnych ograniczy miejsce urządzeń albo wymusi przeróbki.';
+
+  @override
+  String get checklistFoundationGrounding => 'Bednarka i uziom fundamentowy';
+
+  @override
+  String get checklistFoundationGroundingRisk =>
+      'Po betonowaniu nie da się poprawić ciągłości i połączeń uziomu fundamentowego.';
+
+  @override
+  String get checklistContinuityMeasurement =>
+      'Pomiar ciągłości przed betonowaniem';
+
+  @override
+  String get checklistContinuityMeasurementRisk =>
+      'Niewykryta przerwa w uziomie pozostanie ukryta w konstrukcji.';
+
+  @override
+  String get checklistWaterproofing =>
+      'Izolacje poziome, pionowe i hydroizolacje';
+
+  @override
+  String get checklistWaterproofingRisk =>
+      'Nieszczelności mogą powodować trwałe zawilgocenie ścian i podłogi.';
+
+  @override
+  String get checklistDrainage =>
+      'Odwodnienie i drenaż, jeżeli wynika z projektu';
+
+  @override
+  String get checklistDrainageRisk =>
+      'Woda przy fundamencie zwiększa ryzyko przecieków i uszkodzeń izolacji.';
+
+  @override
+  String get checklistConcealedWorksPhotos =>
+      'Zdjęcia zbrojenia, przepustów i uziomu przed zakryciem';
+
+  @override
+  String get checklistConcealedWorksPhotosRisk =>
+      'Po zasypaniu nie będzie wiadomo, gdzie przebiegają instalacje i jak wykonano elementy ukryte.';
+
+  @override
+  String get checklistConcreteDeliveryAndAcceptance =>
+      'Dokument WZ betonu i protokół odbioru';
+
+  @override
+  String get checklistConcreteDeliveryAndAcceptanceRisk =>
+      'Bez dokumentów trudno potwierdzić klasę betonu, dostawę i odbiór robót.';
+
+  @override
+  String get checklistPostFoundationSurvey =>
+      'Inwentaryzacja po wykonaniu fundamentów';
+
+  @override
+  String get checklistPostFoundationSurveyRisk =>
+      'Odchyłki położenia mogą ujawnić się dopiero przy kolejnych etapach lub odbiorze.';
 }

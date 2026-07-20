@@ -6,6 +6,9 @@ import 'package:budowapro/features/costs/domain/cost_repository.dart';
 import 'package:budowapro/features/projects/data/project_providers.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
 import 'package:budowapro/features/projects/domain/project_repository.dart';
+import 'package:budowapro/features/stages/data/stage_providers.dart';
+import 'package:budowapro/features/stages/domain/stage_plan.dart';
+import 'package:budowapro/features/stages/domain/stage_repository.dart';
 import 'package:budowapro/shared/models/page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,6 +22,7 @@ final costEditorGatewayProvider = FutureProvider<CostEditorGateway>((
     costRepository: await ref.watch(costRepositoryProvider.future),
     attachmentStager: await ref.watch(costAttachmentStagerProvider.future),
     attachmentPicker: ref.watch(costAttachmentPickerProvider),
+    stageRepository: await ref.watch(stageRepositoryProvider.future),
     utcNow: DateTime.now,
   );
 });
@@ -66,15 +70,18 @@ final class CostEditorData {
     required Iterable<StagedCostAttachment> attachments,
     Iterable<String> categoryOptions = const <String>[],
     Iterable<String> supplierOptions = const <String>[],
+    Iterable<ProjectStage> stageOptions = const <ProjectStage>[],
   }) : attachments = List<StagedCostAttachment>.unmodifiable(attachments),
        categoryOptions = List<String>.unmodifiable(categoryOptions),
-       supplierOptions = List<String>.unmodifiable(supplierOptions);
+       supplierOptions = List<String>.unmodifiable(supplierOptions),
+       stageOptions = List<ProjectStage>.unmodifiable(stageOptions);
 
   final Project project;
   final CostEntry? entry;
   final List<StagedCostAttachment> attachments;
   final List<String> categoryOptions;
   final List<String> supplierOptions;
+  final List<ProjectStage> stageOptions;
 }
 
 final class CostEditorNotFoundException implements Exception {
@@ -88,12 +95,14 @@ final class LocalCostEditorGateway implements CostEditorGateway {
     required CostAttachmentStager attachmentStager,
     required CostAttachmentPicker attachmentPicker,
     required DateTime Function() utcNow,
+    StageRepository? stageRepository,
   }) {
     return LocalCostEditorGateway._(
       projectRepository,
       costRepository,
       attachmentStager,
       attachmentPicker,
+      stageRepository,
       utcNow,
     );
   }
@@ -103,6 +112,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
     this._costRepository,
     this._attachmentStager,
     this._attachmentPicker,
+    this._stageRepository,
     this._utcNow,
   );
 
@@ -110,6 +120,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
   final CostRepository _costRepository;
   final CostAttachmentStager _attachmentStager;
   final CostAttachmentPicker _attachmentPicker;
+  final StageRepository? _stageRepository;
   final DateTime Function() _utcNow;
 
   @override
@@ -140,6 +151,10 @@ final class LocalCostEditorGateway implements CostEditorGateway {
       CostQuery(projectId: projectId, includeDrafts: true),
       PageRequest(limit: PageRequest.maximumLimit),
     );
+    final stageOptions = await _stageRepository?.listStages(
+      projectId: projectId,
+      template: project.template,
+    );
     return CostEditorData(
       project: project,
       entry: entry,
@@ -150,6 +165,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
       supplierOptions: _distinctOptions(
         projectEntries.items.map((item) => item.input.supplierId),
       ),
+      stageOptions: stageOptions ?? const <ProjectStage>[],
     );
   }
 

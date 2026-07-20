@@ -1,6 +1,6 @@
 # BudowaPRO - implementation status
 
-Last updated: 2026-07-15
+Last updated: 2026-07-20
 
 ## Current release
 
@@ -54,8 +54,8 @@ Last updated: 2026-07-15
 - Delete confirmation reports linked records and local files before removing the project.
 - Interrupted file deletion is recoverable and never removes the project record first.
 - Currency, date format, planned dates, budget and current stage are editable.
-- R0 maps one versioned template to each compatible project type. Multiple and
-  custom templates remain deferred to Task 3.1, where stage checklists are added.
+- R0 maps one versioned template to each compatible project type. Project-local
+  stage variants and custom checklist records are implemented in Task 3.1.
 
 ### Task 2.1 - financial domain
 
@@ -82,7 +82,7 @@ Last updated: 2026-07-15
 - Confirmed financial values are immutable; detail and status changes are recorded in local history.
 - Project currency becomes immutable after the first cost entry, and project deletion impact counts
   linked cost records before the destructive confirmation.
-- Stage selection comes from the active project template. Category and supplier fields suggest values
+- Stage selection comes from persisted project stages, including custom stages. Category and supplier fields suggest values
   already used in the project while still allowing a new value to be entered immediately.
 - The Android system picker imports allowed documents into private project storage without loading
   complete files into UI memory or requesting broad storage permission.
@@ -113,6 +113,28 @@ Last updated: 2026-07-15
 - Tag and warranty filters intentionally remain deferred until their persisted document/warranty
   models are introduced; the register does not expose controls that cannot query real data.
 
+### Task 3.1 - stages and checklist templates
+
+- Schema `v4` persists ordered project stages, checklist items and many-to-many links to generic
+  local attachments. Project deletion impact now counts stage and checklist records as well as costs.
+- House and renovation templates are seeded idempotently. The house template contains all 18 required
+  `Stan 0` items, including water, power, telecom and optional gas penetrations, reserves for external
+  systems, foundation grounding, continuity measurement, waterproofing and concealed-work evidence.
+- Users can add and rename project-local stages, reorder the complete stage timeline, and edit stage
+  status, planned dates and planned budget. Stable stage IDs preserve existing cost assignments.
+- The Plan branch provides a compact horizontal stage selector, derived progress, blocked-item count,
+  stage metadata and a risk-focused checklist. Loading, no-project, empty-checklist and error states are
+  implemented, including a tested 320 px layout.
+- Checklist items support five statuses, four importance levels, due date, responsible person, notes,
+  skip risk, status reason and evidence policy. Custom checklist items can be added to every stage.
+- A skipped item requires a reason. A system item requiring evidence cannot be completed or downgraded
+  without a compatible local attachment or a documented waiver. Photo requirements accept only
+  `image/*` attachments.
+- Checklist evidence reuses private project storage. Startup cleanup preserves files linked to either
+  costs or checklist items, and failed linking removes only the unlinked staged file.
+- Custom stages are available immediately in the cost form and budget filters; labels are resolved from
+  persisted stage records rather than shown as raw IDs.
+
 ## Verified baseline
 
 ```text
@@ -135,7 +157,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-20 with 148 tests. Debug APK:
+All commands passed on 2026-07-20 with 166 tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -143,12 +165,11 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 3.1 from `IMPLEMENTATION_PLAN.md`:
+Task 3.2 from `IMPLEMENTATION_PLAN.md`:
 
-1. Persist ordered project stages and checklist items.
-2. Seed house and renovation templates, including the complete `Stan 0` safety checklist.
-3. Add status, due date, evidence requirement and explicit waiver behavior.
-4. Build the stage timeline and checklist screens with loading, empty and error states.
-5. Verify that a required item cannot close without evidence or a documented waiver.
+1. Persist events, tasks, dependencies and due-date change history.
+2. Build the seven-day plan over source records.
+3. Add local notification scheduling with permission-denied fallback.
+4. Preserve correct local dates across timezone and daylight-saving changes.
 
-Do not start calendar or dashboard modules before stage/checklist persistence is green.
+Do not start the dashboard module before the seven-day plan and local reminder behavior are green.

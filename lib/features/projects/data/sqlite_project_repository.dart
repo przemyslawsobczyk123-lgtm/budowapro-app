@@ -198,7 +198,7 @@ final class SqliteProjectRepository implements ProjectRepository {
     return ProjectDeletionImpact(
       project: project,
       linkedFileCount: await _fileStore.countProjectFiles(projectId),
-      linkedRecordCount: await _countCostEntries(database, projectId),
+      linkedRecordCount: await _countProjectRecords(database, projectId),
     );
   }
 
@@ -304,6 +304,25 @@ final class SqliteProjectRepository implements ProjectRepository {
       'SELECT COUNT(*) AS total FROM ${AppDatabase.costEntriesTable}'
       ' WHERE project_id = ?',
       <Object?>[projectId],
+    );
+    return rows.single['total']! as int;
+  }
+
+  static Future<int> _countProjectRecords(
+    DatabaseExecutor executor,
+    String projectId,
+  ) async {
+    final rows = await executor.rawQuery(
+      '''
+        SELECT
+          (SELECT COUNT(*) FROM ${AppDatabase.costEntriesTable}
+            WHERE project_id = ?) +
+          (SELECT COUNT(*) FROM ${AppDatabase.projectStagesTable}
+            WHERE project_id = ?) +
+          (SELECT COUNT(*) FROM ${AppDatabase.checklistItemsTable}
+            WHERE project_id = ?) AS total
+      ''',
+      <Object?>[projectId, projectId, projectId],
     );
     return rows.single['total']! as int;
   }

@@ -258,6 +258,34 @@ Each attachment has or reserves:
 - typed links through `RecordContext`,
 - optional redacted preview for future sharing.
 
+## Stage And Checklist Storage
+
+Schema `v4` adds three project-scoped tables:
+
+- `project_stages` keeps a stable stage ID, template key or user-defined name,
+  order, status, planned dates and planned budget,
+- `checklist_items` keeps status, importance, due date, assignee label, notes,
+  skip risk, reason, evidence requirement and an optional documented waiver,
+- `checklist_item_attachments` links the generic local `attachments` table to
+  checklist evidence without copying a file.
+
+Template stages retain the same storage IDs used by `cost_entries.stage_id`.
+Custom stages receive generated IDs and are exposed to the cost form and cost
+filters as soon as they are created. Renaming a template stage changes its
+display name but not its ID, so existing cost links remain valid.
+
+Stage progress is derived at read time from checklist statuses. `completed` and
+explicitly `skipped` items count as resolved; no progress percentage is stored.
+Skipping requires a reason. Completing a template item that requires evidence
+is validated in the repository transaction and succeeds only when a compatible
+available attachment is linked or a non-empty waiver comment is stored. A
+system photo requirement cannot be downgraded through the editor.
+
+The `Stan 0` catalog is code-versioned and seeded idempotently on first plan
+access. It contains all 18 minimum specification items. User-created stages and
+checklist items are project records and are never overwritten by template
+seeding.
+
 ## Plan Pins
 
 Plans are versioned images/PDF pages. Pins use normalized coordinates so they survive device-size changes:

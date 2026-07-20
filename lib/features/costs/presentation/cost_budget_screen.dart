@@ -10,6 +10,9 @@ import 'package:budowapro/features/costs/presentation/cost_form_model.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
 import 'package:budowapro/features/projects/presentation/project_ui_text.dart';
 import 'package:budowapro/features/projects/presentation/projects_controller.dart';
+import 'package:budowapro/features/stages/data/stage_providers.dart';
+import 'package:budowapro/features/stages/domain/stage_plan.dart';
+import 'package:budowapro/features/stages/presentation/stage_ui_text.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:budowapro/shared/models/page.dart';
 import 'package:budowapro/shared/widgets/app_content_states.dart';
@@ -86,6 +89,7 @@ class _ProjectBudget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final repository = ref.watch(costRepositoryProvider);
+    final stages = ref.watch(projectStagesProvider(project));
     final localizations = AppLocalizations.of(context);
     return repository.when(
       loading: () => AppLoadingState(label: localizations.projectsLoading),
@@ -94,10 +98,19 @@ class _ProjectBudget extends ConsumerWidget {
         retryLabel: localizations.retryAction,
         onRetry: () => ref.invalidate(costRepositoryProvider),
       ),
-      data: (value) => _CostRegister(
-        key: ValueKey<String>('cost-register-${project.id}'),
-        project: project,
-        repository: value,
+      data: (value) => stages.when(
+        loading: () => AppLoadingState(label: localizations.projectsLoading),
+        error: (error, stackTrace) => AppErrorState(
+          title: localizations.costBudgetLoadError,
+          retryLabel: localizations.retryAction,
+          onRetry: () => ref.invalidate(projectStagesProvider(project)),
+        ),
+        data: (projectStages) => _CostRegister(
+          key: ValueKey<String>('cost-register-${project.id}'),
+          project: project,
+          repository: value,
+          stages: projectStages,
+        ),
       ),
     );
   }
@@ -107,11 +120,13 @@ class _CostRegister extends StatefulWidget {
   const _CostRegister({
     required this.project,
     required this.repository,
+    required this.stages,
     super.key,
   });
 
   final Project project;
   final CostRepository repository;
+  final List<ProjectStage> stages;
 
   @override
   State<_CostRegister> createState() => _CostRegisterState();
@@ -286,6 +301,7 @@ class _CostRegisterState extends State<_CostRegister> {
         initial: _selection,
         project: widget.project,
         options: _options,
+        stages: widget.stages,
       ),
     );
     if (result == null || !mounted) return;
@@ -395,6 +411,7 @@ class _CostRegisterState extends State<_CostRegister> {
                   padding: const EdgeInsets.only(bottom: 8),
                   child: _CostEntryRow(
                     project: widget.project,
+                    stages: widget.stages,
                     entry: _entries[index],
                     onTap: () => _openDetails(_entries[index]),
                   ),
@@ -666,11 +683,13 @@ class _CostEntryRow extends StatelessWidget {
   const _CostEntryRow({
     required this.project,
     required this.entry,
+    required this.stages,
     required this.onTap,
   });
 
   final Project project;
   final CostEntry entry;
+  final List<ProjectStage> stages;
   final VoidCallback onTap;
 
   @override
@@ -738,7 +757,7 @@ class _CostEntryRow extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      _entryContext(localizations, entry),
+                      _entryContext(localizations, entry, stages),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodySmall,
@@ -839,11 +858,13 @@ class _CostFilterSheet extends StatefulWidget {
     required this.initial,
     required this.project,
     required this.options,
+    required this.stages,
   });
 
   final _CostFilterSelection initial;
   final Project project;
   final CostFilterOptions options;
+  final List<ProjectStage> stages;
 
   @override
   State<_CostFilterSheet> createState() => _CostFilterSheetState();
@@ -963,9 +984,13 @@ class _CostFilterSheetState extends State<_CostFilterSheet> {
                         key: const ValueKey('costFilterStage'),
                         label: localizations.costStageLabel,
                         value: _stageId,
-                        options: _stageOptions(widget.project, widget.options),
+                        options: _stageOptions(
+                          widget.project,
+                          widget.options,
+                          widget.stages,
+                        ),
                         optionLabel: (value) =>
-                            _stageLabel(localizations, value),
+                            _stageLabel(localizations, value, widget.stages),
                         onChanged: (value) => setState(() => _stageId = value),
                       ),
                       const SizedBox(height: 10),
@@ -1319,13 +1344,18 @@ List<CostWarning> _warningsFor(CostEntry entry) {
   ];
 }
 
-String _entryContext(AppLocalizations l10n, CostEntry entry) {
+String _entryContext(
+  AppLocalizations l10n,
+  CostEntry entry,
+  List<ProjectStage> stages,
+) {
   final values = <String>[
     entry.lifecycle == CostLifecycle.draft
         ? l10n.costDraftLabel
         : _statusLabel(l10n, entry.status),
     _sourceLabel(l10n, entry.input.source),
-    if (entry.input.stageId case final stageId?) _stageLabel(l10n, stageId),
+    if (entry.input.stageId case final stageId?)
+      _stageLabel(l10n, stageId, stages),
     ?entry.input.categoryId,
     ?entry.input.supplierId,
     _date(entry.entryDate.toLocal()),
@@ -1381,9 +1411,16 @@ String _sortLabel(AppLocalizations l10n, CostSort value) => switch (value) {
   CostSort.nameAscending => l10n.costRegisterSortName,
 };
 
-List<String> _stageOptions(Project project, CostFilterOptions options) {
+List<String> _stageOptions(
+  Project project,
+  CostFilterOptions options,
+  List<ProjectStage> stages,
+) {
   final values = <String>{
-    ...project.template.definition.stages.map(_stageStorageId),
+    if (stages.isEmpty)
+      ...project.template.definition.stages.map(_stageStorageId)
+    else
+      ...stages.map((stage) => stage.id),
     ...options.stageIds,
   };
   return values.toList(growable: false);
@@ -1402,7 +1439,14 @@ String _stageStorageId(ProjectStageKey value) => switch (value) {
   ProjectStageKey.handover => 'handover',
 };
 
-String _stageLabel(AppLocalizations localizations, String stageId) {
+String _stageLabel(
+  AppLocalizations localizations,
+  String stageId,
+  List<ProjectStage> stages,
+) {
+  for (final stage in stages) {
+    if (stage.id == stageId) return stageName(localizations, stage);
+  }
   for (final stage in ProjectStageKey.values) {
     if (_stageStorageId(stage) == stageId) {
       return projectStageLabel(localizations, stage);
