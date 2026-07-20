@@ -135,6 +135,27 @@ Last updated: 2026-07-20
 - Custom stages are available immediately in the cost form and budget filters; labels are resolved from
   persisted stage records rather than shown as raw IDs.
 
+### Task 3.2 - seven-day plan and local reminders
+
+- Schema `v5` persists five schedule record types, directed dependencies, optional decision deadlines,
+  append-only date-change history and app-level reminder preferences. Project deletion impact includes
+  schedule records and all SQL remains project-scoped and parameterized.
+- The Plan branch now switches between a compact seven-day agenda and the existing stage workspace.
+  Agenda rows show time, type, status, responsible person and the first unresolved blocker, with direct
+  navigation to the exact source record.
+- Users can create and edit tasks, visits, deliveries, acceptances and payments, attach them to a stage,
+  set all-day or timed dates, assignee, note, status, reminder lead and reschedule reason.
+- Dependencies reject self-links and graph cycles. Each blocker can carry a decision deadline, resolved
+  blockers remain visible, and every real schedule change appends old/new UTC instants and IANA zones.
+- Reminder settings control event types, default lead and all-day wall time. Existing open reminders are
+  synchronized after preference changes or permission grant.
+- Android local notifications use zone-aware scheduling and survive reboot. Permission is requested only
+  after a user action; denial or adapter failure never rolls back the saved plan.
+- Notification payloads contain only `projectId` and `eventId`. Foreground taps and cold starts open the
+  source record through a validated typed route.
+- DST behavior, corrupt payloads, reminder degradation, persistence, dependency cycles, exact routing and
+  agenda/settings/form layouts are covered, including a 320 px Android viewport.
+
 ## Verified baseline
 
 ```text
@@ -146,7 +167,14 @@ sqflite 2.4.3
 sqflite_common_ffi 2.4.2
 path_provider 2.1.6
 file_picker 11.0.2
+flutter_local_notifications 22.1.0
+flutter_timezone 5.1.0
+timezone 0.11.1
 ```
+
+The Android build passes with the known Flutter forward-compatibility warning
+for plugins that still apply the classic Kotlin Gradle plugin (`file_picker` and
+`flutter_timezone`). Re-evaluate this when either package or Flutter is upgraded.
 
 Quality gate:
 
@@ -157,7 +185,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-20 with 166 tests. Debug APK:
+All commands passed on 2026-07-20 with 185 tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -165,11 +193,11 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 3.2 from `IMPLEMENTATION_PLAN.md`:
+Task 3.3 from `IMPLEMENTATION_PLAN.md`:
 
-1. Persist events, tasks, dependencies and due-date change history.
-2. Build the seven-day plan over source records.
-3. Add local notification scheduling with permission-denied fallback.
-4. Preserve correct local dates across timezone and daylight-saving changes.
+1. Build the Start dashboard from project, cost, stage and schedule repositories.
+2. Show current stage, budget, 30-day plan, unpaid items and today's agenda.
+3. Add a stage timeline, critical tasks and direct links to costs and checklists.
+4. Keep distinct no-project and empty-project states.
 
-Do not start the dashboard module before the seven-day plan and local reminder behavior are green.
+Do not start contacts and visits before the dashboard repository projections are green.

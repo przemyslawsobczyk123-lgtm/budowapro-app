@@ -286,6 +286,41 @@ access. It contains all 18 minimum specification items. User-created stages and
 checklist items are project records and are never overwritten by template
 seeding.
 
+## Seven-Day Schedule And Reminders
+
+Schema `v5` adds four local tables:
+
+- `schedule_events` stores tasks, visits, deliveries, acceptances and payments,
+  including status, optional stage and assignee, reminder policy and an absolute
+  UTC instant paired with its IANA time-zone identifier,
+- `schedule_dependencies` stores directed blockers and an optional decision
+  deadline; replacement rejects self-dependencies and graph cycles before write,
+- `schedule_date_changes` is append-only and records previous/new UTC instants,
+  time zones and an optional reason in the same transaction as rescheduling,
+- `reminder_preferences` stores enabled event types, default lead and the local
+  reminder time for all-day records.
+
+The seven-day query uses an inclusive start and exclusive end derived from local
+calendar boundaries. It therefore permits a 167- or 169-hour UTC range when DST
+changes without losing or duplicating a local day. Event forms convert wall-clock
+input through the stored IANA zone before persistence.
+
+Local reminders use `flutter_local_notifications` with `timezone` and
+`flutter_timezone`. Android scheduling uses `inexactAllowWhileIdle`, so the app
+does not request exact-alarm access. `POST_NOTIFICATIONS` is requested only from
+an explicit user action; denial never rolls back or blocks a schedule write.
+Scheduled reminders are restored after reboot by the plugin receivers.
+
+Flutter 3.44 still reports a forward-compatibility warning because
+`flutter_timezone 5.1.0` applies the classic Kotlin Gradle plugin while this
+project explicitly keeps built-in Kotlin disabled for plugin compatibility. The
+current AGP 9 debug build passes; re-check both this package and `file_picker`
+before the next Flutter toolchain upgrade.
+
+Notification payloads contain only validated `projectId` and `eventId` values.
+Foreground taps and cold launches resolve to the typed schedule details route.
+Titles and notes are never serialized into navigation payloads or logs.
+
 ## Plan Pins
 
 Plans are versioned images/PDF pages. Pins use normalized coordinates so they survive device-size changes:
