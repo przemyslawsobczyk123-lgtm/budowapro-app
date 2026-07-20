@@ -1,10 +1,14 @@
 import 'package:budowapro/features/projects/data/project_providers.dart';
+import 'package:budowapro/features/schedule/data/schedule_providers.dart';
+import 'package:budowapro/features/schedule/domain/schedule_event.dart';
+import 'package:budowapro/features/schedule/domain/schedule_notification_gateway.dart';
 import 'package:budowapro/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'helpers/fake_project_repository.dart';
+import 'helpers/fake_schedule_services.dart';
 
 void main() {
   testWidgets('shows five primary destinations and changes branch', (
@@ -63,6 +67,63 @@ void main() {
 
     expect(find.text('Nowy projekt'), findsOneWidget);
     expect(find.text('Podstawowe dane'), findsOneWidget);
+  });
+
+  testWidgets('notification target opens the exact schedule source record', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 700);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final event = ScheduleEvent(
+      id: 'event-from-notification',
+      projectId: 'project-1',
+      title: 'Odbiór fundamentów',
+      kind: ScheduleEventKind.acceptance,
+      status: ScheduleEventStatus.planned,
+      startsAt: DateTime.utc(2026, 7, 21, 6),
+      timeZoneId: 'Europe/Warsaw',
+      isAllDay: false,
+      reminderEnabled: true,
+      reminderLeadMinutes: 60,
+      createdAt: DateTime.utc(2026, 7, 20),
+      updatedAt: DateTime.utc(2026, 7, 20),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        projectRepositoryProvider.overrideWith(
+          (ref) async => FakeProjectRepository(),
+        ),
+        scheduleRepositoryProvider.overrideWith(
+          (ref) async => FakeScheduleRepository(events: <ScheduleEvent>[event]),
+        ),
+        scheduleNotificationGatewayProvider.overrideWithValue(
+          FakeScheduleNotificationGateway(
+            permission: NotificationPermissionState.denied,
+          ),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: const MainApp()),
+    );
+    await tester.pumpAndSettle();
+
+    container
+        .read(scheduleNotificationTargetProvider.notifier)
+        .open(
+          const ScheduleNotificationTarget(
+            projectId: 'project-1',
+            eventId: 'event-from-notification',
+          ),
+        );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Odbiór fundamentów'), findsOneWidget);
+    expect(find.text('Szczegóły terminu'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }
 

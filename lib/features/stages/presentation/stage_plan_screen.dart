@@ -10,7 +10,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class StagePlanScreen extends ConsumerWidget {
-  const StagePlanScreen({super.key});
+  const StagePlanScreen({this.embedded = false, super.key});
+
+  final bool embedded;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,7 +40,7 @@ class StagePlanScreen extends ConsumerWidget {
                 onAction: () => context.push('/projects/new'),
               );
             }
-            return _StagePlanContent(state: state);
+            return _StagePlanContent(state: state, showHeader: !embedded);
           },
         ),
       ),
@@ -56,9 +58,10 @@ class StagePlanScreen extends ConsumerWidget {
 }
 
 class _StagePlanContent extends ConsumerWidget {
-  const _StagePlanContent({required this.state});
+  const _StagePlanContent({required this.state, required this.showHeader});
 
   final StagePlanState state;
+  final bool showHeader;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -66,40 +69,45 @@ class _StagePlanContent extends ConsumerWidget {
     final selectedStage = state.selectedStage;
     return CustomScrollView(
       slivers: [
-        SliverAppBar(
-          pinned: true,
-          automaticallyImplyLeading: false,
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.stagePlanEyebrow,
-                style: Theme.of(context).textTheme.labelMedium,
+        if (showHeader)
+          SliverAppBar(
+            pinned: true,
+            automaticallyImplyLeading: false,
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.stagePlanEyebrow,
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+                Text(l10n.planTitle),
+              ],
+            ),
+            actions: _stageActions(context, ref, l10n),
+            bottom: state.isSaving
+                ? const PreferredSize(
+                    preferredSize: Size.fromHeight(2),
+                    child: LinearProgressIndicator(minHeight: 2),
+                  )
+                : null,
+          )
+        else
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 8, 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.stagePlanEyebrow,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                  ..._stageActions(context, ref, l10n),
+                ],
               ),
-              Text(l10n.planTitle),
-            ],
+            ),
           ),
-          actions: [
-            IconButton(
-              tooltip: l10n.stageAddAction,
-              onPressed: state.isSaving ? null : () => _addStage(context, ref),
-              icon: const Icon(Icons.add_rounded),
-            ),
-            IconButton(
-              tooltip: l10n.stageReorderAction,
-              onPressed: state.isSaving || state.stages.length < 2
-                  ? null
-                  : () => _reorderStages(context, ref, state),
-              icon: const Icon(Icons.swap_vert_rounded),
-            ),
-          ],
-          bottom: state.isSaving
-              ? const PreferredSize(
-                  preferredSize: Size.fromHeight(2),
-                  child: LinearProgressIndicator(minHeight: 2),
-                )
-              : null,
-        ),
         SliverToBoxAdapter(child: _StageTabs(state: state)),
         if (selectedStage != null)
           SliverToBoxAdapter(
@@ -152,6 +160,25 @@ class _StagePlanContent extends ConsumerWidget {
       ],
     );
   }
+
+  List<Widget> _stageActions(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) => <Widget>[
+    IconButton(
+      tooltip: l10n.stageAddAction,
+      onPressed: state.isSaving ? null : () => _addStage(context, ref),
+      icon: const Icon(Icons.add_rounded),
+    ),
+    IconButton(
+      tooltip: l10n.stageReorderAction,
+      onPressed: state.isSaving || state.stages.length < 2
+          ? null
+          : () => _reorderStages(context, ref, state),
+      icon: const Icon(Icons.swap_vert_rounded),
+    ),
+  ];
 }
 
 class _StageTabs extends ConsumerWidget {

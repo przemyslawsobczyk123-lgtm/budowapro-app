@@ -24,6 +24,10 @@ final scheduleNotificationGatewayProvider =
       return LocalScheduleNotificationGateway();
     });
 
+final scheduleUtcNowProvider = Provider<DateTime Function()>((ref) {
+  return DateTime.now;
+});
+
 final scheduleNotificationTargetProvider =
     NotifierProvider<
       ScheduleNotificationTargetController,

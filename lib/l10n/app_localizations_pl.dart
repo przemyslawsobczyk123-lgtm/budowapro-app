@@ -1031,4 +1031,249 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get checklistPostFoundationSurveyRisk =>
       'Odchyłki położenia mogą ujawnić się dopiero przy kolejnych etapach lub odbiorze.';
+
+  @override
+  String get scheduleWeekTab => '7 dni';
+
+  @override
+  String get scheduleStagesTab => 'Etapy';
+
+  @override
+  String get scheduleLoading => 'Wczytywanie planu na 7 dni';
+
+  @override
+  String get scheduleLoadError => 'Nie udało się wczytać terminów.';
+
+  @override
+  String get scheduleEyebrow => 'Terminy i blokady';
+
+  @override
+  String get schedulePreviousWeekTooltip => 'Poprzednie 7 dni';
+
+  @override
+  String get scheduleNextWeekTooltip => 'Następne 7 dni';
+
+  @override
+  String get scheduleReminderSettingsTooltip => 'Ustawienia przypomnień';
+
+  @override
+  String get scheduleAddEventTooltip => 'Dodaj termin';
+
+  @override
+  String scheduleItemsSummary(int count) {
+    return 'Terminy: $count';
+  }
+
+  @override
+  String scheduleBlockedSummary(int count) {
+    return 'Blokowane: $count';
+  }
+
+  @override
+  String get scheduleEmptyTitle => 'Brak terminów w tych 7 dniach';
+
+  @override
+  String get scheduleEmptyMessage =>
+      'Dodaj zadanie, wizytę, dostawę, odbiór albo płatność.';
+
+  @override
+  String get scheduleTodayLabel => 'Dzisiaj';
+
+  @override
+  String get scheduleAllDayLabel => 'Cały dzień';
+
+  @override
+  String get scheduleKindLabel => 'Rodzaj';
+
+  @override
+  String get scheduleKindTask => 'Zadanie';
+
+  @override
+  String get scheduleKindVisit => 'Wizyta';
+
+  @override
+  String get scheduleKindDelivery => 'Dostawa';
+
+  @override
+  String get scheduleKindAcceptance => 'Odbiór';
+
+  @override
+  String get scheduleKindPayment => 'Płatność';
+
+  @override
+  String get scheduleStatusLabel => 'Status';
+
+  @override
+  String get scheduleStatusPlanned => 'Planowane';
+
+  @override
+  String get scheduleStatusInProgress => 'W trakcie';
+
+  @override
+  String get scheduleStatusBlocked => 'Zablokowane';
+
+  @override
+  String get scheduleStatusCompleted => 'Zakończone';
+
+  @override
+  String get scheduleStatusCancelled => 'Odwołane';
+
+  @override
+  String scheduleBlockedBy(String title) {
+    return 'Blokuje: $title';
+  }
+
+  @override
+  String scheduleDecisionDue(String date) {
+    return 'Decyzja do $date';
+  }
+
+  @override
+  String get schedulePermissionTitle => 'Przypomnienia są wyłączone';
+
+  @override
+  String get schedulePermissionMessage =>
+      'Plan działa bez zgody. Włącz powiadomienia, aby dostawać lokalne przypomnienia.';
+
+  @override
+  String get schedulePermissionAction => 'Włącz';
+
+  @override
+  String get scheduleSettingsTitle => 'Przypomnienia';
+
+  @override
+  String get scheduleSettingsTypesHeading => 'Typy terminów';
+
+  @override
+  String get scheduleDefaultLeadLabel => 'Domyślne wyprzedzenie';
+
+  @override
+  String get scheduleAllDayTimeLabel => 'Godzina dla całego dnia';
+
+  @override
+  String get schedulePermissionGranted =>
+      'Powiadomienia systemowe są włączone.';
+
+  @override
+  String get schedulePermissionDenied =>
+      'Brak zgody systemowej. Plan nadal działa.';
+
+  @override
+  String get schedulePermissionUnavailable =>
+      'Status powiadomień jest niedostępny.';
+
+  @override
+  String get scheduleLeadAtTime => 'O czasie';
+
+  @override
+  String scheduleLeadMinutes(int count) {
+    return '$count min wcześniej';
+  }
+
+  @override
+  String scheduleLeadHours(int count) {
+    return '$count godz. wcześniej';
+  }
+
+  @override
+  String scheduleLeadDays(int count) {
+    return '$count dni wcześniej';
+  }
+
+  @override
+  String get scheduleNewTitle => 'Nowy termin';
+
+  @override
+  String get scheduleEditTitle => 'Edytuj termin';
+
+  @override
+  String get scheduleTitleLabel => 'Nazwa';
+
+  @override
+  String get scheduleTitleRequiredError => 'Podaj nazwę terminu.';
+
+  @override
+  String get scheduleDateLabel => 'Data';
+
+  @override
+  String get scheduleTimeLabel => 'Godzina';
+
+  @override
+  String get scheduleStageLabel => 'Etap';
+
+  @override
+  String get scheduleNoStage => 'Bez etapu';
+
+  @override
+  String get scheduleAssigneeLabel => 'Osoba lub ekipa';
+
+  @override
+  String get scheduleNoteLabel => 'Notatka';
+
+  @override
+  String get scheduleReminderToggle => 'Przypomnienie lokalne';
+
+  @override
+  String get scheduleReminderLeadLabel => 'Przypomnij';
+
+  @override
+  String get scheduleRescheduleReasonLabel => 'Powód przełożenia';
+
+  @override
+  String get scheduleSaveError => 'Nie udało się zapisać terminu.';
+
+  @override
+  String get scheduleNotificationBody => 'Nadchodzi termin w planie budowy.';
+
+  @override
+  String get scheduleDetailsTitle => 'Szczegóły terminu';
+
+  @override
+  String get scheduleSourceMissingTitle => 'Nie znaleziono terminu';
+
+  @override
+  String get scheduleSourceMissingMessage =>
+      'Rekord mógł zostać usunięty albo należy do innego projektu.';
+
+  @override
+  String get scheduleEditAction => 'Edytuj termin';
+
+  @override
+  String get scheduleDependenciesHeading => 'Blokady i zależności';
+
+  @override
+  String get scheduleDependenciesEmpty => 'Brak blokujących terminów.';
+
+  @override
+  String get scheduleDependenciesEditAction => 'Ustaw zależności';
+
+  @override
+  String get scheduleDependencySheetTitle => 'Co blokuje ten termin?';
+
+  @override
+  String get scheduleDependencyDeadlineTooltip => 'Ustaw termin decyzji';
+
+  @override
+  String get scheduleDependencyCycleError =>
+      'Ta zależność utworzyłaby zamknięty cykl.';
+
+  @override
+  String get scheduleHistoryHeading => 'Historia terminów';
+
+  @override
+  String get scheduleHistoryEmpty => 'Termin nie był jeszcze przekładany.';
+
+  @override
+  String scheduleHistoryMoved(String from, String to) {
+    return 'Z $from na $to';
+  }
+
+  @override
+  String get scheduleReminderEnabled => 'Przypomnienie włączone';
+
+  @override
+  String get scheduleReminderDisabled => 'Przypomnienie wyłączone';
+
+  @override
+  String get scheduleMutationError => 'Nie udało się zapisać zmiany.';
 }

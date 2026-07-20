@@ -1995,6 +1995,450 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Odchyłki położenia mogą ujawnić się dopiero przy kolejnych etapach lub odbiorze.'**
   String get checklistPostFoundationSurveyRisk;
+
+  /// No description provided for @scheduleWeekTab.
+  ///
+  /// In pl, this message translates to:
+  /// **'7 dni'**
+  String get scheduleWeekTab;
+
+  /// No description provided for @scheduleStagesTab.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etapy'**
+  String get scheduleStagesTab;
+
+  /// No description provided for @scheduleLoading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytywanie planu na 7 dni'**
+  String get scheduleLoading;
+
+  /// No description provided for @scheduleLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać terminów.'**
+  String get scheduleLoadError;
+
+  /// No description provided for @scheduleEyebrow.
+  ///
+  /// In pl, this message translates to:
+  /// **'Terminy i blokady'**
+  String get scheduleEyebrow;
+
+  /// No description provided for @schedulePreviousWeekTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Poprzednie 7 dni'**
+  String get schedulePreviousWeekTooltip;
+
+  /// No description provided for @scheduleNextWeekTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Następne 7 dni'**
+  String get scheduleNextWeekTooltip;
+
+  /// No description provided for @scheduleReminderSettingsTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustawienia przypomnień'**
+  String get scheduleReminderSettingsTooltip;
+
+  /// No description provided for @scheduleAddEventTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj termin'**
+  String get scheduleAddEventTooltip;
+
+  /// No description provided for @scheduleItemsSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Terminy: {count}'**
+  String scheduleItemsSummary(int count);
+
+  /// No description provided for @scheduleBlockedSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Blokowane: {count}'**
+  String scheduleBlockedSummary(int count);
+
+  /// No description provided for @scheduleEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak terminów w tych 7 dniach'**
+  String get scheduleEmptyTitle;
+
+  /// No description provided for @scheduleEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj zadanie, wizytę, dostawę, odbiór albo płatność.'**
+  String get scheduleEmptyMessage;
+
+  /// No description provided for @scheduleTodayLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dzisiaj'**
+  String get scheduleTodayLabel;
+
+  /// No description provided for @scheduleAllDayLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Cały dzień'**
+  String get scheduleAllDayLabel;
+
+  /// No description provided for @scheduleKindLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rodzaj'**
+  String get scheduleKindLabel;
+
+  /// No description provided for @scheduleKindTask.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zadanie'**
+  String get scheduleKindTask;
+
+  /// No description provided for @scheduleKindVisit.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wizyta'**
+  String get scheduleKindVisit;
+
+  /// No description provided for @scheduleKindDelivery.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostawa'**
+  String get scheduleKindDelivery;
+
+  /// No description provided for @scheduleKindAcceptance.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odbiór'**
+  String get scheduleKindAcceptance;
+
+  /// No description provided for @scheduleKindPayment.
+  ///
+  /// In pl, this message translates to:
+  /// **'Płatność'**
+  String get scheduleKindPayment;
+
+  /// No description provided for @scheduleStatusLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Status'**
+  String get scheduleStatusLabel;
+
+  /// No description provided for @scheduleStatusPlanned.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowane'**
+  String get scheduleStatusPlanned;
+
+  /// No description provided for @scheduleStatusInProgress.
+  ///
+  /// In pl, this message translates to:
+  /// **'W trakcie'**
+  String get scheduleStatusInProgress;
+
+  /// No description provided for @scheduleStatusBlocked.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zablokowane'**
+  String get scheduleStatusBlocked;
+
+  /// No description provided for @scheduleStatusCompleted.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zakończone'**
+  String get scheduleStatusCompleted;
+
+  /// No description provided for @scheduleStatusCancelled.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odwołane'**
+  String get scheduleStatusCancelled;
+
+  /// No description provided for @scheduleBlockedBy.
+  ///
+  /// In pl, this message translates to:
+  /// **'Blokuje: {title}'**
+  String scheduleBlockedBy(String title);
+
+  /// No description provided for @scheduleDecisionDue.
+  ///
+  /// In pl, this message translates to:
+  /// **'Decyzja do {date}'**
+  String scheduleDecisionDue(String date);
+
+  /// No description provided for @schedulePermissionTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypomnienia są wyłączone'**
+  String get schedulePermissionTitle;
+
+  /// No description provided for @schedulePermissionMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plan działa bez zgody. Włącz powiadomienia, aby dostawać lokalne przypomnienia.'**
+  String get schedulePermissionMessage;
+
+  /// No description provided for @schedulePermissionAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Włącz'**
+  String get schedulePermissionAction;
+
+  /// No description provided for @scheduleSettingsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypomnienia'**
+  String get scheduleSettingsTitle;
+
+  /// No description provided for @scheduleSettingsTypesHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Typy terminów'**
+  String get scheduleSettingsTypesHeading;
+
+  /// No description provided for @scheduleDefaultLeadLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Domyślne wyprzedzenie'**
+  String get scheduleDefaultLeadLabel;
+
+  /// No description provided for @scheduleAllDayTimeLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Godzina dla całego dnia'**
+  String get scheduleAllDayTimeLabel;
+
+  /// No description provided for @schedulePermissionGranted.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiadomienia systemowe są włączone.'**
+  String get schedulePermissionGranted;
+
+  /// No description provided for @schedulePermissionDenied.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak zgody systemowej. Plan nadal działa.'**
+  String get schedulePermissionDenied;
+
+  /// No description provided for @schedulePermissionUnavailable.
+  ///
+  /// In pl, this message translates to:
+  /// **'Status powiadomień jest niedostępny.'**
+  String get schedulePermissionUnavailable;
+
+  /// No description provided for @scheduleLeadAtTime.
+  ///
+  /// In pl, this message translates to:
+  /// **'O czasie'**
+  String get scheduleLeadAtTime;
+
+  /// No description provided for @scheduleLeadMinutes.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count} min wcześniej'**
+  String scheduleLeadMinutes(int count);
+
+  /// No description provided for @scheduleLeadHours.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count} godz. wcześniej'**
+  String scheduleLeadHours(int count);
+
+  /// No description provided for @scheduleLeadDays.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count} dni wcześniej'**
+  String scheduleLeadDays(int count);
+
+  /// No description provided for @scheduleNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowy termin'**
+  String get scheduleNewTitle;
+
+  /// No description provided for @scheduleEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj termin'**
+  String get scheduleEditTitle;
+
+  /// No description provided for @scheduleTitleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa'**
+  String get scheduleTitleLabel;
+
+  /// No description provided for @scheduleTitleRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podaj nazwę terminu.'**
+  String get scheduleTitleRequiredError;
+
+  /// No description provided for @scheduleDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data'**
+  String get scheduleDateLabel;
+
+  /// No description provided for @scheduleTimeLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Godzina'**
+  String get scheduleTimeLabel;
+
+  /// No description provided for @scheduleStageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap'**
+  String get scheduleStageLabel;
+
+  /// No description provided for @scheduleNoStage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez etapu'**
+  String get scheduleNoStage;
+
+  /// No description provided for @scheduleAssigneeLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Osoba lub ekipa'**
+  String get scheduleAssigneeLabel;
+
+  /// No description provided for @scheduleNoteLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatka'**
+  String get scheduleNoteLabel;
+
+  /// No description provided for @scheduleReminderToggle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypomnienie lokalne'**
+  String get scheduleReminderToggle;
+
+  /// No description provided for @scheduleReminderLeadLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypomnij'**
+  String get scheduleReminderLeadLabel;
+
+  /// No description provided for @scheduleRescheduleReasonLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powód przełożenia'**
+  String get scheduleRescheduleReasonLabel;
+
+  /// No description provided for @scheduleSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać terminu.'**
+  String get scheduleSaveError;
+
+  /// No description provided for @scheduleNotificationBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nadchodzi termin w planie budowy.'**
+  String get scheduleNotificationBody;
+
+  /// No description provided for @scheduleDetailsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły terminu'**
+  String get scheduleDetailsTitle;
+
+  /// No description provided for @scheduleSourceMissingTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie znaleziono terminu'**
+  String get scheduleSourceMissingTitle;
+
+  /// No description provided for @scheduleSourceMissingMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rekord mógł zostać usunięty albo należy do innego projektu.'**
+  String get scheduleSourceMissingMessage;
+
+  /// No description provided for @scheduleEditAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj termin'**
+  String get scheduleEditAction;
+
+  /// No description provided for @scheduleDependenciesHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Blokady i zależności'**
+  String get scheduleDependenciesHeading;
+
+  /// No description provided for @scheduleDependenciesEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak blokujących terminów.'**
+  String get scheduleDependenciesEmpty;
+
+  /// No description provided for @scheduleDependenciesEditAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustaw zależności'**
+  String get scheduleDependenciesEditAction;
+
+  /// No description provided for @scheduleDependencySheetTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Co blokuje ten termin?'**
+  String get scheduleDependencySheetTitle;
+
+  /// No description provided for @scheduleDependencyDeadlineTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustaw termin decyzji'**
+  String get scheduleDependencyDeadlineTooltip;
+
+  /// No description provided for @scheduleDependencyCycleError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ta zależność utworzyłaby zamknięty cykl.'**
+  String get scheduleDependencyCycleError;
+
+  /// No description provided for @scheduleHistoryHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Historia terminów'**
+  String get scheduleHistoryHeading;
+
+  /// No description provided for @scheduleHistoryEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Termin nie był jeszcze przekładany.'**
+  String get scheduleHistoryEmpty;
+
+  /// No description provided for @scheduleHistoryMoved.
+  ///
+  /// In pl, this message translates to:
+  /// **'Z {from} na {to}'**
+  String scheduleHistoryMoved(String from, String to);
+
+  /// No description provided for @scheduleReminderEnabled.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypomnienie włączone'**
+  String get scheduleReminderEnabled;
+
+  /// No description provided for @scheduleReminderDisabled.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypomnienie wyłączone'**
+  String get scheduleReminderDisabled;
+
+  /// No description provided for @scheduleMutationError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać zmiany.'**
+  String get scheduleMutationError;
 }
 
 class _AppLocalizationsDelegate

@@ -2,12 +2,16 @@ import 'package:budowapro/features/costs/presentation/cost_details_screen.dart';
 import 'package:budowapro/features/costs/presentation/cost_form_screen.dart';
 import 'package:budowapro/features/projects/presentation/project_form_screen.dart';
 import 'package:budowapro/features/projects/presentation/project_overview_screen.dart';
+import 'package:budowapro/features/schedule/data/schedule_providers.dart';
+import 'package:budowapro/features/schedule/presentation/schedule_event_details_screen.dart';
+import 'package:budowapro/features/schedule/presentation/schedule_event_form_screen.dart';
 import 'package:budowapro/features/shell/presentation/app_shell.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
-  final router = GoRouter(
+  late final GoRouter router;
+  router = GoRouter(
     initialLocation: AppSection.start.path,
     routes: [
       GoRoute(
@@ -38,6 +42,26 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           costEntryId: state.pathParameters['costEntryId']!,
         ),
       ),
+      GoRoute(
+        path: '/projects/:projectId/schedule/new',
+        builder: (context, state) => ScheduleEventFormScreen(
+          projectId: state.pathParameters['projectId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/schedule/:eventId/edit',
+        builder: (context, state) => ScheduleEventFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          eventId: state.pathParameters['eventId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/schedule/:eventId',
+        builder: (context, state) => ScheduleEventDetailsScreen(
+          projectId: state.pathParameters['projectId']!,
+          eventId: state.pathParameters['eventId']!,
+        ),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return AppShell(navigationShell: navigationShell);
@@ -46,6 +70,15 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       ),
     ],
   );
+
+  ref.listen(scheduleNotificationTargetProvider, (previous, target) {
+    if (target == null) return;
+    router.go(
+      '/projects/${Uri.encodeComponent(target.projectId)}'
+      '/schedule/${Uri.encodeComponent(target.eventId)}',
+    );
+    ref.read(scheduleNotificationTargetProvider.notifier).clear();
+  });
 
   ref.onDispose(router.dispose);
   return router;
