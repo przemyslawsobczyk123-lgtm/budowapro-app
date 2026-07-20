@@ -12,7 +12,7 @@ final class AppDatabase {
 
   AppDatabase._(this._factory, this._path);
 
-  static const int schemaVersion = 3;
+  static const int schemaVersion = 4;
   static const String databaseFileName = 'budowapro.db';
   static const String metadataTable = 'app_metadata';
   static const String projectsTable = 'projects';
@@ -21,6 +21,10 @@ final class AppDatabase {
   static const String costEntryAttachmentsTable = 'cost_entry_attachments';
   static const String costEntryRevisionsTable = 'cost_entry_revisions';
   static const String costCorrectionsTable = 'cost_corrections';
+  static const String projectStagesTable = 'project_stages';
+  static const String checklistItemsTable = 'checklist_items';
+  static const String checklistItemAttachmentsTable =
+      'checklist_item_attachments';
   static const String schemaVersionKey = 'schema_version';
 
   final DatabaseFactory _factory;
@@ -487,6 +491,117 @@ final class AppDatabase {
       await database.execute('''
         CREATE INDEX cost_corrections_entry_created_idx
         ON $costCorrectionsTable (cost_entry_id, created_at_utc_ms, id)
+      ''');
+    }
+
+    if (fromVersion < 4 && toVersion >= 4) {
+      await database.execute('''
+        CREATE TABLE $projectStagesTable (
+          project_id TEXT NOT NULL,
+          id TEXT NOT NULL,
+          template_stage_key TEXT,
+          custom_name TEXT,
+          status TEXT NOT NULL CHECK (
+            status IN ('planned', 'in_progress', 'blocked', 'completed')
+          ),
+          sort_order INTEGER NOT NULL CHECK (sort_order >= 0),
+          planned_start_utc_ms INTEGER,
+          planned_end_utc_ms INTEGER,
+          planned_budget_minor_units INTEGER CHECK (
+            planned_budget_minor_units >= 0
+          ),
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          PRIMARY KEY (project_id, id),
+          UNIQUE (project_id, template_stage_key),
+          CHECK (
+            (template_stage_key IS NOT NULL AND custom_name IS NULL)
+            OR
+            (template_stage_key IS NULL AND custom_name IS NOT NULL)
+          ),
+          CHECK (
+            planned_start_utc_ms IS NULL
+            OR planned_end_utc_ms IS NULL
+            OR planned_end_utc_ms >= planned_start_utc_ms
+          ),
+          FOREIGN KEY (project_id) REFERENCES $projectsTable(id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX project_stages_project_order_idx
+        ON $projectStagesTable (project_id, sort_order, id)
+      ''');
+      await database.execute('''
+        CREATE INDEX project_stages_project_status_idx
+        ON $projectStagesTable (project_id, status, sort_order)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE $checklistItemsTable (
+          project_id TEXT NOT NULL,
+          id TEXT NOT NULL,
+          stage_id TEXT NOT NULL,
+          template_item_key TEXT,
+          custom_title TEXT,
+          status TEXT NOT NULL CHECK (
+            status IN ('todo', 'in_progress', 'blocked', 'completed', 'skipped')
+          ),
+          importance TEXT NOT NULL CHECK (
+            importance IN ('low', 'normal', 'high', 'critical')
+          ),
+          due_at_utc_ms INTEGER,
+          assignee_label TEXT,
+          note TEXT,
+          risk_if_skipped TEXT,
+          status_reason TEXT,
+          evidence_requirement TEXT NOT NULL CHECK (
+            evidence_requirement IN ('none', 'any_attachment', 'photo')
+          ),
+          evidence_waiver_comment TEXT,
+          sort_order INTEGER NOT NULL CHECK (sort_order >= 0),
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          PRIMARY KEY (project_id, id),
+          UNIQUE (project_id, stage_id, template_item_key),
+          CHECK (
+            (template_item_key IS NOT NULL AND custom_title IS NULL)
+            OR
+            (template_item_key IS NULL AND custom_title IS NOT NULL)
+          ),
+          CHECK (
+            status != 'skipped'
+            OR (status_reason IS NOT NULL AND length(trim(status_reason)) > 0)
+          ),
+          FOREIGN KEY (project_id, stage_id)
+            REFERENCES $projectStagesTable(project_id, id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX checklist_items_stage_order_idx
+        ON $checklistItemsTable (project_id, stage_id, sort_order, id)
+      ''');
+      await database.execute('''
+        CREATE INDEX checklist_items_project_due_idx
+        ON $checklistItemsTable (project_id, due_at_utc_ms, status)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE $checklistItemAttachmentsTable (
+          project_id TEXT NOT NULL,
+          checklist_item_id TEXT NOT NULL,
+          attachment_id TEXT NOT NULL,
+          sort_order INTEGER NOT NULL CHECK (sort_order >= 0),
+          PRIMARY KEY (project_id, checklist_item_id, attachment_id),
+          UNIQUE (project_id, checklist_item_id, sort_order),
+          FOREIGN KEY (project_id, checklist_item_id)
+            REFERENCES $checklistItemsTable(project_id, id) ON DELETE CASCADE,
+          FOREIGN KEY (attachment_id, project_id)
+            REFERENCES $costAttachmentsTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX checklist_item_attachments_attachment_idx
+        ON $checklistItemAttachmentsTable (project_id, attachment_id)
       ''');
     }
 

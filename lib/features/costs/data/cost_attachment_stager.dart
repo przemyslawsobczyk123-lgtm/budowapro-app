@@ -272,12 +272,18 @@ final class CostAttachmentStager {
       if (rows.isEmpty) {
         return null;
       }
-      final links = await transaction.query(
-        AppDatabase.costEntryAttachmentsTable,
-        columns: const <String>['attachment_id'],
-        where: 'project_id = ? AND attachment_id = ?',
-        whereArgs: <Object?>[projectId, attachmentId],
-        limit: 1,
+      final links = await transaction.rawQuery(
+        '''
+          SELECT attachment_id
+          FROM ${AppDatabase.costEntryAttachmentsTable}
+          WHERE project_id = ? AND attachment_id = ?
+          UNION ALL
+          SELECT attachment_id
+          FROM ${AppDatabase.checklistItemAttachmentsTable}
+          WHERE project_id = ? AND attachment_id = ?
+          LIMIT 1
+        ''',
+        <Object?>[projectId, attachmentId, projectId, attachmentId],
       );
       if (links.isNotEmpty) {
         if (rejectLinked) {
@@ -383,6 +389,11 @@ final class CostAttachmentStager {
         AND NOT EXISTS (
           SELECT 1
           FROM ${AppDatabase.costEntryAttachmentsTable} l
+          WHERE l.project_id = a.project_id AND l.attachment_id = a.id
+        )
+        AND NOT EXISTS (
+          SELECT 1
+          FROM ${AppDatabase.checklistItemAttachmentsTable} l
           WHERE l.project_id = a.project_id AND l.attachment_id = a.id
         )
       ORDER BY a.imported_at_utc_ms ASC, a.id ASC

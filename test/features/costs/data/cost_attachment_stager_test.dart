@@ -298,6 +298,81 @@ void main() {
       );
     },
   );
+
+  test('startup recovery preserves evidence linked to a checklist', () async {
+    final source = File(p.join(temporaryDirectory.path, 'grounding.jpg'));
+    await source.writeAsBytes(<int>[4, 5, 6], flush: true);
+    final evidence = await stager.stage(
+      projectId: 'project-1',
+      pickedFile: PickedCostAttachment(
+        sourceUri: source.uri,
+        displayName: 'grounding.jpg',
+        reportedByteSize: 3,
+        mediaType: 'image/jpeg',
+      ),
+    );
+    final rawDatabase = await database.open();
+    await rawDatabase.insert(
+      AppDatabase.projectStagesTable,
+      _minimalStageRow('state_zero'),
+    );
+    await rawDatabase.insert(
+      AppDatabase.checklistItemsTable,
+      _minimalChecklistRow('grounding', 'state_zero'),
+    );
+    await rawDatabase
+        .insert(AppDatabase.checklistItemAttachmentsTable, <String, Object?>{
+          'project_id': 'project-1',
+          'checklist_item_id': 'grounding',
+          'attachment_id': evidence.id,
+          'sort_order': 0,
+        });
+
+    await stager.recoverUnlinkedAttachments();
+
+    expect(
+      await stager.findById(projectId: 'project-1', attachmentId: evidence.id),
+      isNotNull,
+    );
+  });
+}
+
+Map<String, Object?> _minimalStageRow(String id) {
+  return <String, Object?>{
+    'project_id': 'project-1',
+    'id': id,
+    'template_stage_key': id,
+    'custom_name': null,
+    'status': 'planned',
+    'sort_order': 0,
+    'planned_start_utc_ms': null,
+    'planned_end_utc_ms': null,
+    'planned_budget_minor_units': null,
+    'created_at_utc_ms': 0,
+    'updated_at_utc_ms': 0,
+  };
+}
+
+Map<String, Object?> _minimalChecklistRow(String id, String stageId) {
+  return <String, Object?>{
+    'project_id': 'project-1',
+    'id': id,
+    'stage_id': stageId,
+    'template_item_key': 'foundation_grounding',
+    'custom_title': null,
+    'status': 'todo',
+    'importance': 'critical',
+    'due_at_utc_ms': null,
+    'assignee_label': null,
+    'note': null,
+    'risk_if_skipped': null,
+    'status_reason': null,
+    'evidence_requirement': 'photo',
+    'evidence_waiver_comment': null,
+    'sort_order': 0,
+    'created_at_utc_ms': 0,
+    'updated_at_utc_ms': 0,
+  };
 }
 
 Map<String, Object?> _minimalCostRow(String id) {
