@@ -49,6 +49,10 @@ void main() {
       AppDatabase.projectStagesTable,
       AppDatabase.checklistItemsTable,
       AppDatabase.checklistItemAttachmentsTable,
+      AppDatabase.scheduleEventsTable,
+      AppDatabase.scheduleDependenciesTable,
+      AppDatabase.scheduleDateChangesTable,
+      AppDatabase.reminderPreferencesTable,
     ]) {
       final table = await database.query(
         'sqlite_master',

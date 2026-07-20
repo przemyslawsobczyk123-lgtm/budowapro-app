@@ -12,7 +12,7 @@ final class AppDatabase {
 
   AppDatabase._(this._factory, this._path);
 
-  static const int schemaVersion = 4;
+  static const int schemaVersion = 5;
   static const String databaseFileName = 'budowapro.db';
   static const String metadataTable = 'app_metadata';
   static const String projectsTable = 'projects';
@@ -25,6 +25,10 @@ final class AppDatabase {
   static const String checklistItemsTable = 'checklist_items';
   static const String checklistItemAttachmentsTable =
       'checklist_item_attachments';
+  static const String scheduleEventsTable = 'schedule_events';
+  static const String scheduleDependenciesTable = 'schedule_dependencies';
+  static const String scheduleDateChangesTable = 'schedule_date_changes';
+  static const String reminderPreferencesTable = 'reminder_preferences';
   static const String schemaVersionKey = 'schema_version';
 
   final DatabaseFactory _factory;
@@ -602,6 +606,113 @@ final class AppDatabase {
       await database.execute('''
         CREATE INDEX checklist_item_attachments_attachment_idx
         ON $checklistItemAttachmentsTable (project_id, attachment_id)
+      ''');
+    }
+
+    if (fromVersion < 5 && toVersion >= 5) {
+      await database.execute('''
+        CREATE TABLE $scheduleEventsTable (
+          project_id TEXT NOT NULL,
+          id TEXT NOT NULL,
+          title TEXT NOT NULL,
+          kind TEXT NOT NULL CHECK (
+            kind IN ('task', 'visit', 'delivery', 'acceptance', 'payment')
+          ),
+          status TEXT NOT NULL CHECK (
+            status IN ('planned', 'in_progress', 'blocked', 'completed', 'cancelled')
+          ),
+          starts_at_utc_ms INTEGER NOT NULL,
+          ends_at_utc_ms INTEGER,
+          time_zone_id TEXT NOT NULL,
+          is_all_day INTEGER NOT NULL CHECK (is_all_day IN (0, 1)),
+          stage_id TEXT,
+          assignee TEXT,
+          note TEXT,
+          reminder_enabled INTEGER NOT NULL CHECK (reminder_enabled IN (0, 1)),
+          reminder_lead_minutes INTEGER NOT NULL CHECK (
+            reminder_lead_minutes BETWEEN 0 AND 10080
+          ),
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          PRIMARY KEY (project_id, id),
+          CHECK (
+            ends_at_utc_ms IS NULL OR ends_at_utc_ms >= starts_at_utc_ms
+          ),
+          FOREIGN KEY (project_id) REFERENCES $projectsTable(id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX schedule_events_project_start_idx
+        ON $scheduleEventsTable (project_id, starts_at_utc_ms, id)
+      ''');
+      await database.execute('''
+        CREATE INDEX schedule_events_project_status_idx
+        ON $scheduleEventsTable (project_id, status, starts_at_utc_ms, id)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE $scheduleDependenciesTable (
+          project_id TEXT NOT NULL,
+          event_id TEXT NOT NULL,
+          blocking_event_id TEXT NOT NULL,
+          decision_due_at_utc_ms INTEGER,
+          created_at_utc_ms INTEGER NOT NULL,
+          PRIMARY KEY (project_id, event_id, blocking_event_id),
+          CHECK (event_id != blocking_event_id),
+          FOREIGN KEY (project_id, event_id)
+            REFERENCES $scheduleEventsTable(project_id, id) ON DELETE CASCADE,
+          FOREIGN KEY (project_id, blocking_event_id)
+            REFERENCES $scheduleEventsTable(project_id, id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX schedule_dependencies_blocker_idx
+        ON $scheduleDependenciesTable (project_id, blocking_event_id, event_id)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE $scheduleDateChangesTable (
+          id TEXT PRIMARY KEY NOT NULL,
+          project_id TEXT NOT NULL,
+          event_id TEXT NOT NULL,
+          previous_starts_at_utc_ms INTEGER NOT NULL,
+          new_starts_at_utc_ms INTEGER NOT NULL,
+          previous_ends_at_utc_ms INTEGER,
+          new_ends_at_utc_ms INTEGER,
+          previous_time_zone_id TEXT NOT NULL,
+          new_time_zone_id TEXT NOT NULL,
+          reason TEXT,
+          changed_at_utc_ms INTEGER NOT NULL,
+          FOREIGN KEY (project_id, event_id)
+            REFERENCES $scheduleEventsTable(project_id, id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX schedule_date_changes_event_idx
+        ON $scheduleDateChangesTable (
+          project_id,
+          event_id,
+          changed_at_utc_ms DESC,
+          id DESC
+        )
+      ''');
+
+      await database.execute('''
+        CREATE TABLE $reminderPreferencesTable (
+          id TEXT PRIMARY KEY NOT NULL CHECK (id = 'app'),
+          task_enabled INTEGER NOT NULL CHECK (task_enabled IN (0, 1)),
+          visit_enabled INTEGER NOT NULL CHECK (visit_enabled IN (0, 1)),
+          delivery_enabled INTEGER NOT NULL CHECK (delivery_enabled IN (0, 1)),
+          acceptance_enabled INTEGER NOT NULL CHECK (acceptance_enabled IN (0, 1)),
+          payment_enabled INTEGER NOT NULL CHECK (payment_enabled IN (0, 1)),
+          default_lead_minutes INTEGER NOT NULL CHECK (
+            default_lead_minutes BETWEEN 0 AND 10080
+          ),
+          all_day_reminder_minute INTEGER NOT NULL CHECK (
+            all_day_reminder_minute BETWEEN 0 AND 1439
+          ),
+          updated_at_utc_ms INTEGER NOT NULL
+        )
       ''');
     }
 
