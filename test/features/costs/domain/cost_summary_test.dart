@@ -5,6 +5,15 @@ import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('creates aggregate result from repository totals', () {
+    final summary = CostSummary.fromTotals(
+      planned: _pln(10000),
+      actual: _pln(12500),
+    );
+
+    expect(summary.difference, _pln(2500));
+  });
+
   test('empty project returns zero plan, actual and difference', () {
     final summary = const CalculateCostSummary().call(
       projectId: 'project-1',

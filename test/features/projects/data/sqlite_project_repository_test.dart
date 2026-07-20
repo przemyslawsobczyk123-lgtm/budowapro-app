@@ -130,6 +130,28 @@ void main() {
     expect(updated.templateVersion, 3);
   });
 
+  test('rejects a currency change after a cost entry is recorded', () async {
+    final created = await repository.create(_houseDraft('Dom'));
+    await _insertCostEntry(appDatabase, projectId: created.id, id: 'cost-1');
+
+    await expectLater(
+      repository.update(
+        created.id,
+        ProjectDraft(
+          name: 'Zmieniony dom',
+          type: ProjectType.houseBuild,
+          template: ProjectTemplate.houseConstruction,
+          currencyCode: 'EUR',
+        ),
+      ),
+      throwsA(isA<ProjectCurrencyLockedException>()),
+    );
+
+    final persisted = await repository.findById(created.id);
+    expect(persisted?.currencyCode, 'PLN');
+    expect(persisted?.name, 'Dom');
+  });
+
   test('lists active projects with stable pagination', () async {
     final first = await repository.create(_houseDraft('Pierwszy'));
     now = now.add(const Duration(minutes: 1));
@@ -174,6 +196,15 @@ void main() {
           .exists(),
       isFalse,
     );
+  });
+
+  test('deletion impact counts linked cost entries', () async {
+    final project = await repository.create(_houseDraft('Koszty'));
+    await _insertCostEntry(appDatabase, projectId: project.id, id: 'cost-1');
+
+    final impact = await repository.deletionImpact(project.id);
+
+    expect(impact.linkedRecordCount, 1);
   });
 
   test(
@@ -260,6 +291,31 @@ ProjectDraft _renovationDraft(String name) {
     type: ProjectType.apartmentRenovation,
     template: ProjectTemplate.renovation,
   );
+}
+
+Future<void> _insertCostEntry(
+  AppDatabase database, {
+  required String projectId,
+  required String id,
+}) async {
+  final executor = await database.open();
+  await executor.insert(AppDatabase.costEntriesTable, <String, Object?>{
+    'id': id,
+    'project_id': projectId,
+    'name': 'Material',
+    'entry_type': 'cost',
+    'financial_status': 'paid',
+    'lifecycle': 'confirmed',
+    'entry_date_utc_ms': 0,
+    'net_minor_units': 100,
+    'vat_rate_basis_points': 2300,
+    'vat_minor_units': 23,
+    'gross_minor_units': 123,
+    'currency_code': 'PLN',
+    'source': 'manual',
+    'created_at_utc_ms': 0,
+    'updated_at_utc_ms': 0,
+  });
 }
 
 final class _FailingProjectFileStorage implements ProjectFileStorage {

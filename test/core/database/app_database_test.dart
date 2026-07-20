@@ -39,12 +39,21 @@ void main() {
       await appDatabase!.readMetadata(AppDatabase.schemaVersionKey),
       AppDatabase.schemaVersion.toString(),
     );
-    final projectTable = await database.query(
-      'sqlite_master',
-      where: 'type = ? AND name = ?',
-      whereArgs: <Object?>['table', 'projects'],
-    );
-    expect(projectTable, hasLength(1));
+    for (final tableName in <String>[
+      AppDatabase.projectsTable,
+      AppDatabase.costEntriesTable,
+      AppDatabase.costAttachmentsTable,
+      AppDatabase.costEntryAttachmentsTable,
+      AppDatabase.costEntryRevisionsTable,
+      AppDatabase.costCorrectionsTable,
+    ]) {
+      final table = await database.query(
+        'sqlite_master',
+        where: 'type = ? AND name = ?',
+        whereArgs: <Object?>['table', tableName],
+      );
+      expect(table, hasLength(1), reason: 'missing table $tableName');
+    }
   });
 
   test(
@@ -112,6 +121,51 @@ void main() {
       whereArgs: <Object?>['table', 'projects'],
     );
     expect(projectTable, hasLength(1));
+  });
+
+  test('migrates version 2 and preserves existing projects', () async {
+    final versionTwoDatabase = await databaseFactoryFfi.openDatabase(
+      databasePath,
+      options: OpenDatabaseOptions(
+        version: 2,
+        onCreate: (database, version) async {
+          await database.execute('''
+            CREATE TABLE app_metadata (
+              key TEXT PRIMARY KEY NOT NULL,
+              value TEXT NOT NULL,
+              updated_at_utc_ms INTEGER NOT NULL
+            )
+          ''');
+          await database.execute('''
+            CREATE TABLE projects (
+              id TEXT PRIMARY KEY NOT NULL,
+              name TEXT NOT NULL
+            )
+          ''');
+          await database.insert('projects', <String, Object?>{
+            'id': 'project-v2',
+            'name': 'Existing project',
+          });
+        },
+      ),
+    );
+    await versionTwoDatabase.close();
+
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final database = await appDatabase!.open();
+
+    expect(await database.getVersion(), AppDatabase.schemaVersion);
+    expect(await database.query(AppDatabase.projectsTable), <Object?>[
+      <String, Object?>{'id': 'project-v2', 'name': 'Existing project'},
+    ]);
+    expect(
+      await database.query(
+        'sqlite_master',
+        where: 'type = ? AND name = ?',
+        whereArgs: <Object?>['table', AppDatabase.costEntriesTable],
+      ),
+      hasLength(1),
+    );
   });
 
   test('uses bound arguments for metadata keys', () async {

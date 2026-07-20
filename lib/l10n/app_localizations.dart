@@ -400,6 +400,12 @@ abstract class AppLocalizations {
   /// **'Nie udało się zapisać projektu.'**
   String get projectSaveError;
 
+  /// Komunikat blokady zmiany waluty projektu z kosztami.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie można zmienić waluty po zapisaniu pierwszego kosztu.'**
+  String get projectCurrencyLockedError;
+
   /// Blad braku projektu podczas edycji.
   ///
   /// In pl, this message translates to:
@@ -627,6 +633,534 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Nie udało się zmienić projektu.'**
   String get projectSelectorSelectError;
+
+  /// No description provided for @costFormNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowy wpis'**
+  String get costFormNewTitle;
+
+  /// No description provided for @costFormEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj wpis'**
+  String get costFormEditTitle;
+
+  /// No description provided for @costDetailsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły wpisu'**
+  String get costDetailsTitle;
+
+  /// No description provided for @costBudgetAddTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj wpis'**
+  String get costBudgetAddTooltip;
+
+  /// No description provided for @costBudgetEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak wpisów'**
+  String get costBudgetEmptyTitle;
+
+  /// No description provided for @costBudgetEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj pierwszy koszt, ofertę lub plan.'**
+  String get costBudgetEmptyMessage;
+
+  /// No description provided for @costBudgetNoProjectTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz projekt'**
+  String get costBudgetNoProjectTitle;
+
+  /// No description provided for @costBudgetNoProjectMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Koszty są przypisane do projektu.'**
+  String get costBudgetNoProjectMessage;
+
+  /// No description provided for @costBudgetLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać kosztów.'**
+  String get costBudgetLoadError;
+
+  /// No description provided for @costBudgetPlannedLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plan'**
+  String get costBudgetPlannedLabel;
+
+  /// No description provided for @costBudgetActualLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wydatki'**
+  String get costBudgetActualLabel;
+
+  /// No description provided for @costBudgetDifferenceLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Różnica'**
+  String get costBudgetDifferenceLabel;
+
+  /// No description provided for @costFormBasicsSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpis'**
+  String get costFormBasicsSection;
+
+  /// No description provided for @costFormFinancialSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kwota'**
+  String get costFormFinancialSection;
+
+  /// No description provided for @costFormDetailsSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły'**
+  String get costFormDetailsSection;
+
+  /// No description provided for @costFormDocumentsSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokumenty'**
+  String get costFormDocumentsSection;
+
+  /// No description provided for @costNameLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa'**
+  String get costNameLabel;
+
+  /// No description provided for @costTypeLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rodzaj'**
+  String get costTypeLabel;
+
+  /// No description provided for @costGrossAmountLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kwota brutto'**
+  String get costGrossAmountLabel;
+
+  /// No description provided for @costVatRateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'VAT'**
+  String get costVatRateLabel;
+
+  /// No description provided for @costNetAmountLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Netto'**
+  String get costNetAmountLabel;
+
+  /// No description provided for @costVatAmountLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kwota VAT'**
+  String get costVatAmountLabel;
+
+  /// No description provided for @costDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data'**
+  String get costDateLabel;
+
+  /// No description provided for @costStageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap'**
+  String get costStageLabel;
+
+  /// No description provided for @costCategoryLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kategoria'**
+  String get costCategoryLabel;
+
+  /// No description provided for @costSupplierLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostawca'**
+  String get costSupplierLabel;
+
+  /// No description provided for @costQuantityLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ilość'**
+  String get costQuantityLabel;
+
+  /// No description provided for @costUnitLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jednostka'**
+  String get costUnitLabel;
+
+  /// No description provided for @costStatusLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Status'**
+  String get costStatusLabel;
+
+  /// No description provided for @costPaymentMethodLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Metoda płatności'**
+  String get costPaymentMethodLabel;
+
+  /// No description provided for @costNoteLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatka'**
+  String get costNoteLabel;
+
+  /// No description provided for @costTypeCost.
+  ///
+  /// In pl, this message translates to:
+  /// **'Koszt'**
+  String get costTypeCost;
+
+  /// No description provided for @costTypeOffer.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oferta'**
+  String get costTypeOffer;
+
+  /// No description provided for @costTypePlanned.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plan'**
+  String get costTypePlanned;
+
+  /// No description provided for @costStatusPlanned.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowany'**
+  String get costStatusPlanned;
+
+  /// No description provided for @costStatusOrdered.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamówiony'**
+  String get costStatusOrdered;
+
+  /// No description provided for @costStatusDue.
+  ///
+  /// In pl, this message translates to:
+  /// **'Do zapłaty'**
+  String get costStatusDue;
+
+  /// No description provided for @costStatusPaid.
+  ///
+  /// In pl, this message translates to:
+  /// **'Opłacony'**
+  String get costStatusPaid;
+
+  /// No description provided for @costStatusReturned.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zwrot'**
+  String get costStatusReturned;
+
+  /// No description provided for @costStatusDisputed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sporne'**
+  String get costStatusDisputed;
+
+  /// No description provided for @costPaymentCash.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gotówka'**
+  String get costPaymentCash;
+
+  /// No description provided for @costPaymentCard.
+  ///
+  /// In pl, this message translates to:
+  /// **'Karta'**
+  String get costPaymentCard;
+
+  /// No description provided for @costPaymentBankTransfer.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przelew'**
+  String get costPaymentBankTransfer;
+
+  /// No description provided for @costPaymentBlik.
+  ///
+  /// In pl, this message translates to:
+  /// **'BLIK'**
+  String get costPaymentBlik;
+
+  /// No description provided for @costPaymentOther.
+  ///
+  /// In pl, this message translates to:
+  /// **'Inna'**
+  String get costPaymentOther;
+
+  /// No description provided for @costVatZero.
+  ///
+  /// In pl, this message translates to:
+  /// **'0%'**
+  String get costVatZero;
+
+  /// No description provided for @costVatReduced.
+  ///
+  /// In pl, this message translates to:
+  /// **'8%'**
+  String get costVatReduced;
+
+  /// No description provided for @costVatStandard.
+  ///
+  /// In pl, this message translates to:
+  /// **'23%'**
+  String get costVatStandard;
+
+  /// No description provided for @costAddDocumentAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj dokument'**
+  String get costAddDocumentAction;
+
+  /// No description provided for @costNoDocumentsWarning.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak dokumentu do wpisu.'**
+  String get costNoDocumentsWarning;
+
+  /// No description provided for @costDocumentCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokumenty: {count}'**
+  String costDocumentCount(int count);
+
+  /// No description provided for @costSaveDraftAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz szkic'**
+  String get costSaveDraftAction;
+
+  /// No description provided for @costSaveAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz koszt'**
+  String get costSaveAction;
+
+  /// No description provided for @costSaveChangesAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz zmiany'**
+  String get costSaveChangesAction;
+
+  /// No description provided for @costSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać wpisu.'**
+  String get costSaveError;
+
+  /// No description provided for @costLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać wpisu.'**
+  String get costLoadError;
+
+  /// No description provided for @costNotFoundError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie znaleziono wpisu.'**
+  String get costNotFoundError;
+
+  /// No description provided for @costNameRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podaj nazwę wpisu.'**
+  String get costNameRequiredError;
+
+  /// No description provided for @costNameTooLongError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa może mieć maksymalnie 120 znaków.'**
+  String get costNameTooLongError;
+
+  /// No description provided for @costAmountRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podaj kwotę brutto.'**
+  String get costAmountRequiredError;
+
+  /// No description provided for @costAmountInvalidError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz kwotę z maksymalnie dwiema cyframi po przecinku.'**
+  String get costAmountInvalidError;
+
+  /// No description provided for @costAmountTooLargeError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kwota jest za duża.'**
+  String get costAmountTooLargeError;
+
+  /// No description provided for @costQuantityUnitRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podaj ilość i jednostkę.'**
+  String get costQuantityUnitRequiredError;
+
+  /// No description provided for @costQuantityInvalidError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz dodatnią ilość.'**
+  String get costQuantityInvalidError;
+
+  /// No description provided for @costNoteTooLongError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatka może mieć maksymalnie 2000 znaków.'**
+  String get costNoteTooLongError;
+
+  /// No description provided for @costStatusInvalidError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ten status nie pasuje do rodzaju wpisu.'**
+  String get costStatusInvalidError;
+
+  /// No description provided for @costFinancialFieldsLocked.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatwierdzone dane finansowe są zablokowane.'**
+  String get costFinancialFieldsLocked;
+
+  /// No description provided for @costDetailsEditAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj'**
+  String get costDetailsEditAction;
+
+  /// No description provided for @costDetailsCopyDraftAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kopiuj do szkicu'**
+  String get costDetailsCopyDraftAction;
+
+  /// No description provided for @costDetailsMarkPaidAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oznacz jako opłacony'**
+  String get costDetailsMarkPaidAction;
+
+  /// No description provided for @costDetailsDeleteAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń pozycję'**
+  String get costDetailsDeleteAction;
+
+  /// No description provided for @costDeleteTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunąć pozycję?'**
+  String get costDeleteTitle;
+
+  /// No description provided for @costDeleteMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Koszt, jego historia i nieużywane dokumenty zostaną trwale usunięte.'**
+  String get costDeleteMessage;
+
+  /// No description provided for @costDeleteError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się usunąć szkicu.'**
+  String get costDeleteError;
+
+  /// No description provided for @costDetailsActionError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wykonać akcji.'**
+  String get costDetailsActionError;
+
+  /// No description provided for @costHistorySection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Historia'**
+  String get costHistorySection;
+
+  /// No description provided for @costHistoryEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak historii.'**
+  String get costHistoryEmpty;
+
+  /// No description provided for @costHistoryCreated.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utworzono wpis'**
+  String get costHistoryCreated;
+
+  /// No description provided for @costHistoryDraftSaved.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisano szkic'**
+  String get costHistoryDraftSaved;
+
+  /// No description provided for @costHistoryDraftReplaced.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaktualizowano szkic'**
+  String get costHistoryDraftReplaced;
+
+  /// No description provided for @costHistoryConfirmed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatwierdzono wpis'**
+  String get costHistoryConfirmed;
+
+  /// No description provided for @costHistoryDetailsUpdated.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaktualizowano szczegóły'**
+  String get costHistoryDetailsUpdated;
+
+  /// No description provided for @costHistoryStatusChanged.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmieniono status'**
+  String get costHistoryStatusChanged;
+
+  /// No description provided for @costHistoryCorrectionAdded.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodano korektę'**
+  String get costHistoryCorrectionAdded;
+
+  /// No description provided for @costDraftLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szkic'**
+  String get costDraftLabel;
+
+  /// No description provided for @costAttachmentsEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak dokumentów.'**
+  String get costAttachmentsEmpty;
+
+  /// No description provided for @costRemoveDocumentTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń dokument'**
+  String get costRemoveDocumentTooltip;
+
+  /// No description provided for @costDatePickerTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz datę'**
+  String get costDatePickerTooltip;
 }
 
 class _AppLocalizationsDelegate

@@ -2,6 +2,24 @@ import 'cost_entry.dart';
 import 'money.dart';
 
 final class CostSummary {
+  factory CostSummary.fromTotals({
+    required Money planned,
+    required Money actual,
+  }) {
+    if (planned.currencyCode != actual.currencyCode) {
+      throw ArgumentError.value(
+        actual.currencyCode,
+        'actual',
+        'must use currency ${planned.currencyCode}',
+      );
+    }
+    return CostSummary._(
+      planned: planned,
+      actual: actual,
+      difference: actual - planned,
+    );
+  }
+
   const CostSummary._({
     required this.planned,
     required this.actual,

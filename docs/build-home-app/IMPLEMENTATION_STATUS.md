@@ -69,6 +69,29 @@ Last updated: 2026-07-15
   `difference = actual - planned`.
 - Repository contracts require project context, paginate lists and reserve summaries for aggregate SQL.
 
+### Task 2.2 - add and edit cost
+
+- Schema `v3` persists cost entries, generic attachment metadata, many-to-many cost links,
+  append-only revisions and financial corrections.
+- The manual form supports cost, offer and plan entries, Polish gross amounts, VAT 0/8/23,
+  quantity with unit, supplier, category, stage, payment method, note and entry date.
+- Entries can be saved as drafts or confirmed, then edited, copied to a new draft and moved
+  through valid payment statuses. Any entry can be deleted after explicit confirmation.
+- Drafts preserve their selected target status across database reopening while remaining excluded
+  from every financial summary.
+- Confirmed financial values are immutable; detail and status changes are recorded in local history.
+- Project currency becomes immutable after the first cost entry, and project deletion impact counts
+  linked cost records before the destructive confirmation.
+- Stage selection comes from the active project template. Category and supplier fields suggest values
+  already used in the project while still allowing a new value to be entered immediately.
+- The Android system picker imports allowed documents into private project storage without loading
+  complete files into UI memory or requesting broad storage permission.
+- File staging is recoverable. Only available attachments can be linked, and cost rows, attachment
+  links and revisions are committed in one SQLite transaction. Streaming byte limits and recovery
+  cover interrupted `.part` files and interrupted deletions.
+- The budget branch provides a compact summary and direct access to add, inspect and edit entries.
+- Validation preserves all entered values, and SQLite reopening tests verify exact amounts and status.
+
 ## Verified baseline
 
 ```text
@@ -79,6 +102,7 @@ go_router 17.3.0
 sqflite 2.4.3
 sqflite_common_ffi 2.4.2
 path_provider 2.1.6
+file_picker 11.0.2
 ```
 
 Quality gate:
@@ -90,7 +114,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-15 with 95 tests. Debug APK:
+All commands passed on 2026-07-15 with 137 tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -98,12 +122,12 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 2.2 from `IMPLEMENTATION_PLAN.md`:
+Task 2.3 from `IMPLEMENTATION_PLAN.md`:
 
-1. Add the SQLite cost schema and repository implementation.
-2. Build the manual add/edit cost form from the approved mockup.
-3. Save drafts and confirmed costs with attachments atomically.
-4. Add payment status, copy and delete flows with confirmation.
-5. Verify persistence after restart and pass the complete quality gate.
+1. Build the paginated cost register with lazy loading.
+2. Add combined search and filters for type, status, stage, category, supplier and date.
+3. Calculate the active result summary in aggregate SQL.
+4. Surface missing-document and missing-VAT warnings.
+5. Verify combined filters and a fixture with 10,000 cost entries.
 
-Do not start OCR or dashboard modules before the manual cost flow is green.
+Do not start OCR or dashboard modules before the cost register is green.

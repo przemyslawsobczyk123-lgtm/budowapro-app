@@ -91,14 +91,14 @@ void main() {
     expect(entry.isIncludedInSummaries, isFalse);
   });
 
-  test('rejects invalid type, status and lifecycle combinations', () {
+  test('rejects invalid type and status combinations', () {
     expect(
       () => _customEntry(
         type: CostEntryType.cost,
-        status: CostStatus.paid,
+        status: CostStatus.planned,
         lifecycle: CostLifecycle.draft,
       ),
-      throwsArgumentError,
+      returnsNormally,
     );
     expect(
       () => _customEntry(
@@ -126,10 +126,10 @@ void main() {
     );
   });
 
-  test('draft input rejects a preselected paid status', () {
+  test('draft input preserves a preselected paid status', () {
     final paidInput = _input(type: CostEntryType.cost, status: CostStatus.paid);
 
-    expect(() => CostDraftInput(paidInput), throwsArgumentError);
+    expect(CostDraftInput(paidInput).input.status, CostStatus.paid);
   });
 
   test('direct confirmed input rejects receipt and invoice OCR sources', () {
@@ -165,6 +165,39 @@ void main() {
     expect(entry.createdAtUtc, DateTime.utc(2026, 7, 15, 10));
     expect(entry.updatedAtUtc, DateTime.utc(2026, 7, 15, 11));
     expect(entry.isIncludedInSummaries, isTrue);
+    expect(entry.revision, 1);
+  });
+
+  test('confirmed details input contains no monetary or status fields', () {
+    final details = ConfirmedCostDetailsInput(
+      name: '  Zmieniona nazwa  ',
+      entryDate: DateTime(2026, 7, 20),
+      stageId: ' state-zero ',
+      quantity: DecimalQuantity(unscaledValue: 25, scale: 1),
+      unit: ' m ',
+      paymentMethod: CostPaymentMethod.card,
+      note: '  Po korekcie opisu  ',
+    );
+
+    expect(details.name, 'Zmieniona nazwa');
+    expect(details.entryDate.isUtc, isTrue);
+    expect(details.stageId, 'state-zero');
+    expect(details.unit, 'm');
+    expect(details.note, 'Po korekcie opisu');
+  });
+
+  test('history entry validates a positive revision', () {
+    expect(
+      () => CostHistoryEntry(
+        id: 'history-1',
+        projectId: 'project-1',
+        costEntryId: 'cost-1',
+        revision: 0,
+        action: CostHistoryAction.created,
+        createdAt: DateTime.utc(2026, 7, 15),
+      ),
+      throwsRangeError,
+    );
   });
 
   test('negative return is an append-only correction', () {

@@ -1,3 +1,4 @@
+import 'package:budowapro/features/costs/presentation/cost_budget_screen.dart';
 import 'package:budowapro/features/projects/presentation/project_selector.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:budowapro/shared/widgets/app_content_states.dart';
@@ -65,6 +66,9 @@ class ProjectSectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (section == AppSection.budget) {
+      return const CostBudgetScreen();
+    }
     final localizations = AppLocalizations.of(context);
 
     return Scaffold(

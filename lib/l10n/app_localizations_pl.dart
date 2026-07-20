@@ -167,6 +167,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get projectSaveError => 'Nie udało się zapisać projektu.';
 
   @override
+  String get projectCurrencyLockedError =>
+      'Nie można zmienić waluty po zapisaniu pierwszego kosztu.';
+
+  @override
   String get projectNotFoundError => 'Nie znaleziono projektu.';
 
   @override
@@ -292,4 +296,275 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get projectSelectorSelectError => 'Nie udało się zmienić projektu.';
+
+  @override
+  String get costFormNewTitle => 'Nowy wpis';
+
+  @override
+  String get costFormEditTitle => 'Edytuj wpis';
+
+  @override
+  String get costDetailsTitle => 'Szczegóły wpisu';
+
+  @override
+  String get costBudgetAddTooltip => 'Dodaj wpis';
+
+  @override
+  String get costBudgetEmptyTitle => 'Brak wpisów';
+
+  @override
+  String get costBudgetEmptyMessage => 'Dodaj pierwszy koszt, ofertę lub plan.';
+
+  @override
+  String get costBudgetNoProjectTitle => 'Wybierz projekt';
+
+  @override
+  String get costBudgetNoProjectMessage => 'Koszty są przypisane do projektu.';
+
+  @override
+  String get costBudgetLoadError => 'Nie udało się wczytać kosztów.';
+
+  @override
+  String get costBudgetPlannedLabel => 'Plan';
+
+  @override
+  String get costBudgetActualLabel => 'Wydatki';
+
+  @override
+  String get costBudgetDifferenceLabel => 'Różnica';
+
+  @override
+  String get costFormBasicsSection => 'Wpis';
+
+  @override
+  String get costFormFinancialSection => 'Kwota';
+
+  @override
+  String get costFormDetailsSection => 'Szczegóły';
+
+  @override
+  String get costFormDocumentsSection => 'Dokumenty';
+
+  @override
+  String get costNameLabel => 'Nazwa';
+
+  @override
+  String get costTypeLabel => 'Rodzaj';
+
+  @override
+  String get costGrossAmountLabel => 'Kwota brutto';
+
+  @override
+  String get costVatRateLabel => 'VAT';
+
+  @override
+  String get costNetAmountLabel => 'Netto';
+
+  @override
+  String get costVatAmountLabel => 'Kwota VAT';
+
+  @override
+  String get costDateLabel => 'Data';
+
+  @override
+  String get costStageLabel => 'Etap';
+
+  @override
+  String get costCategoryLabel => 'Kategoria';
+
+  @override
+  String get costSupplierLabel => 'Dostawca';
+
+  @override
+  String get costQuantityLabel => 'Ilość';
+
+  @override
+  String get costUnitLabel => 'Jednostka';
+
+  @override
+  String get costStatusLabel => 'Status';
+
+  @override
+  String get costPaymentMethodLabel => 'Metoda płatności';
+
+  @override
+  String get costNoteLabel => 'Notatka';
+
+  @override
+  String get costTypeCost => 'Koszt';
+
+  @override
+  String get costTypeOffer => 'Oferta';
+
+  @override
+  String get costTypePlanned => 'Plan';
+
+  @override
+  String get costStatusPlanned => 'Planowany';
+
+  @override
+  String get costStatusOrdered => 'Zamówiony';
+
+  @override
+  String get costStatusDue => 'Do zapłaty';
+
+  @override
+  String get costStatusPaid => 'Opłacony';
+
+  @override
+  String get costStatusReturned => 'Zwrot';
+
+  @override
+  String get costStatusDisputed => 'Sporne';
+
+  @override
+  String get costPaymentCash => 'Gotówka';
+
+  @override
+  String get costPaymentCard => 'Karta';
+
+  @override
+  String get costPaymentBankTransfer => 'Przelew';
+
+  @override
+  String get costPaymentBlik => 'BLIK';
+
+  @override
+  String get costPaymentOther => 'Inna';
+
+  @override
+  String get costVatZero => '0%';
+
+  @override
+  String get costVatReduced => '8%';
+
+  @override
+  String get costVatStandard => '23%';
+
+  @override
+  String get costAddDocumentAction => 'Dodaj dokument';
+
+  @override
+  String get costNoDocumentsWarning => 'Brak dokumentu do wpisu.';
+
+  @override
+  String costDocumentCount(int count) {
+    return 'Dokumenty: $count';
+  }
+
+  @override
+  String get costSaveDraftAction => 'Zapisz szkic';
+
+  @override
+  String get costSaveAction => 'Zapisz koszt';
+
+  @override
+  String get costSaveChangesAction => 'Zapisz zmiany';
+
+  @override
+  String get costSaveError => 'Nie udało się zapisać wpisu.';
+
+  @override
+  String get costLoadError => 'Nie udało się wczytać wpisu.';
+
+  @override
+  String get costNotFoundError => 'Nie znaleziono wpisu.';
+
+  @override
+  String get costNameRequiredError => 'Podaj nazwę wpisu.';
+
+  @override
+  String get costNameTooLongError => 'Nazwa może mieć maksymalnie 120 znaków.';
+
+  @override
+  String get costAmountRequiredError => 'Podaj kwotę brutto.';
+
+  @override
+  String get costAmountInvalidError =>
+      'Wpisz kwotę z maksymalnie dwiema cyframi po przecinku.';
+
+  @override
+  String get costAmountTooLargeError => 'Kwota jest za duża.';
+
+  @override
+  String get costQuantityUnitRequiredError => 'Podaj ilość i jednostkę.';
+
+  @override
+  String get costQuantityInvalidError => 'Wpisz dodatnią ilość.';
+
+  @override
+  String get costNoteTooLongError =>
+      'Notatka może mieć maksymalnie 2000 znaków.';
+
+  @override
+  String get costStatusInvalidError =>
+      'Ten status nie pasuje do rodzaju wpisu.';
+
+  @override
+  String get costFinancialFieldsLocked =>
+      'Zatwierdzone dane finansowe są zablokowane.';
+
+  @override
+  String get costDetailsEditAction => 'Edytuj';
+
+  @override
+  String get costDetailsCopyDraftAction => 'Kopiuj do szkicu';
+
+  @override
+  String get costDetailsMarkPaidAction => 'Oznacz jako opłacony';
+
+  @override
+  String get costDetailsDeleteAction => 'Usuń pozycję';
+
+  @override
+  String get costDeleteTitle => 'Usunąć pozycję?';
+
+  @override
+  String get costDeleteMessage =>
+      'Koszt, jego historia i nieużywane dokumenty zostaną trwale usunięte.';
+
+  @override
+  String get costDeleteError => 'Nie udało się usunąć szkicu.';
+
+  @override
+  String get costDetailsActionError => 'Nie udało się wykonać akcji.';
+
+  @override
+  String get costHistorySection => 'Historia';
+
+  @override
+  String get costHistoryEmpty => 'Brak historii.';
+
+  @override
+  String get costHistoryCreated => 'Utworzono wpis';
+
+  @override
+  String get costHistoryDraftSaved => 'Zapisano szkic';
+
+  @override
+  String get costHistoryDraftReplaced => 'Zaktualizowano szkic';
+
+  @override
+  String get costHistoryConfirmed => 'Zatwierdzono wpis';
+
+  @override
+  String get costHistoryDetailsUpdated => 'Zaktualizowano szczegóły';
+
+  @override
+  String get costHistoryStatusChanged => 'Zmieniono status';
+
+  @override
+  String get costHistoryCorrectionAdded => 'Dodano korektę';
+
+  @override
+  String get costDraftLabel => 'Szkic';
+
+  @override
+  String get costAttachmentsEmpty => 'Brak dokumentów.';
+
+  @override
+  String get costRemoveDocumentTooltip => 'Usuń dokument';
+
+  @override
+  String get costDatePickerTooltip => 'Wybierz datę';
 }

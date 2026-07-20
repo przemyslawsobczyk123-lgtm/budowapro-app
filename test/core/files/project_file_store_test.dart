@@ -164,6 +164,30 @@ void main() {
     expect(await File('${target.path}.part').exists(), isFalse);
   });
 
+  test('stops a streaming import at the configured byte limit', () async {
+    final source = File(p.join(sourceDirectory.path, 'oversized.pdf'));
+    await source.writeAsBytes(List<int>.filled(12, 1), flush: true);
+    final target = store.fileFor(
+      projectId: 'project-123',
+      area: ProjectFileArea.originals,
+      fileName: 'oversized.pdf',
+    );
+
+    await expectLater(
+      store.importFile(
+        projectId: 'project-123',
+        area: ProjectFileArea.originals,
+        source: source,
+        fileName: 'oversized.pdf',
+        maximumBytes: 8,
+      ),
+      throwsRangeError,
+    );
+
+    expect(await target.exists(), isFalse);
+    expect(await File('${target.path}.part').exists(), isFalse);
+  });
+
   test('recovers from a part file left by an interrupted process', () async {
     final source = File(p.join(sourceDirectory.path, 'source.pdf'));
     await source.writeAsString('recovered bytes');

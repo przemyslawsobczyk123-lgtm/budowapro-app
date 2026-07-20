@@ -68,6 +68,10 @@ final class SqliteProjectRepository implements ProjectRepository {
       if (existing == null) {
         throw const ProjectNotFoundException();
       }
+      if (existing.currencyCode != draft.currencyCode &&
+          await _countCostEntries(transaction, projectId) > 0) {
+        throw const ProjectCurrencyLockedException();
+      }
       final updated = Project(
         id: existing.id,
         draft: draft,
@@ -186,14 +190,15 @@ final class SqliteProjectRepository implements ProjectRepository {
 
   @override
   Future<ProjectDeletionImpact> deletionImpact(String projectId) async {
-    final project = await findById(projectId);
+    final database = await _database.open();
+    final project = await _findById(database, projectId);
     if (project == null) {
       throw const ProjectNotFoundException();
     }
     return ProjectDeletionImpact(
       project: project,
       linkedFileCount: await _fileStore.countProjectFiles(projectId),
-      linkedRecordCount: 0,
+      linkedRecordCount: await _countCostEntries(database, projectId),
     );
   }
 
@@ -289,6 +294,18 @@ final class SqliteProjectRepository implements ProjectRepository {
       limit: 1,
     );
     return rows.isEmpty ? null : _projectFromRow(rows.single);
+  }
+
+  static Future<int> _countCostEntries(
+    DatabaseExecutor executor,
+    String projectId,
+  ) async {
+    final rows = await executor.rawQuery(
+      'SELECT COUNT(*) AS total FROM ${AppDatabase.costEntriesTable}'
+      ' WHERE project_id = ?',
+      <Object?>[projectId],
+    );
+    return rows.single['total']! as int;
   }
 
   static Future<bool> _isSelected(

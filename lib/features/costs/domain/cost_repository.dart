@@ -18,12 +18,19 @@ abstract interface class CostRepository {
     required String projectId,
     required String costEntryId,
     required CostStatus status,
+    CostDraftInput? replacement,
   });
 
   Future<CostEntry> changeStatus({
     required String projectId,
     required String costEntryId,
     required CostStatus status,
+  });
+
+  Future<CostEntry> updateDetails({
+    required String projectId,
+    required String costEntryId,
+    required ConfirmedCostDetailsInput input,
   });
 
   Future<CostCorrection> addCorrection(CostCorrectionInput input);
@@ -37,10 +44,13 @@ abstract interface class CostRepository {
 
   Future<CostSummary> summarize(CostSummaryQuery query);
 
-  Future<void> deleteDraft({
+  Future<Page<CostHistoryEntry>> history({
     required String projectId,
     required String costEntryId,
+    required PageRequest page,
   });
+
+  Future<void> delete({required String projectId, required String costEntryId});
 }
 
 final class CostQuery {

@@ -124,11 +124,13 @@ abstract interface class CostRepository {
   Future<CostEntry> replaceDraft(...);
   Future<CostEntry> confirmDraft(...);
   Future<CostEntry> changeStatus(...);
+  Future<CostEntry> updateDetails(...);
   Future<CostCorrection> addCorrection(CostCorrectionInput input);
   Future<CostEntry?> findById(...);
   Future<Page<CostEntry>> list(CostQuery query, PageRequest page);
   Future<CostSummary> summarize(CostSummaryQuery query);
-  Future<void> deleteDraft(...);
+  Future<Page<CostHistoryEntry>> history(...);
+  Future<void> delete(...);
 }
 
 abstract interface class CaptureDraftRepository {
@@ -164,6 +166,7 @@ Rules:
 - no `double` for persisted monetary amounts,
 - calculations use checked `BigInt` intermediates before returning SQLite `int64`,
 - project has one base currency in MVP,
+- project currency cannot change after its first cost entry,
 - gross/net/VAT rounding is centralized and uses half-up to full minor units,
 - cost status separates `planned`, `ordered`, `due`, `paid`, `returned` and `disputed`,
 - drafts and offers never contribute to financial summaries,
@@ -207,9 +210,35 @@ app_data/
 
 SQLite stores metadata and relative references. Absolute platform paths are resolved by a file service.
 
-Each attachment has:
+Schema `v3` separates `attachments` from `cost_entry_attachments`. A single
+receipt or invoice can therefore link to multiple cost lines without copying
+the original. Cost rows, links and append-only revisions are published in one
+SQLite transaction.
 
-- content hash,
+Picker import uses a recoverable file-first protocol:
+
+1. create an `importing` metadata placeholder with a generated storage key,
+2. stream the source to `<storage-key>.part`, flush it and rename it,
+3. mark the attachment `available`,
+4. link only `available` attachments while saving the cost transaction,
+5. remove interrupted imports, interrupted deletions and unlinked staging records during recovery.
+
+The filesystem cannot share a transaction with SQLite. The database commit is
+the visibility boundary; cleanup handles files prepared before a failed or
+interrupted commit. User-provided names are metadata only and never become
+storage paths.
+
+The stream enforces the configured byte limit while copying. Recovery removes
+both final and `.part` files for interrupted imports, and resumes rows marked
+`deleting` before clearing their metadata.
+
+`file_picker 11.0.2` is pinned for its Android path-traversal fix. Until its
+stable AGP 9 script detects `android.builtInKotlin=false`, the root Gradle build
+applies Kotlin and JVM 17 only to the `file_picker` subproject.
+
+Each attachment has or reserves:
+
+- an optional content hash slot, populated by a later document/OCR module,
 - original file name,
 - MIME type verified from content when practical,
 - byte size,

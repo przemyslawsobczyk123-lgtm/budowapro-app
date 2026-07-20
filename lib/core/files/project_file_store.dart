@@ -85,7 +85,11 @@ final class ProjectFileStore implements ProjectFileStorage {
     required ProjectFileArea area,
     required File source,
     required String fileName,
+    int? maximumBytes,
   }) async {
+    if (maximumBytes != null && maximumBytes < 0) {
+      throw RangeError.value(maximumBytes, 'maximumBytes');
+    }
     final target = fileFor(
       projectId: projectId,
       area: area,
@@ -111,7 +115,24 @@ final class ProjectFileStore implements ProjectFileStorage {
 
       await part.create(exclusive: true);
       ownsPart = true;
-      await source.openRead().pipe(part.openWrite());
+      final sink = part.openWrite();
+      try {
+        var copiedBytes = 0;
+        await for (final chunk in source.openRead()) {
+          copiedBytes += chunk.length;
+          if (maximumBytes != null && copiedBytes > maximumBytes) {
+            throw RangeError.value(
+              copiedBytes,
+              'source',
+              'exceeds the import byte limit',
+            );
+          }
+          sink.add(chunk);
+        }
+        await sink.flush();
+      } finally {
+        await sink.close();
+      }
 
       if (await _entityExists(target.path)) {
         throw const FileSystemException('Target file already exists');
@@ -126,6 +147,22 @@ final class ProjectFileStore implements ProjectFileStorage {
     } finally {
       _activeImportTargets.remove(importKey);
     }
+  }
+
+  Future<void> deleteFile({
+    required String projectId,
+    required ProjectFileArea area,
+    required String fileName,
+  }) async {
+    final file = fileFor(projectId: projectId, area: area, fileName: fileName);
+    final type = await FileSystemEntity.type(file.path, followLinks: false);
+    if (type == FileSystemEntityType.notFound) {
+      return;
+    }
+    if (type != FileSystemEntityType.file) {
+      throw const FileSystemException('Stored project path is not a file');
+    }
+    await file.delete();
   }
 
   @override

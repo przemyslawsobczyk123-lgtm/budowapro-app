@@ -1,4 +1,5 @@
 import 'package:budowapro/features/projects/domain/project.dart';
+import 'package:budowapro/features/projects/domain/project_repository.dart';
 import 'package:budowapro/features/projects/presentation/projects_controller.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:budowapro/shared/widgets/app_content_states.dart';
@@ -512,6 +513,13 @@ class _ProjectFormScreenState extends ConsumerState<ProjectFormScreen> {
         if (mounted) {
           Navigator.of(context).pop();
         }
+      }
+    } on ProjectCurrencyLockedException {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+          _submissionError = localizations.projectCurrencyLockedError;
+        });
       }
     } on Object {
       if (mounted) {

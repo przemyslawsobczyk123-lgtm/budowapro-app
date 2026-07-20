@@ -40,3 +40,7 @@ final class ProjectDeletionImpact {
 final class ProjectNotFoundException implements Exception {
   const ProjectNotFoundException();
 }
+
+final class ProjectCurrencyLockedException implements Exception {
+  const ProjectCurrencyLockedException();
+}

@@ -22,6 +22,16 @@ enum CostCorrectionReason {
 
 enum DecisionCostImpactStatus { proposed, approved, rejected }
 
+enum CostHistoryAction {
+  created,
+  draftSaved,
+  draftReplaced,
+  confirmed,
+  detailsUpdated,
+  statusChanged,
+  correctionAdded,
+}
+
 final class DecimalQuantity {
   factory DecimalQuantity({required int unscaledValue, required int scale}) {
     if (unscaledValue < 1) {
@@ -125,13 +135,7 @@ final class CostEntryInput {
 
 final class CostDraftInput {
   factory CostDraftInput(CostEntryInput input) {
-    if (input.status != CostStatus.planned) {
-      throw ArgumentError.value(
-        input.status,
-        'input',
-        'draft status must be planned',
-      );
-    }
+    _validateEntryState(input, CostLifecycle.draft);
     return CostDraftInput._(input);
   }
 
@@ -158,6 +162,61 @@ final class ConfirmedCostEntryInput {
   final CostEntryInput input;
 }
 
+final class ConfirmedCostDetailsInput {
+  factory ConfirmedCostDetailsInput({
+    required String name,
+    required DateTime entryDate,
+    String? stageId,
+    String? categoryId,
+    String? supplierId,
+    DecimalQuantity? quantity,
+    String? unit,
+    CostPaymentMethod? paymentMethod,
+    Iterable<String> attachmentIds = const <String>[],
+    String? note,
+  }) {
+    if ((quantity == null) != (unit == null || unit.trim().isEmpty)) {
+      throw ArgumentError('quantity and unit must be provided together');
+    }
+    return ConfirmedCostDetailsInput._(
+      name: _requiredText(name, 'name', maximumLength: 120),
+      entryDate: entryDate.toUtc(),
+      stageId: _optionalText(stageId, 'stageId', maximumLength: 64),
+      categoryId: _optionalText(categoryId, 'categoryId', maximumLength: 64),
+      supplierId: _optionalText(supplierId, 'supplierId', maximumLength: 64),
+      quantity: quantity,
+      unit: _optionalText(unit, 'unit', maximumLength: 24),
+      paymentMethod: paymentMethod,
+      attachmentIds: _normalizedIds(attachmentIds, 'attachmentIds'),
+      note: _optionalText(note, 'note', maximumLength: 2000),
+    );
+  }
+
+  const ConfirmedCostDetailsInput._({
+    required this.name,
+    required this.entryDate,
+    required this.stageId,
+    required this.categoryId,
+    required this.supplierId,
+    required this.quantity,
+    required this.unit,
+    required this.paymentMethod,
+    required this.attachmentIds,
+    required this.note,
+  });
+
+  final String name;
+  final DateTime entryDate;
+  final String? stageId;
+  final String? categoryId;
+  final String? supplierId;
+  final DecimalQuantity? quantity;
+  final String? unit;
+  final CostPaymentMethod? paymentMethod;
+  final UnmodifiableListView<String> attachmentIds;
+  final String? note;
+}
+
 final class CostEntry {
   factory CostEntry({
     required String id,
@@ -165,6 +224,7 @@ final class CostEntry {
     required CostLifecycle lifecycle,
     required DateTime createdAt,
     required DateTime updatedAt,
+    int revision = 1,
   }) {
     _validateEntryState(input, lifecycle);
     final createdAtUtc = createdAt.toUtc();
@@ -176,12 +236,16 @@ final class CostEntry {
         'must not be before createdAt',
       );
     }
+    if (revision < 1) {
+      throw RangeError.value(revision, 'revision', 'must be greater than zero');
+    }
     return CostEntry._(
       id: _requiredText(id, 'id', maximumLength: 64),
       input: input,
       lifecycle: lifecycle,
       createdAtUtc: createdAtUtc,
       updatedAtUtc: updatedAtUtc,
+      revision: revision,
     );
   }
 
@@ -191,6 +255,7 @@ final class CostEntry {
     required this.lifecycle,
     required this.createdAtUtc,
     required this.updatedAtUtc,
+    required this.revision,
   });
 
   final String id;
@@ -198,6 +263,7 @@ final class CostEntry {
   final CostLifecycle lifecycle;
   final DateTime createdAtUtc;
   final DateTime updatedAtUtc;
+  final int revision;
 
   String get projectId => input.projectId;
   String get name => input.name;
@@ -209,6 +275,45 @@ final class CostEntry {
   bool get isIncludedInSummaries {
     return lifecycle == CostLifecycle.confirmed && type != CostEntryType.offer;
   }
+}
+
+final class CostHistoryEntry {
+  factory CostHistoryEntry({
+    required String id,
+    required String projectId,
+    required String costEntryId,
+    required int revision,
+    required CostHistoryAction action,
+    required DateTime createdAt,
+  }) {
+    if (revision < 1) {
+      throw RangeError.value(revision, 'revision', 'must be greater than zero');
+    }
+    return CostHistoryEntry._(
+      id: _requiredText(id, 'id', maximumLength: 64),
+      projectId: _requiredText(projectId, 'projectId', maximumLength: 64),
+      costEntryId: _requiredText(costEntryId, 'costEntryId', maximumLength: 64),
+      revision: revision,
+      action: action,
+      createdAtUtc: createdAt.toUtc(),
+    );
+  }
+
+  const CostHistoryEntry._({
+    required this.id,
+    required this.projectId,
+    required this.costEntryId,
+    required this.revision,
+    required this.action,
+    required this.createdAtUtc,
+  });
+
+  final String id;
+  final String projectId;
+  final String costEntryId;
+  final int revision;
+  final CostHistoryAction action;
+  final DateTime createdAtUtc;
 }
 
 final class CostCorrection {
@@ -347,14 +452,7 @@ final class DecisionCostImpact {
 }
 
 void _validateEntryState(CostEntryInput input, CostLifecycle lifecycle) {
-  if (lifecycle == CostLifecycle.draft) {
-    if (input.status != CostStatus.planned) {
-      throw ArgumentError.value(
-        input.status,
-        'status',
-        'draft status must be planned',
-      );
-    }
+  if (lifecycle == CostLifecycle.draft && input.status == CostStatus.planned) {
     return;
   }
 
@@ -375,7 +473,7 @@ void _validateEntryState(CostEntryInput input, CostLifecycle lifecycle) {
     throw ArgumentError.value(
       input.status,
       'status',
-      'is not valid for confirmed ${input.type.name}',
+      'is not valid for ${input.type.name}',
     );
   }
 }
