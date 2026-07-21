@@ -266,6 +266,37 @@ void main() {
       throwsArgumentError,
     );
   });
+
+  test('rolls back metadata when saving context links fails', () async {
+    await expectLater(
+      documents.saveDetails(
+        projectId: 'project-1',
+        documentId: 'document-2',
+        metadata: DocumentMetadata(
+          title: 'Nie powinno zostac',
+          type: ProjectDocumentType.warranty,
+        ),
+        contextLinks: <DocumentRelation>[
+          DocumentRelation(
+            type: DocumentRelationType.stage,
+            targetId: 'outside-project',
+            label: 'Obcy etap',
+          ),
+        ],
+      ),
+      throwsArgumentError,
+    );
+
+    final handle = await database.open();
+    expect(
+      await handle.query(
+        AppDatabase.documentMetadataTable,
+        where: 'attachment_id = ?',
+        whereArgs: const <Object?>['document-2'],
+      ),
+      isEmpty,
+    );
+  });
 }
 
 const String _hash =

@@ -159,6 +159,7 @@ class _QuoteDetailsScreenState extends ConsumerState<QuoteDetailsScreen> {
               const SizedBox(height: 6),
               ...data.attachments.map(
                 (attachment) => ListTile(
+                  key: ValueKey('quoteDocument-${attachment.id}'),
                   contentPadding: EdgeInsets.zero,
                   leading: Icon(
                     attachment.mediaType?.startsWith('image/') == true
@@ -167,6 +168,8 @@ class _QuoteDetailsScreenState extends ConsumerState<QuoteDetailsScreen> {
                   ),
                   title: Text(attachment.displayName),
                   subtitle: Text(_fileSize(attachment.byteSize)),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => _openDocument(attachment.id),
                 ),
               ),
             ],
@@ -250,6 +253,14 @@ class _QuoteDetailsScreenState extends ConsumerState<QuoteDetailsScreen> {
     final changed = await context.push<bool>(
       '/projects/${Uri.encodeComponent(widget.projectId)}'
       '/quotes/${Uri.encodeComponent(widget.quoteId)}/edit',
+    );
+    if (changed == true && mounted) _reload();
+  }
+
+  Future<void> _openDocument(String documentId) async {
+    final changed = await context.push<bool>(
+      '/projects/${Uri.encodeComponent(widget.projectId)}'
+      '/documents/${Uri.encodeComponent(documentId)}',
     );
     if (changed == true && mounted) _reload();
   }

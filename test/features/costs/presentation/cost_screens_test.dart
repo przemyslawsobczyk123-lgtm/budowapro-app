@@ -23,6 +23,7 @@ import 'package:budowapro/shared/models/page.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../helpers/fake_project_repository.dart';
 
@@ -163,6 +164,69 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(gateway.changedStatus, CostStatus.paid);
+  });
+
+  testWidgets('opens the shared document from a legacy cost attachment', (
+    tester,
+  ) async {
+    final entry = _entry();
+    final attachment = StagedCostAttachment(
+      id: 'document-1',
+      projectId: 'project-1',
+      displayName: 'faktura.pdf',
+      byteSize: 1200,
+      mediaType: 'application/pdf',
+      sha256: null,
+      hasPreview: false,
+      importedAtUtc: DateTime.utc(2026, 7, 15),
+    );
+    final gateway = _FakeGateway(
+      data: CostEditorData(
+        project: _project(),
+        entry: entry,
+        attachments: <StagedCostAttachment>[attachment],
+      ),
+    );
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) =>
+              CostDetailsScreen(projectId: 'project-1', costEntryId: entry.id),
+        ),
+        GoRoute(
+          path: '/projects/:projectId/documents/:documentId',
+          builder: (context, state) => Scaffold(
+            body: Text('document:${state.pathParameters['documentId']}'),
+          ),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          costEditorGatewayProvider.overrideWith((ref) async => gateway),
+        ],
+        child: MaterialApp.router(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: AppTheme.light,
+          routerConfig: router,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('costDocument-document-1')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.byKey(const ValueKey('costDocument-document-1')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('document:document-1'), findsOneWidget);
   });
 
   testWidgets('does not offer mark paid for a returned cost', (tester) async {

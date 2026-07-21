@@ -1726,6 +1726,18 @@ abstract class AppLocalizations {
   /// **'Dowody: {count}'**
   String checklistEvidenceCount(int count);
 
+  /// No description provided for @checklistOpenEvidenceAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwórz dokumenty dowodowe'**
+  String get checklistOpenEvidenceAction;
+
+  /// No description provided for @checklistEvidenceItemLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dowód {number}'**
+  String checklistEvidenceItemLabel(int number);
+
   /// No description provided for @checklistEvidenceWaived.
   ///
   /// In pl, this message translates to:
@@ -3687,6 +3699,552 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Brak ofert tego wykonawcy.'**
   String get contactQuotesEmpty;
+
+  /// No description provided for @documentsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokumenty'**
+  String get documentsTitle;
+
+  /// No description provided for @documentsSearchLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szukaj nazwy lub opisu'**
+  String get documentsSearchLabel;
+
+  /// No description provided for @documentsFiltersAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Filtry'**
+  String get documentsFiltersAction;
+
+  /// No description provided for @documentsFiltersCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Filtry ({count})'**
+  String documentsFiltersCount(int count);
+
+  /// No description provided for @documentsFilterTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Filtruj dokumenty'**
+  String get documentsFilterTitle;
+
+  /// No description provided for @documentsFilterTypeAll.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie typy'**
+  String get documentsFilterTypeAll;
+
+  /// No description provided for @documentsFilterStageAll.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie etapy'**
+  String get documentsFilterStageAll;
+
+  /// No description provided for @documentsFilterRoomAll.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie pomieszczenia'**
+  String get documentsFilterRoomAll;
+
+  /// No description provided for @documentsFilterWarrantyAll.
+  ///
+  /// In pl, this message translates to:
+  /// **'Każdy stan gwarancji'**
+  String get documentsFilterWarrantyAll;
+
+  /// No description provided for @documentsFilterFromDate.
+  ///
+  /// In pl, this message translates to:
+  /// **'Od daty'**
+  String get documentsFilterFromDate;
+
+  /// No description provided for @documentsFilterToDate.
+  ///
+  /// In pl, this message translates to:
+  /// **'Do daty'**
+  String get documentsFilterToDate;
+
+  /// No description provided for @documentsApplyFiltersAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pokaż wyniki'**
+  String get documentsApplyFiltersAction;
+
+  /// No description provided for @documentsResultCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokumenty: {count}'**
+  String documentsResultCount(int count);
+
+  /// No description provided for @documentsLoadMoreAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytaj kolejne'**
+  String get documentsLoadMoreAction;
+
+  /// No description provided for @documentsNoProjectTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz projekt'**
+  String get documentsNoProjectTitle;
+
+  /// No description provided for @documentsNoProjectMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokumenty są przechowywane osobno dla każdego projektu.'**
+  String get documentsNoProjectMessage;
+
+  /// No description provided for @documentsEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak dokumentów'**
+  String get documentsEmptyTitle;
+
+  /// No description provided for @documentsEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj fakturę, umowę, gwarancję, instrukcję albo zdjęcie.'**
+  String get documentsEmptyMessage;
+
+  /// No description provided for @documentsNoResultsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak pasujących dokumentów'**
+  String get documentsNoResultsTitle;
+
+  /// No description provided for @documentsNoResultsMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień wyszukiwanie albo aktywne filtry.'**
+  String get documentsNoResultsMessage;
+
+  /// No description provided for @documentsLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać dokumentów.'**
+  String get documentsLoadError;
+
+  /// No description provided for @documentImportAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj dokument'**
+  String get documentImportAction;
+
+  /// No description provided for @documentImportError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zaimportować dokumentu.'**
+  String get documentImportError;
+
+  /// No description provided for @documentDuplicateTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ten plik może już być zapisany'**
+  String get documentDuplicateTitle;
+
+  /// No description provided for @documentDuplicateMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Znaleziono {count} dokumentów z identyczną zawartością. Możesz mimo to zachować osobną pozycję.'**
+  String documentDuplicateMessage(int count);
+
+  /// No description provided for @documentDuplicateContinueAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zachowaj mimo to'**
+  String get documentDuplicateContinueAction;
+
+  /// No description provided for @documentNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowy dokument'**
+  String get documentNewTitle;
+
+  /// No description provided for @documentEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj dokument'**
+  String get documentEditTitle;
+
+  /// No description provided for @documentDetailsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły dokumentu'**
+  String get documentDetailsTitle;
+
+  /// No description provided for @documentViewerTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podgląd dokumentu'**
+  String get documentViewerTitle;
+
+  /// No description provided for @documentTitleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa dokumentu'**
+  String get documentTitleLabel;
+
+  /// No description provided for @documentTypeLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Typ dokumentu'**
+  String get documentTypeLabel;
+
+  /// No description provided for @documentDescriptionLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Opis'**
+  String get documentDescriptionLabel;
+
+  /// No description provided for @documentDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data dokumentu'**
+  String get documentDateLabel;
+
+  /// No description provided for @documentStageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap'**
+  String get documentStageLabel;
+
+  /// No description provided for @documentNoStage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez etapu'**
+  String get documentNoStage;
+
+  /// No description provided for @documentRoomLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenie lub strefa'**
+  String get documentRoomLabel;
+
+  /// No description provided for @documentContactLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontakt'**
+  String get documentContactLabel;
+
+  /// No description provided for @documentNoContact.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez kontaktu'**
+  String get documentNoContact;
+
+  /// No description provided for @documentWarrantySection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gwarancja i termin'**
+  String get documentWarrantySection;
+
+  /// No description provided for @documentWarrantyEnabledLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokument zawiera gwarancję'**
+  String get documentWarrantyEnabledLabel;
+
+  /// No description provided for @documentWarrantyStartLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Początek gwarancji'**
+  String get documentWarrantyStartLabel;
+
+  /// No description provided for @documentWarrantyEndLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Koniec gwarancji'**
+  String get documentWarrantyEndLabel;
+
+  /// No description provided for @documentWarrantyReminderLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypomnienie'**
+  String get documentWarrantyReminderLabel;
+
+  /// No description provided for @documentWarrantyReminderHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data pojawi się w informacjach o terminie gwarancji.'**
+  String get documentWarrantyReminderHint;
+
+  /// No description provided for @documentRequiredFieldsError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podaj nazwę i typ dokumentu.'**
+  String get documentRequiredFieldsError;
+
+  /// No description provided for @documentWarrantyDatesError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podaj prawidłowy początek i koniec gwarancji.'**
+  String get documentWarrantyDatesError;
+
+  /// No description provided for @documentSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać dokumentu.'**
+  String get documentSaveError;
+
+  /// No description provided for @documentLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać dokumentu.'**
+  String get documentLoadError;
+
+  /// No description provided for @documentNotFoundTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie znaleziono dokumentu'**
+  String get documentNotFoundTitle;
+
+  /// No description provided for @documentNotFoundMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokument mógł zostać usunięty albo należy do innego projektu.'**
+  String get documentNotFoundMessage;
+
+  /// No description provided for @documentOpenAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwórz'**
+  String get documentOpenAction;
+
+  /// No description provided for @documentShareAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Udostępnij'**
+  String get documentShareAction;
+
+  /// No description provided for @documentShareError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się udostępnić pliku.'**
+  String get documentShareError;
+
+  /// No description provided for @documentDeleteTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunąć dokument?'**
+  String get documentDeleteTitle;
+
+  /// No description provided for @documentDeleteMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plik oraz {count} powiązanych rekordów zostaną odłączone. Tej operacji nie można cofnąć.'**
+  String documentDeleteMessage(int count);
+
+  /// No description provided for @documentDeleteError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się usunąć dokumentu.'**
+  String get documentDeleteError;
+
+  /// No description provided for @documentRelationsHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiązania'**
+  String get documentRelationsHeading;
+
+  /// No description provided for @documentRelationsEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak powiązanych rekordów.'**
+  String get documentRelationsEmpty;
+
+  /// No description provided for @documentFileHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plik źródłowy'**
+  String get documentFileHeading;
+
+  /// No description provided for @documentFileNameLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa pliku'**
+  String get documentFileNameLabel;
+
+  /// No description provided for @documentFileSizeLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozmiar'**
+  String get documentFileSizeLabel;
+
+  /// No description provided for @documentImportedAtLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaimportowano'**
+  String get documentImportedAtLabel;
+
+  /// No description provided for @documentOriginalPreservedLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oryginał zachowany bez zmian'**
+  String get documentOriginalPreservedLabel;
+
+  /// No description provided for @documentPreviewUnavailable.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podgląd tego formatu nie jest dostępny w aplikacji.'**
+  String get documentPreviewUnavailable;
+
+  /// No description provided for @documentPreviewUnavailableMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oryginał pozostaje zapisany i możesz go udostępnić z ekranu szczegółów.'**
+  String get documentPreviewUnavailableMessage;
+
+  /// No description provided for @documentTypeReceipt.
+  ///
+  /// In pl, this message translates to:
+  /// **'Paragon'**
+  String get documentTypeReceipt;
+
+  /// No description provided for @documentTypeInvoice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Faktura'**
+  String get documentTypeInvoice;
+
+  /// No description provided for @documentTypeQuote.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oferta'**
+  String get documentTypeQuote;
+
+  /// No description provided for @documentTypeContract.
+  ///
+  /// In pl, this message translates to:
+  /// **'Umowa'**
+  String get documentTypeContract;
+
+  /// No description provided for @documentTypeDeliveryNote.
+  ///
+  /// In pl, this message translates to:
+  /// **'WZ'**
+  String get documentTypeDeliveryNote;
+
+  /// No description provided for @documentTypeProtocol.
+  ///
+  /// In pl, this message translates to:
+  /// **'Protokół'**
+  String get documentTypeProtocol;
+
+  /// No description provided for @documentTypeWarranty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gwarancja'**
+  String get documentTypeWarranty;
+
+  /// No description provided for @documentTypeInstruction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Instrukcja'**
+  String get documentTypeInstruction;
+
+  /// No description provided for @documentTypeMap.
+  ///
+  /// In pl, this message translates to:
+  /// **'Mapa lub rzut'**
+  String get documentTypeMap;
+
+  /// No description provided for @documentTypePhoto.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcie'**
+  String get documentTypePhoto;
+
+  /// No description provided for @documentTypeOther.
+  ///
+  /// In pl, this message translates to:
+  /// **'Inny dokument'**
+  String get documentTypeOther;
+
+  /// No description provided for @documentWarrantyWithout.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez gwarancji'**
+  String get documentWarrantyWithout;
+
+  /// No description provided for @documentWarrantyActive.
+  ///
+  /// In pl, this message translates to:
+  /// **'Aktywna'**
+  String get documentWarrantyActive;
+
+  /// No description provided for @documentWarrantyExpiring.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wygasa w ciągu 30 dni'**
+  String get documentWarrantyExpiring;
+
+  /// No description provided for @documentWarrantyExpired.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wygasła'**
+  String get documentWarrantyExpired;
+
+  /// No description provided for @documentWarrantyUntilValue.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gwarancja do {date}'**
+  String documentWarrantyUntilValue(String date);
+
+  /// No description provided for @documentRelationCost.
+  ///
+  /// In pl, this message translates to:
+  /// **'Koszt'**
+  String get documentRelationCost;
+
+  /// No description provided for @documentRelationStage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap'**
+  String get documentRelationStage;
+
+  /// No description provided for @documentRelationChecklist.
+  ///
+  /// In pl, this message translates to:
+  /// **'Checklista'**
+  String get documentRelationChecklist;
+
+  /// No description provided for @documentRelationContact.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontakt'**
+  String get documentRelationContact;
+
+  /// No description provided for @documentRelationRoom.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenie'**
+  String get documentRelationRoom;
+
+  /// No description provided for @documentRelationQuote.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oferta'**
+  String get documentRelationQuote;
+
+  /// No description provided for @documentRelationDecision.
+  ///
+  /// In pl, this message translates to:
+  /// **'Decyzja'**
+  String get documentRelationDecision;
+
+  /// No description provided for @documentRelationDefect.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterka'**
+  String get documentRelationDefect;
+
+  /// No description provided for @documentRelationDevice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Urządzenie'**
+  String get documentRelationDevice;
 }
 
 class _AppLocalizationsDelegate

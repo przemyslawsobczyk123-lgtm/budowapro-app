@@ -28,7 +28,7 @@ void main() {
     const destinations = <String, String>{
       'Plan': 'Najpierw utwórz projekt',
       'Budżet': 'Budżet inwestycji',
-      'Budowa': 'Dokumentacja budowy',
+      'Budowa': 'Dokumenty',
       'Więcej': 'Narzędzia projektu',
       'Start': 'Brak aktywnego projektu',
     };

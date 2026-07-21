@@ -108,42 +108,11 @@ final class SqliteDocumentRepository implements DocumentRepository {
         projectId: projectId,
         documentId: documentId,
       );
-      await transaction.rawInsert(
-        '''
-          INSERT INTO ${AppDatabase.documentMetadataTable} (
-            project_id,
-            attachment_id,
-            title,
-            document_type,
-            description,
-            document_date_utc_ms,
-            warranty_starts_at_utc_ms,
-            warranty_ends_at_utc_ms,
-            warranty_reminder_at_utc_ms,
-            updated_at_utc_ms
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          ON CONFLICT(project_id, attachment_id) DO UPDATE SET
-            title = excluded.title,
-            document_type = excluded.document_type,
-            description = excluded.description,
-            document_date_utc_ms = excluded.document_date_utc_ms,
-            warranty_starts_at_utc_ms = excluded.warranty_starts_at_utc_ms,
-            warranty_ends_at_utc_ms = excluded.warranty_ends_at_utc_ms,
-            warranty_reminder_at_utc_ms = excluded.warranty_reminder_at_utc_ms,
-            updated_at_utc_ms = excluded.updated_at_utc_ms
-        ''',
-        <Object?>[
-          projectId,
-          documentId,
-          metadata.title,
-          metadata.type.name,
-          metadata.description,
-          _milliseconds(metadata.documentDateUtc),
-          _milliseconds(metadata.warrantyStartsAtUtc),
-          _milliseconds(metadata.warrantyEndsAtUtc),
-          _milliseconds(metadata.warrantyReminderAtUtc),
-          DatabaseValueCodec.dateTimeToUtcMilliseconds(_utcNow()),
-        ],
+      await _upsertMetadata(
+        transaction,
+        projectId: projectId,
+        documentId: documentId,
+        metadata: metadata,
       );
       return (await _findDocument(
         transaction,
@@ -165,33 +134,45 @@ final class SqliteDocumentRepository implements DocumentRepository {
         projectId: projectId,
         documentId: documentId,
       );
-      final normalizedLinks = links.toList(growable: false);
-      _requireUniqueContextLinks(normalizedLinks);
-      await _validateContextLinks(
+      await _replaceContextLinks(
         transaction,
         projectId: projectId,
-        links: normalizedLinks,
+        documentId: documentId,
+        links: links,
       );
-      await transaction.delete(
-        AppDatabase.documentContextLinksTable,
-        where: 'project_id = ? AND attachment_id = ?',
-        whereArgs: <Object?>[projectId, documentId],
+      return (await _findDocument(
+        transaction,
+        projectId: projectId,
+        documentId: documentId,
+      ))!;
+    });
+  }
+
+  @override
+  Future<ProjectDocument> saveDetails({
+    required String projectId,
+    required String documentId,
+    required DocumentMetadata metadata,
+    required Iterable<DocumentRelation> contextLinks,
+  }) {
+    return _database.transaction<ProjectDocument>((transaction) async {
+      await _requireDocument(
+        transaction,
+        projectId: projectId,
+        documentId: documentId,
       );
-      for (var index = 0; index < normalizedLinks.length; index += 1) {
-        final link = normalizedLinks[index];
-        await transaction.insert(
-          AppDatabase.documentContextLinksTable,
-          <String, Object?>{
-            'project_id': projectId,
-            'attachment_id': documentId,
-            'relation_type': link.type.name,
-            'target_id': link.targetId,
-            'label': link.label,
-            'sort_order': index,
-          },
-          conflictAlgorithm: ConflictAlgorithm.abort,
-        );
-      }
+      await _upsertMetadata(
+        transaction,
+        projectId: projectId,
+        documentId: documentId,
+        metadata: metadata,
+      );
+      await _replaceContextLinks(
+        transaction,
+        projectId: projectId,
+        documentId: documentId,
+        links: contextLinks,
+      );
       return (await _findDocument(
         transaction,
         projectId: projectId,
@@ -243,6 +224,86 @@ final class SqliteDocumentRepository implements DocumentRepository {
       limit: 1,
     );
     if (rows.isEmpty) throw const DocumentNotFoundException();
+  }
+
+  Future<void> _upsertMetadata(
+    DatabaseExecutor executor, {
+    required String projectId,
+    required String documentId,
+    required DocumentMetadata metadata,
+  }) async {
+    await executor.rawInsert(
+      '''
+        INSERT INTO ${AppDatabase.documentMetadataTable} (
+          project_id,
+          attachment_id,
+          title,
+          document_type,
+          description,
+          document_date_utc_ms,
+          warranty_starts_at_utc_ms,
+          warranty_ends_at_utc_ms,
+          warranty_reminder_at_utc_ms,
+          updated_at_utc_ms
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(project_id, attachment_id) DO UPDATE SET
+          title = excluded.title,
+          document_type = excluded.document_type,
+          description = excluded.description,
+          document_date_utc_ms = excluded.document_date_utc_ms,
+          warranty_starts_at_utc_ms = excluded.warranty_starts_at_utc_ms,
+          warranty_ends_at_utc_ms = excluded.warranty_ends_at_utc_ms,
+          warranty_reminder_at_utc_ms = excluded.warranty_reminder_at_utc_ms,
+          updated_at_utc_ms = excluded.updated_at_utc_ms
+      ''',
+      <Object?>[
+        projectId,
+        documentId,
+        metadata.title,
+        metadata.type.name,
+        metadata.description,
+        _milliseconds(metadata.documentDateUtc),
+        _milliseconds(metadata.warrantyStartsAtUtc),
+        _milliseconds(metadata.warrantyEndsAtUtc),
+        _milliseconds(metadata.warrantyReminderAtUtc),
+        DatabaseValueCodec.dateTimeToUtcMilliseconds(_utcNow()),
+      ],
+    );
+  }
+
+  static Future<void> _replaceContextLinks(
+    DatabaseExecutor executor, {
+    required String projectId,
+    required String documentId,
+    required Iterable<DocumentRelation> links,
+  }) async {
+    final normalizedLinks = links.toList(growable: false);
+    _requireUniqueContextLinks(normalizedLinks);
+    await _validateContextLinks(
+      executor,
+      projectId: projectId,
+      links: normalizedLinks,
+    );
+    await executor.delete(
+      AppDatabase.documentContextLinksTable,
+      where: 'project_id = ? AND attachment_id = ?',
+      whereArgs: <Object?>[projectId, documentId],
+    );
+    for (var index = 0; index < normalizedLinks.length; index += 1) {
+      final link = normalizedLinks[index];
+      await executor.insert(
+        AppDatabase.documentContextLinksTable,
+        <String, Object?>{
+          'project_id': projectId,
+          'attachment_id': documentId,
+          'relation_type': link.type.name,
+          'target_id': link.targetId,
+          'label': link.label,
+          'sort_order': index,
+        },
+        conflictAlgorithm: ConflictAlgorithm.abort,
+      );
+    }
   }
 
   static Future<void> _validateContextLinks(

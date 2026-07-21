@@ -26,6 +26,13 @@ abstract interface class DocumentRepository {
     required Iterable<DocumentRelation> links,
   });
 
+  Future<ProjectDocument> saveDetails({
+    required String projectId,
+    required String documentId,
+    required DocumentMetadata metadata,
+    required Iterable<DocumentRelation> contextLinks,
+  });
+
   Future<List<ProjectDocument>> findPotentialDuplicates({
     required String projectId,
     required String sha256,

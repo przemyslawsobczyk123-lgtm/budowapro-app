@@ -5,6 +5,10 @@ import 'package:budowapro/features/contacts/presentation/contact_form_screen.dar
 import 'package:budowapro/features/contacts/presentation/contacts_screen.dart';
 import 'package:budowapro/features/contacts/presentation/site_visit_form_screen.dart';
 import 'package:budowapro/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:budowapro/features/documents/presentation/document_details_screen.dart';
+import 'package:budowapro/features/documents/presentation/document_form_screen.dart';
+import 'package:budowapro/features/documents/presentation/document_viewer_screen.dart';
+import 'package:budowapro/features/documents/presentation/documents_screen.dart';
 import 'package:budowapro/features/projects/presentation/project_form_screen.dart';
 import 'package:budowapro/features/quotes/presentation/quote_comparison_screen.dart';
 import 'package:budowapro/features/quotes/presentation/quote_details_screen.dart';
@@ -50,6 +54,28 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => CostFormScreen(
           projectId: state.pathParameters['projectId']!,
           costEntryId: state.pathParameters['costEntryId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/documents/:documentId/view',
+        builder: (context, state) => DocumentViewerScreen(
+          projectId: state.pathParameters['projectId']!,
+          documentId: state.pathParameters['documentId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/documents/:documentId/edit',
+        builder: (context, state) => DocumentFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          documentId: state.pathParameters['documentId']!,
+          isNew: state.uri.queryParameters['new'] == '1',
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/documents/:documentId',
+        builder: (context, state) => DocumentDetailsScreen(
+          projectId: state.pathParameters['projectId']!,
+          documentId: state.pathParameters['documentId']!,
         ),
       ),
       GoRoute(
@@ -181,6 +207,7 @@ StatefulShellBranch _branchFor(AppSection section) {
             AppSection.plan => SchedulePlanScreen(
               initialTab: state.uri.queryParameters['tab'] == 'stages' ? 1 : 0,
             ),
+            AppSection.build => const DocumentsScreen(),
             AppSection.more => const MoreToolsScreen(),
             _ => ProjectSectionScreen(section: section),
           },

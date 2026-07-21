@@ -311,8 +311,10 @@ class _CostDetailsState extends State<_CostDetails> {
                   _DetailsSectionTitle(localizations.costFormDocumentsSection),
                   const SizedBox(height: 8),
                   _DetailsAttachmentList(
+                    projectId: widget.data.project.id,
                     attachments: widget.data.attachments,
                     emptyText: localizations.costAttachmentsEmpty,
+                    onDocumentChanged: widget.onChanged,
                   ),
                   const SizedBox(height: 20),
                   _DetailsSectionTitle(localizations.costHistorySection),
@@ -459,10 +461,10 @@ class _DetailGroup extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) => DecoratedBox(
-    decoration: BoxDecoration(
-      color: Theme.of(context).colorScheme.surfaceContainerLowest,
-      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+  Widget build(BuildContext context) => Material(
+    color: Theme.of(context).colorScheme.surfaceContainerLowest,
+    shape: RoundedRectangleBorder(
+      side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
       borderRadius: BorderRadius.circular(8),
     ),
     child: Column(children: children),
@@ -533,12 +535,16 @@ class _StatusChip extends StatelessWidget {
 
 class _DetailsAttachmentList extends StatelessWidget {
   const _DetailsAttachmentList({
+    required this.projectId,
     required this.attachments,
     required this.emptyText,
+    required this.onDocumentChanged,
   });
 
+  final String projectId;
   final List<StagedCostAttachment> attachments;
   final String emptyText;
+  final VoidCallback onDocumentChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -547,12 +553,21 @@ class _DetailsAttachmentList extends StatelessWidget {
       children: attachments
           .map(
             (attachment) => ListTile(
+              key: ValueKey('costDocument-${attachment.id}'),
               leading: const Icon(Icons.description_outlined),
               title: Text(
                 attachment.displayName,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () async {
+                final changed = await context.push<bool>(
+                  '/projects/${Uri.encodeComponent(projectId)}'
+                  '/documents/${Uri.encodeComponent(attachment.id)}',
+                );
+                if (changed == true) onDocumentChanged();
+              },
             ),
           )
           .toList(growable: false),

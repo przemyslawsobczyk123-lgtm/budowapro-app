@@ -153,6 +153,20 @@ class _StagePlanContent extends ConsumerWidget {
                   item: item,
                   enabled: !state.isSaving,
                   onTap: () => _editChecklistItem(context, ref, state, item),
+                  onOpenEvidence: item.evidenceIds.isEmpty
+                      ? null
+                      : () async {
+                          final changed = await _openChecklistEvidence(
+                            context,
+                            projectId: state.project!.id,
+                            evidenceIds: item.evidenceIds,
+                          );
+                          if (changed && context.mounted) {
+                            await ref
+                                .read(stagePlanControllerProvider.notifier)
+                                .refresh();
+                          }
+                        },
                 );
               },
             ),
@@ -380,12 +394,14 @@ class _ChecklistRow extends StatelessWidget {
     required this.item,
     required this.enabled,
     required this.onTap,
+    required this.onOpenEvidence,
     super.key,
   });
 
   final ChecklistItem item;
   final bool enabled;
   final VoidCallback onTap;
+  final VoidCallback? onOpenEvidence;
 
   @override
   Widget build(BuildContext context) {
@@ -472,6 +488,10 @@ class _ChecklistRow extends StatelessWidget {
                                   ),
                             emphasized:
                                 !item.hasEvidence && !item.hasEvidenceWaiver,
+                            tooltip: onOpenEvidence == null
+                                ? null
+                                : l10n.checklistOpenEvidenceAction,
+                            onTap: enabled ? onOpenEvidence : null,
                           ),
                       ],
                     ),
@@ -496,11 +516,15 @@ class _ChecklistTag extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.emphasized,
+    this.tooltip,
+    this.onTap,
   });
 
   final IconData icon;
   final String label;
   final bool emphasized;
+  final String? tooltip;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -509,7 +533,7 @@ class _ChecklistTag extends StatelessWidget {
     final background = emphasized
         ? colors.errorContainer
         : colors.surfaceContainerHighest;
-    return DecoratedBox(
+    final tag = DecoratedBox(
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(6),
@@ -528,6 +552,18 @@ class _ChecklistTag extends StatelessWidget {
               ).textTheme.labelSmall?.copyWith(color: foreground),
             ),
           ],
+        ),
+      ),
+    );
+    if (onTap == null) return tag;
+    return Tooltip(
+      message: tooltip ?? label,
+      child: Semantics(
+        button: true,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(6),
+          onTap: onTap,
+          child: tag,
         ),
       ),
     );
@@ -635,6 +671,41 @@ Future<void> _editChecklistItem(
   } on Object {
     if (context.mounted) _showMutationError(context);
   }
+}
+
+Future<bool> _openChecklistEvidence(
+  BuildContext context, {
+  required String projectId,
+  required List<String> evidenceIds,
+}) async {
+  String? documentId;
+  if (evidenceIds.length == 1) {
+    documentId = evidenceIds.single;
+  } else {
+    final l10n = AppLocalizations.of(context);
+    documentId = await showModalBottomSheet<String>(
+      context: context,
+      useSafeArea: true,
+      builder: (context) => ListView.separated(
+        shrinkWrap: true,
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        itemCount: evidenceIds.length,
+        separatorBuilder: (context, index) => const Divider(height: 1),
+        itemBuilder: (context, index) => ListTile(
+          leading: const Icon(Icons.description_outlined),
+          title: Text(l10n.checklistEvidenceItemLabel(index + 1)),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: () => Navigator.pop(context, evidenceIds[index]),
+        ),
+      ),
+    );
+  }
+  if (documentId == null || !context.mounted) return false;
+  return await context.push<bool>(
+        '/projects/${Uri.encodeComponent(projectId)}'
+        '/documents/${Uri.encodeComponent(documentId)}',
+      ) ??
+      false;
 }
 
 Future<void> _resolveRequiredEvidence(

@@ -275,6 +275,76 @@ void main() {
     },
   );
 
+  test('catalog deletion removes the file and every document link', () async {
+    final source = File(p.join(temporaryDirectory.path, 'invoice.pdf'));
+    await source.writeAsBytes(<int>[9, 8, 7], flush: true);
+    final document = await stager.stage(
+      projectId: 'project-1',
+      pickedFile: PickedCostAttachment(
+        sourceUri: source.uri,
+        displayName: 'invoice.pdf',
+        reportedByteSize: 3,
+        mediaType: 'application/pdf',
+      ),
+    );
+    final original = await stager.originalFile(
+      projectId: 'project-1',
+      attachmentId: document.id,
+    );
+    final rawDatabase = await database.open();
+    await rawDatabase.insert(
+      AppDatabase.costEntriesTable,
+      _minimalCostRow('cost-1'),
+    );
+    await rawDatabase
+        .insert(AppDatabase.costEntryAttachmentsTable, <String, Object?>{
+          'project_id': 'project-1',
+          'cost_entry_id': 'cost-1',
+          'attachment_id': document.id,
+          'sort_order': 0,
+        });
+    await rawDatabase
+        .insert(AppDatabase.documentMetadataTable, <String, Object?>{
+          'project_id': 'project-1',
+          'attachment_id': document.id,
+          'title': 'Faktura',
+          'document_type': 'invoice',
+          'description': null,
+          'document_date_utc_ms': null,
+          'warranty_starts_at_utc_ms': null,
+          'warranty_ends_at_utc_ms': null,
+          'warranty_reminder_at_utc_ms': null,
+          'updated_at_utc_ms': 0,
+        });
+    await rawDatabase
+        .insert(AppDatabase.documentContextLinksTable, <String, Object?>{
+          'project_id': 'project-1',
+          'attachment_id': document.id,
+          'relation_type': 'room',
+          'target_id': 'kuchnia',
+          'label': 'Kuchnia',
+          'sort_order': 0,
+        });
+
+    await stager.deleteCatalogDocument(
+      projectId: 'project-1',
+      attachmentId: document.id,
+    );
+
+    expect(await original!.exists(), isFalse);
+    expect(await rawDatabase.query(AppDatabase.costAttachmentsTable), isEmpty);
+    expect(
+      await rawDatabase.query(AppDatabase.costEntryAttachmentsTable),
+      isEmpty,
+    );
+    expect(await rawDatabase.query(AppDatabase.documentMetadataTable), isEmpty);
+    expect(
+      await rawDatabase.query(AppDatabase.documentContextLinksTable),
+      isEmpty,
+    );
+    expect(await rawDatabase.query(AppDatabase.costEntriesTable), hasLength(1));
+  });
+
   test(
     'startup recovery removes an available attachment without links',
     () async {

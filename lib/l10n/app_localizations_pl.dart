@@ -867,6 +867,14 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get checklistOpenEvidenceAction => 'Otwórz dokumenty dowodowe';
+
+  @override
+  String checklistEvidenceItemLabel(int number) {
+    return 'Dowód $number';
+  }
+
+  @override
   String get checklistEvidenceWaived => 'Udokumentowane odstępstwo';
 
   @override
@@ -1947,4 +1955,295 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get contactQuotesEmpty => 'Brak ofert tego wykonawcy.';
+
+  @override
+  String get documentsTitle => 'Dokumenty';
+
+  @override
+  String get documentsSearchLabel => 'Szukaj nazwy lub opisu';
+
+  @override
+  String get documentsFiltersAction => 'Filtry';
+
+  @override
+  String documentsFiltersCount(int count) {
+    return 'Filtry ($count)';
+  }
+
+  @override
+  String get documentsFilterTitle => 'Filtruj dokumenty';
+
+  @override
+  String get documentsFilterTypeAll => 'Wszystkie typy';
+
+  @override
+  String get documentsFilterStageAll => 'Wszystkie etapy';
+
+  @override
+  String get documentsFilterRoomAll => 'Wszystkie pomieszczenia';
+
+  @override
+  String get documentsFilterWarrantyAll => 'Każdy stan gwarancji';
+
+  @override
+  String get documentsFilterFromDate => 'Od daty';
+
+  @override
+  String get documentsFilterToDate => 'Do daty';
+
+  @override
+  String get documentsApplyFiltersAction => 'Pokaż wyniki';
+
+  @override
+  String documentsResultCount(int count) {
+    return 'Dokumenty: $count';
+  }
+
+  @override
+  String get documentsLoadMoreAction => 'Wczytaj kolejne';
+
+  @override
+  String get documentsNoProjectTitle => 'Wybierz projekt';
+
+  @override
+  String get documentsNoProjectMessage =>
+      'Dokumenty są przechowywane osobno dla każdego projektu.';
+
+  @override
+  String get documentsEmptyTitle => 'Brak dokumentów';
+
+  @override
+  String get documentsEmptyMessage =>
+      'Dodaj fakturę, umowę, gwarancję, instrukcję albo zdjęcie.';
+
+  @override
+  String get documentsNoResultsTitle => 'Brak pasujących dokumentów';
+
+  @override
+  String get documentsNoResultsMessage =>
+      'Zmień wyszukiwanie albo aktywne filtry.';
+
+  @override
+  String get documentsLoadError => 'Nie udało się wczytać dokumentów.';
+
+  @override
+  String get documentImportAction => 'Dodaj dokument';
+
+  @override
+  String get documentImportError => 'Nie udało się zaimportować dokumentu.';
+
+  @override
+  String get documentDuplicateTitle => 'Ten plik może już być zapisany';
+
+  @override
+  String documentDuplicateMessage(int count) {
+    return 'Znaleziono $count dokumentów z identyczną zawartością. Możesz mimo to zachować osobną pozycję.';
+  }
+
+  @override
+  String get documentDuplicateContinueAction => 'Zachowaj mimo to';
+
+  @override
+  String get documentNewTitle => 'Nowy dokument';
+
+  @override
+  String get documentEditTitle => 'Edytuj dokument';
+
+  @override
+  String get documentDetailsTitle => 'Szczegóły dokumentu';
+
+  @override
+  String get documentViewerTitle => 'Podgląd dokumentu';
+
+  @override
+  String get documentTitleLabel => 'Nazwa dokumentu';
+
+  @override
+  String get documentTypeLabel => 'Typ dokumentu';
+
+  @override
+  String get documentDescriptionLabel => 'Opis';
+
+  @override
+  String get documentDateLabel => 'Data dokumentu';
+
+  @override
+  String get documentStageLabel => 'Etap';
+
+  @override
+  String get documentNoStage => 'Bez etapu';
+
+  @override
+  String get documentRoomLabel => 'Pomieszczenie lub strefa';
+
+  @override
+  String get documentContactLabel => 'Kontakt';
+
+  @override
+  String get documentNoContact => 'Bez kontaktu';
+
+  @override
+  String get documentWarrantySection => 'Gwarancja i termin';
+
+  @override
+  String get documentWarrantyEnabledLabel => 'Dokument zawiera gwarancję';
+
+  @override
+  String get documentWarrantyStartLabel => 'Początek gwarancji';
+
+  @override
+  String get documentWarrantyEndLabel => 'Koniec gwarancji';
+
+  @override
+  String get documentWarrantyReminderLabel => 'Przypomnienie';
+
+  @override
+  String get documentWarrantyReminderHint =>
+      'Data pojawi się w informacjach o terminie gwarancji.';
+
+  @override
+  String get documentRequiredFieldsError => 'Podaj nazwę i typ dokumentu.';
+
+  @override
+  String get documentWarrantyDatesError =>
+      'Podaj prawidłowy początek i koniec gwarancji.';
+
+  @override
+  String get documentSaveError => 'Nie udało się zapisać dokumentu.';
+
+  @override
+  String get documentLoadError => 'Nie udało się wczytać dokumentu.';
+
+  @override
+  String get documentNotFoundTitle => 'Nie znaleziono dokumentu';
+
+  @override
+  String get documentNotFoundMessage =>
+      'Dokument mógł zostać usunięty albo należy do innego projektu.';
+
+  @override
+  String get documentOpenAction => 'Otwórz';
+
+  @override
+  String get documentShareAction => 'Udostępnij';
+
+  @override
+  String get documentShareError => 'Nie udało się udostępnić pliku.';
+
+  @override
+  String get documentDeleteTitle => 'Usunąć dokument?';
+
+  @override
+  String documentDeleteMessage(int count) {
+    return 'Plik oraz $count powiązanych rekordów zostaną odłączone. Tej operacji nie można cofnąć.';
+  }
+
+  @override
+  String get documentDeleteError => 'Nie udało się usunąć dokumentu.';
+
+  @override
+  String get documentRelationsHeading => 'Powiązania';
+
+  @override
+  String get documentRelationsEmpty => 'Brak powiązanych rekordów.';
+
+  @override
+  String get documentFileHeading => 'Plik źródłowy';
+
+  @override
+  String get documentFileNameLabel => 'Nazwa pliku';
+
+  @override
+  String get documentFileSizeLabel => 'Rozmiar';
+
+  @override
+  String get documentImportedAtLabel => 'Zaimportowano';
+
+  @override
+  String get documentOriginalPreservedLabel => 'Oryginał zachowany bez zmian';
+
+  @override
+  String get documentPreviewUnavailable =>
+      'Podgląd tego formatu nie jest dostępny w aplikacji.';
+
+  @override
+  String get documentPreviewUnavailableMessage =>
+      'Oryginał pozostaje zapisany i możesz go udostępnić z ekranu szczegółów.';
+
+  @override
+  String get documentTypeReceipt => 'Paragon';
+
+  @override
+  String get documentTypeInvoice => 'Faktura';
+
+  @override
+  String get documentTypeQuote => 'Oferta';
+
+  @override
+  String get documentTypeContract => 'Umowa';
+
+  @override
+  String get documentTypeDeliveryNote => 'WZ';
+
+  @override
+  String get documentTypeProtocol => 'Protokół';
+
+  @override
+  String get documentTypeWarranty => 'Gwarancja';
+
+  @override
+  String get documentTypeInstruction => 'Instrukcja';
+
+  @override
+  String get documentTypeMap => 'Mapa lub rzut';
+
+  @override
+  String get documentTypePhoto => 'Zdjęcie';
+
+  @override
+  String get documentTypeOther => 'Inny dokument';
+
+  @override
+  String get documentWarrantyWithout => 'Bez gwarancji';
+
+  @override
+  String get documentWarrantyActive => 'Aktywna';
+
+  @override
+  String get documentWarrantyExpiring => 'Wygasa w ciągu 30 dni';
+
+  @override
+  String get documentWarrantyExpired => 'Wygasła';
+
+  @override
+  String documentWarrantyUntilValue(String date) {
+    return 'Gwarancja do $date';
+  }
+
+  @override
+  String get documentRelationCost => 'Koszt';
+
+  @override
+  String get documentRelationStage => 'Etap';
+
+  @override
+  String get documentRelationChecklist => 'Checklista';
+
+  @override
+  String get documentRelationContact => 'Kontakt';
+
+  @override
+  String get documentRelationRoom => 'Pomieszczenie';
+
+  @override
+  String get documentRelationQuote => 'Oferta';
+
+  @override
+  String get documentRelationDecision => 'Decyzja';
+
+  @override
+  String get documentRelationDefect => 'Usterka';
+
+  @override
+  String get documentRelationDevice => 'Urządzenie';
 }

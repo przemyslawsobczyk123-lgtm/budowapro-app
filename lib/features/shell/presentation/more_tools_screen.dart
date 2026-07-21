@@ -29,6 +29,14 @@ class MoreToolsScreen extends StatelessWidget {
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () => context.push('/quotes'),
           ),
+          ListTile(
+            key: const ValueKey('moreDocumentsTile'),
+            minTileHeight: 64,
+            leading: const Icon(Icons.folder_copy_outlined),
+            title: Text(l10n.documentsTitle),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => context.go('/build'),
+          ),
         ],
       ),
     );

@@ -340,6 +340,34 @@ final class LocalAttachmentStager {
     );
   }
 
+  Future<Map<String, File>> previewFiles({
+    required String projectId,
+    required Iterable<String> attachmentIds,
+  }) async {
+    final ids = attachmentIds.toSet().toList(growable: false);
+    if (ids.isEmpty) return const <String, File>{};
+    final placeholders = List<String>.filled(ids.length, '?').join(', ');
+    final database = await _database.open();
+    final rows = await database.query(
+      AppDatabase.costAttachmentsTable,
+      columns: const <String>['id', 'preview_storage_key'],
+      where:
+          'project_id = ? AND availability = ? '
+          'AND preview_storage_key IS NOT NULL AND id IN ($placeholders)',
+      whereArgs: <Object?>[projectId, 'available', ...ids],
+    );
+    final files = <String, File>{};
+    for (final row in rows) {
+      final file = _fileStore.fileFor(
+        projectId: projectId,
+        area: ProjectFileArea.previews,
+        fileName: row['preview_storage_key']! as String,
+      );
+      if (await file.exists()) files[row['id']! as String] = file;
+    }
+    return Map<String, File>.unmodifiable(files);
+  }
+
   Future<File?> _storedFile({
     required String projectId,
     required String attachmentId,
@@ -384,6 +412,50 @@ final class LocalAttachmentStager {
       projectId: projectId,
       attachmentId: attachmentId,
       rejectLinked: false,
+    );
+  }
+
+  Future<void> deleteCatalogDocument({
+    required String projectId,
+    required String attachmentId,
+  }) async {
+    final storageKeys = await _database.transaction<_StorageKeys>((
+      transaction,
+    ) async {
+      final rows = await transaction.query(
+        AppDatabase.costAttachmentsTable,
+        columns: const <String>['original_storage_key', 'preview_storage_key'],
+        where: 'id = ? AND project_id = ? AND availability = ?',
+        whereArgs: <Object?>[attachmentId, projectId, 'available'],
+        limit: 1,
+      );
+      if (rows.isEmpty) {
+        throw StateError('Document is unavailable for deletion');
+      }
+      final changed = await transaction.update(
+        AppDatabase.costAttachmentsTable,
+        const <String, Object?>{'availability': 'deleting'},
+        where: 'id = ? AND project_id = ? AND availability = ?',
+        whereArgs: <Object?>[attachmentId, projectId, 'available'],
+      );
+      if (changed != 1) {
+        throw StateError('Document is unavailable for deletion');
+      }
+      return _StorageKeys(
+        original: rows.single['original_storage_key']! as String,
+        preview: rows.single['preview_storage_key'] as String?,
+      );
+    });
+    await _deleteImportedFiles(
+      projectId: projectId,
+      originalStorageKey: storageKeys.original,
+      previewStorageKey: storageKeys.preview,
+    );
+    final database = await _database.open();
+    await database.delete(
+      AppDatabase.costAttachmentsTable,
+      where: 'id = ? AND project_id = ? AND availability = ?',
+      whereArgs: <Object?>[attachmentId, projectId, 'deleting'],
     );
   }
 
