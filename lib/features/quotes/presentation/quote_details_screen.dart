@@ -180,7 +180,11 @@ class _QuoteDetailsScreenState extends ConsumerState<QuoteDetailsScreen> {
               Text(quote.draft.note!),
             ],
             const SizedBox(height: 28),
-            _actions(context, quote),
+            _actions(
+              context,
+              quote,
+              data.attachments.map((attachment) => attachment.id).toList(),
+            ),
           ],
         ),
         if (_isMutating) const LinearProgressIndicator(),
@@ -188,7 +192,11 @@ class _QuoteDetailsScreenState extends ConsumerState<QuoteDetailsScreen> {
     );
   }
 
-  Widget _actions(BuildContext context, ContractorQuote quote) {
+  Widget _actions(
+    BuildContext context,
+    ContractorQuote quote,
+    List<String> attachmentIds,
+  ) {
     final l10n = AppLocalizations.of(context);
     if (quote.status == ContractorQuoteStatus.accepted) {
       return FilledButton.icon(
@@ -204,7 +212,7 @@ class _QuoteDetailsScreenState extends ConsumerState<QuoteDetailsScreen> {
     }
     if (quote.status == ContractorQuoteStatus.rejected) {
       return OutlinedButton.icon(
-        onPressed: _isMutating ? null : _delete,
+        onPressed: _isMutating ? null : () => _delete(attachmentIds),
         icon: const Icon(Icons.delete_outline),
         label: Text(l10n.deleteAction),
       );
@@ -231,7 +239,7 @@ class _QuoteDetailsScreenState extends ConsumerState<QuoteDetailsScreen> {
         ),
         IconButton(
           tooltip: l10n.deleteAction,
-          onPressed: _isMutating ? null : _delete,
+          onPressed: _isMutating ? null : () => _delete(attachmentIds),
           icon: const Icon(Icons.delete_outline),
         ),
       ],
@@ -294,7 +302,7 @@ class _QuoteDetailsScreenState extends ConsumerState<QuoteDetailsScreen> {
     }, l10n.quoteRejectError);
   }
 
-  Future<void> _delete() async {
+  Future<void> _delete(List<String> attachmentIds) async {
     final l10n = AppLocalizations.of(context);
     final confirmed = await _confirm(
       title: l10n.quoteDeleteConfirmTitle,
@@ -307,6 +315,13 @@ class _QuoteDetailsScreenState extends ConsumerState<QuoteDetailsScreen> {
       await (await ref.read(
         quoteRepositoryProvider.future,
       )).delete(projectId: widget.projectId, quoteId: widget.quoteId);
+      final stager = await ref.read(costAttachmentStagerProvider.future);
+      for (final attachmentId in attachmentIds) {
+        await stager.discardIfUnlinked(
+          projectId: widget.projectId,
+          attachmentId: attachmentId,
+        );
+      }
       ref.invalidate(quotesControllerProvider);
       if (mounted) Navigator.pop(context, true);
     } on Object {

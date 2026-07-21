@@ -425,15 +425,10 @@ class _ContactDetailsBody extends StatelessWidget {
                 title: Text(quote.draft.title),
                 subtitle: Text(
                   '${quote.draft.variantName} · '
-                  '${quoteStatusLabel(l10n, quote)}',
+                  '${quoteStatusLabel(l10n, quote)}\n'
+                  '${formatMoneyForDisplay(quote.draft.amount.gross, quote.draft.amount.gross.currencyCode)}',
                 ),
-                trailing: Text(
-                  formatMoneyForDisplay(
-                    quote.draft.amount.gross,
-                    quote.draft.amount.gross.currencyCode,
-                  ),
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
+                trailing: const Icon(Icons.chevron_right),
                 onTap: () => onOpenQuote(quote),
               ),
             ),

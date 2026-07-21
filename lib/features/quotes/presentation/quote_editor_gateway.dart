@@ -127,7 +127,7 @@ final class LocalQuoteEditorGateway implements QuoteEditorGateway {
     var request = PageRequest(limit: PageRequest.maximumLimit);
     while (true) {
       final page = await _contactRepository.list(
-        ContactQuery(projectId: projectId),
+        ContactQuery(projectId: projectId, includeArchived: quoteId != null),
         request,
       );
       contacts.addAll(page.items);

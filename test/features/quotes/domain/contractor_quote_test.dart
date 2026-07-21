@@ -103,6 +103,28 @@ void main() {
 
     expect(comparison.lowestPriceQuoteIds, <String>{'a', 'b'});
   });
+
+  test('valid-until instant remains inclusive', () {
+    final quote = ContractorQuote(
+      id: 'quote-1',
+      projectId: 'project-1',
+      draft: ContractorQuoteDraft(
+        contactId: 'contact-1',
+        title: 'Elektryka',
+        variantName: 'Standard',
+        amount: VatBreakdown.fromGross(_pln(10000), VatRate.standard23),
+        receivedAt: DateTime.utc(2026, 7, 1),
+        validUntil: DateTime.utc(2026, 7, 31, 23, 59, 59, 999),
+        includedScope: <QuoteScopeLine>[QuoteScopeLine(label: 'Okablowanie')],
+      ),
+      status: ContractorQuoteStatus.received,
+      createdAt: DateTime.utc(2026, 7, 1),
+      updatedAt: DateTime.utc(2026, 7, 1),
+    );
+
+    expect(quote.isExpiredAt(DateTime.utc(2026, 7, 31, 23)), isFalse);
+    expect(quote.isExpiredAt(DateTime.utc(2026, 8, 1)), isTrue);
+  });
 }
 
 ContractorQuoteDraft _draft({

@@ -171,6 +171,7 @@ void main() {
 
     expect(gateway.savedDraft?.includedScope.single.label, 'Okablowanie');
     expect(gateway.savedDraft?.amount.gross.minorUnits, 1230000);
+    expect(gateway.savedDraft?.validUntilUtc.hour, isNot(0));
     expect(find.text('open-form'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

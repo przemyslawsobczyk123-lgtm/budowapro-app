@@ -584,8 +584,8 @@ class _QuoteFormState extends State<_QuoteForm> {
           title: _titleController.text,
           variantName: _variantController.text,
           amount: amount,
-          receivedAt: _receivedAt,
-          validUntil: _validUntil,
+          receivedAt: _startOfDay(_receivedAt),
+          validUntil: _endOfDay(_validUntil),
           includedScope: included,
           excludedScope: excluded,
           attachmentIds: _attachments.map((attachment) => attachment.id),
@@ -833,3 +833,12 @@ String _vatLabel(AppLocalizations l10n, VatRate rate) => switch (rate) {
   VatRate.reduced8 => l10n.costVatReduced,
   VatRate.standard23 => l10n.costVatStandard,
 };
+
+DateTime _startOfDay(DateTime value) =>
+    DateTime(value.year, value.month, value.day);
+
+DateTime _endOfDay(DateTime value) => DateTime(
+  value.year,
+  value.month,
+  value.day + 1,
+).subtract(const Duration(milliseconds: 1));
