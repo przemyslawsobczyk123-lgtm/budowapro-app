@@ -1370,6 +1370,18 @@ class AppLocalizationsPl extends AppLocalizations {
       'Brak zadań, wizyt, dostaw i odbiorów na dziś.';
 
   @override
+  String get dashboardUpcomingVisits => 'Najbliższe wizyty';
+
+  @override
+  String dashboardUpcomingVisitsCount(int count) {
+    return 'Wizyty: $count';
+  }
+
+  @override
+  String get dashboardUpcomingVisitsEmpty =>
+      'Brak wizyt zaplanowanych na najbliższe 30 dni.';
+
+  @override
   String get dashboardProjectActionsTooltip => 'Zarządzaj projektem';
 
   @override

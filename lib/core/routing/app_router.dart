@@ -1,5 +1,9 @@
 import 'package:budowapro/features/costs/presentation/cost_details_screen.dart';
 import 'package:budowapro/features/costs/presentation/cost_form_screen.dart';
+import 'package:budowapro/features/contacts/presentation/contact_details_screen.dart';
+import 'package:budowapro/features/contacts/presentation/contact_form_screen.dart';
+import 'package:budowapro/features/contacts/presentation/contacts_screen.dart';
+import 'package:budowapro/features/contacts/presentation/site_visit_form_screen.dart';
 import 'package:budowapro/features/dashboard/presentation/dashboard_screen.dart';
 import 'package:budowapro/features/projects/presentation/project_form_screen.dart';
 import 'package:budowapro/features/schedule/data/schedule_providers.dart';
@@ -7,6 +11,7 @@ import 'package:budowapro/features/schedule/presentation/schedule_event_details_
 import 'package:budowapro/features/schedule/presentation/schedule_event_form_screen.dart';
 import 'package:budowapro/features/schedule/presentation/schedule_plan_screen.dart';
 import 'package:budowapro/features/shell/presentation/app_shell.dart';
+import 'package:budowapro/features/shell/presentation/more_tools_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -63,6 +68,44 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           eventId: state.pathParameters['eventId']!,
         ),
       ),
+      GoRoute(
+        path: '/contacts',
+        builder: (context, state) => const ContactsScreen(),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/contacts/new',
+        builder: (context, state) =>
+            ContactFormScreen(projectId: state.pathParameters['projectId']!),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/contacts/:contactId/edit',
+        builder: (context, state) => ContactFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          contactId: state.pathParameters['contactId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/contacts/:contactId/visits/new',
+        builder: (context, state) => SiteVisitFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          contactId: state.pathParameters['contactId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/contacts/:contactId/visits/:visitId/edit',
+        builder: (context, state) => SiteVisitFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          contactId: state.pathParameters['contactId']!,
+          visitId: state.pathParameters['visitId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/contacts/:contactId',
+        builder: (context, state) => ContactDetailsScreen(
+          projectId: state.pathParameters['projectId']!,
+          contactId: state.pathParameters['contactId']!,
+        ),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return AppShell(navigationShell: navigationShell);
@@ -97,6 +140,7 @@ StatefulShellBranch _branchFor(AppSection section) {
             AppSection.plan => SchedulePlanScreen(
               initialTab: state.uri.queryParameters['tab'] == 'stages' ? 1 : 0,
             ),
+            AppSection.more => const MoreToolsScreen(),
             _ => ProjectSectionScreen(section: section),
           },
         ),

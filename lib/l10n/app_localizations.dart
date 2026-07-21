@@ -2602,6 +2602,24 @@ abstract class AppLocalizations {
   /// **'Brak zadań, wizyt, dostaw i odbiorów na dziś.'**
   String get dashboardAgendaEmpty;
 
+  /// No description provided for @dashboardUpcomingVisits.
+  ///
+  /// In pl, this message translates to:
+  /// **'Najbliższe wizyty'**
+  String get dashboardUpcomingVisits;
+
+  /// No description provided for @dashboardUpcomingVisitsCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wizyty: {count}'**
+  String dashboardUpcomingVisitsCount(int count);
+
+  /// No description provided for @dashboardUpcomingVisitsEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak wizyt zaplanowanych na najbliższe 30 dni.'**
+  String get dashboardUpcomingVisitsEmpty;
+
   /// No description provided for @dashboardProjectActionsTooltip.
   ///
   /// In pl, this message translates to:

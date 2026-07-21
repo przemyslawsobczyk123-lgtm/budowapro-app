@@ -18,6 +18,7 @@ final class DashboardSnapshot {
     required Iterable<ProjectStage> stages,
     required Iterable<DashboardChecklistRecord> checklistItems,
     required Iterable<ScheduleEvent> todayAgenda,
+    Iterable<ScheduleEvent> upcomingVisits = const <ScheduleEvent>[],
     required Money spent,
     required Money plannedNext30Days,
     required Money unpaid,
@@ -29,6 +30,11 @@ final class DashboardSnapshot {
       ..sort((left, right) => left.sortOrder.compareTo(right.sortOrder));
     final checklistList = checklistItems.toList(growable: false);
     final agenda = todayAgenda.toList(growable: false)
+      ..sort((left, right) {
+        final byTime = left.startsAtUtc.compareTo(right.startsAtUtc);
+        return byTime != 0 ? byTime : left.id.compareTo(right.id);
+      });
+    final visits = upcomingVisits.toList(growable: false)
       ..sort((left, right) {
         final byTime = left.startsAtUtc.compareTo(right.startsAtUtc);
         return byTime != 0 ? byTime : left.id.compareTo(right.id);
@@ -57,6 +63,12 @@ final class DashboardSnapshot {
         throw ArgumentError('agenda event belongs to another project');
       }
     }
+    for (final event in visits) {
+      if (event.projectId != project.id ||
+          event.kind != ScheduleEventKind.visit) {
+        throw ArgumentError('upcoming visit belongs to another projection');
+      }
+    }
 
     final critical =
         checklistList.where(_isCriticalAndOpen).toList(growable: false)
@@ -71,6 +83,7 @@ final class DashboardSnapshot {
         critical,
       ),
       todayAgenda: UnmodifiableListView<ScheduleEvent>(agenda),
+      upcomingVisits: UnmodifiableListView<ScheduleEvent>(visits),
       spent: spent,
       plannedNext30Days: plannedNext30Days,
       unpaid: unpaid,
@@ -86,6 +99,7 @@ final class DashboardSnapshot {
     required this.checklistItems,
     required this.criticalChecklistItems,
     required this.todayAgenda,
+    required this.upcomingVisits,
     required this.spent,
     required this.plannedNext30Days,
     required this.unpaid,
@@ -99,6 +113,7 @@ final class DashboardSnapshot {
   final UnmodifiableListView<DashboardChecklistRecord> checklistItems;
   final UnmodifiableListView<DashboardChecklistRecord> criticalChecklistItems;
   final UnmodifiableListView<ScheduleEvent> todayAgenda;
+  final UnmodifiableListView<ScheduleEvent> upcomingVisits;
   final Money spent;
   final Money plannedNext30Days;
   final Money unpaid;

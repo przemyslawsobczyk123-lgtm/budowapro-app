@@ -150,6 +150,8 @@ class _DashboardContent extends ConsumerWidget {
                 const SizedBox(height: 24),
                 _StageTimeline(snapshot: snapshot),
                 const SizedBox(height: 24),
+                _UpcomingVisits(snapshot: snapshot),
+                const SizedBox(height: 24),
                 _TodayAgenda(snapshot: snapshot),
               ],
             ),
@@ -651,6 +653,36 @@ class _StagePoint extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _UpcomingVisits extends StatelessWidget {
+  const _UpcomingVisits({required this.snapshot});
+
+  final DashboardSnapshot snapshot;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _SectionHeader(
+          title: l10n.dashboardUpcomingVisits,
+          trailing: l10n.dashboardUpcomingVisitsCount(
+            snapshot.upcomingVisits.length,
+          ),
+        ),
+        const SizedBox(height: 7),
+        if (snapshot.upcomingVisits.isEmpty)
+          _SectionEmpty(
+            icon: Icons.groups_outlined,
+            text: l10n.dashboardUpcomingVisitsEmpty,
+          )
+        else
+          ...snapshot.upcomingVisits.map((event) => _AgendaRow(event: event)),
+      ],
     );
   }
 }

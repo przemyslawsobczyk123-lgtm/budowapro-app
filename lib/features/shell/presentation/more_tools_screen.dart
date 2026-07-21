@@ -1,0 +1,28 @@
+import 'package:budowapro/l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+class MoreToolsScreen extends StatelessWidget {
+  const MoreToolsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      appBar: AppBar(title: Text(l10n.moreTitle)),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        children: [
+          ListTile(
+            key: const ValueKey('moreContactsTile'),
+            minTileHeight: 64,
+            leading: const Icon(Icons.groups_outlined),
+            title: Text(l10n.contactsTitle),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => context.push('/contacts'),
+          ),
+        ],
+      ),
+    );
+  }
+}

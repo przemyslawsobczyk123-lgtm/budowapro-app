@@ -91,6 +91,15 @@ final class RepositoryDashboardReader implements DashboardReader {
     final allCostsPage = results[6] as Page<CostEntry>;
     final todayAgenda = results[7] as List<ScheduleEvent>;
     final openEvents = results[8] as List<ScheduleEvent>;
+    final upcomingVisits = openEvents
+        .where(
+          (event) =>
+              event.kind == ScheduleEventKind.visit &&
+              !event.startsAtUtc.isBefore(window.todayStartUtc) &&
+              event.startsAtUtc.isBefore(window.forecastEndExclusiveUtc),
+        )
+        .take(3)
+        .toList(growable: false);
     final stagesById = <String, ProjectStage>{
       for (final stage in stages) stage.id: stage,
     };
@@ -109,6 +118,7 @@ final class RepositoryDashboardReader implements DashboardReader {
       stages: stages,
       checklistItems: checklistRecords,
       todayAgenda: todayAgenda,
+      upcomingVisits: upcomingVisits,
       spent: spent.actual,
       plannedNext30Days: forecast.planned + forecast.actual,
       unpaid: unpaid.actual,

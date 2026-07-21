@@ -158,9 +158,13 @@ void main() {
       projectId: project.id,
       input: _event('Odbior zbrojenia', DateTime.utc(2026, 7, 21, 8)),
     );
-    await schedule.create(
+    final upcomingVisit = await schedule.create(
       projectId: project.id,
-      input: _event('Jutrzejsza dostawa', DateTime.utc(2026, 7, 22, 8)),
+      input: _event(
+        'Wizyta elektryka',
+        DateTime.utc(2026, 7, 22, 8),
+        kind: ScheduleEventKind.visit,
+      ),
     );
 
     final snapshot = await reader.load(
@@ -179,6 +183,9 @@ void main() {
     expect(snapshot.costRecordCount, 4);
     expect(snapshot.openScheduleCount, 2);
     expect(snapshot.todayAgenda.map((event) => event.id), [today.id]);
+    expect(snapshot.upcomingVisits.map((event) => event.id), [
+      upcomingVisit.id,
+    ]);
     expect(snapshot.currentStage?.id, stateZero.id);
     expect(
       snapshot.criticalChecklistItems.map((record) => record.item.id),
@@ -221,10 +228,14 @@ CostEntryInput _cost({
   );
 }
 
-ScheduleEventInput _event(String title, DateTime startsAt) {
+ScheduleEventInput _event(
+  String title,
+  DateTime startsAt, {
+  ScheduleEventKind kind = ScheduleEventKind.task,
+}) {
   return ScheduleEventInput(
     title: title,
-    kind: ScheduleEventKind.task,
+    kind: kind,
     status: ScheduleEventStatus.planned,
     startsAt: startsAt,
     timeZoneId: 'Europe/Warsaw',

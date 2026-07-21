@@ -56,6 +56,19 @@ void main() {
     expect(find.byType(NavigationBar), findsOneWidget);
   });
 
+  testWidgets('opens contacts from the More tools branch', (tester) async {
+    await tester.pumpWidget(_testApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Więcej'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('moreContactsTile')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ekipy i kontakty'), findsOneWidget);
+    expect(find.text('Wybierz projekt'), findsOneWidget);
+  });
+
   testWidgets('opens the new project form from the empty start screen', (
     WidgetTester tester,
   ) async {
