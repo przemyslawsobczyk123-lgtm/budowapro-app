@@ -12,7 +12,7 @@ final class AppDatabase {
 
   AppDatabase._(this._factory, this._path);
 
-  static const int schemaVersion = 5;
+  static const int schemaVersion = 6;
   static const String databaseFileName = 'budowapro.db';
   static const String metadataTable = 'app_metadata';
   static const String projectsTable = 'projects';
@@ -29,6 +29,11 @@ final class AppDatabase {
   static const String scheduleDependenciesTable = 'schedule_dependencies';
   static const String scheduleDateChangesTable = 'schedule_date_changes';
   static const String reminderPreferencesTable = 'reminder_preferences';
+  static const String contactsTable = 'contacts';
+  static const String contactRolesTable = 'contact_roles';
+  static const String contactStageAssignmentsTable =
+      'contact_stage_assignments';
+  static const String siteVisitsTable = 'site_visits';
   static const String schemaVersionKey = 'schema_version';
 
   final DatabaseFactory _factory;
@@ -713,6 +718,112 @@ final class AppDatabase {
           ),
           updated_at_utc_ms INTEGER NOT NULL
         )
+      ''');
+    }
+
+    if (fromVersion < 6 && toVersion >= 6) {
+      await database.execute('''
+        CREATE TABLE $contactsTable (
+          id TEXT PRIMARY KEY NOT NULL,
+          project_id TEXT NOT NULL,
+          display_name TEXT NOT NULL,
+          kind TEXT NOT NULL CHECK (kind IN ('person', 'company')),
+          phone TEXT,
+          email TEXT,
+          tax_id TEXT,
+          note TEXT,
+          rating INTEGER CHECK (rating BETWEEN 1 AND 5),
+          is_archived INTEGER NOT NULL DEFAULT 0 CHECK (
+            is_archived IN (0, 1)
+          ),
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          UNIQUE (project_id, id),
+          FOREIGN KEY (project_id) REFERENCES $projectsTable(id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX contacts_project_name_idx
+        ON $contactsTable (project_id, is_archived, display_name, id)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE $contactRolesTable (
+          project_id TEXT NOT NULL,
+          contact_id TEXT NOT NULL,
+          role TEXT NOT NULL CHECK (
+            role IN (
+              'general_contractor',
+              'site_manager',
+              'architect',
+              'electrician',
+              'plumber',
+              'heating_and_ventilation',
+              'surveyor',
+              'roofer',
+              'carpenter',
+              'plasterer',
+              'tiler',
+              'painter',
+              'supplier',
+              'inspector',
+              'other'
+            )
+          ),
+          PRIMARY KEY (project_id, contact_id, role),
+          FOREIGN KEY (project_id, contact_id)
+            REFERENCES $contactsTable(project_id, id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX contact_roles_project_role_idx
+        ON $contactRolesTable (project_id, role, contact_id)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE $contactStageAssignmentsTable (
+          project_id TEXT NOT NULL,
+          contact_id TEXT NOT NULL,
+          stage_id TEXT NOT NULL,
+          PRIMARY KEY (project_id, contact_id, stage_id),
+          FOREIGN KEY (project_id, contact_id)
+            REFERENCES $contactsTable(project_id, id) ON DELETE CASCADE,
+          FOREIGN KEY (project_id, stage_id)
+            REFERENCES $projectStagesTable(project_id, id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX contact_stages_project_stage_idx
+        ON $contactStageAssignmentsTable (project_id, stage_id, contact_id)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE $siteVisitsTable (
+          project_id TEXT NOT NULL,
+          event_id TEXT NOT NULL,
+          contact_id TEXT NOT NULL,
+          expected_result TEXT NOT NULL,
+          status TEXT NOT NULL CHECK (
+            status IN ('planned', 'completed', 'cancelled', 'no_show')
+          ),
+          result TEXT,
+          agreements TEXT,
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          PRIMARY KEY (project_id, event_id),
+          FOREIGN KEY (project_id, event_id)
+            REFERENCES $scheduleEventsTable(project_id, id) ON DELETE CASCADE,
+          FOREIGN KEY (project_id, contact_id)
+            REFERENCES $contactsTable(project_id, id) ON DELETE RESTRICT,
+          CHECK (
+            status != 'completed'
+            OR (result IS NOT NULL AND length(trim(result)) > 0)
+          )
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX site_visits_contact_start_idx
+        ON $siteVisitsTable (project_id, contact_id, status, event_id)
       ''');
     }
 

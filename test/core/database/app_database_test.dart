@@ -53,6 +53,10 @@ void main() {
       AppDatabase.scheduleDependenciesTable,
       AppDatabase.scheduleDateChangesTable,
       AppDatabase.reminderPreferencesTable,
+      AppDatabase.contactsTable,
+      AppDatabase.contactRolesTable,
+      AppDatabase.contactStageAssignmentsTable,
+      AppDatabase.siteVisitsTable,
     ]) {
       final table = await database.query(
         'sqlite_master',
