@@ -1558,11 +1558,11 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get contactDeleteConfirmMessage =>
-      'Kontakt bez historii wizyt zostanie trwale usunięty.';
+      'Kontakt bez historii wizyt i ofert zostanie trwale usunięty.';
 
   @override
   String get contactDeleteInUseError =>
-      'Kontakt ma historię wizyt. Zamiast usuwać, zarchiwizuj go.';
+      'Kontakt ma historię wizyt lub ofert. Zamiast usuwać, zarchiwizuj go.';
 
   @override
   String get contactDeleteError => 'Nie udało się usunąć kontaktu.';
@@ -1717,4 +1717,234 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get siteVisitAgreementsHeading => 'Ustalenia';
+
+  @override
+  String get quotesTitle => 'Oferty wykonawców';
+
+  @override
+  String get quotesSearchLabel => 'Szukaj oferty lub wykonawcy';
+
+  @override
+  String get quotesStatusAll => 'Wszystkie statusy';
+
+  @override
+  String get quoteStatusReceived => 'Otrzymana';
+
+  @override
+  String get quoteStatusAccepted => 'Przyjęta';
+
+  @override
+  String get quoteStatusRejected => 'Odrzucona';
+
+  @override
+  String get quoteStatusExpired => 'Po terminie';
+
+  @override
+  String quotesCompareAction(int count) {
+    return 'Porównaj ($count)';
+  }
+
+  @override
+  String get quotesCompareLimit => 'Możesz porównać maksymalnie 4 oferty.';
+
+  @override
+  String quotesResultCount(int count) {
+    return 'Oferty: $count';
+  }
+
+  @override
+  String get quotesNoProjectTitle => 'Wybierz projekt';
+
+  @override
+  String get quotesNoProjectMessage => 'Oferty są przypisane do projektu.';
+
+  @override
+  String get quotesEmptyTitle => 'Brak ofert';
+
+  @override
+  String get quotesEmptyMessage =>
+      'Dodaj pierwszą ofertę wykonawcy z ceną i zakresem.';
+
+  @override
+  String get quotesNoResultsTitle => 'Brak pasujących ofert';
+
+  @override
+  String get quotesNoResultsMessage => 'Zmień wyszukiwanie albo filtr statusu.';
+
+  @override
+  String get quotesLoadError => 'Nie udało się wczytać ofert.';
+
+  @override
+  String get quoteNewTitle => 'Nowa oferta';
+
+  @override
+  String get quoteEditTitle => 'Edytuj ofertę';
+
+  @override
+  String get quoteDetailsTitle => 'Szczegóły oferty';
+
+  @override
+  String get quoteContractorLabel => 'Wykonawca';
+
+  @override
+  String get quoteTitleLabel => 'Zakres główny';
+
+  @override
+  String get quoteVariantLabel => 'Wariant';
+
+  @override
+  String get quoteGrossAmountLabel => 'Kwota brutto';
+
+  @override
+  String get quoteVatRateLabel => 'Stawka VAT';
+
+  @override
+  String get quoteReceivedDateLabel => 'Data otrzymania';
+
+  @override
+  String get quoteValidUntilLabel => 'Ważna do';
+
+  @override
+  String get quoteStageLabel => 'Etap';
+
+  @override
+  String get quoteNoStage => 'Bez etapu';
+
+  @override
+  String get quoteIncludedScopeHeading => 'W cenie';
+
+  @override
+  String get quoteExcludedScopeHeading => 'Wykluczenia';
+
+  @override
+  String get quoteScopeLineLabel => 'Pozycja zakresu';
+
+  @override
+  String get quoteAddScopeLineTooltip => 'Dodaj pozycję';
+
+  @override
+  String get quoteRemoveScopeLineTooltip => 'Usuń pozycję';
+
+  @override
+  String get quoteAttachmentsHeading => 'Załączniki';
+
+  @override
+  String get quoteAddAttachmentAction => 'Dodaj PDF lub zdjęcie';
+
+  @override
+  String get quoteNoteLabel => 'Notatka';
+
+  @override
+  String get quoteRequiredFieldsError =>
+      'Uzupełnij wykonawcę, nazwę, wariant, kwotę i zakres.';
+
+  @override
+  String get quoteInvalidAmountError => 'Wpisz poprawną kwotę większą od zera.';
+
+  @override
+  String get quoteInvalidValidityError =>
+      'Termin ważności nie może być przed datą otrzymania.';
+
+  @override
+  String get quoteSaveError => 'Nie udało się zapisać oferty.';
+
+  @override
+  String get quoteLoadError => 'Nie udało się wczytać oferty.';
+
+  @override
+  String get quoteNotFoundTitle => 'Nie znaleziono oferty';
+
+  @override
+  String get quoteNotFoundMessage =>
+      'Oferta mogła zostać usunięta lub należy do innego projektu.';
+
+  @override
+  String get quoteAttachmentError => 'Nie udało się zaimportować załącznika.';
+
+  @override
+  String quoteValidUntilValue(String date) {
+    return 'Ważna do $date';
+  }
+
+  @override
+  String quoteExpiredOnValue(String date) {
+    return 'Termin minął $date';
+  }
+
+  @override
+  String get quoteAcceptAction => 'Przyjmij ofertę';
+
+  @override
+  String get quoteRejectAction => 'Odrzuć ofertę';
+
+  @override
+  String get quoteAcceptTitle => 'Dodać ofertę do budżetu?';
+
+  @override
+  String get quoteAcceptPlannedAction => 'Jako planowany koszt';
+
+  @override
+  String get quoteAcceptOrderedAction => 'Jako zamówiony koszt';
+
+  @override
+  String get quoteAcceptError => 'Nie udało się przyjąć oferty.';
+
+  @override
+  String get quoteRejectConfirmTitle => 'Odrzucić ofertę?';
+
+  @override
+  String get quoteRejectConfirmMessage =>
+      'Oferta pozostanie w historii ze statusem odrzuconej.';
+
+  @override
+  String get quoteRejectError => 'Nie udało się odrzucić oferty.';
+
+  @override
+  String get quoteDeleteConfirmTitle => 'Usunąć ofertę?';
+
+  @override
+  String get quoteDeleteConfirmMessage =>
+      'Nieprzyjęta oferta i jej powiązania zostaną usunięte.';
+
+  @override
+  String get quoteDeleteError => 'Nie udało się usunąć oferty.';
+
+  @override
+  String get quoteViewCostAction => 'Otwórz koszt w budżecie';
+
+  @override
+  String get quoteAcceptedCostHeading => 'Koszt w budżecie';
+
+  @override
+  String get quoteComparisonTitle => 'Porównanie ofert';
+
+  @override
+  String get quoteComparisonPriceHeading => 'Cena brutto';
+
+  @override
+  String get quoteComparisonScopeHeading => 'Różnice zakresu';
+
+  @override
+  String get quoteLowestPriceLabel => 'Najniższa cena';
+
+  @override
+  String get quotePresenceIncluded => 'W cenie';
+
+  @override
+  String get quotePresenceExcluded => 'Wykluczone';
+
+  @override
+  String get quotePresenceNotSpecified => 'Brak informacji';
+
+  @override
+  String get quoteComparisonNeedsTwo => 'Wybierz co najmniej 2 oferty.';
+
+  @override
+  String get contactQuotesHeading => 'Oferty';
+
+  @override
+  String get contactAddQuoteAction => 'Dodaj ofertę';
+
+  @override
+  String get contactQuotesEmpty => 'Brak ofert tego wykonawcy.';
 }

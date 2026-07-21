@@ -2947,13 +2947,13 @@ abstract class AppLocalizations {
   /// No description provided for @contactDeleteConfirmMessage.
   ///
   /// In pl, this message translates to:
-  /// **'Kontakt bez historii wizyt zostanie trwale usunięty.'**
+  /// **'Kontakt bez historii wizyt i ofert zostanie trwale usunięty.'**
   String get contactDeleteConfirmMessage;
 
   /// No description provided for @contactDeleteInUseError.
   ///
   /// In pl, this message translates to:
-  /// **'Kontakt ma historię wizyt. Zamiast usuwać, zarchiwizuj go.'**
+  /// **'Kontakt ma historię wizyt lub ofert. Zamiast usuwać, zarchiwizuj go.'**
   String get contactDeleteInUseError;
 
   /// No description provided for @contactDeleteError.
@@ -3255,6 +3255,438 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Ustalenia'**
   String get siteVisitAgreementsHeading;
+
+  /// No description provided for @quotesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oferty wykonawców'**
+  String get quotesTitle;
+
+  /// No description provided for @quotesSearchLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szukaj oferty lub wykonawcy'**
+  String get quotesSearchLabel;
+
+  /// No description provided for @quotesStatusAll.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie statusy'**
+  String get quotesStatusAll;
+
+  /// No description provided for @quoteStatusReceived.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otrzymana'**
+  String get quoteStatusReceived;
+
+  /// No description provided for @quoteStatusAccepted.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przyjęta'**
+  String get quoteStatusAccepted;
+
+  /// No description provided for @quoteStatusRejected.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odrzucona'**
+  String get quoteStatusRejected;
+
+  /// No description provided for @quoteStatusExpired.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po terminie'**
+  String get quoteStatusExpired;
+
+  /// No description provided for @quotesCompareAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Porównaj ({count})'**
+  String quotesCompareAction(int count);
+
+  /// No description provided for @quotesCompareLimit.
+  ///
+  /// In pl, this message translates to:
+  /// **'Możesz porównać maksymalnie 4 oferty.'**
+  String get quotesCompareLimit;
+
+  /// No description provided for @quotesResultCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oferty: {count}'**
+  String quotesResultCount(int count);
+
+  /// No description provided for @quotesNoProjectTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz projekt'**
+  String get quotesNoProjectTitle;
+
+  /// No description provided for @quotesNoProjectMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oferty są przypisane do projektu.'**
+  String get quotesNoProjectMessage;
+
+  /// No description provided for @quotesEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak ofert'**
+  String get quotesEmptyTitle;
+
+  /// No description provided for @quotesEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj pierwszą ofertę wykonawcy z ceną i zakresem.'**
+  String get quotesEmptyMessage;
+
+  /// No description provided for @quotesNoResultsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak pasujących ofert'**
+  String get quotesNoResultsTitle;
+
+  /// No description provided for @quotesNoResultsMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień wyszukiwanie albo filtr statusu.'**
+  String get quotesNoResultsMessage;
+
+  /// No description provided for @quotesLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać ofert.'**
+  String get quotesLoadError;
+
+  /// No description provided for @quoteNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowa oferta'**
+  String get quoteNewTitle;
+
+  /// No description provided for @quoteEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj ofertę'**
+  String get quoteEditTitle;
+
+  /// No description provided for @quoteDetailsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły oferty'**
+  String get quoteDetailsTitle;
+
+  /// No description provided for @quoteContractorLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonawca'**
+  String get quoteContractorLabel;
+
+  /// No description provided for @quoteTitleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zakres główny'**
+  String get quoteTitleLabel;
+
+  /// No description provided for @quoteVariantLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wariant'**
+  String get quoteVariantLabel;
+
+  /// No description provided for @quoteGrossAmountLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kwota brutto'**
+  String get quoteGrossAmountLabel;
+
+  /// No description provided for @quoteVatRateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Stawka VAT'**
+  String get quoteVatRateLabel;
+
+  /// No description provided for @quoteReceivedDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data otrzymania'**
+  String get quoteReceivedDateLabel;
+
+  /// No description provided for @quoteValidUntilLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ważna do'**
+  String get quoteValidUntilLabel;
+
+  /// No description provided for @quoteStageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap'**
+  String get quoteStageLabel;
+
+  /// No description provided for @quoteNoStage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez etapu'**
+  String get quoteNoStage;
+
+  /// No description provided for @quoteIncludedScopeHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'W cenie'**
+  String get quoteIncludedScopeHeading;
+
+  /// No description provided for @quoteExcludedScopeHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykluczenia'**
+  String get quoteExcludedScopeHeading;
+
+  /// No description provided for @quoteScopeLineLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pozycja zakresu'**
+  String get quoteScopeLineLabel;
+
+  /// No description provided for @quoteAddScopeLineTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj pozycję'**
+  String get quoteAddScopeLineTooltip;
+
+  /// No description provided for @quoteRemoveScopeLineTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń pozycję'**
+  String get quoteRemoveScopeLineTooltip;
+
+  /// No description provided for @quoteAttachmentsHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Załączniki'**
+  String get quoteAttachmentsHeading;
+
+  /// No description provided for @quoteAddAttachmentAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj PDF lub zdjęcie'**
+  String get quoteAddAttachmentAction;
+
+  /// No description provided for @quoteNoteLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatka'**
+  String get quoteNoteLabel;
+
+  /// No description provided for @quoteRequiredFieldsError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzupełnij wykonawcę, nazwę, wariant, kwotę i zakres.'**
+  String get quoteRequiredFieldsError;
+
+  /// No description provided for @quoteInvalidAmountError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz poprawną kwotę większą od zera.'**
+  String get quoteInvalidAmountError;
+
+  /// No description provided for @quoteInvalidValidityError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Termin ważności nie może być przed datą otrzymania.'**
+  String get quoteInvalidValidityError;
+
+  /// No description provided for @quoteSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać oferty.'**
+  String get quoteSaveError;
+
+  /// No description provided for @quoteLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać oferty.'**
+  String get quoteLoadError;
+
+  /// No description provided for @quoteNotFoundTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie znaleziono oferty'**
+  String get quoteNotFoundTitle;
+
+  /// No description provided for @quoteNotFoundMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oferta mogła zostać usunięta lub należy do innego projektu.'**
+  String get quoteNotFoundMessage;
+
+  /// No description provided for @quoteAttachmentError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zaimportować załącznika.'**
+  String get quoteAttachmentError;
+
+  /// No description provided for @quoteValidUntilValue.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ważna do {date}'**
+  String quoteValidUntilValue(String date);
+
+  /// No description provided for @quoteExpiredOnValue.
+  ///
+  /// In pl, this message translates to:
+  /// **'Termin minął {date}'**
+  String quoteExpiredOnValue(String date);
+
+  /// No description provided for @quoteAcceptAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przyjmij ofertę'**
+  String get quoteAcceptAction;
+
+  /// No description provided for @quoteRejectAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odrzuć ofertę'**
+  String get quoteRejectAction;
+
+  /// No description provided for @quoteAcceptTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodać ofertę do budżetu?'**
+  String get quoteAcceptTitle;
+
+  /// No description provided for @quoteAcceptPlannedAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jako planowany koszt'**
+  String get quoteAcceptPlannedAction;
+
+  /// No description provided for @quoteAcceptOrderedAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jako zamówiony koszt'**
+  String get quoteAcceptOrderedAction;
+
+  /// No description provided for @quoteAcceptError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się przyjąć oferty.'**
+  String get quoteAcceptError;
+
+  /// No description provided for @quoteRejectConfirmTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odrzucić ofertę?'**
+  String get quoteRejectConfirmTitle;
+
+  /// No description provided for @quoteRejectConfirmMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oferta pozostanie w historii ze statusem odrzuconej.'**
+  String get quoteRejectConfirmMessage;
+
+  /// No description provided for @quoteRejectError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się odrzucić oferty.'**
+  String get quoteRejectError;
+
+  /// No description provided for @quoteDeleteConfirmTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunąć ofertę?'**
+  String get quoteDeleteConfirmTitle;
+
+  /// No description provided for @quoteDeleteConfirmMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieprzyjęta oferta i jej powiązania zostaną usunięte.'**
+  String get quoteDeleteConfirmMessage;
+
+  /// No description provided for @quoteDeleteError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się usunąć oferty.'**
+  String get quoteDeleteError;
+
+  /// No description provided for @quoteViewCostAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwórz koszt w budżecie'**
+  String get quoteViewCostAction;
+
+  /// No description provided for @quoteAcceptedCostHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Koszt w budżecie'**
+  String get quoteAcceptedCostHeading;
+
+  /// No description provided for @quoteComparisonTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Porównanie ofert'**
+  String get quoteComparisonTitle;
+
+  /// No description provided for @quoteComparisonPriceHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Cena brutto'**
+  String get quoteComparisonPriceHeading;
+
+  /// No description provided for @quoteComparisonScopeHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Różnice zakresu'**
+  String get quoteComparisonScopeHeading;
+
+  /// No description provided for @quoteLowestPriceLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Najniższa cena'**
+  String get quoteLowestPriceLabel;
+
+  /// No description provided for @quotePresenceIncluded.
+  ///
+  /// In pl, this message translates to:
+  /// **'W cenie'**
+  String get quotePresenceIncluded;
+
+  /// No description provided for @quotePresenceExcluded.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykluczone'**
+  String get quotePresenceExcluded;
+
+  /// No description provided for @quotePresenceNotSpecified.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak informacji'**
+  String get quotePresenceNotSpecified;
+
+  /// No description provided for @quoteComparisonNeedsTwo.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz co najmniej 2 oferty.'**
+  String get quoteComparisonNeedsTwo;
+
+  /// No description provided for @contactQuotesHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oferty'**
+  String get contactQuotesHeading;
+
+  /// No description provided for @contactAddQuoteAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj ofertę'**
+  String get contactAddQuoteAction;
+
+  /// No description provided for @contactQuotesEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak ofert tego wykonawcy.'**
+  String get contactQuotesEmpty;
 }
 
 class _AppLocalizationsDelegate
