@@ -108,6 +108,27 @@ void main() {
     },
   );
 
+  test('round trips a gross-originated VAT rounding boundary', () async {
+    final input = CostEntryInput(
+      projectId: 'project-1',
+      name: 'Drobny koszt',
+      type: CostEntryType.cost,
+      status: CostStatus.paid,
+      amount: VatBreakdown.fromGross(_pln(3), VatRate.standard23),
+      entryDate: DateTime.utc(2026, 7, 15),
+    );
+    final created = await repository.create(ConfirmedCostEntryInput(input));
+
+    final loaded = await repository.findById(
+      projectId: 'project-1',
+      costEntryId: created.id,
+    );
+
+    expect(loaded?.amount.net, _pln(2));
+    expect(loaded?.amount.vat, _pln(1));
+    expect(loaded?.amount.gross, _pln(3));
+  });
+
   test('draft can be replaced, confirmed and changed to paid', () async {
     final draft = await repository.saveDraft(
       CostDraftInput(_input(name: 'Roboczy koszt')),

@@ -11,6 +11,31 @@ enum VatRate {
 }
 
 final class VatBreakdown {
+  factory VatBreakdown.fromStoredValues({
+    required Money net,
+    required Money vat,
+    required Money gross,
+    required VatRate rate,
+  }) {
+    if (net.currencyCode != vat.currencyCode ||
+        net.currencyCode != gross.currencyCode) {
+      throw const FormatException('Stored VAT currencies are inconsistent');
+    }
+    if (net + vat != gross) {
+      throw const FormatException('Stored VAT total is inconsistent');
+    }
+    final calculatedFromNet = VatBreakdown.fromNet(net, rate);
+    final calculatedFromGross = VatBreakdown.fromGross(gross, rate);
+    final matchesNet =
+        calculatedFromNet.vat == vat && calculatedFromNet.gross == gross;
+    final matchesGross =
+        calculatedFromGross.net == net && calculatedFromGross.vat == vat;
+    if (!matchesNet && !matchesGross) {
+      throw const FormatException('Stored VAT values are inconsistent');
+    }
+    return VatBreakdown._(net: net, vat: vat, gross: gross, rate: rate);
+  }
+
   factory VatBreakdown.fromNet(Money net, VatRate rate) {
     final vat = Money(
       minorUnits: _divideRoundedHalfAwayFromZero(

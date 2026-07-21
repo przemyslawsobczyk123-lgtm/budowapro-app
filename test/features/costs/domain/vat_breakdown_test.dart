@@ -85,6 +85,33 @@ void main() {
       expect(recalculated.gross, _pln(2));
     });
   });
+
+  group('VAT restored from storage', () {
+    test('preserves a valid gross-originated rounding boundary', () {
+      final restored = VatBreakdown.fromStoredValues(
+        net: _pln(2),
+        vat: _pln(1),
+        gross: _pln(3),
+        rate: VatRate.standard23,
+      );
+
+      expect(restored.net, _pln(2));
+      expect(restored.vat, _pln(1));
+      expect(restored.gross, _pln(3));
+    });
+
+    test('rejects components not produced by either VAT direction', () {
+      expect(
+        () => VatBreakdown.fromStoredValues(
+          net: _pln(100),
+          vat: _pln(20),
+          gross: _pln(120),
+          rate: VatRate.standard23,
+        ),
+        throwsFormatException,
+      );
+    });
+  });
 }
 
 Money _pln(int minorUnits) {

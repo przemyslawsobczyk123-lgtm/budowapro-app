@@ -745,17 +745,21 @@ final class SqliteCostRepository implements CostRepository {
   ) {
     final currencyCode = row['currency_code']! as String;
     final rate = _vatRateFromStorage(row['vat_rate_basis_points']! as int);
-    final amount = VatBreakdown.fromNet(
-      Money(
+    final amount = VatBreakdown.fromStoredValues(
+      net: Money(
         minorUnits: row['net_minor_units']! as int,
         currencyCode: currencyCode,
       ),
-      rate,
+      vat: Money(
+        minorUnits: row['vat_minor_units']! as int,
+        currencyCode: currencyCode,
+      ),
+      gross: Money(
+        minorUnits: row['gross_minor_units']! as int,
+        currencyCode: currencyCode,
+      ),
+      rate: rate,
     );
-    if (amount.vat.minorUnits != row['vat_minor_units'] ||
-        amount.gross.minorUnits != row['gross_minor_units']) {
-      throw const FormatException('Stored cost amount is inconsistent');
-    }
     final quantityUnscaled = row['quantity_unscaled'] as int?;
     final quantityScale = row['quantity_scale'] as int?;
     return CostEntry(
