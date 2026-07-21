@@ -441,9 +441,41 @@ created cost keeps project, contractor, stage, amount, VAT, note and attachment 
 uses source `offer_conversion`, and enters either `planned` or `ordered` status.
 
 The quote workspace is reachable from More and from each contractor. Routes are typed by
-project and record ID. The form imports PDF/images through the existing system picker and
-private file stager. Full document opening, thumbnailing and cross-feature document metadata
-remain owned by Task 4.3.
+project and record ID. The form imports PDF/images through the shared system picker and private
+file stager. The document catalog below owns opening, thumbnailing and cross-feature metadata.
+
+## Project Document Catalog
+
+Schema `v8` turns the existing private attachment store into one project document catalog
+without copying any original. `document_metadata` owns title, type, description, document
+date and warranty dates. `document_context_links` owns editable stage, contact and room links;
+decision, defect and device link kinds are reserved until their source modules exist. Native
+cost, checklist and quote attachment tables remain their source of truth and are projected as
+typed document relations by one repository query.
+
+`SqliteDocumentRepository` scopes every operation to one project. Search and filters use bound
+SQL values and cover type, inferred or explicit stage, room, effective document date and the
+shared 30-day warranty boundary. Lists are paginated in 30-row pages. Relations for each page
+are loaded in one batched union instead of one query per document. Metadata and editable links
+are saved in one transaction, so an invalid target cannot leave a partial edit.
+
+The system picker imports supported local files under an opaque generated storage key. The
+original stays byte-for-byte unchanged in `originals`; SHA-256 is calculated in an isolate and
+used only to warn about potential duplicates. Image and first-page PDF previews are bounded
+derivatives in `previews`. Decode, resize and JPEG encoding run outside the UI isolate, and a
+preview failure never removes a valid original.
+
+The Build branch exposes the searchable document workspace. Details show all native and context
+relations and can open PDF/images, edit metadata, share the private original through the Android
+share sheet or delete after reporting the relation count. Cost, quote and checklist evidence UI
+opens the same document ID. Deletion first marks the attachment as deleting, removes its private
+files and then removes the attachment row; foreign-key cascades clear every link and startup
+recovery completes interrupted deletion.
+
+Warranty start, inclusive end and optional reminder dates are persisted and filterable. Creating
+the actual Android warranty notification remains part of `NOTIF-002` with the home/service module,
+where notification preferences and a source deep link can be implemented without duplicating a
+schedule record.
 
 ## Plan Pins
 

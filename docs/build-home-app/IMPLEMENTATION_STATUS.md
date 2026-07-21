@@ -217,6 +217,25 @@ Last updated: 2026-07-21
 - Domain, migration, repository, rollback, amount parser and widget tests cover the flow. List, form and comparison
   layouts are verified at a 320 px Android viewport. File preview/opening remains part of the document library.
 
+### Task 4.3 - project document library
+
+- Schema `v8` adds project-scoped document metadata and typed context links over the existing private attachment
+  identity. Cost, checklist and quote links remain canonical and are projected into the same document details.
+- The catalog supports receipt, invoice, quote, contract, WZ, protocol, warranty, instruction, map, photo and other
+  types. Search and combined filters cover type, explicit or inferred stage, room, date range and warranty state.
+- The shared system picker accepts the configured PDF, image, text and office formats without broad storage
+  permission. SHA-256 runs outside the UI isolate and warns before retaining an identical project-local file.
+- Originals are imported once under opaque storage keys and never modified. Bounded image and first-page PDF
+  previews are separate derivatives; decode, render, resize and encoding work does not run on the UI isolate.
+- The Build branch provides a 30-row paginated library, import flow, compact filters, metadata editor, warranty dates,
+  complete relation list, PDF/image viewer, Android share action and explicit deletion confirmation.
+- Metadata and editable stage/contact/room links save atomically. Deletion reports all links, removes original and
+  preview files, cascades native/context links and remains recoverable after interruption while preserving source costs.
+- Existing cost, quote and checklist evidence rows open the same catalog document and refresh after deletion. List,
+  filter and warranty form layouts are verified at 320 px; original preservation, rollback and link cleanup are tested.
+- Warranty reminder dates are persisted and displayed. Scheduling their Android notifications is deliberately paired
+  with source deep links and preferences in `NOTIF-002` during Task 10.2 rather than creating duplicate schedule rows.
+
 ## Verified baseline
 
 ```text
@@ -232,11 +251,15 @@ flutter_local_notifications 22.1.0
 flutter_timezone 5.1.0
 timezone 0.11.1
 url_launcher 6.3.2
+pdfrx 2.4.7
+image 4.9.1
+crypto 3.0.7
+share_plus 12.0.2
 ```
 
 The Android build passes with the known Flutter forward-compatibility warning
-for plugins that still apply the classic Kotlin Gradle plugin (`file_picker` and
-`flutter_timezone`). Re-evaluate this when either package or Flutter is upgraded.
+for plugins that still apply the classic Kotlin Gradle plugin (`file_picker`,
+`flutter_timezone` and `share_plus`). Re-evaluate this when a package or Flutter is upgraded.
 
 Quality gate:
 
@@ -247,7 +270,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-21 with 240 tests. Debug APK:
+All commands passed on 2026-07-21 with 259 tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -255,12 +278,10 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 4.3 from `IMPLEMENTATION_PLAN.md`:
+Task 5.1 from `IMPLEMENTATION_PLAN.md`:
 
-1. Introduce one project document catalog over existing private attachment originals.
-2. Persist document type, description, dates, warranty metadata and typed cross-feature links.
-3. Add search and filters by type, stage, room, date and warranty state.
-4. Open supported PDF/images from a controlled local adapter and generate bounded previews off the UI thread.
-5. Migrate cost, checklist and quote attachment presentation to the shared document contract without copying files.
-
-Do not start technical-photo maps before the shared document identity and relation model are green.
+1. Build one budget report over the existing exact financial source of truth.
+2. Show plan, commitments, paid amount and remaining budget.
+3. Add SQL-backed breakdowns by stage, category, contractor and month.
+4. Drill each report segment into the matching filtered cost register.
+5. Cover empty projects, over-budget values and the established financial fixture.
