@@ -7,6 +7,9 @@ import 'package:budowapro/features/contacts/presentation/contact_ui_text.dart';
 import 'package:budowapro/features/contacts/presentation/contacts_controller.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
 import 'package:budowapro/features/projects/presentation/projects_controller.dart';
+import 'package:budowapro/features/costs/presentation/cost_form_model.dart';
+import 'package:budowapro/features/quotes/domain/contractor_quote.dart';
+import 'package:budowapro/features/quotes/presentation/quote_ui_text.dart';
 import 'package:budowapro/features/stages/data/stage_providers.dart';
 import 'package:budowapro/features/stages/domain/stage_plan.dart';
 import 'package:budowapro/features/stages/presentation/stage_ui_text.dart';
@@ -132,6 +135,8 @@ class ContactDetailsScreen extends ConsumerWidget {
             ),
       onAddVisit: () => _addVisit(context, ref),
       onEditVisit: (visit) => _editVisit(context, ref, visit),
+      onAddQuote: () => _addQuote(context, ref),
+      onOpenQuote: (quote) => _openQuote(context, ref, quote),
       onRefresh: () async {
         ref.invalidate(contactDetailsProvider(_key));
         await ref.read(contactDetailsProvider(_key).future);
@@ -172,6 +177,26 @@ class ContactDetailsScreen extends ConsumerWidget {
       '/projects/${Uri.encodeComponent(projectId)}'
       '/contacts/${Uri.encodeComponent(contactId)}'
       '/visits/${Uri.encodeComponent(visit.id)}/edit',
+    );
+    if (changed == true) _invalidate(ref);
+  }
+
+  Future<void> _addQuote(BuildContext context, WidgetRef ref) async {
+    final changed = await context.push<bool>(
+      '/projects/${Uri.encodeComponent(projectId)}/quotes/new'
+      '?contactId=${Uri.encodeQueryComponent(contactId)}',
+    );
+    if (changed == true) _invalidate(ref);
+  }
+
+  Future<void> _openQuote(
+    BuildContext context,
+    WidgetRef ref,
+    ContractorQuote quote,
+  ) async {
+    final changed = await context.push<bool>(
+      '/projects/${Uri.encodeComponent(projectId)}'
+      '/quotes/${Uri.encodeComponent(quote.id)}',
     );
     if (changed == true) _invalidate(ref);
   }
@@ -291,6 +316,8 @@ class _ContactDetailsBody extends StatelessWidget {
     required this.onEmail,
     required this.onAddVisit,
     required this.onEditVisit,
+    required this.onAddQuote,
+    required this.onOpenQuote,
     required this.onRefresh,
   });
 
@@ -301,6 +328,8 @@ class _ContactDetailsBody extends StatelessWidget {
   final VoidCallback? onEmail;
   final VoidCallback onAddVisit;
   final ValueChanged<SiteVisit> onEditVisit;
+  final VoidCallback onAddQuote;
+  final ValueChanged<ContractorQuote> onOpenQuote;
   final Future<void> Function() onRefresh;
 
   @override
@@ -362,6 +391,51 @@ class _ContactDetailsBody extends StatelessWidget {
                   .where((stage) => contact.stageIds.contains(stage.id))
                   .map((stage) => stageName(l10n, stage))
                   .join(', '),
+            ),
+          const Divider(height: 32),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.contactQuotesHeading,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+              IconButton.filled(
+                key: const ValueKey('contactAddQuoteButton'),
+                tooltip: l10n.contactAddQuoteAction,
+                onPressed: onAddQuote,
+                icon: const Icon(Icons.add_rounded),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          if (details.quotes.isEmpty)
+            Text(
+              l10n.contactQuotesEmpty,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            )
+          else
+            ...details.quotes.map(
+              (quote) => ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.request_quote_outlined),
+                title: Text(quote.draft.title),
+                subtitle: Text(
+                  '${quote.draft.variantName} · '
+                  '${quoteStatusLabel(l10n, quote)}',
+                ),
+                trailing: Text(
+                  formatMoneyForDisplay(
+                    quote.draft.amount.gross,
+                    quote.draft.amount.gross.currencyCode,
+                  ),
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+                onTap: () => onOpenQuote(quote),
+              ),
             ),
           const Divider(height: 32),
           Row(

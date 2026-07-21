@@ -8,11 +8,15 @@ import 'package:budowapro/features/contacts/domain/site_visit_repository.dart';
 import 'package:budowapro/features/contacts/presentation/contact_details_screen.dart';
 import 'package:budowapro/features/projects/data/project_providers.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
+import 'package:budowapro/features/quotes/data/quote_providers.dart';
+import 'package:budowapro/features/quotes/domain/contractor_quote.dart';
+import 'package:budowapro/features/quotes/domain/quote_repository.dart';
 import 'package:budowapro/features/stages/data/stage_providers.dart';
 import 'package:budowapro/features/stages/domain/stage_plan.dart';
 import 'package:budowapro/features/stages/domain/stage_repository.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
+import 'package:budowapro/shared/models/page.dart';
+import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -33,9 +37,17 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Instal-Pro'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.textContaining('Wykonawca nie przyjechał'),
+        180,
+      );
       expect(find.textContaining('Wykonawca nie przyjechał'), findsOneWidget);
       expect(actions.callCount, 0);
 
+      await tester.ensureVisible(
+        find.byKey(const ValueKey('contactCallButton')),
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('contactCallButton')));
       await tester.pumpAndSettle();
       expect(actions.callCount, 0);
@@ -91,6 +103,7 @@ Widget _testApp(ContactActionGateway actions) {
       ),
       contactActionGatewayProvider.overrideWithValue(actions),
       stageRepositoryProvider.overrideWith((ref) async => _StageRepository()),
+      quoteRepositoryProvider.overrideWith((ref) async => _QuoteRepository()),
     ],
     child: MaterialApp.router(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -157,6 +170,17 @@ final class _StageRepository implements StageRepository {
     required String projectId,
     required ProjectTemplate template,
   }) async => const <ProjectStage>[];
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+final class _QuoteRepository implements QuoteRepository {
+  @override
+  Future<Page<ContractorQuote>> list(
+    QuoteQuery query,
+    PageRequest request,
+  ) async => Page(items: const [], totalCount: 0, request: request);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

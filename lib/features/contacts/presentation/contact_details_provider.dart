@@ -1,6 +1,10 @@
 import 'package:budowapro/features/contacts/data/contact_providers.dart';
 import 'package:budowapro/features/contacts/domain/contact.dart';
 import 'package:budowapro/features/contacts/domain/site_visit.dart';
+import 'package:budowapro/features/quotes/data/quote_providers.dart';
+import 'package:budowapro/features/quotes/domain/contractor_quote.dart';
+import 'package:budowapro/features/quotes/domain/quote_repository.dart';
+import 'package:budowapro/shared/models/page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 typedef ContactRecordKey = ({String projectId, String contactId});
@@ -31,17 +35,38 @@ final contactDetailsProvider =
         projectId: key.projectId,
         contactId: key.contactId,
       );
-      return ContactDetails(contact: contact, visits: visits);
+      final quoteRepository = await ref.watch(quoteRepositoryProvider.future);
+      final quotes = <ContractorQuote>[];
+      var request = PageRequest(limit: PageRequest.maximumLimit);
+      while (true) {
+        final page = await quoteRepository.list(
+          QuoteQuery(projectId: key.projectId, contactId: key.contactId),
+          request,
+        );
+        quotes.addAll(page.items);
+        final next = page.nextRequest;
+        if (next == null) break;
+        request = next;
+      }
+      return ContactDetails(contact: contact, visits: visits, quotes: quotes);
     });
 
 final class ContactDetails {
-  ContactDetails({required this.contact, required Iterable<SiteVisit> visits})
-    : visits = List<SiteVisit>.unmodifiable(visits);
+  ContactDetails({
+    required this.contact,
+    required Iterable<SiteVisit> visits,
+    Iterable<ContractorQuote> quotes = const <ContractorQuote>[],
+  }) : visits = List<SiteVisit>.unmodifiable(visits),
+       quotes = List<ContractorQuote>.unmodifiable(quotes);
 
-  const ContactDetails.missing() : contact = null, visits = const <SiteVisit>[];
+  const ContactDetails.missing()
+    : contact = null,
+      visits = const <SiteVisit>[],
+      quotes = const <ContractorQuote>[];
 
   final Contact? contact;
   final List<SiteVisit> visits;
+  final List<ContractorQuote> quotes;
 
   List<SiteVisit> get plannedVisits {
     final result = visits

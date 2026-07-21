@@ -6,6 +6,10 @@ import 'package:budowapro/features/contacts/presentation/contacts_screen.dart';
 import 'package:budowapro/features/contacts/presentation/site_visit_form_screen.dart';
 import 'package:budowapro/features/dashboard/presentation/dashboard_screen.dart';
 import 'package:budowapro/features/projects/presentation/project_form_screen.dart';
+import 'package:budowapro/features/quotes/presentation/quote_comparison_screen.dart';
+import 'package:budowapro/features/quotes/presentation/quote_details_screen.dart';
+import 'package:budowapro/features/quotes/presentation/quote_form_screen.dart';
+import 'package:budowapro/features/quotes/presentation/quotes_screen.dart';
 import 'package:budowapro/features/schedule/data/schedule_providers.dart';
 import 'package:budowapro/features/schedule/presentation/schedule_event_details_screen.dart';
 import 'package:budowapro/features/schedule/presentation/schedule_event_form_screen.dart';
@@ -71,6 +75,43 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/contacts',
         builder: (context, state) => const ContactsScreen(),
+      ),
+      GoRoute(
+        path: '/quotes',
+        builder: (context, state) => const QuotesScreen(),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/quotes/new',
+        builder: (context, state) => QuoteFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          initialContactId: state.uri.queryParameters['contactId'],
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/quotes/compare',
+        builder: (context, state) => QuoteComparisonScreen(
+          projectId: state.pathParameters['projectId']!,
+          quoteIds:
+              state.uri.queryParameters['ids']
+                  ?.split(',')
+                  .where((value) => value.isNotEmpty)
+                  .toList(growable: false) ??
+              const <String>[],
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/quotes/:quoteId/edit',
+        builder: (context, state) => QuoteFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          quoteId: state.pathParameters['quoteId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/quotes/:quoteId',
+        builder: (context, state) => QuoteDetailsScreen(
+          projectId: state.pathParameters['projectId']!,
+          quoteId: state.pathParameters['quoteId']!,
+        ),
       ),
       GoRoute(
         path: '/projects/:projectId/contacts/new',
