@@ -60,6 +60,8 @@ void main() {
       AppDatabase.contractorQuotesTable,
       AppDatabase.quoteScopeLinesTable,
       AppDatabase.quoteAttachmentsTable,
+      AppDatabase.documentMetadataTable,
+      AppDatabase.documentContextLinksTable,
     ]) {
       final table = await database.query(
         'sqlite_master',

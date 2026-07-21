@@ -12,7 +12,7 @@ final class AppDatabase {
 
   AppDatabase._(this._factory, this._path);
 
-  static const int schemaVersion = 7;
+  static const int schemaVersion = 8;
   static const String databaseFileName = 'budowapro.db';
   static const String metadataTable = 'app_metadata';
   static const String projectsTable = 'projects';
@@ -37,6 +37,8 @@ final class AppDatabase {
   static const String contractorQuotesTable = 'contractor_quotes';
   static const String quoteScopeLinesTable = 'quote_scope_lines';
   static const String quoteAttachmentsTable = 'quote_attachments';
+  static const String documentMetadataTable = 'document_metadata';
+  static const String documentContextLinksTable = 'document_context_links';
   static const String schemaVersionKey = 'schema_version';
 
   final DatabaseFactory _factory;
@@ -928,6 +930,112 @@ final class AppDatabase {
       await database.execute('''
         CREATE INDEX quote_attachments_attachment_idx
         ON $quoteAttachmentsTable (project_id, attachment_id)
+      ''');
+    }
+
+    if (fromVersion < 8 && toVersion >= 8) {
+      await database.execute('''
+        CREATE TABLE $documentMetadataTable (
+          project_id TEXT NOT NULL,
+          attachment_id TEXT NOT NULL,
+          title TEXT NOT NULL,
+          document_type TEXT NOT NULL CHECK (
+            document_type IN (
+              'receipt',
+              'invoice',
+              'quote',
+              'contract',
+              'deliveryNote',
+              'protocol',
+              'warranty',
+              'instruction',
+              'map',
+              'photo',
+              'other'
+            )
+          ),
+          description TEXT,
+          document_date_utc_ms INTEGER,
+          warranty_starts_at_utc_ms INTEGER,
+          warranty_ends_at_utc_ms INTEGER,
+          warranty_reminder_at_utc_ms INTEGER,
+          updated_at_utc_ms INTEGER NOT NULL,
+          PRIMARY KEY (project_id, attachment_id),
+          CHECK (
+            (warranty_starts_at_utc_ms IS NULL AND warranty_ends_at_utc_ms IS NULL)
+            OR
+            (
+              warranty_starts_at_utc_ms IS NOT NULL
+              AND warranty_ends_at_utc_ms IS NOT NULL
+              AND warranty_ends_at_utc_ms >= warranty_starts_at_utc_ms
+            )
+          ),
+          CHECK (
+            warranty_reminder_at_utc_ms IS NULL
+            OR
+            (
+              warranty_ends_at_utc_ms IS NOT NULL
+              AND warranty_reminder_at_utc_ms <= warranty_ends_at_utc_ms
+            )
+          ),
+          FOREIGN KEY (attachment_id, project_id)
+            REFERENCES $costAttachmentsTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX document_metadata_project_type_date_idx
+        ON $documentMetadataTable (
+          project_id,
+          document_type,
+          document_date_utc_ms DESC,
+          attachment_id
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX document_metadata_project_warranty_idx
+        ON $documentMetadataTable (
+          project_id,
+          warranty_ends_at_utc_ms,
+          attachment_id
+        )
+      ''');
+
+      await database.execute('''
+        CREATE TABLE $documentContextLinksTable (
+          project_id TEXT NOT NULL,
+          attachment_id TEXT NOT NULL,
+          relation_type TEXT NOT NULL CHECK (
+            relation_type IN (
+              'stage',
+              'contact',
+              'room',
+              'decision',
+              'defect',
+              'device'
+            )
+          ),
+          target_id TEXT NOT NULL,
+          label TEXT NOT NULL,
+          sort_order INTEGER NOT NULL CHECK (sort_order >= 0),
+          PRIMARY KEY (
+            project_id,
+            attachment_id,
+            relation_type,
+            target_id
+          ),
+          UNIQUE (project_id, attachment_id, sort_order),
+          FOREIGN KEY (attachment_id, project_id)
+            REFERENCES $costAttachmentsTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX document_context_links_target_idx
+        ON $documentContextLinksTable (
+          project_id,
+          relation_type,
+          target_id,
+          attachment_id
+        )
       ''');
     }
 
