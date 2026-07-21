@@ -196,18 +196,24 @@ final class ContactsController extends AsyncNotifier<ContactsState> {
   }) async {
     final repository = await ref.read(contactRepositoryProvider.future);
     final stageRepository = await ref.read(stageRepositoryProvider.future);
-    final page = await repository.list(
-      ContactQuery(
-        projectId: project.id,
-        searchTerm: searchTerm,
-        role: role,
-        stageId: stageId,
-      ),
-      PageRequest(limit: PageRequest.maximumLimit),
+    final query = ContactQuery(
+      projectId: project.id,
+      searchTerm: searchTerm,
+      role: role,
+      stageId: stageId,
     );
+    final contacts = <Contact>[];
+    var request = PageRequest(limit: PageRequest.maximumLimit);
+    while (true) {
+      final page = await repository.list(query, request);
+      contacts.addAll(page.items);
+      final next = page.nextRequest;
+      if (next == null) break;
+      request = next;
+    }
     return ContactsState(
       project: project,
-      contacts: page.items,
+      contacts: contacts,
       stages: await stageRepository.listStages(
         projectId: project.id,
         template: project.template,

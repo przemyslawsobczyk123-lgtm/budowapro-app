@@ -154,6 +154,11 @@ class _ScheduleEventFormScreenState
                   prefixIcon: Icon(scheduleKindIcon(_kind)),
                 ),
                 items: ScheduleEventKind.values
+                    .where(
+                      (kind) =>
+                          kind != ScheduleEventKind.visit ||
+                          _kind == ScheduleEventKind.visit,
+                    )
                     .map(
                       (kind) => DropdownMenuItem(
                         value: kind,
