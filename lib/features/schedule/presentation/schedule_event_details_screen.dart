@@ -1,3 +1,5 @@
+import 'package:budowapro/features/contacts/domain/site_visit.dart';
+import 'package:budowapro/features/contacts/presentation/contact_ui_text.dart';
 import 'package:budowapro/features/schedule/data/schedule_providers.dart';
 import 'package:budowapro/features/schedule/domain/schedule_event.dart';
 import 'package:budowapro/features/schedule/domain/schedule_repository.dart';
@@ -36,8 +38,14 @@ class ScheduleEventDetailsScreen extends ConsumerWidget {
             onPressed: details.value?.event == null
                 ? null
                 : () async {
+                    final visit = details.value?.siteVisit;
                     final changed = await context.push<bool>(
-                      '/projects/$projectId/schedule/$eventId/edit',
+                      visit == null
+                          ? '/projects/${Uri.encodeComponent(projectId)}'
+                                '/schedule/${Uri.encodeComponent(eventId)}/edit'
+                          : '/projects/${Uri.encodeComponent(projectId)}'
+                                '/contacts/${Uri.encodeComponent(visit.contactId)}'
+                                '/visits/${Uri.encodeComponent(eventId)}/edit',
                     );
                     if (changed == true) {
                       ref.invalidate(scheduleEventDetailsProvider(key));
@@ -93,7 +101,9 @@ class _EventDetailsContent extends ConsumerWidget {
         _InfoRow(
           icon: Icons.flag_outlined,
           label: l10n.scheduleStatusLabel,
-          value: scheduleStatusLabel(l10n, event.status),
+          value: details.siteVisit == null
+              ? scheduleStatusLabel(l10n, event.status)
+              : siteVisitStatusLabel(l10n, details.siteVisit!.status),
         ),
         if (event.assignee != null)
           _InfoRow(
@@ -111,7 +121,9 @@ class _EventDetailsContent extends ConsumerWidget {
                     '${scheduleLeadLabel(l10n, event.reminderLeadMinutes)}'
               : l10n.scheduleReminderDisabled,
         ),
-        if (event.note != null) ...[
+        if (details.siteVisit != null)
+          _SiteVisitDetails(visit: details.siteVisit!)
+        else if (event.note != null) ...[
           const SizedBox(height: 12),
           Text(
             l10n.scheduleNoteLabel,
@@ -148,6 +160,47 @@ class _EventDetailsContent extends ConsumerWidget {
             (change) =>
                 _DateChangeRow(change: change, timeZoneId: event.timeZoneId),
           ),
+      ],
+    );
+  }
+}
+
+class _SiteVisitDetails extends StatelessWidget {
+  const _SiteVisitDetails({required this.visit});
+
+  final SiteVisit visit;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 12),
+        Text(
+          l10n.siteVisitExpectedResultLabel,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        const SizedBox(height: 4),
+        Text(visit.expectedResult),
+        if (visit.result != null) ...[
+          const SizedBox(height: 16),
+          Text(
+            l10n.siteVisitResultHeading,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          const SizedBox(height: 4),
+          Text(visit.result!),
+        ],
+        if (visit.agreements != null) ...[
+          const SizedBox(height: 16),
+          Text(
+            l10n.siteVisitAgreementsHeading,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          const SizedBox(height: 4),
+          Text(visit.agreements!),
+        ],
       ],
     );
   }
