@@ -321,6 +321,45 @@ Notification payloads contain only validated `projectId` and `eventId` values.
 Foreground taps and cold launches resolve to the typed schedule details route.
 Titles and notes are never serialized into navigation payloads or logs.
 
+## Start Dashboard Projection
+
+Start owns no persisted table. `DashboardReader` accepts the selected `Project`
+and exact UTC boundaries for the current local day and 30-day forecast, then
+returns one immutable `DashboardSnapshot`. The repository implementation reads
+cost, stage/checklist and schedule source repositories in parallel.
+
+Financial rules are explicit:
+
+- `spent` is the corrected actual total of confirmed `cost` entries with status
+  `paid`,
+- `plannedNext30Days` is the combined planned and actual total of confirmed
+  `planned` or `cost` entries with open statuses between the inclusive local-day
+  start and exclusive day-30 boundary,
+- `unpaid` and `unpaidCount` use confirmed `cost` entries in `due` or `disputed`
+  status,
+- project remaining budget is `plannedBudget - spent`; an overrun remains a
+  negative domain value and is only formatted as an absolute warning in UI.
+
+Calendar boundaries are produced through the schedule timezone gateway. A day
+may therefore span 23 or 25 UTC hours at DST transitions while still representing
+one complete local calendar day. The forecast advances by 30 wall-calendar days.
+
+The stage repository exposes one project-scoped checklist query for dashboard
+use. This keeps the number of SQLite calls fixed when users add custom stages.
+Critical rows are unresolved high/critical checklist records sorted by importance,
+status, due date, stage order and checklist order. Agenda rows retain source event
+IDs and navigate to typed schedule detail routes.
+
+The dashboard controller watches selected-project state and is explicitly
+invalidated when the user returns to the Start branch. Successful cost/schedule
+forms and returning from an agenda source also refresh the projection. No source
+title, note, contact value or financial value is emitted to logs or telemetry.
+
+Exact VAT components loaded from SQLite are validated against both supported
+calculation directions. This preserves valid gross-originated rounding boundaries
+that cannot be reconstructed by recalculating from net, while malformed component
+triples still fail closed.
+
 ## Plan Pins
 
 Plans are versioned images/PDF pages. Pins use normalized coordinates so they survive device-size changes:

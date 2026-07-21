@@ -1,6 +1,6 @@
 # BudowaPRO - implementation status
 
-Last updated: 2026-07-20
+Last updated: 2026-07-21
 
 ## Current release
 
@@ -156,6 +156,27 @@ Last updated: 2026-07-20
 - DST behavior, corrupt payloads, reminder degradation, persistence, dependency cycles, exact routing and
   agenda/settings/form layouts are covered, including a 320 px Android viewport.
 
+### Task 3.3 - investor Start dashboard
+
+- Start is a read-only projection over the selected project, costs, persisted stages/checklists and schedule;
+  it does not add a dashboard table or duplicate source values.
+- The current stage prefers a persisted in-progress or blocked stage and falls back to the stage configured
+  on the project. The timeline shows every completed, active and future stage with derived checklist progress.
+- Budget shows confirmed paid costs against the project budget and preserves negative remaining value as an
+  explicit overrun. The 30-day plan combines open planned and actual entries in local calendar boundaries.
+- Unpaid amount and count use confirmed cost records in `due` or `disputed` status. Drafts remain excluded
+  from financial values but make a fresh project an active project rather than an empty one.
+- Critical work is derived from unresolved high/critical checklist source records. Today's agenda is ordered
+  by source event time and opens the exact task, visit, delivery, acceptance or payment record.
+- Start has separate loading, error, no-project, fresh-project and populated states. Quick actions open a new
+  cost, the budget register, the stages tab or a new schedule record.
+- Returning to Start invalidates the Riverpod projection. Cost and schedule forms also refresh Start after a
+  successful save, so persisted changes are visible without restarting the application.
+- Stage checklist loading is batched per project rather than queried once per stage. Dashboard, DST, routing,
+  missing-budget and layout tests cover a 320 px Android viewport.
+- SQLite cost restoration now accepts exact VAT components produced from either net or gross input. This fixes
+  non-invertible one-grosz rounding boundaries without accepting inconsistent stored amounts.
+
 ## Verified baseline
 
 ```text
@@ -185,7 +206,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-20 with 185 tests. Debug APK:
+All commands passed on 2026-07-21 with 202 tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -193,11 +214,12 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 3.3 from `IMPLEMENTATION_PLAN.md`:
+Task 4.1 from `IMPLEMENTATION_PLAN.md`:
 
-1. Build the Start dashboard from project, cost, stage and schedule repositories.
-2. Show current stage, budget, 30-day plan, unpaid items and today's agenda.
-3. Add a stage timeline, critical tasks and direct links to costs and checklists.
-4. Keep distinct no-project and empty-project states.
+1. Persist project-scoped contacts with roles and stage assignments.
+2. Add contact search and filters by role and stage.
+3. Persist site visits with purpose, result and completed/cancelled history.
+4. Open phone and e-mail system actions only after an explicit user tap.
+5. Feed upcoming visits into the existing Start agenda projection.
 
-Do not start contacts and visits before the dashboard repository projections are green.
+Do not start quote comparison before contact and visit persistence is green.
