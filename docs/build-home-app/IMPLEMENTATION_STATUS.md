@@ -199,6 +199,24 @@ Last updated: 2026-07-21
 - List, filters, details and confirmation flows are covered at 320 px. Visit photos and durable links to follow-up
   tasks remain dependent on the shared document/relation work planned for phases 4.3 and 7.1.
 
+### Task 4.2 - contractor quotes and scope comparison
+
+- Schema `v7` persists contractor quotes, ordered included/excluded scope lines and links to the generic private
+  attachment store. Every record remains project-scoped and uses restrictive contact, stage and accepted-cost links.
+- Quotes store contractor, main scope, price variant, exact gross/net/VAT values, received date, inclusive validity
+  deadline, optional stage and note. Received quotes can be edited; rejected and accepted quotes preserve history.
+- The system picker imports local PDF and image originals without broad storage permission. Quote links participate
+  in interrupted-import recovery and unlinked-file cleanup; deleting a quote immediately removes newly orphaned files.
+- The comparison workspace accepts two to four quotes and shows gross price plus every scope row as included,
+  excluded or unspecified. Lowest price is marked only as a fact and is never promoted to an automatic recommendation.
+- Acceptance creates exactly one confirmed planned entry in either `planned` or `ordered` status. Cost creation,
+  attachment links, revision history and `accepted_cost_entry_id` are one SQLite transaction; retries return the
+  existing cost instead of duplicating budget truth.
+- More opens the complete quote workspace. Contractor details show their quote history and preselect the contractor
+  for a new quote. Accepted quotes open the exact converted cost in the budget register.
+- Domain, migration, repository, rollback, amount parser and widget tests cover the flow. List, form and comparison
+  layouts are verified at a 320 px Android viewport. File preview/opening remains part of the document library.
+
 ## Verified baseline
 
 ```text
@@ -229,7 +247,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-21 with 224 tests. Debug APK:
+All commands passed on 2026-07-21 with 240 tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -237,12 +255,12 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 4.2 from `IMPLEMENTATION_PLAN.md`:
+Task 4.3 from `IMPLEMENTATION_PLAN.md`:
 
-1. Persist contractor quotes with scope, exclusions, price variant and validity date.
-2. Import local PDF/image quote attachments without modifying originals.
-3. Compare price and scope differences side by side instead of selecting by price alone.
-4. Convert an accepted quote into a planned or ordered cost without copying financial truth twice.
-5. Preserve project, contact and stage context across the quote workflow.
+1. Introduce one project document catalog over existing private attachment originals.
+2. Persist document type, description, dates, warranty metadata and typed cross-feature links.
+3. Add search and filters by type, stage, room, date and warranty state.
+4. Open supported PDF/images from a controlled local adapter and generate bounded previews off the UI thread.
+5. Migrate cost, checklist and quote attachment presentation to the shared document contract without copying files.
 
-Do not start the document library before quote persistence and attachment staging are green.
+Do not start technical-photo maps before the shared document identity and relation model are green.

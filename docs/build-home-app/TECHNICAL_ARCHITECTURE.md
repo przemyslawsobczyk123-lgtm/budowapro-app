@@ -61,6 +61,7 @@ lib/
     diary/
     decisions/
     contacts/
+    quotes/
     rooms/
     materials/
     documents/
@@ -146,6 +147,16 @@ abstract interface class AttachmentRepository {
   Future<Attachment?> findById(AttachmentId id);
   Future<Page<Attachment>> list(AttachmentQuery query, PageRequest page);
   Future<void> remove(AttachmentId id);
+}
+
+abstract interface class QuoteRepository {
+  Future<ContractorQuote> create(...);
+  Future<ContractorQuote> update(...);
+  Future<ContractorQuote?> findById(...);
+  Future<Page<ContractorQuote>> list(QuoteQuery query, PageRequest page);
+  Future<QuoteAcceptanceResult> accept(...);
+  Future<ContractorQuote> reject(...);
+  Future<void> delete(...);
 }
 ```
 
@@ -399,6 +410,40 @@ The Start dashboard derives at most three open visit events between the inclusiv
 local-day start and exclusive day-30 boundary from the existing open schedule query.
 It persists no contact or visit copy. Visit reminders use the same IANA timezone,
 permission and payload rules as every other schedule event.
+
+## Contractor Quotes
+
+Schema `v7` adds three project-scoped tables:
+
+- `contractor_quotes` owns contractor, stage, variant, validity, exact VAT components,
+  status and the optional accepted cost ID,
+- `quote_scope_lines` stores ordered included and excluded scope rows with normalized
+  comparison keys,
+- `quote_attachments` links quotes to the existing private `attachments` store without
+  copying originals.
+
+A quote is editable only while received. Accepted quotes reference exactly one confirmed
+planned cost. Rejected quotes remain history records and can be deleted explicitly. The
+database enforces project-local contact, stage, attachment and accepted-cost relations.
+The attachment recovery query treats quote links as live references, so startup cleanup
+cannot remove a PDF or image still used by a quote.
+
+Comparison is a domain projection over at least two quotes from one project and currency.
+It creates a union of normalized scope keys and returns `included`, `excluded` or
+`notSpecified` per quote. Lowest price is factual metadata only; the model has no automatic
+best-quote or recommendation field.
+
+Acceptance is idempotent and transactional. `SqliteQuoteRepository` invokes the existing
+cost transaction writer on the same SQLite executor, then changes the quote to `accepted`
+and stores `accepted_cost_entry_id`. Any failure rolls back the cost, its attachment links,
+its revision and the quote change. Repeating acceptance returns the existing cost ID. The
+created cost keeps project, contractor, stage, amount, VAT, note and attachment references,
+uses source `offer_conversion`, and enters either `planned` or `ordered` status.
+
+The quote workspace is reachable from More and from each contractor. Routes are typed by
+project and record ID. The form imports PDF/images through the existing system picker and
+private file stager. Full document opening, thumbnailing and cross-feature document metadata
+remain owned by Task 4.3.
 
 ## Plan Pins
 
