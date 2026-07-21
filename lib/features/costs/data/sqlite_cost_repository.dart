@@ -930,6 +930,15 @@ _SqlPredicate _costPredicate(CostQuery query, {required String tableAlias}) {
   _addInClause(clauses, arguments, column('stage_id'), query.stageIds);
   _addInClause(clauses, arguments, column('category_id'), query.categoryIds);
   _addInClause(clauses, arguments, column('supplier_id'), query.supplierIds);
+  for (final missing in query.missingAssignments) {
+    clauses.add(
+      '${column(switch (missing) {
+        CostMissingAssignment.stage => 'stage_id',
+        CostMissingAssignment.category => 'category_id',
+        CostMissingAssignment.supplier => 'supplier_id',
+      })} IS NULL',
+    );
+  }
   _addInClause(
     clauses,
     arguments,

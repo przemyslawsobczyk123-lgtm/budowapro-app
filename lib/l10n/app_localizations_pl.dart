@@ -2246,4 +2246,77 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get documentRelationDevice => 'Urządzenie';
+
+  @override
+  String get budgetReportTitle => 'Raport budżetowy';
+
+  @override
+  String get budgetReportLoading => 'Wczytywanie raportu...';
+
+  @override
+  String get budgetReportNoProjectTitle => 'Wybierz projekt';
+
+  @override
+  String get budgetReportNoProjectMessage =>
+      'Raport budżetowy jest liczony osobno dla każdego projektu.';
+
+  @override
+  String get budgetReportLoadError =>
+      'Nie udało się wczytać raportu budżetowego.';
+
+  @override
+  String get budgetReportRemainingHeading => 'Pozostało do rozdysponowania';
+
+  @override
+  String get budgetReportOverBudgetHeading => 'Przekroczenie budżetu';
+
+  @override
+  String get budgetReportNoPlan => 'Nie ustawiono';
+
+  @override
+  String get budgetReportPlanLabel => 'Plan';
+
+  @override
+  String get budgetReportCommittedLabel => 'Zobowiązania';
+
+  @override
+  String get budgetReportPaidLabel => 'Zapłacono';
+
+  @override
+  String get budgetReportRemainingLabel => 'Pozostało';
+
+  @override
+  String get budgetReportBreakdownHeading => 'Struktura kosztów';
+
+  @override
+  String get budgetReportDimensionStage => 'Etap';
+
+  @override
+  String get budgetReportDimensionCategory => 'Kategoria';
+
+  @override
+  String get budgetReportDimensionSupplier => 'Wykonawca';
+
+  @override
+  String get budgetReportDimensionMonth => 'Miesiąc';
+
+  @override
+  String get budgetReportNoAssignment => 'Bez przypisania';
+
+  @override
+  String budgetReportPaidDetail(String amount) {
+    return 'Zapłacono $amount';
+  }
+
+  @override
+  String budgetReportRecordCount(int count) {
+    return 'Pozycji: $count';
+  }
+
+  @override
+  String get budgetReportEmptyCostsTitle => 'Brak kosztów do raportu';
+
+  @override
+  String get budgetReportEmptyCostsMessage =>
+      'Dodaj zatwierdzony koszt, aby zobaczyć strukturę wydatków.';
 }

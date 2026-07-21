@@ -7,6 +7,7 @@ import 'package:budowapro/features/costs/domain/cost_summary.dart';
 import 'package:budowapro/features/costs/domain/money.dart';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 import 'package:budowapro/features/costs/presentation/cost_form_model.dart';
+import 'package:budowapro/features/costs/presentation/cost_register_initial_filter.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
 import 'package:budowapro/features/projects/presentation/project_ui_text.dart';
 import 'package:budowapro/features/projects/presentation/projects_controller.dart';
@@ -22,7 +23,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class CostBudgetScreen extends ConsumerWidget {
-  const CostBudgetScreen({super.key});
+  const CostBudgetScreen({this.initialFilter, super.key});
+
+  final CostRegisterInitialFilter? initialFilter;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,7 +47,10 @@ class CostBudgetScreen extends ConsumerWidget {
             if (project == null) {
               return _NoProject(localizations: localizations);
             }
-            return _ProjectBudget(project: project);
+            return _ProjectBudget(
+              project: project,
+              initialFilter: initialFilter ?? CostRegisterInitialFilter(),
+            );
           },
         ),
       ),
@@ -82,9 +88,10 @@ class _NoProject extends StatelessWidget {
 }
 
 class _ProjectBudget extends ConsumerWidget {
-  const _ProjectBudget({required this.project});
+  const _ProjectBudget({required this.project, required this.initialFilter});
 
   final Project project;
+  final CostRegisterInitialFilter initialFilter;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -106,10 +113,13 @@ class _ProjectBudget extends ConsumerWidget {
           onRetry: () => ref.invalidate(projectStagesProvider(project)),
         ),
         data: (projectStages) => _CostRegister(
-          key: ValueKey<String>('cost-register-${project.id}'),
+          key: ValueKey<String>(
+            'cost-register-${project.id}-${initialFilter.cacheKey}',
+          ),
           project: project,
           repository: value,
           stages: projectStages,
+          initialFilter: initialFilter,
         ),
       ),
     );
@@ -121,12 +131,14 @@ class _CostRegister extends StatefulWidget {
     required this.project,
     required this.repository,
     required this.stages,
+    required this.initialFilter,
     super.key,
   });
 
   final Project project;
   final CostRepository repository;
   final List<ProjectStage> stages;
+  final CostRegisterInitialFilter initialFilter;
 
   @override
   State<_CostRegister> createState() => _CostRegisterState();
@@ -150,6 +162,7 @@ class _CostRegisterState extends State<_CostRegister> {
   var _isLoadingMore = false;
   var _types = <CostEntryType>{};
   var _statuses = <CostStatus>{};
+  var _missingAssignments = <CostMissingAssignment>{};
   String? _stageId;
   String? _categoryId;
   String? _supplierId;
@@ -164,6 +177,7 @@ class _CostRegisterState extends State<_CostRegister> {
   @override
   void initState() {
     super.initState();
+    _applyInitialFilter();
     _scrollController.addListener(_handleScroll);
     unawaited(_reload());
   }
@@ -172,8 +186,9 @@ class _CostRegisterState extends State<_CostRegister> {
   void didUpdateWidget(covariant _CostRegister oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.project.id != widget.project.id ||
-        !identical(oldWidget.repository, widget.repository)) {
-      _resetSessionFilters();
+        !identical(oldWidget.repository, widget.repository) ||
+        oldWidget.initialFilter.cacheKey != widget.initialFilter.cacheKey) {
+      _applyInitialFilter();
       unawaited(_reload());
     }
   }
@@ -193,6 +208,7 @@ class _CostRegisterState extends State<_CostRegister> {
     searchText: _searchController.text,
     types: _types,
     statuses: _statuses,
+    missingAssignments: _missingAssignments,
     stageIds: _stageId == null ? const <String>{} : <String>{_stageId!},
     categoryIds: _categoryId == null
         ? const <String>{}
@@ -203,10 +219,8 @@ class _CostRegisterState extends State<_CostRegister> {
     paymentMethods: _paymentMethods,
     sources: _sources,
     warnings: _warnings,
-    fromInclusive: _dateAtUtcMidnight(_fromDate),
-    toExclusive: _toDate == null
-        ? null
-        : _dateAtUtcMidnight(_toDate)!.add(const Duration(days: 1)),
+    fromInclusive: _localDayStartUtc(_fromDate),
+    toExclusive: _nextLocalDayStartUtc(_toDate),
     includeDrafts: _includeDrafts,
     sort: _sort,
   );
@@ -308,6 +322,16 @@ class _CostRegisterState extends State<_CostRegister> {
     setState(() {
       _types = result.types;
       _statuses = result.statuses;
+      _missingAssignments = <CostMissingAssignment>{
+        for (final missing in _missingAssignments)
+          if (!((missing == CostMissingAssignment.stage &&
+                  result.stageId != null) ||
+              (missing == CostMissingAssignment.category &&
+                  result.categoryId != null) ||
+              (missing == CostMissingAssignment.supplier &&
+                  result.supplierId != null)))
+            missing,
+      };
       _stageId = result.stageId;
       _categoryId = result.categoryId;
       _supplierId = result.supplierId;
@@ -342,6 +366,7 @@ class _CostRegisterState extends State<_CostRegister> {
     _searchController.clear();
     _types = <CostEntryType>{};
     _statuses = <CostStatus>{};
+    _missingAssignments = <CostMissingAssignment>{};
     _stageId = null;
     _categoryId = null;
     _supplierId = null;
@@ -352,6 +377,22 @@ class _CostRegisterState extends State<_CostRegister> {
     _toDate = null;
     _includeDrafts = true;
     _sort = CostSort.newest;
+  }
+
+  void _applyInitialFilter() {
+    _resetSessionFilters();
+    final filter = widget.initialFilter;
+    _types = Set<CostEntryType>.of(filter.types);
+    _statuses = Set<CostStatus>.of(filter.statuses);
+    _missingAssignments = Set<CostMissingAssignment>.of(
+      filter.missingAssignments,
+    );
+    _stageId = filter.stageId;
+    _categoryId = filter.categoryId;
+    _supplierId = filter.supplierId;
+    _fromDate = filter.fromDate;
+    _toDate = filter.toDate;
+    _includeDrafts = filter.includeDrafts;
   }
 
   Future<void> _clearAllFilters() async {
@@ -1316,8 +1357,12 @@ class _DateFilterButton extends StatelessWidget {
   );
 }
 
-DateTime? _dateAtUtcMidnight(DateTime? value) =>
-    value == null ? null : DateTime.utc(value.year, value.month, value.day);
+DateTime? _localDayStartUtc(DateTime? value) =>
+    value == null ? null : DateTime(value.year, value.month, value.day).toUtc();
+
+DateTime? _nextLocalDayStartUtc(DateTime? value) => value == null
+    ? null
+    : DateTime(value.year, value.month, value.day + 1).toUtc();
 
 String _money(Money value, String currencyCode) =>
     formatMoneyForDisplay(value, currencyCode);

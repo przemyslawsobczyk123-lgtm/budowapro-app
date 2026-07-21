@@ -4245,6 +4245,138 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Urządzenie'**
   String get documentRelationDevice;
+
+  /// No description provided for @budgetReportTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Raport budżetowy'**
+  String get budgetReportTitle;
+
+  /// No description provided for @budgetReportLoading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytywanie raportu...'**
+  String get budgetReportLoading;
+
+  /// No description provided for @budgetReportNoProjectTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz projekt'**
+  String get budgetReportNoProjectTitle;
+
+  /// No description provided for @budgetReportNoProjectMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Raport budżetowy jest liczony osobno dla każdego projektu.'**
+  String get budgetReportNoProjectMessage;
+
+  /// No description provided for @budgetReportLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać raportu budżetowego.'**
+  String get budgetReportLoadError;
+
+  /// No description provided for @budgetReportRemainingHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pozostało do rozdysponowania'**
+  String get budgetReportRemainingHeading;
+
+  /// No description provided for @budgetReportOverBudgetHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przekroczenie budżetu'**
+  String get budgetReportOverBudgetHeading;
+
+  /// No description provided for @budgetReportNoPlan.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie ustawiono'**
+  String get budgetReportNoPlan;
+
+  /// No description provided for @budgetReportPlanLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plan'**
+  String get budgetReportPlanLabel;
+
+  /// No description provided for @budgetReportCommittedLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zobowiązania'**
+  String get budgetReportCommittedLabel;
+
+  /// No description provided for @budgetReportPaidLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapłacono'**
+  String get budgetReportPaidLabel;
+
+  /// No description provided for @budgetReportRemainingLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pozostało'**
+  String get budgetReportRemainingLabel;
+
+  /// No description provided for @budgetReportBreakdownHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Struktura kosztów'**
+  String get budgetReportBreakdownHeading;
+
+  /// No description provided for @budgetReportDimensionStage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap'**
+  String get budgetReportDimensionStage;
+
+  /// No description provided for @budgetReportDimensionCategory.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kategoria'**
+  String get budgetReportDimensionCategory;
+
+  /// No description provided for @budgetReportDimensionSupplier.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonawca'**
+  String get budgetReportDimensionSupplier;
+
+  /// No description provided for @budgetReportDimensionMonth.
+  ///
+  /// In pl, this message translates to:
+  /// **'Miesiąc'**
+  String get budgetReportDimensionMonth;
+
+  /// No description provided for @budgetReportNoAssignment.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez przypisania'**
+  String get budgetReportNoAssignment;
+
+  /// No description provided for @budgetReportPaidDetail.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapłacono {amount}'**
+  String budgetReportPaidDetail(String amount);
+
+  /// No description provided for @budgetReportRecordCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pozycji: {count}'**
+  String budgetReportRecordCount(int count);
+
+  /// No description provided for @budgetReportEmptyCostsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak kosztów do raportu'**
+  String get budgetReportEmptyCostsTitle;
+
+  /// No description provided for @budgetReportEmptyCostsMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj zatwierdzony koszt, aby zobaczyć strukturę wydatków.'**
+  String get budgetReportEmptyCostsMessage;
 }
 
 class _AppLocalizationsDelegate

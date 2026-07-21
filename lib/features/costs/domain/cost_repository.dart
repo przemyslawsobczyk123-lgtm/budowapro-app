@@ -67,6 +67,8 @@ enum CostSort {
 
 enum CostWarning { missingDocument, missingDescription, vatToReview }
 
+enum CostMissingAssignment { stage, category, supplier }
+
 final class CostQuery {
   factory CostQuery({
     required String projectId,
@@ -76,6 +78,8 @@ final class CostQuery {
     Set<String> stageIds = const <String>{},
     Set<String> categoryIds = const <String>{},
     Set<String> supplierIds = const <String>{},
+    Set<CostMissingAssignment> missingAssignments =
+        const <CostMissingAssignment>{},
     Set<CostPaymentMethod> paymentMethods = const <CostPaymentMethod>{},
     Set<CostSource> sources = const <CostSource>{},
     Set<CostWarning> warnings = const <CostWarning>{},
@@ -103,6 +107,9 @@ final class CostQuery {
       stageIds: _normalizedIds(stageIds, 'stageIds'),
       categoryIds: _normalizedIds(categoryIds, 'categoryIds'),
       supplierIds: _normalizedIds(supplierIds, 'supplierIds'),
+      missingAssignments: UnmodifiableSetView<CostMissingAssignment>(
+        Set<CostMissingAssignment>.of(missingAssignments),
+      ),
       paymentMethods: UnmodifiableSetView<CostPaymentMethod>(
         Set<CostPaymentMethod>.of(paymentMethods),
       ),
@@ -123,6 +130,7 @@ final class CostQuery {
     required this.stageIds,
     required this.categoryIds,
     required this.supplierIds,
+    required this.missingAssignments,
     required this.paymentMethods,
     required this.sources,
     required this.warnings,
@@ -139,6 +147,7 @@ final class CostQuery {
   final UnmodifiableSetView<String> stageIds;
   final UnmodifiableSetView<String> categoryIds;
   final UnmodifiableSetView<String> supplierIds;
+  final UnmodifiableSetView<CostMissingAssignment> missingAssignments;
   final UnmodifiableSetView<CostPaymentMethod> paymentMethods;
   final UnmodifiableSetView<CostSource> sources;
   final UnmodifiableSetView<CostWarning> warnings;
@@ -155,6 +164,7 @@ final class CostQuery {
     if (stageIds.isNotEmpty) count++;
     if (categoryIds.isNotEmpty) count++;
     if (supplierIds.isNotEmpty) count++;
+    if (missingAssignments.isNotEmpty) count++;
     if (paymentMethods.isNotEmpty) count++;
     if (sources.isNotEmpty) count++;
     if (warnings.isNotEmpty) count++;
@@ -170,6 +180,7 @@ final class CostQuery {
     stageIds: stageIds,
     categoryIds: categoryIds,
     supplierIds: supplierIds,
+    missingAssignments: missingAssignments,
     paymentMethods: paymentMethods,
     sources: sources,
     warnings: warnings,

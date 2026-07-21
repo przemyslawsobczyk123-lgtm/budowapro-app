@@ -1,5 +1,7 @@
+import 'package:budowapro/features/costs/presentation/cost_budget_screen.dart';
 import 'package:budowapro/features/costs/presentation/cost_details_screen.dart';
 import 'package:budowapro/features/costs/presentation/cost_form_screen.dart';
+import 'package:budowapro/features/costs/presentation/cost_register_initial_filter.dart';
 import 'package:budowapro/features/contacts/presentation/contact_details_screen.dart';
 import 'package:budowapro/features/contacts/presentation/contact_form_screen.dart';
 import 'package:budowapro/features/contacts/presentation/contacts_screen.dart';
@@ -14,6 +16,7 @@ import 'package:budowapro/features/quotes/presentation/quote_comparison_screen.d
 import 'package:budowapro/features/quotes/presentation/quote_details_screen.dart';
 import 'package:budowapro/features/quotes/presentation/quote_form_screen.dart';
 import 'package:budowapro/features/quotes/presentation/quotes_screen.dart';
+import 'package:budowapro/features/reports/presentation/budget_report_screen.dart';
 import 'package:budowapro/features/schedule/data/schedule_providers.dart';
 import 'package:budowapro/features/schedule/presentation/schedule_event_details_screen.dart';
 import 'package:budowapro/features/schedule/presentation/schedule_event_form_screen.dart';
@@ -105,6 +108,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/quotes',
         builder: (context, state) => const QuotesScreen(),
+      ),
+      GoRoute(
+        path: '/reports',
+        builder: (context, state) => const BudgetReportScreen(),
       ),
       GoRoute(
         path: '/projects/:projectId/quotes/new',
@@ -209,7 +216,11 @@ StatefulShellBranch _branchFor(AppSection section) {
             ),
             AppSection.build => const DocumentsScreen(),
             AppSection.more => const MoreToolsScreen(),
-            _ => ProjectSectionScreen(section: section),
+            AppSection.budget => CostBudgetScreen(
+              initialFilter: CostRegisterInitialFilter.fromQueryParameters(
+                state.uri.queryParameters,
+              ),
+            ),
           },
         ),
       ),

@@ -13,6 +13,7 @@ import 'package:budowapro/features/costs/presentation/cost_details_screen.dart';
 import 'package:budowapro/features/costs/presentation/cost_editor_gateway.dart';
 import 'package:budowapro/features/costs/presentation/cost_form_model.dart';
 import 'package:budowapro/features/costs/presentation/cost_form_screen.dart';
+import 'package:budowapro/features/costs/presentation/cost_register_initial_filter.dart';
 import 'package:budowapro/features/projects/data/project_providers.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
 import 'package:budowapro/features/stages/data/stage_providers.dart';
@@ -335,6 +336,33 @@ void main() {
     expect(find.text('beton'), findsOneWidget);
   });
 
+  testWidgets('applies a report drill-down before the first register query', (
+    tester,
+  ) async {
+    final costs = _FakeCostRepository(entries: [_entry()]);
+    await tester.pumpWidget(
+      _budgetApp(
+        costs,
+        initialFilter: CostRegisterInitialFilter.fromQueryParameters({
+          'type': 'cost',
+          'status': 'paid',
+          'unassigned': 'stage',
+          'from': '2026-07-01',
+          'to': '2026-07-31',
+        }),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final query = costs.listQueries.first;
+    expect(query.types, {CostEntryType.cost});
+    expect(query.statuses, {CostStatus.paid});
+    expect(query.missingAssignments, {CostMissingAssignment.stage});
+    expect(query.fromInclusive, DateTime(2026, 7).toUtc());
+    expect(query.toExclusive, DateTime(2026, 8).toUtc());
+    expect(query.includeDrafts, isFalse);
+  });
+
   testWidgets('loads the next register page and fits warning rows at 320px', (
     tester,
   ) async {
@@ -433,7 +461,10 @@ Widget _gatewayApp(CostEditorGateway gateway, Widget home) {
   );
 }
 
-Widget _budgetApp(_FakeCostRepository costs) {
+Widget _budgetApp(
+  _FakeCostRepository costs, {
+  CostRegisterInitialFilter? initialFilter,
+}) {
   final project = _project();
   final projects = FakeProjectRepository(
     projects: [project],
@@ -451,7 +482,7 @@ Widget _budgetApp(_FakeCostRepository costs) {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: AppTheme.light,
-      home: const CostBudgetScreen(),
+      home: CostBudgetScreen(initialFilter: initialFilter),
     ),
   );
 }

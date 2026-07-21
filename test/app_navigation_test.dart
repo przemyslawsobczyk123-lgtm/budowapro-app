@@ -69,6 +69,21 @@ void main() {
     expect(find.text('Wybierz projekt'), findsOneWidget);
   });
 
+  testWidgets('opens the budget report from the More tools branch', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_testApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(NavigationDestination).at(4));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('moreBudgetReportTile')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Raport budżetowy'), findsOneWidget);
+    expect(find.text('Wybierz projekt'), findsOneWidget);
+  });
+
   testWidgets('opens the new project form from the empty start screen', (
     WidgetTester tester,
   ) async {
