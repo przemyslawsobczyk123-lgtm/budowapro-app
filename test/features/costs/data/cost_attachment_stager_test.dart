@@ -76,6 +76,7 @@ void main() {
     expect(attachment.displayName, 'Faktura lipiec.PDF');
     expect(attachment.byteSize, bytes.length);
     expect(attachment.mediaType, 'application/pdf');
+    expect(attachment.sha256, hasLength(64));
     expect(await source.readAsBytes(), bytes);
     final stored = fileStore.fileFor(
       projectId: 'project-1',
@@ -89,6 +90,7 @@ void main() {
     expect(rows.single['availability'], 'available');
     expect(rows.single['original_storage_key'], 'attachment-1.pdf');
     expect(rows.single['preview_storage_key'], isNull);
+    expect(rows.single['sha256'], attachment.sha256);
   });
 
   test('failed import removes its database placeholder', () async {
@@ -298,6 +300,40 @@ void main() {
       );
     },
   );
+
+  test('startup recovery preserves a standalone catalog document', () async {
+    final source = File(p.join(temporaryDirectory.path, 'manual.pdf'));
+    await source.writeAsBytes(<int>[7, 8, 9], flush: true);
+    final document = await stager.stage(
+      projectId: 'project-1',
+      pickedFile: PickedCostAttachment(
+        sourceUri: source.uri,
+        displayName: 'manual.pdf',
+        reportedByteSize: 3,
+      ),
+    );
+    final rawDatabase = await database.open();
+    await rawDatabase
+        .insert(AppDatabase.documentMetadataTable, <String, Object?>{
+          'project_id': 'project-1',
+          'attachment_id': document.id,
+          'title': 'Instrukcja pompy',
+          'document_type': 'instruction',
+          'description': null,
+          'document_date_utc_ms': null,
+          'warranty_starts_at_utc_ms': null,
+          'warranty_ends_at_utc_ms': null,
+          'warranty_reminder_at_utc_ms': null,
+          'updated_at_utc_ms': 0,
+        });
+
+    await stager.recoverUnlinkedAttachments();
+
+    expect(
+      await stager.findById(projectId: 'project-1', attachmentId: document.id),
+      isNotNull,
+    );
+  });
 
   test('startup recovery preserves evidence linked to a checklist', () async {
     final source = File(p.join(temporaryDirectory.path, 'grounding.jpg'));
