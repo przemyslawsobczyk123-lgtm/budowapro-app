@@ -2613,6 +2613,606 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Postęp checklisty: {percent}%'**
   String dashboardStageProgress(int percent);
+
+  /// No description provided for @contactsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ekipy i kontakty'**
+  String get contactsTitle;
+
+  /// No description provided for @contactsAddTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj kontakt'**
+  String get contactsAddTooltip;
+
+  /// No description provided for @contactsSearchHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szukaj osoby, firmy, telefonu lub e-maila'**
+  String get contactsSearchHint;
+
+  /// No description provided for @contactsRoleFilterLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rola'**
+  String get contactsRoleFilterLabel;
+
+  /// No description provided for @contactsStageFilterLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap'**
+  String get contactsStageFilterLabel;
+
+  /// No description provided for @contactsAllRoles.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie role'**
+  String get contactsAllRoles;
+
+  /// No description provided for @contactsAllStages.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie etapy'**
+  String get contactsAllStages;
+
+  /// No description provided for @contactsResultCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontakty: {count}'**
+  String contactsResultCount(int count);
+
+  /// No description provided for @contactsNoProjectTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz projekt'**
+  String get contactsNoProjectTitle;
+
+  /// No description provided for @contactsNoProjectMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontakty i wizyty są przypisane do projektu.'**
+  String get contactsNoProjectMessage;
+
+  /// No description provided for @contactsEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak kontaktów'**
+  String get contactsEmptyTitle;
+
+  /// No description provided for @contactsEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj pierwszą ekipę, wykonawcę lub dostawcę.'**
+  String get contactsEmptyMessage;
+
+  /// No description provided for @contactsNoResultsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak pasujących kontaktów'**
+  String get contactsNoResultsTitle;
+
+  /// No description provided for @contactsNoResultsMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień wyszukiwanie albo filtry roli i etapu.'**
+  String get contactsNoResultsMessage;
+
+  /// No description provided for @contactsLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać kontaktów.'**
+  String get contactsLoadError;
+
+  /// No description provided for @contactNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowy kontakt'**
+  String get contactNewTitle;
+
+  /// No description provided for @contactEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj kontakt'**
+  String get contactEditTitle;
+
+  /// No description provided for @contactDetailsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły kontaktu'**
+  String get contactDetailsTitle;
+
+  /// No description provided for @contactNameLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Osoba lub firma'**
+  String get contactNameLabel;
+
+  /// No description provided for @contactKindLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rodzaj kontaktu'**
+  String get contactKindLabel;
+
+  /// No description provided for @contactKindPerson.
+  ///
+  /// In pl, this message translates to:
+  /// **'Osoba'**
+  String get contactKindPerson;
+
+  /// No description provided for @contactKindCompany.
+  ///
+  /// In pl, this message translates to:
+  /// **'Firma'**
+  String get contactKindCompany;
+
+  /// No description provided for @contactRolesHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Role i branże'**
+  String get contactRolesHeading;
+
+  /// No description provided for @contactStagesHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypisane etapy'**
+  String get contactStagesHeading;
+
+  /// No description provided for @contactNoStagesAvailable.
+  ///
+  /// In pl, this message translates to:
+  /// **'Projekt nie ma jeszcze etapów.'**
+  String get contactNoStagesAvailable;
+
+  /// No description provided for @contactPhoneLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Telefon'**
+  String get contactPhoneLabel;
+
+  /// No description provided for @contactEmailLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'E-mail'**
+  String get contactEmailLabel;
+
+  /// No description provided for @contactTaxIdLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'NIP'**
+  String get contactTaxIdLabel;
+
+  /// No description provided for @contactNoteLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatka'**
+  String get contactNoteLabel;
+
+  /// No description provided for @contactRatingLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ocena'**
+  String get contactRatingLabel;
+
+  /// No description provided for @contactNoRating.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez oceny'**
+  String get contactNoRating;
+
+  /// No description provided for @contactSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać kontaktu.'**
+  String get contactSaveError;
+
+  /// No description provided for @contactNameRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podaj osobę albo nazwę firmy.'**
+  String get contactNameRequiredError;
+
+  /// No description provided for @contactRoleRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz co najmniej jedną rolę.'**
+  String get contactRoleRequiredError;
+
+  /// No description provided for @contactEmailInvalidError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz poprawny adres e-mail.'**
+  String get contactEmailInvalidError;
+
+  /// No description provided for @contactLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać kontaktu.'**
+  String get contactLoadError;
+
+  /// No description provided for @contactNotFoundTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie znaleziono kontaktu'**
+  String get contactNotFoundTitle;
+
+  /// No description provided for @contactNotFoundMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontakt mógł zostać usunięty lub należy do innego projektu.'**
+  String get contactNotFoundMessage;
+
+  /// No description provided for @contactCallTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zadzwoń'**
+  String get contactCallTooltip;
+
+  /// No description provided for @contactEmailTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Napisz e-mail'**
+  String get contactEmailTooltip;
+
+  /// No description provided for @contactEditTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj kontakt'**
+  String get contactEditTooltip;
+
+  /// No description provided for @contactCallConfirmTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zadzwonić do kontaktu?'**
+  String get contactCallConfirmTitle;
+
+  /// No description provided for @contactCallConfirmMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Telefon otworzy systemową aplikację połączeń dla numeru {phone}.'**
+  String contactCallConfirmMessage(String phone);
+
+  /// No description provided for @contactCallAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwórz telefon'**
+  String get contactCallAction;
+
+  /// No description provided for @contactEmailConfirmTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Napisać do kontaktu?'**
+  String get contactEmailConfirmTitle;
+
+  /// No description provided for @contactEmailConfirmMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'E-mail otworzy systemową aplikację pocztową dla adresu {email}.'**
+  String contactEmailConfirmMessage(String email);
+
+  /// No description provided for @contactEmailAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwórz pocztę'**
+  String get contactEmailAction;
+
+  /// No description provided for @contactActionError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Na tym urządzeniu nie znaleziono odpowiedniej aplikacji.'**
+  String get contactActionError;
+
+  /// No description provided for @contactArchiveAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Archiwizuj'**
+  String get contactArchiveAction;
+
+  /// No description provided for @contactRestoreAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przywróć'**
+  String get contactRestoreAction;
+
+  /// No description provided for @contactArchiveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zmienić stanu kontaktu.'**
+  String get contactArchiveError;
+
+  /// No description provided for @contactAboutHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dane kontaktowe'**
+  String get contactAboutHeading;
+
+  /// No description provided for @contactVisitHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wizyty na budowie'**
+  String get contactVisitHeading;
+
+  /// No description provided for @contactAddVisitAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaplanuj wizytę'**
+  String get contactAddVisitAction;
+
+  /// No description provided for @contactUpcomingVisits.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nadchodzące'**
+  String get contactUpcomingVisits;
+
+  /// No description provided for @contactVisitHistory.
+  ///
+  /// In pl, this message translates to:
+  /// **'Historia'**
+  String get contactVisitHistory;
+
+  /// No description provided for @contactUpcomingEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak zaplanowanych wizyt.'**
+  String get contactUpcomingEmpty;
+
+  /// No description provided for @contactVisitHistoryEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak zakończonych i odwołanych wizyt.'**
+  String get contactVisitHistoryEmpty;
+
+  /// No description provided for @contactRoleGeneralContractor.
+  ///
+  /// In pl, this message translates to:
+  /// **'Generalny wykonawca'**
+  String get contactRoleGeneralContractor;
+
+  /// No description provided for @contactRoleSiteManager.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kierownik budowy'**
+  String get contactRoleSiteManager;
+
+  /// No description provided for @contactRoleArchitect.
+  ///
+  /// In pl, this message translates to:
+  /// **'Architekt'**
+  String get contactRoleArchitect;
+
+  /// No description provided for @contactRoleElectrician.
+  ///
+  /// In pl, this message translates to:
+  /// **'Elektryk'**
+  String get contactRoleElectrician;
+
+  /// No description provided for @contactRolePlumber.
+  ///
+  /// In pl, this message translates to:
+  /// **'Hydraulik'**
+  String get contactRolePlumber;
+
+  /// No description provided for @contactRoleHeatingVentilation.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ogrzewanie i wentylacja'**
+  String get contactRoleHeatingVentilation;
+
+  /// No description provided for @contactRoleSurveyor.
+  ///
+  /// In pl, this message translates to:
+  /// **'Geodeta'**
+  String get contactRoleSurveyor;
+
+  /// No description provided for @contactRoleRoofer.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dekarz'**
+  String get contactRoleRoofer;
+
+  /// No description provided for @contactRoleCarpenter.
+  ///
+  /// In pl, this message translates to:
+  /// **'Cieśla / stolarz'**
+  String get contactRoleCarpenter;
+
+  /// No description provided for @contactRolePlasterer.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tynkarz'**
+  String get contactRolePlasterer;
+
+  /// No description provided for @contactRoleTiler.
+  ///
+  /// In pl, this message translates to:
+  /// **'Glazurnik'**
+  String get contactRoleTiler;
+
+  /// No description provided for @contactRolePainter.
+  ///
+  /// In pl, this message translates to:
+  /// **'Malarz'**
+  String get contactRolePainter;
+
+  /// No description provided for @contactRoleSupplier.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostawca'**
+  String get contactRoleSupplier;
+
+  /// No description provided for @contactRoleInspector.
+  ///
+  /// In pl, this message translates to:
+  /// **'Inspektor'**
+  String get contactRoleInspector;
+
+  /// No description provided for @contactRoleOther.
+  ///
+  /// In pl, this message translates to:
+  /// **'Inna rola'**
+  String get contactRoleOther;
+
+  /// No description provided for @siteVisitNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowa wizyta'**
+  String get siteVisitNewTitle;
+
+  /// No description provided for @siteVisitEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj wizytę'**
+  String get siteVisitEditTitle;
+
+  /// No description provided for @siteVisitPurposeLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Cel wizyty'**
+  String get siteVisitPurposeLabel;
+
+  /// No description provided for @siteVisitExpectedResultLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oczekiwany rezultat'**
+  String get siteVisitExpectedResultLabel;
+
+  /// No description provided for @siteVisitStatusLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Status wizyty'**
+  String get siteVisitStatusLabel;
+
+  /// No description provided for @siteVisitStatusPlanned.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowana'**
+  String get siteVisitStatusPlanned;
+
+  /// No description provided for @siteVisitStatusCompleted.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonana'**
+  String get siteVisitStatusCompleted;
+
+  /// No description provided for @siteVisitStatusCancelled.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odwołana'**
+  String get siteVisitStatusCancelled;
+
+  /// No description provided for @siteVisitStatusNoShow.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonawca nie przyjechał'**
+  String get siteVisitStatusNoShow;
+
+  /// No description provided for @siteVisitDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data'**
+  String get siteVisitDateLabel;
+
+  /// No description provided for @siteVisitTimeLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Godzina'**
+  String get siteVisitTimeLabel;
+
+  /// No description provided for @siteVisitAllDayLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Cały dzień'**
+  String get siteVisitAllDayLabel;
+
+  /// No description provided for @siteVisitStageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap'**
+  String get siteVisitStageLabel;
+
+  /// No description provided for @siteVisitNoStage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez etapu'**
+  String get siteVisitNoStage;
+
+  /// No description provided for @siteVisitReminderToggle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypomnienie'**
+  String get siteVisitReminderToggle;
+
+  /// No description provided for @siteVisitReminderLeadLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyprzedzenie'**
+  String get siteVisitReminderLeadLabel;
+
+  /// No description provided for @siteVisitResultLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rezultat i notatka po wizycie'**
+  String get siteVisitResultLabel;
+
+  /// No description provided for @siteVisitAgreementsLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustalenia'**
+  String get siteVisitAgreementsLabel;
+
+  /// No description provided for @siteVisitRescheduleReasonLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powód zmiany terminu'**
+  String get siteVisitRescheduleReasonLabel;
+
+  /// No description provided for @siteVisitPurposeRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podaj cel wizyty.'**
+  String get siteVisitPurposeRequiredError;
+
+  /// No description provided for @siteVisitExpectedResultRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podaj oczekiwany rezultat.'**
+  String get siteVisitExpectedResultRequiredError;
+
+  /// No description provided for @siteVisitResultRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz rezultat wykonanej wizyty.'**
+  String get siteVisitResultRequiredError;
+
+  /// No description provided for @siteVisitSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać wizyty.'**
+  String get siteVisitSaveError;
+
+  /// No description provided for @siteVisitLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać wizyty.'**
+  String get siteVisitLoadError;
+
+  /// No description provided for @siteVisitNotificationBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nadchodzi wizyta zaplanowana na budowie.'**
+  String get siteVisitNotificationBody;
+
+  /// No description provided for @siteVisitResultHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wynik wizyty'**
+  String get siteVisitResultHeading;
+
+  /// No description provided for @siteVisitAgreementsHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustalenia'**
+  String get siteVisitAgreementsHeading;
 }
 
 class _AppLocalizationsDelegate

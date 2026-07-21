@@ -1376,4 +1376,319 @@ class AppLocalizationsPl extends AppLocalizations {
   String dashboardStageProgress(int percent) {
     return 'Postęp checklisty: $percent%';
   }
+
+  @override
+  String get contactsTitle => 'Ekipy i kontakty';
+
+  @override
+  String get contactsAddTooltip => 'Dodaj kontakt';
+
+  @override
+  String get contactsSearchHint => 'Szukaj osoby, firmy, telefonu lub e-maila';
+
+  @override
+  String get contactsRoleFilterLabel => 'Rola';
+
+  @override
+  String get contactsStageFilterLabel => 'Etap';
+
+  @override
+  String get contactsAllRoles => 'Wszystkie role';
+
+  @override
+  String get contactsAllStages => 'Wszystkie etapy';
+
+  @override
+  String contactsResultCount(int count) {
+    return 'Kontakty: $count';
+  }
+
+  @override
+  String get contactsNoProjectTitle => 'Wybierz projekt';
+
+  @override
+  String get contactsNoProjectMessage =>
+      'Kontakty i wizyty są przypisane do projektu.';
+
+  @override
+  String get contactsEmptyTitle => 'Brak kontaktów';
+
+  @override
+  String get contactsEmptyMessage =>
+      'Dodaj pierwszą ekipę, wykonawcę lub dostawcę.';
+
+  @override
+  String get contactsNoResultsTitle => 'Brak pasujących kontaktów';
+
+  @override
+  String get contactsNoResultsMessage =>
+      'Zmień wyszukiwanie albo filtry roli i etapu.';
+
+  @override
+  String get contactsLoadError => 'Nie udało się wczytać kontaktów.';
+
+  @override
+  String get contactNewTitle => 'Nowy kontakt';
+
+  @override
+  String get contactEditTitle => 'Edytuj kontakt';
+
+  @override
+  String get contactDetailsTitle => 'Szczegóły kontaktu';
+
+  @override
+  String get contactNameLabel => 'Osoba lub firma';
+
+  @override
+  String get contactKindLabel => 'Rodzaj kontaktu';
+
+  @override
+  String get contactKindPerson => 'Osoba';
+
+  @override
+  String get contactKindCompany => 'Firma';
+
+  @override
+  String get contactRolesHeading => 'Role i branże';
+
+  @override
+  String get contactStagesHeading => 'Przypisane etapy';
+
+  @override
+  String get contactNoStagesAvailable => 'Projekt nie ma jeszcze etapów.';
+
+  @override
+  String get contactPhoneLabel => 'Telefon';
+
+  @override
+  String get contactEmailLabel => 'E-mail';
+
+  @override
+  String get contactTaxIdLabel => 'NIP';
+
+  @override
+  String get contactNoteLabel => 'Notatka';
+
+  @override
+  String get contactRatingLabel => 'Ocena';
+
+  @override
+  String get contactNoRating => 'Bez oceny';
+
+  @override
+  String get contactSaveError => 'Nie udało się zapisać kontaktu.';
+
+  @override
+  String get contactNameRequiredError => 'Podaj osobę albo nazwę firmy.';
+
+  @override
+  String get contactRoleRequiredError => 'Wybierz co najmniej jedną rolę.';
+
+  @override
+  String get contactEmailInvalidError => 'Wpisz poprawny adres e-mail.';
+
+  @override
+  String get contactLoadError => 'Nie udało się wczytać kontaktu.';
+
+  @override
+  String get contactNotFoundTitle => 'Nie znaleziono kontaktu';
+
+  @override
+  String get contactNotFoundMessage =>
+      'Kontakt mógł zostać usunięty lub należy do innego projektu.';
+
+  @override
+  String get contactCallTooltip => 'Zadzwoń';
+
+  @override
+  String get contactEmailTooltip => 'Napisz e-mail';
+
+  @override
+  String get contactEditTooltip => 'Edytuj kontakt';
+
+  @override
+  String get contactCallConfirmTitle => 'Zadzwonić do kontaktu?';
+
+  @override
+  String contactCallConfirmMessage(String phone) {
+    return 'Telefon otworzy systemową aplikację połączeń dla numeru $phone.';
+  }
+
+  @override
+  String get contactCallAction => 'Otwórz telefon';
+
+  @override
+  String get contactEmailConfirmTitle => 'Napisać do kontaktu?';
+
+  @override
+  String contactEmailConfirmMessage(String email) {
+    return 'E-mail otworzy systemową aplikację pocztową dla adresu $email.';
+  }
+
+  @override
+  String get contactEmailAction => 'Otwórz pocztę';
+
+  @override
+  String get contactActionError =>
+      'Na tym urządzeniu nie znaleziono odpowiedniej aplikacji.';
+
+  @override
+  String get contactArchiveAction => 'Archiwizuj';
+
+  @override
+  String get contactRestoreAction => 'Przywróć';
+
+  @override
+  String get contactArchiveError => 'Nie udało się zmienić stanu kontaktu.';
+
+  @override
+  String get contactAboutHeading => 'Dane kontaktowe';
+
+  @override
+  String get contactVisitHeading => 'Wizyty na budowie';
+
+  @override
+  String get contactAddVisitAction => 'Zaplanuj wizytę';
+
+  @override
+  String get contactUpcomingVisits => 'Nadchodzące';
+
+  @override
+  String get contactVisitHistory => 'Historia';
+
+  @override
+  String get contactUpcomingEmpty => 'Brak zaplanowanych wizyt.';
+
+  @override
+  String get contactVisitHistoryEmpty =>
+      'Brak zakończonych i odwołanych wizyt.';
+
+  @override
+  String get contactRoleGeneralContractor => 'Generalny wykonawca';
+
+  @override
+  String get contactRoleSiteManager => 'Kierownik budowy';
+
+  @override
+  String get contactRoleArchitect => 'Architekt';
+
+  @override
+  String get contactRoleElectrician => 'Elektryk';
+
+  @override
+  String get contactRolePlumber => 'Hydraulik';
+
+  @override
+  String get contactRoleHeatingVentilation => 'Ogrzewanie i wentylacja';
+
+  @override
+  String get contactRoleSurveyor => 'Geodeta';
+
+  @override
+  String get contactRoleRoofer => 'Dekarz';
+
+  @override
+  String get contactRoleCarpenter => 'Cieśla / stolarz';
+
+  @override
+  String get contactRolePlasterer => 'Tynkarz';
+
+  @override
+  String get contactRoleTiler => 'Glazurnik';
+
+  @override
+  String get contactRolePainter => 'Malarz';
+
+  @override
+  String get contactRoleSupplier => 'Dostawca';
+
+  @override
+  String get contactRoleInspector => 'Inspektor';
+
+  @override
+  String get contactRoleOther => 'Inna rola';
+
+  @override
+  String get siteVisitNewTitle => 'Nowa wizyta';
+
+  @override
+  String get siteVisitEditTitle => 'Edytuj wizytę';
+
+  @override
+  String get siteVisitPurposeLabel => 'Cel wizyty';
+
+  @override
+  String get siteVisitExpectedResultLabel => 'Oczekiwany rezultat';
+
+  @override
+  String get siteVisitStatusLabel => 'Status wizyty';
+
+  @override
+  String get siteVisitStatusPlanned => 'Planowana';
+
+  @override
+  String get siteVisitStatusCompleted => 'Wykonana';
+
+  @override
+  String get siteVisitStatusCancelled => 'Odwołana';
+
+  @override
+  String get siteVisitStatusNoShow => 'Wykonawca nie przyjechał';
+
+  @override
+  String get siteVisitDateLabel => 'Data';
+
+  @override
+  String get siteVisitTimeLabel => 'Godzina';
+
+  @override
+  String get siteVisitAllDayLabel => 'Cały dzień';
+
+  @override
+  String get siteVisitStageLabel => 'Etap';
+
+  @override
+  String get siteVisitNoStage => 'Bez etapu';
+
+  @override
+  String get siteVisitReminderToggle => 'Przypomnienie';
+
+  @override
+  String get siteVisitReminderLeadLabel => 'Wyprzedzenie';
+
+  @override
+  String get siteVisitResultLabel => 'Rezultat i notatka po wizycie';
+
+  @override
+  String get siteVisitAgreementsLabel => 'Ustalenia';
+
+  @override
+  String get siteVisitRescheduleReasonLabel => 'Powód zmiany terminu';
+
+  @override
+  String get siteVisitPurposeRequiredError => 'Podaj cel wizyty.';
+
+  @override
+  String get siteVisitExpectedResultRequiredError =>
+      'Podaj oczekiwany rezultat.';
+
+  @override
+  String get siteVisitResultRequiredError =>
+      'Zapisz rezultat wykonanej wizyty.';
+
+  @override
+  String get siteVisitSaveError => 'Nie udało się zapisać wizyty.';
+
+  @override
+  String get siteVisitLoadError => 'Nie udało się wczytać wizyty.';
+
+  @override
+  String get siteVisitNotificationBody =>
+      'Nadchodzi wizyta zaplanowana na budowie.';
+
+  @override
+  String get siteVisitResultHeading => 'Wynik wizyty';
+
+  @override
+  String get siteVisitAgreementsHeading => 'Ustalenia';
 }
