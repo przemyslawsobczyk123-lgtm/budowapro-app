@@ -1542,6 +1542,20 @@ class AppLocalizationsPl extends AppLocalizations {
   String get contactArchiveError => 'Nie udało się zmienić stanu kontaktu.';
 
   @override
+  String get contactDeleteConfirmTitle => 'Usunąć kontakt?';
+
+  @override
+  String get contactDeleteConfirmMessage =>
+      'Kontakt bez historii wizyt zostanie trwale usunięty.';
+
+  @override
+  String get contactDeleteInUseError =>
+      'Kontakt ma historię wizyt. Zamiast usuwać, zarchiwizuj go.';
+
+  @override
+  String get contactDeleteError => 'Nie udało się usunąć kontaktu.';
+
+  @override
   String get contactAboutHeading => 'Dane kontaktowe';
 
   @override

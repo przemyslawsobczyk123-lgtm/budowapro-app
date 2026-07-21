@@ -2920,6 +2920,30 @@ abstract class AppLocalizations {
   /// **'Nie udało się zmienić stanu kontaktu.'**
   String get contactArchiveError;
 
+  /// No description provided for @contactDeleteConfirmTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunąć kontakt?'**
+  String get contactDeleteConfirmTitle;
+
+  /// No description provided for @contactDeleteConfirmMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontakt bez historii wizyt zostanie trwale usunięty.'**
+  String get contactDeleteConfirmMessage;
+
+  /// No description provided for @contactDeleteInUseError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontakt ma historię wizyt. Zamiast usuwać, zarchiwizuj go.'**
+  String get contactDeleteInUseError;
+
+  /// No description provided for @contactDeleteError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się usunąć kontaktu.'**
+  String get contactDeleteError;
+
   /// No description provided for @contactAboutHeading.
   ///
   /// In pl, this message translates to:

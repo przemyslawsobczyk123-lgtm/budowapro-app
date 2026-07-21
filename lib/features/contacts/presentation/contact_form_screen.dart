@@ -1,5 +1,5 @@
-import 'package:budowapro/features/contacts/data/contact_providers.dart';
 import 'package:budowapro/features/contacts/domain/contact.dart';
+import 'package:budowapro/features/contacts/presentation/contact_details_provider.dart';
 import 'package:budowapro/features/contacts/presentation/contact_ui_text.dart';
 import 'package:budowapro/features/contacts/presentation/contacts_controller.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
@@ -378,14 +378,3 @@ class _ContactFormScreenState extends ConsumerState<ContactFormScreen> {
     }
   }
 }
-
-final contactByIdProvider = FutureProvider.family<Contact?, ContactRecordKey>((
-  ref,
-  key,
-) async {
-  return (await ref.watch(
-    contactRepositoryProvider.future,
-  )).findById(projectId: key.projectId, contactId: key.contactId);
-});
-
-typedef ContactRecordKey = ({String projectId, String contactId});
