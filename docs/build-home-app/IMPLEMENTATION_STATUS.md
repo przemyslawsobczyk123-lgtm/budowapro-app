@@ -177,6 +177,28 @@ Last updated: 2026-07-21
 - SQLite cost restoration now accepts exact VAT components produced from either net or gross input. This fixes
   non-invertible one-grosz rounding boundaries without accepting inconsistent stored amounts.
 
+### Task 4.1 - contacts and site visits
+
+- Schema `v6` persists project-scoped contacts, many-to-many roles, stage assignments and site-visit details.
+  Contact search matches name, phone, e-mail and tax ID with bound SQL arguments; role and stage filters use
+  indexed relation tables. The controller loads every stable page instead of truncating projects at 100 contacts.
+- Contacts store person/company kind, one or more trade roles, optional phone, e-mail, NIP, note and 1-5 rating.
+  They can be edited, archived/restored or deleted while unused. A contact referenced by visit history is protected
+  by a restrictive foreign key and must be archived instead of deleting its evidence trail.
+- A site visit extends one persisted schedule event in the same transaction. It stores contact, purpose, expected
+  result, optional stage, reminder, result, agreements and the statuses planned, completed, cancelled or no-show.
+  Completed visits require a result; every resolved status remains in contact history.
+- Visit dates reuse IANA timezone handling, local reminders and append-only schedule date-change history. A reminder
+  adapter failure never rolls back a saved visit. New generic schedule records no longer offer the contact-visit kind;
+  legacy generic visits remain readable and editable.
+- The More branch opens the searchable contacts workspace. Contact details require an explicit confirmation before
+  launching the system phone or e-mail app. Contact visits opened from Plan, Start or a notification retain their
+  specialist status/result view and edit through the visit form rather than the generic schedule form.
+- Start derives up to three open visits in the next 30 local calendar days from existing schedule records. It adds no
+  duplicate dashboard or calendar table. Contact names, phone numbers, e-mails, results and agreements are not logged.
+- List, filters, details and confirmation flows are covered at 320 px. Visit photos and durable links to follow-up
+  tasks remain dependent on the shared document/relation work planned for phases 4.3 and 7.1.
+
 ## Verified baseline
 
 ```text
@@ -191,6 +213,7 @@ file_picker 11.0.2
 flutter_local_notifications 22.1.0
 flutter_timezone 5.1.0
 timezone 0.11.1
+url_launcher 6.3.2
 ```
 
 The Android build passes with the known Flutter forward-compatibility warning
@@ -206,7 +229,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-21 with 202 tests. Debug APK:
+All commands passed on 2026-07-21 with 224 tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -214,12 +237,12 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 4.1 from `IMPLEMENTATION_PLAN.md`:
+Task 4.2 from `IMPLEMENTATION_PLAN.md`:
 
-1. Persist project-scoped contacts with roles and stage assignments.
-2. Add contact search and filters by role and stage.
-3. Persist site visits with purpose, result and completed/cancelled history.
-4. Open phone and e-mail system actions only after an explicit user tap.
-5. Feed upcoming visits into the existing Start agenda projection.
+1. Persist contractor quotes with scope, exclusions, price variant and validity date.
+2. Import local PDF/image quote attachments without modifying originals.
+3. Compare price and scope differences side by side instead of selecting by price alone.
+4. Convert an accepted quote into a planned or ordered cost without copying financial truth twice.
+5. Preserve project, contact and stage context across the quote workflow.
 
-Do not start quote comparison before contact and visit persistence is green.
+Do not start the document library before quote persistence and attachment staging are green.

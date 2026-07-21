@@ -360,6 +360,46 @@ calculation directions. This preserves valid gross-originated rounding boundarie
 that cannot be reconstructed by recalculating from net, while malformed component
 triples still fail closed.
 
+## Contacts And Site Visits
+
+Schema `v6` adds four local tables:
+
+- `contacts` owns project-scoped person/company data and archive state,
+- `contact_roles` stores one or more validated trade roles per contact,
+- `contact_stage_assignments` links a contact to multiple persisted project stages,
+- `site_visits` extends a schedule event with contact, expected result, dedicated
+  visit status, result and agreements.
+
+Contact list queries bind every search/filter value. Role and stage predicates use
+indexed `EXISTS` subqueries, while roles and stages for each result page are loaded
+in two batched queries. The controller follows `Page.nextRequest` until the complete
+filtered result is loaded. Project deletion cascades through contact data. Direct
+contact deletion is restricted when `site_visits` still references it, preserving
+completed, cancelled and no-show history.
+
+A contact visit and its schedule event share the event ID and are created or updated
+inside one SQLite transaction. Purpose, date, timezone, stage and reminder remain in
+the schedule source; visit-specific values remain in `site_visits`. Rescheduling also
+appends the existing schedule date-change record in that transaction. `no_show` is a
+dedicated visit status and projects to a resolved/cancelled schedule state only where
+the generic agenda needs a binary open/resolved decision.
+
+The generic schedule form does not create new contact visits. A schedule details read
+checks for a matching `site_visits` extension; when present it renders expected result,
+result and agreements and routes edits to the specialized visit form. This prevents
+generic schedule updates from bypassing visit invariants. Older standalone schedule
+visits remain supported.
+
+System phone and e-mail actions use `url_launcher` with `tel:` and `mailto:` URIs only
+after a visible confirmation dialog. A failed platform launch produces a local UI
+error and does not mutate contact data. The adapter receives no automatic background
+trigger, and contact values are excluded from logs and telemetry.
+
+The Start dashboard derives at most three open visit events between the inclusive
+local-day start and exclusive day-30 boundary from the existing open schedule query.
+It persists no contact or visit copy. Visit reminders use the same IANA timezone,
+permission and payload rules as every other schedule event.
+
 ## Plan Pins
 
 Plans are versioned images/PDF pages. Pins use normalized coordinates so they survive device-size changes:
