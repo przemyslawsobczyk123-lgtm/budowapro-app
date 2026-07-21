@@ -236,6 +236,22 @@ Last updated: 2026-07-21
 - Warranty reminder dates are persisted and displayed. Scheduling their Android notifications is deliberately paired
   with source deep links and preferences in `NOTIF-002` during Task 10.2 rather than creating duplicate schedule rows.
 
+### Task 5.1 - budget report
+
+- The budget report is a read-only SQL projection over the project budget, confirmed cost entries and append-only
+  corrections. It adds no report table and never calculates financial truth from a paginated UI list.
+- Plan, commitments, paid amount and remaining budget use exact minor units. Remaining means plan minus commitments,
+  stays unavailable without a project plan and remains negative as an explicit budget overrun.
+- Drafts, offers and planned-only entries are excluded. The financial fixture verifies corrections, payment status,
+  unassigned costs, empty totals and exact agreement between headline values and breakdown slices.
+- SQL groups commitments, paid amounts and record counts by stage, category, supplier and local-calendar month.
+  Empty projects show the budget summary and a dedicated empty state without a zero-value chart.
+- The compact report screen supports pull-to-refresh and a horizontally scrollable segmented dimension control.
+  Stage labels resolve from persisted project stages, and the layout is verified at 320 px.
+- Every headline and breakdown row opens the existing cost register with validated project-local filters. Drill-down
+  includes exact `IS NULL` handling for rows without stage, category or supplier assignment.
+- The More branch exposes the report without adding a sixth primary navigation destination.
+
 ## Verified baseline
 
 ```text
@@ -270,7 +286,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-21 with 259 tests. Debug APK:
+All commands passed on 2026-07-21 with 272 tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -278,10 +294,10 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 5.1 from `IMPLEMENTATION_PLAN.md`:
+Task 5.2 from `IMPLEMENTATION_PLAN.md`:
 
-1. Build one budget report over the existing exact financial source of truth.
-2. Show plan, commitments, paid amount and remaining budget.
-3. Add SQL-backed breakdowns by stage, category, contractor and month.
-4. Drill each report segment into the matching filtered cost register.
-5. Cover empty projects, over-budget values and the established financial fixture.
+1. Export the actively filtered cost register to a local CSV file.
+2. Build a versioned ZIP backup with a manifest, checksums and project attachments.
+3. Restore only through a validated temporary directory and reject path traversal.
+4. Keep export and backup work outside the UI isolate and avoid logging private paths or content.
+5. Cover E2E-07 with attachments and a corrupt-backup rejection fixture.

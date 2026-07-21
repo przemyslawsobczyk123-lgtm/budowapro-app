@@ -135,6 +135,10 @@ abstract interface class CostRepository {
   Future<void> delete(...);
 }
 
+abstract interface class BudgetReportRepository {
+  Future<BudgetReport> load({required String projectId});
+}
+
 abstract interface class CaptureDraftRepository {
   Future<CaptureDraft> create(CaptureInput input);
   Future<CaptureDraft> classify(CaptureDraftId id, CaptureClassification classification);
@@ -163,7 +167,7 @@ abstract interface class QuoteRepository {
 List queries are paginated from the first implementation. Summaries are aggregate SQL queries, not totals calculated after loading every row.
 
 `CostQuery` owns normalized search, set-based filters, an inclusive/exclusive UTC date range,
-warning predicates and stable sorting. `CostSummaryQuery.fromCostQuery` copies the active filters but
+warning predicates, explicit missing-assignment filters and stable sorting. `CostSummaryQuery.fromCostQuery` copies the active filters but
 always removes draft inclusion. The SQLite repository builds one bound-argument predicate and reuses
 it for the page query, total count, base totals and correction totals.
 
@@ -171,6 +175,24 @@ The cost register requests 30 rows at a time and never materializes its total re
 for one page are fetched in a single bounded follow-up query. Data-quality filters use `EXISTS` or
 `NOT EXISTS`; list rows derive the same warning rules from loaded domain data. Text search escapes SQL
 wildcards before adding its own contains-search delimiters.
+
+## Budget Report Projection
+
+The budget report is a read-only projection over `projects`, confirmed `cost_entries` and
+append-only `cost_corrections`. It does not introduce a report table or duplicate financial totals.
+
+The report uses these stable meanings:
+
+- `plan` is `projects.planned_budget_minor_units` and may be absent,
+- `committed` is every confirmed `cost` after corrections, regardless of payment status,
+- `paid` is the corrected subset with status `paid`,
+- `remaining` is `plan - committed` and remains negative when the plan is exceeded,
+- drafts, offers and `planned` entry types do not contribute to committed or paid totals.
+
+One SQL projection returns exact totals and SQL-grouped stage, category, supplier and local-calendar
+month slices. Each slice carries committed amount, paid amount and source record count. The UI never
+derives financial totals from a loaded page. Report drill-downs use validated URL parameters and the
+existing bound-argument `CostQuery`; `IS NULL` filters preserve the meaning of "Bez przypisania" rows.
 
 ## Money Contract
 
