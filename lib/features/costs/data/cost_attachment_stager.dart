@@ -232,6 +232,27 @@ final class CostAttachmentStager {
     return rows.map(_attachmentFromRow).toList(growable: false);
   }
 
+  Future<List<StagedCostAttachment>> listForQuote({
+    required String projectId,
+    required String quoteId,
+  }) async {
+    final database = await _database.open();
+    final rows = await database.rawQuery(
+      '''
+        SELECT a.*
+        FROM ${AppDatabase.costAttachmentsTable} a
+        INNER JOIN ${AppDatabase.quoteAttachmentsTable} l
+          ON l.attachment_id = a.id AND l.project_id = a.project_id
+        WHERE l.project_id = ?
+          AND l.quote_id = ?
+          AND a.availability = 'available'
+        ORDER BY l.sort_order ASC
+      ''',
+      <Object?>[projectId, quoteId],
+    );
+    return rows.map(_attachmentFromRow).toList(growable: false);
+  }
+
   Future<void> discard({
     required String projectId,
     required String attachmentId,
@@ -281,9 +302,20 @@ final class CostAttachmentStager {
           SELECT attachment_id
           FROM ${AppDatabase.checklistItemAttachmentsTable}
           WHERE project_id = ? AND attachment_id = ?
+          UNION ALL
+          SELECT attachment_id
+          FROM ${AppDatabase.quoteAttachmentsTable}
+          WHERE project_id = ? AND attachment_id = ?
           LIMIT 1
         ''',
-        <Object?>[projectId, attachmentId, projectId, attachmentId],
+        <Object?>[
+          projectId,
+          attachmentId,
+          projectId,
+          attachmentId,
+          projectId,
+          attachmentId,
+        ],
       );
       if (links.isNotEmpty) {
         if (rejectLinked) {
@@ -394,6 +426,11 @@ final class CostAttachmentStager {
         AND NOT EXISTS (
           SELECT 1
           FROM ${AppDatabase.checklistItemAttachmentsTable} l
+          WHERE l.project_id = a.project_id AND l.attachment_id = a.id
+        )
+        AND NOT EXISTS (
+          SELECT 1
+          FROM ${AppDatabase.quoteAttachmentsTable} l
           WHERE l.project_id = a.project_id AND l.attachment_id = a.id
         )
       ORDER BY a.imported_at_utc_ms ASC, a.id ASC

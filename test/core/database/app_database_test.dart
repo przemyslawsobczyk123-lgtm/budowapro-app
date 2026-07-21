@@ -57,6 +57,9 @@ void main() {
       AppDatabase.contactRolesTable,
       AppDatabase.contactStageAssignmentsTable,
       AppDatabase.siteVisitsTable,
+      AppDatabase.contractorQuotesTable,
+      AppDatabase.quoteScopeLinesTable,
+      AppDatabase.quoteAttachmentsTable,
     ]) {
       final table = await database.query(
         'sqlite_master',

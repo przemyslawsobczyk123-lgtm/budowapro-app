@@ -39,6 +39,17 @@ final class SqliteCostRepository implements CostRepository {
     });
   }
 
+  Future<CostEntry> insertConfirmedInTransaction(
+    DatabaseExecutor transaction,
+    ConfirmedCostEntryInput input,
+  ) {
+    return _insert(
+      transaction,
+      input.input,
+      lifecycle: CostLifecycle.confirmed,
+    );
+  }
+
   @override
   Future<CostEntry> saveDraft(CostDraftInput input) {
     return _database.transaction<CostEntry>((transaction) {

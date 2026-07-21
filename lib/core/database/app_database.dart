@@ -12,7 +12,7 @@ final class AppDatabase {
 
   AppDatabase._(this._factory, this._path);
 
-  static const int schemaVersion = 6;
+  static const int schemaVersion = 7;
   static const String databaseFileName = 'budowapro.db';
   static const String metadataTable = 'app_metadata';
   static const String projectsTable = 'projects';
@@ -34,6 +34,9 @@ final class AppDatabase {
   static const String contactStageAssignmentsTable =
       'contact_stage_assignments';
   static const String siteVisitsTable = 'site_visits';
+  static const String contractorQuotesTable = 'contractor_quotes';
+  static const String quoteScopeLinesTable = 'quote_scope_lines';
+  static const String quoteAttachmentsTable = 'quote_attachments';
   static const String schemaVersionKey = 'schema_version';
 
   final DatabaseFactory _factory;
@@ -824,6 +827,107 @@ final class AppDatabase {
       await database.execute('''
         CREATE INDEX site_visits_contact_start_idx
         ON $siteVisitsTable (project_id, contact_id, status, event_id)
+      ''');
+    }
+
+    if (fromVersion < 7 && toVersion >= 7) {
+      await database.execute('''
+        CREATE TABLE $contractorQuotesTable (
+          project_id TEXT NOT NULL,
+          id TEXT NOT NULL,
+          contact_id TEXT NOT NULL,
+          stage_id TEXT,
+          title TEXT NOT NULL,
+          variant_name TEXT NOT NULL,
+          status TEXT NOT NULL CHECK (
+            status IN ('received', 'accepted', 'rejected')
+          ),
+          received_at_utc_ms INTEGER NOT NULL,
+          valid_until_utc_ms INTEGER NOT NULL,
+          net_minor_units INTEGER NOT NULL CHECK (net_minor_units >= 0),
+          vat_rate_basis_points INTEGER NOT NULL CHECK (
+            vat_rate_basis_points IN (0, 800, 2300)
+          ),
+          vat_minor_units INTEGER NOT NULL CHECK (vat_minor_units >= 0),
+          gross_minor_units INTEGER NOT NULL CHECK (gross_minor_units > 0),
+          currency_code TEXT NOT NULL CHECK (
+            length(currency_code) = 3 AND
+            currency_code GLOB '[A-Z][A-Z][A-Z]'
+          ),
+          note TEXT,
+          accepted_cost_entry_id TEXT,
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          PRIMARY KEY (project_id, id),
+          UNIQUE (project_id, accepted_cost_entry_id),
+          CHECK (valid_until_utc_ms >= received_at_utc_ms),
+          CHECK (gross_minor_units = net_minor_units + vat_minor_units),
+          CHECK (
+            (status = 'accepted' AND accepted_cost_entry_id IS NOT NULL)
+            OR
+            (status != 'accepted' AND accepted_cost_entry_id IS NULL)
+          ),
+          FOREIGN KEY (project_id) REFERENCES $projectsTable(id) ON DELETE CASCADE,
+          FOREIGN KEY (project_id, contact_id)
+            REFERENCES $contactsTable(project_id, id) ON DELETE RESTRICT,
+          FOREIGN KEY (project_id, stage_id)
+            REFERENCES $projectStagesTable(project_id, id) ON DELETE RESTRICT,
+          FOREIGN KEY (accepted_cost_entry_id, project_id)
+            REFERENCES $costEntriesTable(id, project_id) ON DELETE RESTRICT
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX contractor_quotes_project_status_idx
+        ON $contractorQuotesTable (
+          project_id,
+          status,
+          valid_until_utc_ms,
+          id
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX contractor_quotes_contact_idx
+        ON $contractorQuotesTable (
+          project_id,
+          contact_id,
+          received_at_utc_ms DESC,
+          id
+        )
+      ''');
+
+      await database.execute('''
+        CREATE TABLE $quoteScopeLinesTable (
+          project_id TEXT NOT NULL,
+          quote_id TEXT NOT NULL,
+          kind TEXT NOT NULL CHECK (kind IN ('included', 'excluded')),
+          comparison_key TEXT NOT NULL,
+          label TEXT NOT NULL,
+          details TEXT,
+          sort_order INTEGER NOT NULL CHECK (sort_order >= 0),
+          PRIMARY KEY (project_id, quote_id, kind, comparison_key),
+          UNIQUE (project_id, quote_id, kind, sort_order),
+          FOREIGN KEY (project_id, quote_id)
+            REFERENCES $contractorQuotesTable(project_id, id) ON DELETE CASCADE
+        )
+      ''');
+
+      await database.execute('''
+        CREATE TABLE $quoteAttachmentsTable (
+          project_id TEXT NOT NULL,
+          quote_id TEXT NOT NULL,
+          attachment_id TEXT NOT NULL,
+          sort_order INTEGER NOT NULL CHECK (sort_order >= 0),
+          PRIMARY KEY (project_id, quote_id, attachment_id),
+          UNIQUE (project_id, quote_id, sort_order),
+          FOREIGN KEY (project_id, quote_id)
+            REFERENCES $contractorQuotesTable(project_id, id) ON DELETE CASCADE,
+          FOREIGN KEY (attachment_id, project_id)
+            REFERENCES $costAttachmentsTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX quote_attachments_attachment_idx
+        ON $quoteAttachmentsTable (project_id, attachment_id)
       ''');
     }
 
