@@ -13,6 +13,10 @@ abstract interface class StageRepository {
     required String stageId,
   });
 
+  Future<List<ChecklistItem>> listProjectChecklistItems({
+    required String projectId,
+  });
+
   Future<ProjectStage> addCustomStage({
     required String projectId,
     required String name,

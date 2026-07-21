@@ -91,6 +91,14 @@ void main() {
         checklist.map((item) => item.templateKey).toSet(),
         ChecklistTemplateKey.values.toSet(),
       );
+      final projectChecklist = await repository.listProjectChecklistItems(
+        projectId: 'project-1',
+      );
+      expect(projectChecklist, hasLength(18));
+      expect(
+        projectChecklist.every((item) => item.projectId == 'project-1'),
+        isTrue,
+      );
     },
   );
 

@@ -12,13 +12,17 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class SchedulePlanScreen extends StatelessWidget {
-  const SchedulePlanScreen({super.key});
+  const SchedulePlanScreen({this.initialTab = 0, super.key})
+    : assert(initialTab == 0 || initialTab == 1);
+
+  final int initialTab;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return DefaultTabController(
       length: 2,
+      initialIndex: initialTab,
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,

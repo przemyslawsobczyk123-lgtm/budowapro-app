@@ -55,6 +55,14 @@ final class SqliteStageRepository implements StageRepository {
   }
 
   @override
+  Future<List<ChecklistItem>> listProjectChecklistItems({
+    required String projectId,
+  }) async {
+    final database = await _database.open();
+    return _listChecklistItems(database, projectId);
+  }
+
+  @override
   Future<ProjectStage> addCustomStage({
     required String projectId,
     required String name,

@@ -66,6 +66,7 @@ final class RepositoryDashboardReader implements DashboardReader {
         projectId: project.id,
         template: project.template,
       ),
+      _stageRepository.listProjectChecklistItems(projectId: project.id),
       _costRepository.summarize(CostSummaryQuery.fromCostQuery(spentQuery)),
       _costRepository.summarize(CostSummaryQuery.fromCostQuery(forecastQuery)),
       _costRepository.summarize(CostSummaryQuery.fromCostQuery(unpaidQuery)),
@@ -82,29 +83,26 @@ final class RepositoryDashboardReader implements DashboardReader {
     ]);
 
     final stages = results[0] as List<ProjectStage>;
-    final spent = results[1] as CostSummary;
-    final forecast = results[2] as CostSummary;
-    final unpaid = results[3] as CostSummary;
-    final unpaidPage = results[4] as Page<CostEntry>;
-    final allCostsPage = results[5] as Page<CostEntry>;
-    final todayAgenda = results[6] as List<ScheduleEvent>;
-    final openEvents = results[7] as List<ScheduleEvent>;
-    final checklistByStage = await Future.wait(
-      stages.map(
-        (stage) => _stageRepository.listChecklistItems(
-          projectId: project.id,
-          stageId: stage.id,
-        ),
-      ),
-    );
-    final checklistRecords = <DashboardChecklistRecord>[];
-    for (var index = 0; index < stages.length; index++) {
-      for (final item in checklistByStage[index]) {
-        checklistRecords.add(
-          DashboardChecklistRecord(stage: stages[index], item: item),
-        );
-      }
-    }
+    final checklistItems = results[1] as List<ChecklistItem>;
+    final spent = results[2] as CostSummary;
+    final forecast = results[3] as CostSummary;
+    final unpaid = results[4] as CostSummary;
+    final unpaidPage = results[5] as Page<CostEntry>;
+    final allCostsPage = results[6] as Page<CostEntry>;
+    final todayAgenda = results[7] as List<ScheduleEvent>;
+    final openEvents = results[8] as List<ScheduleEvent>;
+    final stagesById = <String, ProjectStage>{
+      for (final stage in stages) stage.id: stage,
+    };
+    final checklistRecords = checklistItems
+        .map((item) {
+          final stage = stagesById[item.stageId];
+          if (stage == null) {
+            throw StateError('Checklist item references a missing stage');
+          }
+          return DashboardChecklistRecord(stage: stage, item: item);
+        })
+        .toList(growable: false);
 
     return DashboardSnapshot(
       project: project,

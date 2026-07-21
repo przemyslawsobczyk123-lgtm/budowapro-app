@@ -1276,4 +1276,104 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get scheduleMutationError => 'Nie udało się zapisać zmiany.';
+
+  @override
+  String get dashboardLoading => 'Ładowanie Startu…';
+
+  @override
+  String get dashboardLoadError =>
+      'Nie udało się wczytać podsumowania projektu.';
+
+  @override
+  String get dashboardEmptyTitle => 'Projekt gotowy do uzupełnienia';
+
+  @override
+  String get dashboardEmptyMessage =>
+      'Dodaj pierwszy koszt, termin albo rozpocznij checklistę etapu.';
+
+  @override
+  String get dashboardStartWithCost => 'Dodaj pierwszy koszt';
+
+  @override
+  String get dashboardCurrentStage => 'Aktualny etap';
+
+  @override
+  String get dashboardBudgetTitle => 'Budżet projektu';
+
+  @override
+  String dashboardSpentOfBudget(String spent, String budget) {
+    return '$spent z $budget';
+  }
+
+  @override
+  String get dashboardRemaining => 'Pozostało';
+
+  @override
+  String get dashboardOverBudget => 'Przekroczenie';
+
+  @override
+  String get dashboardBudgetNotSet => 'Uzupełnij budżet projektu';
+
+  @override
+  String get dashboardSpent => 'Wydano';
+
+  @override
+  String get dashboardPlan30 => 'Plan 30 dni';
+
+  @override
+  String get dashboardUnpaid => 'Nieopłacone';
+
+  @override
+  String dashboardUnpaidItems(int count) {
+    return '$count pozycji';
+  }
+
+  @override
+  String get dashboardQuickActions => 'Szybkie akcje';
+
+  @override
+  String get dashboardAddCost => 'Dodaj koszt';
+
+  @override
+  String get dashboardOpenBudget => 'Otwórz budżet';
+
+  @override
+  String get dashboardOpenChecklists => 'Checklisty etapów';
+
+  @override
+  String get dashboardAddSchedule => 'Dodaj termin';
+
+  @override
+  String get dashboardCritical => 'Krytyczne zadania';
+
+  @override
+  String dashboardCriticalCount(int count) {
+    return 'Otwarte: $count';
+  }
+
+  @override
+  String get dashboardCriticalEmpty => 'Brak otwartych zadań wysokiego ryzyka.';
+
+  @override
+  String get dashboardStages => 'Oś etapów';
+
+  @override
+  String get dashboardAgenda => 'Dzisiaj na budowie';
+
+  @override
+  String dashboardAgendaCount(int count) {
+    return 'Wpisy: $count';
+  }
+
+  @override
+  String get dashboardAgendaEmpty =>
+      'Brak zadań, wizyt, dostaw i odbiorów na dziś.';
+
+  @override
+  String get dashboardProjectActionsTooltip => 'Zarządzaj projektem';
+
+  @override
+  String dashboardStageProgress(int percent) {
+    return 'Postęp checklisty: $percent%';
+  }
 }

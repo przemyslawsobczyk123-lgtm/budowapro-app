@@ -1,10 +1,11 @@
 import 'package:budowapro/features/costs/presentation/cost_details_screen.dart';
 import 'package:budowapro/features/costs/presentation/cost_form_screen.dart';
+import 'package:budowapro/features/dashboard/presentation/dashboard_screen.dart';
 import 'package:budowapro/features/projects/presentation/project_form_screen.dart';
-import 'package:budowapro/features/projects/presentation/project_overview_screen.dart';
 import 'package:budowapro/features/schedule/data/schedule_providers.dart';
 import 'package:budowapro/features/schedule/presentation/schedule_event_details_screen.dart';
 import 'package:budowapro/features/schedule/presentation/schedule_event_form_screen.dart';
+import 'package:budowapro/features/schedule/presentation/schedule_plan_screen.dart';
 import 'package:budowapro/features/shell/presentation/app_shell.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -91,9 +92,13 @@ StatefulShellBranch _branchFor(AppSection section) {
         path: section.path,
         pageBuilder: (context, state) => NoTransitionPage<void>(
           key: state.pageKey,
-          child: section == AppSection.start
-              ? const ProjectOverviewScreen()
-              : ProjectSectionScreen(section: section),
+          child: switch (section) {
+            AppSection.start => const DashboardScreen(),
+            AppSection.plan => SchedulePlanScreen(
+              initialTab: state.uri.queryParameters['tab'] == 'stages' ? 1 : 0,
+            ),
+            _ => ProjectSectionScreen(section: section),
+          },
         ),
       ),
     ],

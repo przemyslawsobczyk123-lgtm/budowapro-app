@@ -58,6 +58,14 @@ void main() {
     expect(find.text('Typy terminów'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('can open directly on the stages tab', (tester) async {
+    await tester.pumpWidget(_testApp(_services(), initialTab: 1));
+    await tester.pumpAndSettle();
+
+    final tabContext = tester.element(find.byType(TabBar));
+    expect(DefaultTabController.of(tabContext).index, 1);
+  });
 }
 
 ({
@@ -115,8 +123,9 @@ Widget _testApp(
     FakeScheduleRepository repository,
     FakeScheduleNotificationGateway notifications,
   })
-  services,
-) {
+  services, {
+  int initialTab = 0,
+}) {
   final projects = FakeProjectRepository(
     projects: <Project>[services.project],
     selectedProjectId: services.project.id,
@@ -125,7 +134,7 @@ Widget _testApp(
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => const SchedulePlanScreen(),
+        builder: (context, state) => SchedulePlanScreen(initialTab: initialTab),
       ),
       GoRoute(
         path: '/projects/:projectId/schedule/:eventId',
@@ -190,6 +199,11 @@ final class _EmptyStages implements StageRepository {
   Future<List<ChecklistItem>> listChecklistItems({
     required String projectId,
     required String stageId,
+  }) async => const <ChecklistItem>[];
+
+  @override
+  Future<List<ChecklistItem>> listProjectChecklistItems({
+    required String projectId,
   }) async => const <ChecklistItem>[];
 
   @override

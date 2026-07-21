@@ -2439,6 +2439,180 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Nie udało się zapisać zmiany.'**
   String get scheduleMutationError;
+
+  /// No description provided for @dashboardLoading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ładowanie Startu…'**
+  String get dashboardLoading;
+
+  /// No description provided for @dashboardLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać podsumowania projektu.'**
+  String get dashboardLoadError;
+
+  /// No description provided for @dashboardEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Projekt gotowy do uzupełnienia'**
+  String get dashboardEmptyTitle;
+
+  /// No description provided for @dashboardEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj pierwszy koszt, termin albo rozpocznij checklistę etapu.'**
+  String get dashboardEmptyMessage;
+
+  /// No description provided for @dashboardStartWithCost.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj pierwszy koszt'**
+  String get dashboardStartWithCost;
+
+  /// No description provided for @dashboardCurrentStage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Aktualny etap'**
+  String get dashboardCurrentStage;
+
+  /// No description provided for @dashboardBudgetTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Budżet projektu'**
+  String get dashboardBudgetTitle;
+
+  /// No description provided for @dashboardSpentOfBudget.
+  ///
+  /// In pl, this message translates to:
+  /// **'{spent} z {budget}'**
+  String dashboardSpentOfBudget(String spent, String budget);
+
+  /// No description provided for @dashboardRemaining.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pozostało'**
+  String get dashboardRemaining;
+
+  /// No description provided for @dashboardOverBudget.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przekroczenie'**
+  String get dashboardOverBudget;
+
+  /// No description provided for @dashboardBudgetNotSet.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzupełnij budżet projektu'**
+  String get dashboardBudgetNotSet;
+
+  /// No description provided for @dashboardSpent.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wydano'**
+  String get dashboardSpent;
+
+  /// No description provided for @dashboardPlan30.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plan 30 dni'**
+  String get dashboardPlan30;
+
+  /// No description provided for @dashboardUnpaid.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieopłacone'**
+  String get dashboardUnpaid;
+
+  /// No description provided for @dashboardUnpaidItems.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count} pozycji'**
+  String dashboardUnpaidItems(int count);
+
+  /// No description provided for @dashboardQuickActions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szybkie akcje'**
+  String get dashboardQuickActions;
+
+  /// No description provided for @dashboardAddCost.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj koszt'**
+  String get dashboardAddCost;
+
+  /// No description provided for @dashboardOpenBudget.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwórz budżet'**
+  String get dashboardOpenBudget;
+
+  /// No description provided for @dashboardOpenChecklists.
+  ///
+  /// In pl, this message translates to:
+  /// **'Checklisty etapów'**
+  String get dashboardOpenChecklists;
+
+  /// No description provided for @dashboardAddSchedule.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj termin'**
+  String get dashboardAddSchedule;
+
+  /// No description provided for @dashboardCritical.
+  ///
+  /// In pl, this message translates to:
+  /// **'Krytyczne zadania'**
+  String get dashboardCritical;
+
+  /// No description provided for @dashboardCriticalCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwarte: {count}'**
+  String dashboardCriticalCount(int count);
+
+  /// No description provided for @dashboardCriticalEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak otwartych zadań wysokiego ryzyka.'**
+  String get dashboardCriticalEmpty;
+
+  /// No description provided for @dashboardStages.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oś etapów'**
+  String get dashboardStages;
+
+  /// No description provided for @dashboardAgenda.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dzisiaj na budowie'**
+  String get dashboardAgenda;
+
+  /// No description provided for @dashboardAgendaCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisy: {count}'**
+  String dashboardAgendaCount(int count);
+
+  /// No description provided for @dashboardAgendaEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak zadań, wizyt, dostaw i odbiorów na dziś.'**
+  String get dashboardAgendaEmpty;
+
+  /// No description provided for @dashboardProjectActionsTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zarządzaj projektem'**
+  String get dashboardProjectActionsTooltip;
+
+  /// No description provided for @dashboardStageProgress.
+  ///
+  /// In pl, this message translates to:
+  /// **'Postęp checklisty: {percent}%'**
+  String dashboardStageProgress(int percent);
 }
 
 class _AppLocalizationsDelegate

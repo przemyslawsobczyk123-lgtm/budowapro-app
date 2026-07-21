@@ -527,6 +527,11 @@ class _FakeStageRepository implements StageRepository {
   }) async => const <ChecklistItem>[];
 
   @override
+  Future<List<ChecklistItem>> listProjectChecklistItems({
+    required String projectId,
+  }) async => const <ChecklistItem>[];
+
+  @override
   Future<ProjectStage> addCustomStage({
     required String projectId,
     required String name,

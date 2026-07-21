@@ -1,18 +1,19 @@
 import 'package:budowapro/features/costs/presentation/cost_budget_screen.dart';
+import 'package:budowapro/features/dashboard/presentation/dashboard_controller.dart';
 import 'package:budowapro/features/projects/presentation/project_selector.dart';
-import 'package:budowapro/features/schedule/presentation/schedule_plan_screen.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:budowapro/shared/widgets/app_content_states.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class AppShell extends StatelessWidget {
+class AppShell extends ConsumerWidget {
   const AppShell({required this.navigationShell, super.key});
 
   final StatefulNavigationShell navigationShell;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context);
 
     return Scaffold(
@@ -41,6 +42,9 @@ class AppShell extends StatelessWidget {
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationShell.currentIndex,
         onDestinationSelected: (index) {
+          if (index == AppSection.start.index) {
+            ref.invalidate(dashboardControllerProvider);
+          }
           navigationShell.goBranch(
             index,
             initialLocation: index == navigationShell.currentIndex,
@@ -69,9 +73,6 @@ class ProjectSectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     if (section == AppSection.budget) {
       return const CostBudgetScreen();
-    }
-    if (section == AppSection.plan) {
-      return const SchedulePlanScreen();
     }
     final localizations = AppLocalizations.of(context);
 
