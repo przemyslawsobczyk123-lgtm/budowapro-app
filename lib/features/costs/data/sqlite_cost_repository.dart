@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:budowapro/core/database/app_database.dart';
 import 'package:budowapro/core/database/database_value_codec.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
+import 'package:budowapro/features/costs/domain/cost_export_record.dart';
 import 'package:budowapro/features/costs/domain/cost_repository.dart';
 import 'package:budowapro/features/costs/domain/cost_summary.dart';
 import 'package:budowapro/features/costs/domain/money.dart';
@@ -339,6 +340,55 @@ final class SqliteCostRepository implements CostRepository {
     );
     return Page<CostEntry>(
       items: await _entriesFromRows(database, rows),
+      totalCount: countRows.single['total']! as int,
+      request: page,
+    );
+  }
+
+  @override
+  Future<Page<CostExportRecord>> exportRows(
+    CostQuery query,
+    PageRequest page,
+  ) async {
+    final database = await _database.open();
+    final predicate = _costPredicate(query, tableAlias: 'e');
+    final countRows = await database.rawQuery('''
+        SELECT COUNT(*) AS total
+        FROM ${AppDatabase.costEntriesTable} e
+        WHERE ${predicate.sql}
+      ''', predicate.arguments);
+    final rows = await database.rawQuery(
+      '''
+        SELECT
+          e.*,
+          COALESCE((
+            SELECT SUM(c.gross_delta_minor_units)
+            FROM ${AppDatabase.costCorrectionsTable} c
+            WHERE c.project_id = e.project_id
+              AND c.cost_entry_id = e.id
+          ), 0) AS correction_gross_minor_units
+        FROM ${AppDatabase.costEntriesTable} e
+        WHERE ${predicate.sql}
+        ORDER BY ${_costOrderBy(query.sort, tableAlias: 'e')}
+        LIMIT ? OFFSET ?
+      ''',
+      <Object?>[...predicate.arguments, page.limit, page.offset],
+    );
+    final entries = await _entriesFromRows(database, rows);
+    return Page<CostExportRecord>(
+      items: List<CostExportRecord>.generate(entries.length, (index) {
+        final entry = entries[index];
+        final correction = rows[index]['correction_gross_minor_units']! as int;
+        return CostExportRecord(
+          entry: entry,
+          effectiveGross: Money.fromBigInt(
+            minorUnits:
+                BigInt.from(entry.amount.gross.minorUnits) +
+                BigInt.from(correction),
+            currencyCode: entry.amount.gross.currencyCode,
+          ),
+        );
+      }, growable: false),
       totalCount: countRows.single['total']! as int,
       request: page,
     );

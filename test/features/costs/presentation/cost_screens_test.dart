@@ -4,6 +4,7 @@ import 'package:budowapro/core/theme/app_theme.dart';
 import 'package:budowapro/features/costs/data/cost_providers.dart';
 import 'package:budowapro/features/costs/data/cost_attachment_stager.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
+import 'package:budowapro/features/costs/domain/cost_export_record.dart';
 import 'package:budowapro/features/costs/domain/cost_repository.dart';
 import 'package:budowapro/features/costs/domain/cost_summary.dart';
 import 'package:budowapro/features/costs/domain/money.dart';
@@ -14,6 +15,8 @@ import 'package:budowapro/features/costs/presentation/cost_editor_gateway.dart';
 import 'package:budowapro/features/costs/presentation/cost_form_model.dart';
 import 'package:budowapro/features/costs/presentation/cost_form_screen.dart';
 import 'package:budowapro/features/costs/presentation/cost_register_initial_filter.dart';
+import 'package:budowapro/features/exports/data/export_providers.dart';
+import 'package:budowapro/features/exports/domain/cost_csv_export.dart';
 import 'package:budowapro/features/projects/data/project_providers.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
 import 'package:budowapro/features/stages/data/stage_providers.dart';
@@ -391,6 +394,49 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets(
+    'exports the active register filters and selected columns at 320px',
+    (tester) async {
+      final costs = _FakeCostRepository(entries: [_entry()]);
+      final csv = _FakeCostCsvExportGateway();
+      await tester.binding.setSurfaceSize(const Size(320, 568));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(_budgetApp(costs, csvGateway: csv));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byKey(const ValueKey('costRegisterSearch')),
+        'beton',
+      );
+      await tester.pump(const Duration(milliseconds: 350));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('costCsvExport')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Eksport kosztów do CSV'), findsOneWidget);
+      expect(
+        find.text('Wybierzesz je w systemowym panelu po utworzeniu pliku.'),
+        findsOneWidget,
+      );
+      final dateTile = tester.widget<CheckboxListTile>(
+        find.widgetWithText(CheckboxListTile, 'Data'),
+      );
+      dateTile.onChanged!(false);
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('costCsvExportConfirm')));
+      await tester.pumpAndSettle();
+
+      expect(csv.requests, hasLength(1));
+      expect(csv.requests.single.query.searchText, 'beton');
+      expect(
+        csv.requests.single.columns,
+        isNot(contains(CostCsvColumn.entryDate)),
+      );
+      expect(find.text('Wyeksportowane rekordy: 1.'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('filter reload cannot leave lazy loading blocked', (
     tester,
   ) async {
@@ -464,6 +510,7 @@ Widget _gatewayApp(CostEditorGateway gateway, Widget home) {
 Widget _budgetApp(
   _FakeCostRepository costs, {
   CostRegisterInitialFilter? initialFilter,
+  CostCsvExportGateway? csvGateway,
 }) {
   final project = _project();
   final projects = FakeProjectRepository(
@@ -477,6 +524,8 @@ Widget _budgetApp(
       stageRepositoryProvider.overrideWith(
         (ref) async => _FakeStageRepository(),
       ),
+      if (csvGateway != null)
+        costCsvExportGatewayProvider.overrideWith((ref) async => csvGateway),
     ],
     child: MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -485,6 +534,18 @@ Widget _budgetApp(
       home: CostBudgetScreen(initialFilter: initialFilter),
     ),
   );
+}
+
+final class _FakeCostCsvExportGateway implements CostCsvExportGateway {
+  final List<CostCsvExportRequest> requests = <CostCsvExportRequest>[];
+
+  @override
+  Future<CostCsvExportResult> exportAndShare(
+    CostCsvExportRequest request,
+  ) async {
+    requests.add(request);
+    return const CostCsvExportResult(recordCount: 1);
+  }
 }
 
 Project _project() => Project(
@@ -752,6 +813,24 @@ class _FakeCostRepository implements CostRepository {
         : entries.sublist(page.offset, end);
     return Page(items: items, totalCount: entries.length, request: page);
   }
+
+  @override
+  Future<Page<CostExportRecord>> exportRows(
+    CostQuery query,
+    PageRequest page,
+  ) async => Page<CostExportRecord>(
+    items: entries
+        .map(
+          (entry) => CostExportRecord(
+            entry: entry,
+            effectiveGross: entry.amount.gross,
+          ),
+        )
+        .skip(page.offset)
+        .take(page.limit),
+    totalCount: entries.length,
+    request: page,
+  );
 
   @override
   Future<CostSummary> summarize(CostSummaryQuery query) async =>

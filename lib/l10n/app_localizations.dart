@@ -868,6 +868,108 @@ abstract class AppLocalizations {
   /// **'Nazwa: A-Z'**
   String get costRegisterSortName;
 
+  /// No description provided for @costCsvExportTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Eksportuj CSV'**
+  String get costCsvExportTooltip;
+
+  /// No description provided for @costCsvExportTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Eksport kosztów do CSV'**
+  String get costCsvExportTitle;
+
+  /// No description provided for @costCsvExportScope.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rekordy w zakresie: {count}, aktywne filtry: {filterCount}'**
+  String costCsvExportScope(int count, int filterCount);
+
+  /// No description provided for @costCsvExportDestinationLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Miejsce docelowe'**
+  String get costCsvExportDestinationLabel;
+
+  /// No description provided for @costCsvExportDestinationValue.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierzesz je w systemowym panelu po utworzeniu pliku.'**
+  String get costCsvExportDestinationValue;
+
+  /// No description provided for @costCsvExportColumnsHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kolumny w pliku'**
+  String get costCsvExportColumnsHeading;
+
+  /// No description provided for @costCsvExportAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utwórz i udostępnij'**
+  String get costCsvExportAction;
+
+  /// No description provided for @costCsvExportSuccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyeksportowane rekordy: {count}.'**
+  String costCsvExportSuccess(int count);
+
+  /// No description provided for @costCsvExportError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się utworzyć pliku CSV.'**
+  String get costCsvExportError;
+
+  /// No description provided for @costCsvLifecycleColumn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tryb wpisu'**
+  String get costCsvLifecycleColumn;
+
+  /// No description provided for @costCsvConfirmedValue.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatwierdzony'**
+  String get costCsvConfirmedValue;
+
+  /// No description provided for @costCsvEffectiveGrossColumn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brutto po korektach'**
+  String get costCsvEffectiveGrossColumn;
+
+  /// No description provided for @costCsvOriginalGrossColumn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brutto pierwotne'**
+  String get costCsvOriginalGrossColumn;
+
+  /// No description provided for @costCsvCurrencyColumn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Waluta'**
+  String get costCsvCurrencyColumn;
+
+  /// No description provided for @costCsvSourceColumn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Źródło'**
+  String get costCsvSourceColumn;
+
+  /// No description provided for @costCsvAttachmentCountColumn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Liczba dokumentów'**
+  String get costCsvAttachmentCountColumn;
+
+  /// No description provided for @costCsvEmptyValue.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak'**
+  String get costCsvEmptyValue;
+
   /// No description provided for @costWarningMissingDocument.
   ///
   /// In pl, this message translates to:

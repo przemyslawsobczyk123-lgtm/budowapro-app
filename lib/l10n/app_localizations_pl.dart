@@ -419,6 +419,62 @@ class AppLocalizationsPl extends AppLocalizations {
   String get costRegisterSortName => 'Nazwa: A-Z';
 
   @override
+  String get costCsvExportTooltip => 'Eksportuj CSV';
+
+  @override
+  String get costCsvExportTitle => 'Eksport kosztów do CSV';
+
+  @override
+  String costCsvExportScope(int count, int filterCount) {
+    return 'Rekordy w zakresie: $count, aktywne filtry: $filterCount';
+  }
+
+  @override
+  String get costCsvExportDestinationLabel => 'Miejsce docelowe';
+
+  @override
+  String get costCsvExportDestinationValue =>
+      'Wybierzesz je w systemowym panelu po utworzeniu pliku.';
+
+  @override
+  String get costCsvExportColumnsHeading => 'Kolumny w pliku';
+
+  @override
+  String get costCsvExportAction => 'Utwórz i udostępnij';
+
+  @override
+  String costCsvExportSuccess(int count) {
+    return 'Wyeksportowane rekordy: $count.';
+  }
+
+  @override
+  String get costCsvExportError => 'Nie udało się utworzyć pliku CSV.';
+
+  @override
+  String get costCsvLifecycleColumn => 'Tryb wpisu';
+
+  @override
+  String get costCsvConfirmedValue => 'Zatwierdzony';
+
+  @override
+  String get costCsvEffectiveGrossColumn => 'Brutto po korektach';
+
+  @override
+  String get costCsvOriginalGrossColumn => 'Brutto pierwotne';
+
+  @override
+  String get costCsvCurrencyColumn => 'Waluta';
+
+  @override
+  String get costCsvSourceColumn => 'Źródło';
+
+  @override
+  String get costCsvAttachmentCountColumn => 'Liczba dokumentów';
+
+  @override
+  String get costCsvEmptyValue => 'Brak';
+
+  @override
   String get costWarningMissingDocument => 'Brak dokumentu';
 
   @override

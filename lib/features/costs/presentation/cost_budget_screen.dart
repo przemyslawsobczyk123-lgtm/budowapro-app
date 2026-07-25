@@ -8,6 +8,8 @@ import 'package:budowapro/features/costs/domain/money.dart';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 import 'package:budowapro/features/costs/presentation/cost_form_model.dart';
 import 'package:budowapro/features/costs/presentation/cost_register_initial_filter.dart';
+import 'package:budowapro/features/exports/data/export_providers.dart';
+import 'package:budowapro/features/exports/domain/cost_csv_export.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
 import 'package:budowapro/features/projects/presentation/project_ui_text.dart';
 import 'package:budowapro/features/projects/presentation/projects_controller.dart';
@@ -120,6 +122,7 @@ class _ProjectBudget extends ConsumerWidget {
           repository: value,
           stages: projectStages,
           initialFilter: initialFilter,
+          csvGateway: () => ref.read(costCsvExportGatewayProvider.future),
         ),
       ),
     );
@@ -132,6 +135,7 @@ class _CostRegister extends StatefulWidget {
     required this.repository,
     required this.stages,
     required this.initialFilter,
+    required this.csvGateway,
     super.key,
   });
 
@@ -139,6 +143,7 @@ class _CostRegister extends StatefulWidget {
   final CostRepository repository;
   final List<ProjectStage> stages;
   final CostRegisterInitialFilter initialFilter;
+  final Future<CostCsvExportGateway> Function() csvGateway;
 
   @override
   State<_CostRegister> createState() => _CostRegisterState();
@@ -146,6 +151,21 @@ class _CostRegister extends StatefulWidget {
 
 class _CostRegisterState extends State<_CostRegister> {
   static const _pageSize = 30;
+  static const _defaultCsvColumns = <CostCsvColumn>[
+    CostCsvColumn.entryDate,
+    CostCsvColumn.name,
+    CostCsvColumn.type,
+    CostCsvColumn.status,
+    CostCsvColumn.effectiveGross,
+    CostCsvColumn.vatRate,
+    CostCsvColumn.currency,
+    CostCsvColumn.stage,
+    CostCsvColumn.category,
+    CostCsvColumn.supplier,
+    CostCsvColumn.paymentMethod,
+    CostCsvColumn.attachmentCount,
+    CostCsvColumn.note,
+  ];
 
   final _scrollController = ScrollController();
   final _searchController = TextEditingController();
@@ -160,6 +180,7 @@ class _CostRegisterState extends State<_CostRegister> {
   var _generation = 0;
   var _isInitialLoading = true;
   var _isLoadingMore = false;
+  var _isExportingCsv = false;
   var _types = <CostEntryType>{};
   var _statuses = <CostStatus>{};
   var _missingAssignments = <CostMissingAssignment>{};
@@ -414,6 +435,48 @@ class _CostRegisterState extends State<_CostRegister> {
     if (mounted) await _reload();
   }
 
+  Future<void> _exportCsv() async {
+    if (_isExportingCsv || _totalCount == 0) return;
+    final localizations = AppLocalizations.of(context);
+    final labels = _csvLabels(localizations, widget.stages);
+    final columns = await showModalBottomSheet<List<CostCsvColumn>>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (context) => _CostCsvExportSheet(
+        recordCount: _totalCount,
+        activeFilterCount: _query().activeFilterCount,
+        labels: labels,
+        initialColumns: _defaultCsvColumns,
+      ),
+    );
+    if (columns == null || !mounted) return;
+
+    setState(() => _isExportingCsv = true);
+    try {
+      final gateway = await widget.csvGateway();
+      final result = await gateway.exportAndShare(
+        CostCsvExportRequest(query: _query(), columns: columns, labels: labels),
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(localizations.costCsvExportSuccess(result.recordCount)),
+        ),
+      );
+    } on Object {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(localizations.costCsvExportError)));
+    } finally {
+      if (mounted) {
+        setState(() => _isExportingCsv = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
@@ -476,6 +539,17 @@ class _CostRegisterState extends State<_CostRegister> {
               localizations.budgetTitle,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+          ),
+          IconButton(
+            key: const ValueKey('costCsvExport'),
+            tooltip: localizations.costCsvExportTooltip,
+            onPressed: _totalCount == 0 || _isExportingCsv ? null : _exportCsv,
+            icon: _isExportingCsv
+                ? const SizedBox.square(
+                    dimension: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2.5),
+                  )
+                : const Icon(Icons.file_download_outlined),
           ),
           IconButton(
             key: const ValueKey('costBudgetAdd'),
@@ -592,6 +666,122 @@ class _CostRegisterState extends State<_CostRegister> {
       );
     }
     return const SizedBox.shrink();
+  }
+}
+
+class _CostCsvExportSheet extends StatefulWidget {
+  const _CostCsvExportSheet({
+    required this.recordCount,
+    required this.activeFilterCount,
+    required this.labels,
+    required this.initialColumns,
+  });
+
+  final int recordCount;
+  final int activeFilterCount;
+  final CostCsvLabels labels;
+  final List<CostCsvColumn> initialColumns;
+
+  @override
+  State<_CostCsvExportSheet> createState() => _CostCsvExportSheetState();
+}
+
+class _CostCsvExportSheetState extends State<_CostCsvExportSheet> {
+  late final Set<CostCsvColumn> _selected = Set<CostCsvColumn>.of(
+    widget.initialColumns,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    return FractionallySizedBox(
+      heightFactor: 0.9,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 12, 12),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    localizations.costCsvExportTitle,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+                IconButton(
+                  tooltip: localizations.cancelAction,
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.close_rounded),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              localizations.costCsvExportScope(
+                widget.recordCount,
+                widget.activeFilterCount,
+              ),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+            leading: const Icon(Icons.folder_outlined),
+            title: Text(localizations.costCsvExportDestinationLabel),
+            subtitle: Text(localizations.costCsvExportDestinationValue),
+          ),
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+            child: Text(
+              localizations.costCsvExportColumnsHeading,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: CostCsvColumn.values.length,
+              itemBuilder: (context, index) {
+                final column = CostCsvColumn.values[index];
+                return CheckboxListTile(
+                  dense: true,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                  title: Text(widget.labels.headers[column]!),
+                  value: _selected.contains(column),
+                  onChanged: (selected) {
+                    setState(() {
+                      if (selected ?? false) {
+                        _selected.add(column);
+                      } else {
+                        _selected.remove(column);
+                      }
+                    });
+                  },
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+            child: FilledButton.icon(
+              key: const ValueKey('costCsvExportConfirm'),
+              onPressed: _selected.isEmpty
+                  ? null
+                  : () => Navigator.of(context).pop(<CostCsvColumn>[
+                      for (final column in CostCsvColumn.values)
+                        if (_selected.contains(column)) column,
+                    ]),
+              icon: const Icon(Icons.file_download_outlined),
+              label: Text(localizations.costCsvExportAction),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -1440,6 +1630,56 @@ String _sourceLabel(AppLocalizations l10n, CostSource value) => switch (value) {
   CostSource.imported => l10n.costSourceImported,
   CostSource.offerConversion => l10n.costSourceOfferConversion,
 };
+
+CostCsvLabels _csvLabels(
+  AppLocalizations l10n,
+  List<ProjectStage> stages,
+) => CostCsvLabels(
+  headers: <CostCsvColumn, String>{
+    CostCsvColumn.entryDate: l10n.costDateLabel,
+    CostCsvColumn.name: l10n.costNameLabel,
+    CostCsvColumn.type: l10n.costTypeLabel,
+    CostCsvColumn.status: l10n.costStatusLabel,
+    CostCsvColumn.lifecycle: l10n.costCsvLifecycleColumn,
+    CostCsvColumn.effectiveGross: l10n.costCsvEffectiveGrossColumn,
+    CostCsvColumn.originalGross: l10n.costCsvOriginalGrossColumn,
+    CostCsvColumn.net: l10n.costNetAmountLabel,
+    CostCsvColumn.vat: l10n.costVatAmountLabel,
+    CostCsvColumn.vatRate: l10n.costVatRateLabel,
+    CostCsvColumn.currency: l10n.costCsvCurrencyColumn,
+    CostCsvColumn.stage: l10n.costStageLabel,
+    CostCsvColumn.category: l10n.costCategoryLabel,
+    CostCsvColumn.supplier: l10n.costSupplierLabel,
+    CostCsvColumn.quantity: l10n.costQuantityLabel,
+    CostCsvColumn.paymentMethod: l10n.costPaymentMethodLabel,
+    CostCsvColumn.source: l10n.costCsvSourceColumn,
+    CostCsvColumn.attachmentCount: l10n.costCsvAttachmentCountColumn,
+    CostCsvColumn.note: l10n.costNoteLabel,
+  },
+  types: <CostEntryType, String>{
+    for (final value in CostEntryType.values) value: _typeLabel(l10n, value),
+  },
+  statuses: <CostStatus, String>{
+    for (final value in CostStatus.values) value: _statusLabel(l10n, value),
+  },
+  lifecycles: <CostLifecycle, String>{
+    CostLifecycle.draft: l10n.costDraftLabel,
+    CostLifecycle.confirmed: l10n.costCsvConfirmedValue,
+  },
+  paymentMethods: <CostPaymentMethod, String>{
+    for (final value in CostPaymentMethod.values)
+      value: _paymentLabel(l10n, value),
+  },
+  sources: <CostSource, String>{
+    for (final value in CostSource.values) value: _sourceLabel(l10n, value),
+  },
+  stageLabels: <String, String>{
+    for (final value in ProjectStageKey.values)
+      _stageStorageId(value): _stageLabel(l10n, _stageStorageId(value), stages),
+    for (final stage in stages) stage.id: stageName(l10n, stage),
+  },
+  emptyValue: l10n.costCsvEmptyValue,
+);
 
 String _warningLabel(AppLocalizations l10n, CostWarning value) =>
     switch (value) {

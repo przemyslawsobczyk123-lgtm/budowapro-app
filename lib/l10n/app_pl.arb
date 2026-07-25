@@ -432,6 +432,34 @@
   "costRegisterSortAmountDescending": "Kwota: malejąco",
   "costRegisterSortAmountAscending": "Kwota: rosnąco",
   "costRegisterSortName": "Nazwa: A-Z",
+  "costCsvExportTooltip": "Eksportuj CSV",
+  "costCsvExportTitle": "Eksport kosztów do CSV",
+  "costCsvExportScope": "Rekordy w zakresie: {count}, aktywne filtry: {filterCount}",
+  "@costCsvExportScope": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "filterCount": {"type": "int"}
+    }
+  },
+  "costCsvExportDestinationLabel": "Miejsce docelowe",
+  "costCsvExportDestinationValue": "Wybierzesz je w systemowym panelu po utworzeniu pliku.",
+  "costCsvExportColumnsHeading": "Kolumny w pliku",
+  "costCsvExportAction": "Utwórz i udostępnij",
+  "costCsvExportSuccess": "Wyeksportowane rekordy: {count}.",
+  "@costCsvExportSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "costCsvExportError": "Nie udało się utworzyć pliku CSV.",
+  "costCsvLifecycleColumn": "Tryb wpisu",
+  "costCsvConfirmedValue": "Zatwierdzony",
+  "costCsvEffectiveGrossColumn": "Brutto po korektach",
+  "costCsvOriginalGrossColumn": "Brutto pierwotne",
+  "costCsvCurrencyColumn": "Waluta",
+  "costCsvSourceColumn": "Źródło",
+  "costCsvAttachmentCountColumn": "Liczba dokumentów",
+  "costCsvEmptyValue": "Brak",
   "costWarningMissingDocument": "Brak dokumentu",
   "costWarningMissingDescription": "Brak opisu",
   "costWarningVatToReview": "Sprawdź VAT 0%",

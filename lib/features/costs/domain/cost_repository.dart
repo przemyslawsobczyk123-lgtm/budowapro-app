@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:budowapro/shared/models/page.dart';
 
 import 'cost_entry.dart';
+import 'cost_export_record.dart';
 import 'cost_summary.dart';
 
 abstract interface class CostRepository {
@@ -43,6 +44,8 @@ abstract interface class CostRepository {
   });
 
   Future<Page<CostEntry>> list(CostQuery query, PageRequest page);
+
+  Future<Page<CostExportRecord>> exportRows(CostQuery query, PageRequest page);
 
   Future<CostSummary> summarize(CostSummaryQuery query);
 

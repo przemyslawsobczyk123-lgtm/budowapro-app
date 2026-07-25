@@ -381,6 +381,45 @@ void main() {
   });
 
   test(
+    'export rows respect filters and include the amount after corrections',
+    () async {
+      final included = await repository.create(
+        ConfirmedCostEntryInput(
+          _input(
+            name: 'Beton',
+            status: CostStatus.paid,
+            netMinorUnits: 100000,
+            supplierId: 'included',
+          ),
+        ),
+      );
+      await repository.create(
+        ConfirmedCostEntryInput(
+          _input(name: 'Stal', status: CostStatus.paid, supplierId: 'excluded'),
+        ),
+      );
+      await repository.addCorrection(
+        CostCorrectionInput(
+          projectId: 'project-1',
+          costEntryId: included.id,
+          reason: CostCorrectionReason.returnedGoods,
+          delta: VatBreakdown.fromNet(_pln(-10000), VatRate.standard23),
+        ),
+      );
+
+      final exported = await repository.exportRows(
+        CostQuery(projectId: 'project-1', supplierIds: {'included'}),
+        PageRequest(limit: 1),
+      );
+
+      expect(exported.totalCount, 1);
+      expect(exported.items.single.entry.id, included.id);
+      expect(exported.items.single.entry.amount.gross.minorUnits, 123000);
+      expect(exported.items.single.effectiveGross.minorUnits, 110700);
+    },
+  );
+
+  test(
     'combines register filters and summarizes the active SQL result',
     () async {
       await repository.create(
