@@ -3016,6 +3016,12 @@ abstract class AppLocalizations {
   /// **'Otwórz budżet'**
   String get dashboardOpenBudget;
 
+  /// No description provided for @dashboardScanReceipt.
+  ///
+  /// In pl, this message translates to:
+  /// **'Skanuj paragon'**
+  String get dashboardScanReceipt;
+
   /// No description provided for @dashboardOpenChecklists.
   ///
   /// In pl, this message translates to:
@@ -5025,6 +5031,198 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'{value} GB'**
   String backupGigabytesValue(String value);
+
+  /// No description provided for @receiptScanTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Skan paragonu'**
+  String get receiptScanTitle;
+
+  /// No description provided for @receiptScanIdleTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Paragon do odczytu'**
+  String get receiptScanIdleTitle;
+
+  /// No description provided for @receiptScanIdleMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz skanowanie albo plik z paragonem.'**
+  String get receiptScanIdleMessage;
+
+  /// No description provided for @receiptScanLocalOnly.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oryginał i OCR pozostają na tym urządzeniu.'**
+  String get receiptScanLocalOnly;
+
+  /// No description provided for @receiptScanAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zeskanuj paragon'**
+  String get receiptScanAction;
+
+  /// No description provided for @receiptImportAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Importuj obraz lub PDF'**
+  String get receiptImportAction;
+
+  /// No description provided for @receiptCaptureProcessing.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zabezpieczanie oryginału…'**
+  String get receiptCaptureProcessing;
+
+  /// No description provided for @receiptRecognitionProcessing.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odczytywanie paragonu…'**
+  String get receiptRecognitionProcessing;
+
+  /// No description provided for @receiptResultTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odczyt z paragonu'**
+  String get receiptResultTitle;
+
+  /// No description provided for @receiptBudgetUnchangedTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Budżet bez zmian'**
+  String get receiptBudgetUnchangedTitle;
+
+  /// No description provided for @receiptBudgetUnchangedMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'To propozycja do sprawdzenia. Nie dodano kosztu.'**
+  String get receiptBudgetUnchangedMessage;
+
+  /// No description provided for @receiptSellerLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprzedawca'**
+  String get receiptSellerLabel;
+
+  /// No description provided for @receiptDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data'**
+  String get receiptDateLabel;
+
+  /// No description provided for @receiptDocumentNumberLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Numer dokumentu'**
+  String get receiptDocumentNumberLabel;
+
+  /// No description provided for @receiptTotalLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Razem'**
+  String get receiptTotalLabel;
+
+  /// No description provided for @receiptVatLinesLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odczytane linie VAT'**
+  String get receiptVatLinesLabel;
+
+  /// No description provided for @receiptItemLinesLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odczytane pozycje'**
+  String get receiptItemLinesLabel;
+
+  /// No description provided for @receiptRawTextLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pełny tekst OCR'**
+  String get receiptRawTextLabel;
+
+  /// No description provided for @receiptDiscardAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odrzuć wynik'**
+  String get receiptDiscardAction;
+
+  /// No description provided for @receiptRetryOcrAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ponów odczyt'**
+  String get receiptRetryOcrAction;
+
+  /// No description provided for @receiptScannerUnavailableTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Skaner jest niedostępny'**
+  String get receiptScannerUnavailableTitle;
+
+  /// No description provided for @receiptScannerUnavailableMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Możesz zaimportować zdjęcie paragonu albo PDF z pamięci telefonu.'**
+  String get receiptScannerUnavailableMessage;
+
+  /// No description provided for @receiptUnsupportedTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieobsługiwany plik'**
+  String get receiptUnsupportedTitle;
+
+  /// No description provided for @receiptUnsupportedMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz czytelny plik JPG, PNG, WEBP albo PDF.'**
+  String get receiptUnsupportedMessage;
+
+  /// No description provided for @receiptEmptyTextTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie odczytano tekstu'**
+  String get receiptEmptyTextTitle;
+
+  /// No description provided for @receiptEmptyTextMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Spróbuj ponownie lub użyj wyraźniejszego zdjęcia.'**
+  String get receiptEmptyTextMessage;
+
+  /// No description provided for @receiptStorageErrorTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zabezpieczyć skanu'**
+  String get receiptStorageErrorTitle;
+
+  /// No description provided for @receiptStorageErrorMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź wolne miejsce i spróbuj ponownie.'**
+  String get receiptStorageErrorMessage;
+
+  /// No description provided for @receiptRecognitionErrorTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się odczytać paragonu'**
+  String get receiptRecognitionErrorTitle;
+
+  /// No description provided for @receiptRecognitionErrorMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oryginał jest zachowany w tej sesji. Możesz ponowić odczyt.'**
+  String get receiptRecognitionErrorMessage;
+
+  /// No description provided for @receiptPreviewUnavailable.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podgląd jest niedostępny.'**
+  String get receiptPreviewUnavailable;
+
+  /// No description provided for @receiptGatewayLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się przygotować lokalnego skanera.'**
+  String get receiptGatewayLoadError;
 }
 
 class _AppLocalizationsDelegate

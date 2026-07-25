@@ -460,10 +460,13 @@ class _QuickActions extends ConsumerWidget {
               label: Text(l10n.dashboardAddCost, textAlign: TextAlign.center),
             ),
             OutlinedButton.icon(
-              onPressed: () => context.go('/budget'),
-              icon: const Icon(Icons.account_balance_wallet_outlined),
+              onPressed: () => context.push(
+                '/projects/${Uri.encodeComponent(project.id)}'
+                '/receipt-scans/new',
+              ),
+              icon: const Icon(Icons.document_scanner_outlined),
               label: Text(
-                l10n.dashboardOpenBudget,
+                l10n.dashboardScanReceipt,
                 textAlign: TextAlign.center,
               ),
             ),

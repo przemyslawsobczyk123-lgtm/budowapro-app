@@ -1631,6 +1631,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get dashboardOpenBudget => 'Otwórz budżet';
 
   @override
+  String get dashboardScanReceipt => 'Skanuj paragon';
+
+  @override
   String get dashboardOpenChecklists => 'Checklisty etapów';
 
   @override
@@ -2716,4 +2719,109 @@ class AppLocalizationsPl extends AppLocalizations {
   String backupGigabytesValue(String value) {
     return '$value GB';
   }
+
+  @override
+  String get receiptScanTitle => 'Skan paragonu';
+
+  @override
+  String get receiptScanIdleTitle => 'Paragon do odczytu';
+
+  @override
+  String get receiptScanIdleMessage =>
+      'Wybierz skanowanie albo plik z paragonem.';
+
+  @override
+  String get receiptScanLocalOnly =>
+      'Oryginał i OCR pozostają na tym urządzeniu.';
+
+  @override
+  String get receiptScanAction => 'Zeskanuj paragon';
+
+  @override
+  String get receiptImportAction => 'Importuj obraz lub PDF';
+
+  @override
+  String get receiptCaptureProcessing => 'Zabezpieczanie oryginału…';
+
+  @override
+  String get receiptRecognitionProcessing => 'Odczytywanie paragonu…';
+
+  @override
+  String get receiptResultTitle => 'Odczyt z paragonu';
+
+  @override
+  String get receiptBudgetUnchangedTitle => 'Budżet bez zmian';
+
+  @override
+  String get receiptBudgetUnchangedMessage =>
+      'To propozycja do sprawdzenia. Nie dodano kosztu.';
+
+  @override
+  String get receiptSellerLabel => 'Sprzedawca';
+
+  @override
+  String get receiptDateLabel => 'Data';
+
+  @override
+  String get receiptDocumentNumberLabel => 'Numer dokumentu';
+
+  @override
+  String get receiptTotalLabel => 'Razem';
+
+  @override
+  String get receiptVatLinesLabel => 'Odczytane linie VAT';
+
+  @override
+  String get receiptItemLinesLabel => 'Odczytane pozycje';
+
+  @override
+  String get receiptRawTextLabel => 'Pełny tekst OCR';
+
+  @override
+  String get receiptDiscardAction => 'Odrzuć wynik';
+
+  @override
+  String get receiptRetryOcrAction => 'Ponów odczyt';
+
+  @override
+  String get receiptScannerUnavailableTitle => 'Skaner jest niedostępny';
+
+  @override
+  String get receiptScannerUnavailableMessage =>
+      'Możesz zaimportować zdjęcie paragonu albo PDF z pamięci telefonu.';
+
+  @override
+  String get receiptUnsupportedTitle => 'Nieobsługiwany plik';
+
+  @override
+  String get receiptUnsupportedMessage =>
+      'Wybierz czytelny plik JPG, PNG, WEBP albo PDF.';
+
+  @override
+  String get receiptEmptyTextTitle => 'Nie odczytano tekstu';
+
+  @override
+  String get receiptEmptyTextMessage =>
+      'Spróbuj ponownie lub użyj wyraźniejszego zdjęcia.';
+
+  @override
+  String get receiptStorageErrorTitle => 'Nie udało się zabezpieczyć skanu';
+
+  @override
+  String get receiptStorageErrorMessage =>
+      'Sprawdź wolne miejsce i spróbuj ponownie.';
+
+  @override
+  String get receiptRecognitionErrorTitle => 'Nie udało się odczytać paragonu';
+
+  @override
+  String get receiptRecognitionErrorMessage =>
+      'Oryginał jest zachowany w tej sesji. Możesz ponowić odczyt.';
+
+  @override
+  String get receiptPreviewUnavailable => 'Podgląd jest niedostępny.';
+
+  @override
+  String get receiptGatewayLoadError =>
+      'Nie udało się przygotować lokalnego skanera.';
 }

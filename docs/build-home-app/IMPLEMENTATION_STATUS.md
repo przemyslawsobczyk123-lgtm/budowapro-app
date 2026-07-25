@@ -290,6 +290,30 @@ Last updated: 2026-07-25
   duplicate path, encrypted flag, excessive entry count, low-storage and interrupted-journal fixtures are rejected
   without replacing active data.
 
+### Task 6.1 - scanner and local OCR adapter
+
+- The Start quick actions open a project-scoped receipt screen. Opening it does not invoke a plugin; only explicit
+  scan or import actions can start Google Document Scanner or the narrow JPG/PNG/WEBP/PDF file picker.
+- `google_mlkit_document_scanner 0.5.0` is hidden behind a receipt source adapter. It requests one user-approved JPEG
+  with edge detection, crop, rotation, filters and gallery import. Native cancellation returns to idle, and scanner
+  startup failure exposes local file import without adding camera or broad storage permissions.
+- `google_mlkit_text_recognition 0.16.0` uses the bundled Latin model. OCR runs on a private project original, never
+  on the external picker/scanner source. The scanner temporary is removed after staging.
+- Existing attachment storage keeps the unchanged original, SHA-256 and a bounded preview. Attachment rows now
+  retain `scanner` or `file_picker`; missing preview or staging failure compensates the unlinked row and files.
+- Image originals go directly to OCR. Imported PDFs render only the first page into a bounded temporary JPEG through
+  existing `pdfrx`; the derivative is deleted after every success or failure.
+- OCR output is normalized and bounded to 32,000 characters, 240 lines and 240 characters per line before reaching
+  presentation. The provisional parser extracts seller, date, document number, final total, VAT lines and item lines
+  as text only. It does not construct `Money`, infer financial truth or run duplicate detection.
+- Recognition failure preserves the current private attachment for retry. Explicit discard or screen exit removes
+  the unlinked original and preview; startup recovery handles process death. Cleanup failures remain private and
+  become a controlled storage state.
+- Idle, processing, result and fallback/error states are localized and tested at 320 px. The result is explicitly
+  marked `Budżet bez zmian`; Task 6.1 never calls `CostRepository`, creates a cost or changes a report total.
+- The package wrappers are community maintained and remain replaceable behind data-layer interfaces. Google Play
+  services may download the scanner component on first use; local image/PDF import remains the supported fallback.
+
 ## Verified baseline
 
 ```text
@@ -303,6 +327,8 @@ path_provider 2.1.6
 file_picker 11.0.2
 flutter_local_notifications 22.1.0
 flutter_timezone 5.1.0
+google_mlkit_document_scanner 0.5.0
+google_mlkit_text_recognition 0.16.0
 timezone 0.11.1
 url_launcher 6.3.2
 pdfrx 2.4.7
@@ -314,7 +340,9 @@ share_plus 12.0.2
 
 The Android build passes with the known Flutter forward-compatibility warning
 for plugins that still apply the classic Kotlin Gradle plugin (`file_picker`,
-`flutter_timezone` and `share_plus`). Re-evaluate this when a package or Flutter is upgraded.
+`flutter_timezone`, `google_mlkit_commons`, `google_mlkit_document_scanner`,
+`google_mlkit_text_recognition` and `share_plus`). Re-evaluate this when a
+package or Flutter is upgraded.
 
 Quality gate:
 
@@ -325,7 +353,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-25. The full suite contains 307 passing tests. Debug APK:
+All commands passed on 2026-07-25. The full suite contains 340 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -333,5 +361,6 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 6.1 from `IMPLEMENTATION_PLAN.md`: add the scanner/OCR adapter, preserve review-required drafts and keep OCR
-output outside financial truth until explicit user confirmation.
+Task 6.2 from `IMPLEMENTATION_PLAN.md`: add field-level confidence, correction,
+duplicate handling and transactional conversion of a reviewed OCR proposal into
+a cost draft. OCR must still never bypass explicit confirmation.

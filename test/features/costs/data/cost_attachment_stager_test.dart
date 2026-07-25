@@ -91,6 +91,28 @@ void main() {
     expect(rows.single['original_storage_key'], 'attachment-1.pdf');
     expect(rows.single['preview_storage_key'], isNull);
     expect(rows.single['sha256'], attachment.sha256);
+    expect(rows.single['source'], 'file_picker');
+  });
+
+  test('records a scanner attachment source', () async {
+    final source = File(p.join(temporaryDirectory.path, 'receipt.jpg'));
+    await source.writeAsBytes(<int>[1, 2, 3], flush: true);
+
+    await stager.stage(
+      projectId: 'project-1',
+      pickedFile: PickedCostAttachment(
+        sourceUri: source.uri,
+        displayName: 'receipt.jpg',
+        reportedByteSize: 3,
+        mediaType: 'image/jpeg',
+        source: LocalAttachmentSource.scanner,
+      ),
+    );
+
+    final rows = await (await database.open()).query(
+      AppDatabase.costAttachmentsTable,
+    );
+    expect(rows.single['source'], 'scanner');
   });
 
   test('failed import removes its database placeholder', () async {

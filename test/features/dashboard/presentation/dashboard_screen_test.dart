@@ -53,6 +53,22 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('opens receipt scanning from project quick actions', (
+    tester,
+  ) async {
+    final project = _project();
+    await tester.pumpWidget(
+      _testApp(project: project, snapshot: _emptySnapshot(project)),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Skanuj paragon'));
+    await tester.tap(find.text('Skanuj paragon'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('receipt-scan:project-1'), findsOneWidget);
+  });
+
   testWidgets('fits populated dashboard at 320 px and opens agenda source', (
     tester,
   ) async {
@@ -117,6 +133,12 @@ Widget _testApp({Project? project, DashboardSnapshot? snapshot}) {
         path: '/projects/:projectId/schedule/:eventId',
         builder: (context, state) =>
             Scaffold(body: Text('source:${state.pathParameters['eventId']}')),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/receipt-scans/new',
+        builder: (context, state) => Scaffold(
+          body: Text('receipt-scan:${state.pathParameters['projectId']}'),
+        ),
       ),
       GoRoute(
         path: '/budget',

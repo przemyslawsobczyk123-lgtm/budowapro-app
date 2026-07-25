@@ -17,6 +17,7 @@ import 'package:budowapro/features/quotes/presentation/quote_comparison_screen.d
 import 'package:budowapro/features/quotes/presentation/quote_details_screen.dart';
 import 'package:budowapro/features/quotes/presentation/quote_form_screen.dart';
 import 'package:budowapro/features/quotes/presentation/quotes_screen.dart';
+import 'package:budowapro/features/receipt_scan/presentation/receipt_scan_screen.dart';
 import 'package:budowapro/features/reports/presentation/budget_report_screen.dart';
 import 'package:budowapro/features/schedule/data/schedule_providers.dart';
 import 'package:budowapro/features/schedule/presentation/schedule_event_details_screen.dart';
@@ -45,6 +46,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/projects/:projectId/costs/new',
         builder: (context, state) =>
             CostFormScreen(projectId: state.pathParameters['projectId']!),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/receipt-scans/new',
+        builder: (context, state) =>
+            ReceiptScanScreen(projectId: state.pathParameters['projectId']!),
       ),
       GoRoute(
         path: '/projects/:projectId/costs/:costEntryId',

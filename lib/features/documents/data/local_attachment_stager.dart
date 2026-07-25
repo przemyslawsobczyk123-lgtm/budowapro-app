@@ -12,12 +12,23 @@ import 'package:sqflite/sqflite.dart';
 typedef LocalAttachmentIdGenerator = String Function();
 typedef LocalAttachmentUtcNow = DateTime Function();
 
+enum LocalAttachmentSource {
+  filePicker('file_picker'),
+  camera('camera'),
+  scanner('scanner');
+
+  const LocalAttachmentSource(this.databaseValue);
+
+  final String databaseValue;
+}
+
 final class PickedLocalAttachment {
   factory PickedLocalAttachment({
     required Uri sourceUri,
     required String displayName,
     required int reportedByteSize,
     String? mediaType,
+    LocalAttachmentSource source = LocalAttachmentSource.filePicker,
   }) {
     if (!sourceUri.isScheme('file')) {
       throw ArgumentError.value(
@@ -42,6 +53,7 @@ final class PickedLocalAttachment {
       ),
       reportedByteSize: reportedByteSize,
       mediaType: _optionalText(mediaType, 'mediaType', maximumLength: 120),
+      source: source,
     );
   }
 
@@ -50,12 +62,14 @@ final class PickedLocalAttachment {
     required this.displayName,
     required this.reportedByteSize,
     required this.mediaType,
+    required this.source,
   });
 
   final Uri sourceUri;
   final String displayName;
   final int reportedByteSize;
   final String? mediaType;
+  final LocalAttachmentSource source;
 }
 
 final class StagedLocalAttachment {
@@ -160,7 +174,7 @@ final class LocalAttachmentStager {
       'media_type': pickedFile.mediaType,
       'byte_size': byteSize,
       'sha256': fileHash,
-      'source': 'file_picker',
+      'source': pickedFile.source.databaseValue,
       'availability': 'importing',
       'imported_at_utc_ms': DatabaseValueCodec.dateTimeToUtcMilliseconds(
         importedAt,
