@@ -4,6 +4,7 @@ import 'package:budowapro/features/costs/domain/money.dart';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 
 import 'receipt_ocr.dart';
+import 'receipt_financial.dart';
 
 enum ReceiptReviewFieldKey { seller, date, documentNumber, total }
 
@@ -15,8 +16,14 @@ enum ReceiptReviewIssue {
   invalidTotal,
   itemRequired,
   itemNameRequired,
+  invalidSeller,
+  invalidDocumentNumber,
+  invalidItemName,
   invalidItemAmount,
+  tooManyItems,
+  itemTotalTooLarge,
   lowConfidenceReviewRequired,
+  vatReviewRequired,
   totalMismatchReviewRequired,
 }
 
@@ -69,6 +76,7 @@ final class ReceiptReviewItem {
     required this.vatRate,
     required this.confidence,
     required this.reviewed,
+    required this.vatReviewed,
   });
 
   final String id;
@@ -77,9 +85,14 @@ final class ReceiptReviewItem {
   final VatRate vatRate;
   final double confidence;
   final bool reviewed;
+  final bool vatReviewed;
 
-  bool get requiresReview =>
+  bool get requiresConfidenceReview =>
       confidence < ReceiptOcrField.reviewThreshold && !reviewed;
+
+  bool get requiresVatReview => !vatReviewed;
+
+  bool get requiresReview => requiresConfidenceReview || requiresVatReview;
 
   ReceiptReviewItem update({
     String? name,
@@ -92,7 +105,8 @@ final class ReceiptReviewItem {
       grossAmountText: grossAmountText ?? this.grossAmountText,
       vatRate: vatRate ?? this.vatRate,
       confidence: 1,
-      reviewed: true,
+      reviewed: name != null || grossAmountText != null ? true : reviewed,
+      vatReviewed: vatRate != null ? true : vatReviewed,
     );
   }
 
@@ -104,6 +118,7 @@ final class ReceiptReviewItem {
       vatRate: vatRate,
       confidence: confidence,
       reviewed: true,
+      vatReviewed: true,
     );
   }
 }
@@ -123,6 +138,7 @@ final class ReceiptReviewDraft {
           vatRate: VatRate.standard23,
           confidence: candidate.confidence,
           reviewed: false,
+          vatReviewed: false,
         ),
       );
     }
@@ -164,8 +180,10 @@ final class ReceiptReviewDraft {
         date.requiresReview ||
         documentNumber.requiresReview ||
         total.requiresReview ||
-        items.any((item) => item.requiresReview);
+        items.any((item) => item.requiresConfidenceReview);
   }
+
+  bool get hasUnreviewedVat => items.any((item) => item.requiresVatReview);
 
   DateTime? get receiptDate => parseReceiptDate(date.value);
 
@@ -195,6 +213,8 @@ final class ReceiptReviewDraft {
     final issues = <ReceiptReviewIssue>{};
     if (seller.value.trim().isEmpty) {
       issues.add(ReceiptReviewIssue.sellerRequired);
+    } else if (!isValidReviewedReceiptSellerName(seller.value)) {
+      issues.add(ReceiptReviewIssue.invalidSeller);
     }
     if (date.value.trim().isEmpty) {
       issues.add(ReceiptReviewIssue.dateRequired);
@@ -209,16 +229,34 @@ final class ReceiptReviewDraft {
     if (items.isEmpty) {
       issues.add(ReceiptReviewIssue.itemRequired);
     }
+    if (items.length > ReviewedReceiptBatch.maximumLines) {
+      issues.add(ReceiptReviewIssue.tooManyItems);
+    }
+    var itemTotal = BigInt.zero;
     for (final item in items) {
       if (item.name.trim().isEmpty) {
         issues.add(ReceiptReviewIssue.itemNameRequired);
+      } else if (!isValidReviewedReceiptLineName(item.name)) {
+        issues.add(ReceiptReviewIssue.invalidItemName);
       }
-      if ((parseReceiptMinorUnits(item.grossAmountText) ?? 0) <= 0) {
+      final itemAmount = parseReceiptMinorUnits(item.grossAmountText);
+      if ((itemAmount ?? 0) <= 0) {
         issues.add(ReceiptReviewIssue.invalidItemAmount);
+      } else {
+        itemTotal += BigInt.from(itemAmount!);
       }
+    }
+    if (itemTotal > BigInt.from(Money.maximumMinorUnits)) {
+      issues.add(ReceiptReviewIssue.itemTotalTooLarge);
+    }
+    if (!isValidReviewedReceiptDocumentNumber(documentNumber.value)) {
+      issues.add(ReceiptReviewIssue.invalidDocumentNumber);
     }
     if (hasUnreviewedConfidence) {
       issues.add(ReceiptReviewIssue.lowConfidenceReviewRequired);
+    }
+    if (hasUnreviewedVat) {
+      issues.add(ReceiptReviewIssue.vatReviewRequired);
     }
     if (hasTotalMismatch && !totalMismatchAccepted) {
       issues.add(ReceiptReviewIssue.totalMismatchReviewRequired);
@@ -298,6 +336,7 @@ final class ReceiptReviewDraft {
       vatRate: vatRate,
       confidence: 1,
       reviewed: true,
+      vatReviewed: false,
     );
     return _copyWith(
       items: <ReceiptReviewItem>[...items, item],
@@ -334,6 +373,10 @@ final class ReceiptReviewDraft {
       vatRate: first.vatRate,
       confidence: 1,
       reviewed: true,
+      vatReviewed:
+          first.vatReviewed &&
+          second.vatReviewed &&
+          first.vatRate == second.vatRate,
     );
     final updated = <ReceiptReviewItem>[
       ...items.take(index),
@@ -361,6 +404,7 @@ final class ReceiptReviewDraft {
       vatRate: source.vatRate,
       confidence: 1,
       reviewed: true,
+      vatReviewed: source.vatReviewed,
     );
     final second = ReceiptReviewItem._(
       id: 'review-item-$_nextItemNumber',
@@ -369,6 +413,7 @@ final class ReceiptReviewDraft {
       vatRate: source.vatRate,
       confidence: 1,
       reviewed: true,
+      vatReviewed: source.vatReviewed,
     );
     return _copyWith(
       items: <ReceiptReviewItem>[

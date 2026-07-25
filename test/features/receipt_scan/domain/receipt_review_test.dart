@@ -1,4 +1,5 @@
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
+import 'package:budowapro/features/costs/domain/money.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_ocr.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_review.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,12 +20,15 @@ void main() {
 
         expect(draft.seller.requiresReview, isFalse);
         expect(draft.date.requiresReview, isTrue);
-        expect(draft.items[0].requiresReview, isFalse);
+        expect(draft.items[0].requiresConfidenceReview, isFalse);
+        expect(draft.items[0].requiresVatReview, isTrue);
+        expect(draft.items[0].requiresReview, isTrue);
         expect(draft.items[1].requiresReview, isTrue);
         expect(draft.canSubmit, isFalse);
 
         final reviewed = draft
             .confirmField(ReceiptReviewFieldKey.date)
+            .confirmItem(draft.items[0].id)
             .confirmItem(draft.items[1].id);
 
         expect(reviewed.hasUnreviewedConfidence, isFalse);
@@ -94,12 +98,13 @@ void main() {
     });
 
     test('total mismatch needs a separate explicit acceptance', () {
-      final draft = ReceiptReviewDraft.fromCandidates(
+      final unreviewed = ReceiptReviewDraft.fromCandidates(
         _candidates(
           total: '70,00',
           itemLines: const <String>['Klej 30,00', 'Grunt 20,00'],
         ),
       );
+      final draft = _confirmAllItems(unreviewed);
 
       expect(draft.hasTotalMismatch, isTrue);
       expect(draft.canSubmit, isFalse);
@@ -113,6 +118,70 @@ void main() {
             .totalMismatchAccepted,
         isFalse,
       );
+    });
+
+    test('requires explicit VAT review even for high-confidence OCR lines', () {
+      final draft = ReceiptReviewDraft.fromCandidates(_candidates());
+
+      expect(draft.hasUnreviewedConfidence, isFalse);
+      expect(draft.hasUnreviewedVat, isTrue);
+      expect(
+        draft.validationIssues,
+        contains(ReceiptReviewIssue.vatReviewRequired),
+      );
+      expect(draft.canSubmit, isFalse);
+
+      final reviewed = _confirmAllItems(draft);
+
+      expect(reviewed.hasUnreviewedVat, isFalse);
+      expect(reviewed.canSubmit, isTrue);
+    });
+
+    test('matches financial text and item count constraints', () {
+      var draft = ReceiptReviewDraft.fromCandidates(_candidates())
+          .updateField(ReceiptReviewFieldKey.seller, '###')
+          .updateField(ReceiptReviewFieldKey.documentNumber, 'D' * 121)
+          .updateItem(
+            'ocr-item-1',
+            name: 'P' * 121,
+            vatRate: VatRate.standard23,
+          )
+          .confirmItem('ocr-item-2');
+      for (var index = draft.items.length; index <= 240; index += 1) {
+        draft = draft.addItem(
+          name: 'Pozycja $index',
+          grossAmountText: '1,00',
+          vatRate: VatRate.standard23,
+        );
+      }
+
+      expect(
+        draft.validationIssues,
+        containsAll(<ReceiptReviewIssue>{
+          ReceiptReviewIssue.invalidSeller,
+          ReceiptReviewIssue.invalidDocumentNumber,
+          ReceiptReviewIssue.invalidItemName,
+          ReceiptReviewIssue.tooManyItems,
+        }),
+      );
+    });
+
+    test('rejects a combined item sum outside the Money range', () {
+      final amount = formatReceiptMinorUnits(Money.maximumMinorUnits);
+      final draft = _confirmAllItems(
+        ReceiptReviewDraft.fromCandidates(
+          _candidates(
+            total: amount,
+            itemLines: <String>['Pierwsza $amount', 'Druga 0,01'],
+          ),
+        ),
+      );
+
+      expect(
+        draft.validationIssues,
+        contains(ReceiptReviewIssue.itemTotalTooLarge),
+      );
+      expect(draft.canSubmit, isFalse);
     });
 
     test('validates required metadata and positive item amounts', () {
@@ -152,6 +221,14 @@ void main() {
       );
     });
   });
+}
+
+ReceiptReviewDraft _confirmAllItems(ReceiptReviewDraft draft) {
+  var reviewed = draft;
+  for (final item in draft.items) {
+    reviewed = reviewed.confirmItem(item.id);
+  }
+  return reviewed;
 }
 
 ReceiptOcrCandidates _candidates({

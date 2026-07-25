@@ -143,6 +143,24 @@ void main() {
     },
   );
 
+  test('never allows the same attachment to be posted twice', () async {
+    await receipts.saveReviewedDrafts(_batch('attachment-1'));
+
+    final duplicate = await receipts.checkDuplicates(_batch('attachment-1'));
+
+    expect(duplicate.reasons, contains(ReceiptDuplicateReason.sameAttachment));
+    await expectLater(
+      receipts.saveReviewedDrafts(
+        _batch('attachment-1'),
+        duplicateAcknowledged: true,
+      ),
+      throwsA(isA<ReceiptDuplicateException>()),
+    );
+    final handle = await database.open();
+    expect(await handle.query(AppDatabase.receiptImportsTable), hasLength(1));
+    expect(await handle.query(AppDatabase.costEntriesTable), hasLength(3));
+  });
+
   test(
     'rolls back header, document and every cost after a line failure',
     () async {

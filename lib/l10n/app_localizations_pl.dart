@@ -2824,4 +2824,121 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get receiptGatewayLoadError =>
       'Nie udało się przygotować lokalnego skanera.';
+
+  @override
+  String get receiptSaveProcessing => 'Zapisywanie szkiców kosztów…';
+
+  @override
+  String get receiptReviewTitle => 'Sprawdź dane przed zapisem';
+
+  @override
+  String get receiptConfidenceNeedsReview =>
+      'Niepewny odczyt. Popraw wartość albo potwierdź ją ręcznie.';
+
+  @override
+  String get receiptConfirmFieldTooltip => 'Potwierdź odczytaną wartość';
+
+  @override
+  String get receiptItemVatNeedsReview =>
+      'OCR nie ustala pewnej stawki VAT. Wybierz stawkę albo potwierdź widoczną wartość.';
+
+  @override
+  String get receiptItemNeedsReview =>
+      'Sprawdź nazwę, kwotę i stawkę VAT, a następnie potwierdź pozycję.';
+
+  @override
+  String get receiptConfirmItemTooltip => 'Potwierdź pozycję i stawkę VAT';
+
+  @override
+  String get receiptItemNameLabel => 'Nazwa pozycji';
+
+  @override
+  String get receiptGrossAmountLabel => 'Kwota brutto';
+
+  @override
+  String get receiptVatRateLabel => 'VAT';
+
+  @override
+  String get receiptAddItemAction => 'Dodaj pozycję';
+
+  @override
+  String get receiptMergeNextTooltip => 'Połącz z następną pozycją';
+
+  @override
+  String get receiptSplitTooltip => 'Podziel pozycję';
+
+  @override
+  String get receiptRemoveItemTooltip => 'Usuń pozycję';
+
+  @override
+  String get receiptSaveDraftsAction => 'Zapisz szkice kosztów';
+
+  @override
+  String get receiptValidationMessage =>
+      'Uzupełnij wymagane pola, popraw kwoty i potwierdź niepewne odczyty.';
+
+  @override
+  String get receiptTotalMismatchTitle => 'Suma pozycji różni się od paragonu';
+
+  @override
+  String get receiptTotalMismatchMessage =>
+      'Sprawdź pozycje i kwotę razem. Zapis z różnicą wymaga osobnego potwierdzenia.';
+
+  @override
+  String get receiptTotalMismatchAction => 'Potwierdzam różnicę';
+
+  @override
+  String get receiptDuplicateTitle => 'Ten paragon może już być zapisany';
+
+  @override
+  String get receiptDuplicateMessage =>
+      'Znaleziono zgodność pliku albo sprzedawcy, daty i sumy. Sprawdź dane przed utworzeniem kolejnych szkiców.';
+
+  @override
+  String get receiptDuplicateFileReason => 'Identyczna zawartość pliku';
+
+  @override
+  String get receiptDuplicateSignatureReason =>
+      'Ten sam sprzedawca, data i suma';
+
+  @override
+  String get receiptDuplicateSameAttachmentReason =>
+      'Ten dokument jest już zapisany';
+
+  @override
+  String get receiptDuplicateAlreadySavedMessage =>
+      'Ten sam dokument został już zapisany. Usuń bieżący skan albo wróć do istniejących szkiców kosztów.';
+
+  @override
+  String get receiptDuplicateContinueAction => 'Zapisz mimo duplikatu';
+
+  @override
+  String get receiptSaveError =>
+      'Nie udało się zapisać szkiców. Dane korekty i skan pozostały w tej sesji.';
+
+  @override
+  String get receiptSavedTitle => 'Szkice kosztów zapisane';
+
+  @override
+  String receiptSavedMessage(int count) {
+    return 'Liczba zapisanych szkiców kosztów: $count. Utworzono też jeden dokument paragonu. Budżet zmieni się dopiero po zatwierdzeniu kosztów.';
+  }
+
+  @override
+  String get receiptOpenDraftsAction => 'Otwórz szkice w budżecie';
+
+  @override
+  String get receiptDoneAction => 'Gotowe';
+
+  @override
+  String get receiptSplitTitle => 'Podziel pozycję';
+
+  @override
+  String get receiptSplitFirstHeading => 'Pierwsza pozycja';
+
+  @override
+  String get receiptSplitSecondHeading => 'Druga pozycja';
+
+  @override
+  String get receiptSplitApplyAction => 'Podziel';
 }

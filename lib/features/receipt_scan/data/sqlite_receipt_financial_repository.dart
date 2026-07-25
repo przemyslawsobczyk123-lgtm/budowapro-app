@@ -53,7 +53,11 @@ final class SqliteReceiptFinancialRepository
   }) {
     return _database.transaction<ReceiptDraftBatchResult>((transaction) async {
       final duplicate = await _checkDuplicates(transaction, batch);
-      if (duplicate.isDuplicate && !duplicateAcknowledged) {
+      final alreadySavedAttachment = duplicate.reasons.contains(
+        ReceiptDuplicateReason.sameAttachment,
+      );
+      if (alreadySavedAttachment ||
+          (duplicate.isDuplicate && !duplicateAcknowledged)) {
         throw ReceiptDuplicateException(duplicate);
       }
       final recordedDuplicateAcknowledgement =

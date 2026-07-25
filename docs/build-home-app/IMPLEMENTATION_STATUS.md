@@ -314,6 +314,33 @@ Last updated: 2026-07-25
 - The package wrappers are community maintained and remain replaceable behind data-layer interfaces. Google Play
   services may download the scanner component on first use; local image/PDF import remains the supported fallback.
 
+### Task 6.2 - reviewed OCR and financial drafts
+
+- ML Kit line confidence is retained through candidate extraction. A non-empty field or item below `0.85` remains
+  blocked until the user edits it or explicitly confirms the OCR value.
+- The review screen supports seller, date, document number, receipt total, item name, gross amount and VAT correction.
+  Users can add, remove, merge and split item lines. Dates and monetary values use strict domain parsers; persisted
+  amounts remain integer minor units.
+- OCR never assigns VAT silently. Every extracted item keeps VAT unreviewed until the user selects `0%`, `8%` or `23%`
+  or explicitly confirms the visible rate. Review validation mirrors financial limits for text length, 240 positions
+  and the combined `Money` range.
+- The item sum must match the receipt total. A mismatch is visible and needs a separate acknowledgement that is reset
+  after any relevant edit.
+- Duplicate checks run before posting and again inside the write transaction. They compare the current attachment,
+  SHA-256 and normalized seller/date/total/currency signature. Hash or signature matches can be saved only after a
+  separate warning action; the same attachment can never be posted twice.
+- Schema `v9` adds project-scoped `receipt_imports` as the durable receipt header and duplicate audit record. One
+  transaction writes that header, receipt document metadata, every `draft` cost, attachment links and append-only cost
+  revisions. Any line failure rolls back the complete batch.
+- OCR-created costs use source `receiptOcr`, lifecycle `draft` and status `planned`. They do not affect actual or planned
+  budget summaries until the existing draft approval flow publishes them.
+- A successful save keeps one shared receipt document and opens the existing filtered drafts view. Save failures retain
+  the corrected data and private source in the current session. No OCR text, seller, amount, hash or private path is
+  logged.
+- Item cards use a lazy sliver list up to the 240-position boundary. Widget coverage includes a 320 px viewport at
+  200% text scaling, low-confidence and VAT confirmation, explicit save, duplicate override, merge refresh and saved
+  state. Repository coverage proves multi-line atomicity, duplicate behavior and rollback.
+
 ## Verified baseline
 
 ```text
@@ -353,7 +380,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-25. The full suite contains 340 passing tests. Debug APK:
+All commands passed on 2026-07-25. The full suite contains 370 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -361,6 +388,7 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 6.2 from `IMPLEMENTATION_PLAN.md`: add field-level confidence, correction,
-duplicate handling and transactional conversion of a reviewed OCR proposal into
-a cost draft. OCR must still never bypass explicit confirmation.
+Task 6.3 from `IMPLEMENTATION_PLAN.md`: implement the project-scoped draft inbox
+for quick photo, document, note, voice, cost, decision and defect capture. Every
+capture remains offline and outside summaries until explicit classification and
+approval.

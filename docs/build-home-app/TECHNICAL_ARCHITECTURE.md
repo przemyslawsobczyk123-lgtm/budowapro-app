@@ -240,6 +240,22 @@ Required behavior:
 - posting cost lines and linking receipt is one database transaction,
 - cancellation leaves no partially posted financial records.
 
+The implemented review boundary uses confidence `0.85`; unknown confidence is
+treated as `0.5`. A retained low-confidence value must be edited or explicitly
+confirmed. VAT is never inferred per item: each OCR line needs an explicit
+rate selection or confirmation. Date and money parsing is strict, text/count
+limits match the financial model, and a receipt/item total mismatch requires a
+separate acknowledgement that is invalidated by later edits.
+
+Schema `v9` adds `receipt_imports`. It stores one project-scoped receipt header,
+the shared attachment, normalized seller/date/total/currency signature and the
+duplicate and total-mismatch acknowledgements. Posting writes the receipt
+header, receipt document metadata, all cost drafts, attachment links and
+append-only revisions in one SQLite transaction. Hash or signature duplicates
+can be overridden explicitly; reusing the same attachment is always blocked.
+OCR entries stay in lifecycle `draft`, so neither planned nor actual summaries
+change before approval.
+
 ## Attachment Storage
 
 Suggested local layout:
@@ -610,7 +626,7 @@ Backup is a user-triggered ZIP with a versioned manifest:
   "format": "budowapro-backup",
   "version": 1,
   "createdAt": "2026-07-25T12:00:00.000Z",
-  "schemaVersion": 8,
+  "schemaVersion": 9,
   "database": "database/budowapro.db",
   "projects": "projects/",
   "checksums": "checksums.json",

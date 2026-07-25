@@ -1,6 +1,6 @@
 # OCR adapter design
 
-Status: Task `6.1` implemented and verified on `2026-07-25`.
+Status: Tasks `6.1` and `6.2` implemented and verified on `2026-07-25`.
 
 ## Objective
 
@@ -8,8 +8,9 @@ BudowaPRO captures one receipt page with the Android document scanner or
 imports one local image/PDF, copies the original into project-private storage,
 creates a bounded preview and runs Latin text recognition on the device.
 
-The result is an untrusted proposal. Task `6.1` does not create or update a
-cost, budget total, report or reusable quick-capture draft.
+The result is an untrusted proposal. It can become cost drafts only after the
+Task `6.2` correction, confidence review, financial validation and explicit
+save flow. It never posts a paid cost or updates a budget total directly.
 
 ## Dependencies
 
@@ -44,8 +45,8 @@ The data layer owns:
 - PDF rasterization,
 - ML Kit conversion to domain text lines.
 
-The presentation layer only renders state and requests `scan`, `import`,
-`retry` or `discard`.
+The presentation layer renders state and requests `scan`, `import`, `retry`,
+`discard`, review edits or an explicit draft save.
 
 ## Lifecycle
 
@@ -68,10 +69,34 @@ is added because the Google scanner uses the Google Play services flow.
 
 OCR text is bounded before it reaches the UI. Candidate extraction does not
 convert values to `Money`, infer VAT truth or affect duplicate detection.
-Confidence and financial validation belong to Task `6.2`.
+Line-level ML Kit confidence is mapped to each retained seller, date, document
+number, total and item candidate.
 
 Imported PDFs are accepted, but Task `6.1` recognizes only the first page.
 The UI states that the result is provisional and not added to the budget.
+
+## Review And Posting Boundary
+
+- confidence below `0.85` blocks save until the value is edited or confirmed,
+- every OCR item requires explicit confirmation or selection of `0%`, `8%` or
+  `23%` VAT; `23%` is never accepted silently,
+- seller, valid date, positive receipt total and at least one valid positive
+  item are required,
+- seller/document/item text limits, 240 positions and aggregate amount bounds
+  are validated before financial batch construction,
+- item lines support add, remove, merge and split,
+- receipt total and item total mismatch requires a separate acknowledgement,
+- duplicate preflight checks attachment ID, SHA-256 and normalized
+  seller/date/total/currency signature,
+- hash and signature duplicates need a separate override; the same attachment
+  is never accepted twice,
+- one SQLite transaction creates `receipt_imports`, document metadata, every
+  cost draft, shared attachment links and append-only revisions,
+- a rollback or save error keeps the reviewed screen and does not expose
+  private OCR content in logs.
+
+Every resulting cost remains lifecycle `draft`, source `receiptOcr` and status
+`planned`. Existing budget summaries exclude it until explicit draft approval.
 
 ## Errors And Fallback
 
@@ -93,7 +118,11 @@ scanner cannot start.
 - adapter tests for cancellation, unsupported scanner and valid output,
 - staging integration test proving `scanner` source and cleanup,
 - gateway tests proving failure rollback and PDF/image OCR preparation,
-- widget tests for idle, processing, result and retryable error at 320 px,
+- widget tests for idle, processing, review, low confidence, VAT, duplicate,
+  lazy 240-line rendering, successful save and retryable error at 320 px,
+  including 200% text scaling,
+- repository tests for atomic multi-line posting, duplicate override,
+  same-attachment rejection and complete rollback,
 - project gate: `flutter analyze`, `flutter test`,
   `flutter build apk --debug`.
 

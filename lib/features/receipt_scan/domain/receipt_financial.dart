@@ -4,6 +4,10 @@ import 'package:budowapro/features/costs/domain/cost_entry.dart';
 import 'package:budowapro/features/costs/domain/money.dart';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 
+const int reviewedReceiptSellerMaximumLength = 160;
+const int reviewedReceiptDocumentNumberMaximumLength = 120;
+const int reviewedReceiptLineNameMaximumLength = 120;
+
 final class ReviewedReceiptLine {
   factory ReviewedReceiptLine({
     required String name,
@@ -19,7 +23,11 @@ final class ReviewedReceiptLine {
       );
     }
     return ReviewedReceiptLine._(
-      name: _requiredText(name, 'name', maximumLength: 120),
+      name: _requiredText(
+        name,
+        'name',
+        maximumLength: reviewedReceiptLineNameMaximumLength,
+      ),
       grossMinorUnits: grossMinorUnits,
       vatRate: vatRate,
     );
@@ -84,7 +92,7 @@ final class ReviewedReceiptBatch {
     final normalizedSeller = _requiredText(
       sellerName,
       'sellerName',
-      maximumLength: 160,
+      maximumLength: reviewedReceiptSellerMaximumLength,
     );
     return ReviewedReceiptBatch._(
       projectId: _requiredText(projectId, 'projectId', maximumLength: 64),
@@ -103,7 +111,7 @@ final class ReviewedReceiptBatch {
       documentNumber: _optionalText(
         documentNumber,
         'documentNumber',
-        maximumLength: 120,
+        maximumLength: reviewedReceiptDocumentNumberMaximumLength,
       ),
       totalGrossMinorUnits: totalGrossMinorUnits,
       currencyCode: currencyCode,
@@ -202,6 +210,46 @@ String normalizeReceiptSellerKey(String sellerName) {
     throw ArgumentError.value(sellerName, 'sellerName');
   }
   return result;
+}
+
+bool isValidReviewedReceiptSellerName(String value) {
+  try {
+    final normalized = _requiredText(
+      value,
+      'sellerName',
+      maximumLength: reviewedReceiptSellerMaximumLength,
+    );
+    normalizeReceiptSellerKey(normalized);
+    return true;
+  } on ArgumentError {
+    return false;
+  }
+}
+
+bool isValidReviewedReceiptDocumentNumber(String value) {
+  try {
+    _optionalText(
+      value,
+      'documentNumber',
+      maximumLength: reviewedReceiptDocumentNumberMaximumLength,
+    );
+    return true;
+  } on ArgumentError {
+    return false;
+  }
+}
+
+bool isValidReviewedReceiptLineName(String value) {
+  try {
+    _requiredText(
+      value,
+      'name',
+      maximumLength: reviewedReceiptLineNameMaximumLength,
+    );
+    return true;
+  } on ArgumentError {
+    return false;
+  }
 }
 
 const Map<String, String> _polishAscii = <String, String>{

@@ -1224,5 +1224,47 @@
   "receiptRecognitionErrorTitle": "Nie udało się odczytać paragonu",
   "receiptRecognitionErrorMessage": "Oryginał jest zachowany w tej sesji. Możesz ponowić odczyt.",
   "receiptPreviewUnavailable": "Podgląd jest niedostępny.",
-  "receiptGatewayLoadError": "Nie udało się przygotować lokalnego skanera."
+  "receiptGatewayLoadError": "Nie udało się przygotować lokalnego skanera.",
+  "receiptSaveProcessing": "Zapisywanie szkiców kosztów…",
+  "receiptReviewTitle": "Sprawdź dane przed zapisem",
+  "receiptConfidenceNeedsReview": "Niepewny odczyt. Popraw wartość albo potwierdź ją ręcznie.",
+  "receiptConfirmFieldTooltip": "Potwierdź odczytaną wartość",
+  "receiptItemVatNeedsReview": "OCR nie ustala pewnej stawki VAT. Wybierz stawkę albo potwierdź widoczną wartość.",
+  "receiptItemNeedsReview": "Sprawdź nazwę, kwotę i stawkę VAT, a następnie potwierdź pozycję.",
+  "receiptConfirmItemTooltip": "Potwierdź pozycję i stawkę VAT",
+  "receiptItemNameLabel": "Nazwa pozycji",
+  "receiptGrossAmountLabel": "Kwota brutto",
+  "receiptVatRateLabel": "VAT",
+  "receiptAddItemAction": "Dodaj pozycję",
+  "receiptMergeNextTooltip": "Połącz z następną pozycją",
+  "receiptSplitTooltip": "Podziel pozycję",
+  "receiptRemoveItemTooltip": "Usuń pozycję",
+  "receiptSaveDraftsAction": "Zapisz szkice kosztów",
+  "receiptValidationMessage": "Uzupełnij wymagane pola, popraw kwoty i potwierdź niepewne odczyty.",
+  "receiptTotalMismatchTitle": "Suma pozycji różni się od paragonu",
+  "receiptTotalMismatchMessage": "Sprawdź pozycje i kwotę razem. Zapis z różnicą wymaga osobnego potwierdzenia.",
+  "receiptTotalMismatchAction": "Potwierdzam różnicę",
+  "receiptDuplicateTitle": "Ten paragon może już być zapisany",
+  "receiptDuplicateMessage": "Znaleziono zgodność pliku albo sprzedawcy, daty i sumy. Sprawdź dane przed utworzeniem kolejnych szkiców.",
+  "receiptDuplicateFileReason": "Identyczna zawartość pliku",
+  "receiptDuplicateSignatureReason": "Ten sam sprzedawca, data i suma",
+  "receiptDuplicateSameAttachmentReason": "Ten dokument jest już zapisany",
+  "receiptDuplicateAlreadySavedMessage": "Ten sam dokument został już zapisany. Usuń bieżący skan albo wróć do istniejących szkiców kosztów.",
+  "receiptDuplicateContinueAction": "Zapisz mimo duplikatu",
+  "receiptSaveError": "Nie udało się zapisać szkiców. Dane korekty i skan pozostały w tej sesji.",
+  "receiptSavedTitle": "Szkice kosztów zapisane",
+  "receiptSavedMessage": "Liczba zapisanych szkiców kosztów: {count}. Utworzono też jeden dokument paragonu. Budżet zmieni się dopiero po zatwierdzeniu kosztów.",
+  "@receiptSavedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "receiptOpenDraftsAction": "Otwórz szkice w budżecie",
+  "receiptDoneAction": "Gotowe",
+  "receiptSplitTitle": "Podziel pozycję",
+  "receiptSplitFirstHeading": "Pierwsza pozycja",
+  "receiptSplitSecondHeading": "Druga pozycja",
+  "receiptSplitApplyAction": "Podziel"
 }

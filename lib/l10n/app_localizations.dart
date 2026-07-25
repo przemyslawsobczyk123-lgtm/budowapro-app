@@ -5223,6 +5223,216 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Nie udało się przygotować lokalnego skanera.'**
   String get receiptGatewayLoadError;
+
+  /// No description provided for @receiptSaveProcessing.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisywanie szkiców kosztów…'**
+  String get receiptSaveProcessing;
+
+  /// No description provided for @receiptReviewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź dane przed zapisem'**
+  String get receiptReviewTitle;
+
+  /// No description provided for @receiptConfidenceNeedsReview.
+  ///
+  /// In pl, this message translates to:
+  /// **'Niepewny odczyt. Popraw wartość albo potwierdź ją ręcznie.'**
+  String get receiptConfidenceNeedsReview;
+
+  /// No description provided for @receiptConfirmFieldTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potwierdź odczytaną wartość'**
+  String get receiptConfirmFieldTooltip;
+
+  /// No description provided for @receiptItemVatNeedsReview.
+  ///
+  /// In pl, this message translates to:
+  /// **'OCR nie ustala pewnej stawki VAT. Wybierz stawkę albo potwierdź widoczną wartość.'**
+  String get receiptItemVatNeedsReview;
+
+  /// No description provided for @receiptItemNeedsReview.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź nazwę, kwotę i stawkę VAT, a następnie potwierdź pozycję.'**
+  String get receiptItemNeedsReview;
+
+  /// No description provided for @receiptConfirmItemTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potwierdź pozycję i stawkę VAT'**
+  String get receiptConfirmItemTooltip;
+
+  /// No description provided for @receiptItemNameLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa pozycji'**
+  String get receiptItemNameLabel;
+
+  /// No description provided for @receiptGrossAmountLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kwota brutto'**
+  String get receiptGrossAmountLabel;
+
+  /// No description provided for @receiptVatRateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'VAT'**
+  String get receiptVatRateLabel;
+
+  /// No description provided for @receiptAddItemAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj pozycję'**
+  String get receiptAddItemAction;
+
+  /// No description provided for @receiptMergeNextTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Połącz z następną pozycją'**
+  String get receiptMergeNextTooltip;
+
+  /// No description provided for @receiptSplitTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podziel pozycję'**
+  String get receiptSplitTooltip;
+
+  /// No description provided for @receiptRemoveItemTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń pozycję'**
+  String get receiptRemoveItemTooltip;
+
+  /// No description provided for @receiptSaveDraftsAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz szkice kosztów'**
+  String get receiptSaveDraftsAction;
+
+  /// No description provided for @receiptValidationMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzupełnij wymagane pola, popraw kwoty i potwierdź niepewne odczyty.'**
+  String get receiptValidationMessage;
+
+  /// No description provided for @receiptTotalMismatchTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Suma pozycji różni się od paragonu'**
+  String get receiptTotalMismatchTitle;
+
+  /// No description provided for @receiptTotalMismatchMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź pozycje i kwotę razem. Zapis z różnicą wymaga osobnego potwierdzenia.'**
+  String get receiptTotalMismatchMessage;
+
+  /// No description provided for @receiptTotalMismatchAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potwierdzam różnicę'**
+  String get receiptTotalMismatchAction;
+
+  /// No description provided for @receiptDuplicateTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ten paragon może już być zapisany'**
+  String get receiptDuplicateTitle;
+
+  /// No description provided for @receiptDuplicateMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Znaleziono zgodność pliku albo sprzedawcy, daty i sumy. Sprawdź dane przed utworzeniem kolejnych szkiców.'**
+  String get receiptDuplicateMessage;
+
+  /// No description provided for @receiptDuplicateFileReason.
+  ///
+  /// In pl, this message translates to:
+  /// **'Identyczna zawartość pliku'**
+  String get receiptDuplicateFileReason;
+
+  /// No description provided for @receiptDuplicateSignatureReason.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ten sam sprzedawca, data i suma'**
+  String get receiptDuplicateSignatureReason;
+
+  /// No description provided for @receiptDuplicateSameAttachmentReason.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ten dokument jest już zapisany'**
+  String get receiptDuplicateSameAttachmentReason;
+
+  /// No description provided for @receiptDuplicateAlreadySavedMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ten sam dokument został już zapisany. Usuń bieżący skan albo wróć do istniejących szkiców kosztów.'**
+  String get receiptDuplicateAlreadySavedMessage;
+
+  /// No description provided for @receiptDuplicateContinueAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz mimo duplikatu'**
+  String get receiptDuplicateContinueAction;
+
+  /// No description provided for @receiptSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać szkiców. Dane korekty i skan pozostały w tej sesji.'**
+  String get receiptSaveError;
+
+  /// No description provided for @receiptSavedTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szkice kosztów zapisane'**
+  String get receiptSavedTitle;
+
+  /// No description provided for @receiptSavedMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Liczba zapisanych szkiców kosztów: {count}. Utworzono też jeden dokument paragonu. Budżet zmieni się dopiero po zatwierdzeniu kosztów.'**
+  String receiptSavedMessage(int count);
+
+  /// No description provided for @receiptOpenDraftsAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwórz szkice w budżecie'**
+  String get receiptOpenDraftsAction;
+
+  /// No description provided for @receiptDoneAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gotowe'**
+  String get receiptDoneAction;
+
+  /// No description provided for @receiptSplitTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podziel pozycję'**
+  String get receiptSplitTitle;
+
+  /// No description provided for @receiptSplitFirstHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pierwsza pozycja'**
+  String get receiptSplitFirstHeading;
+
+  /// No description provided for @receiptSplitSecondHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Druga pozycja'**
+  String get receiptSplitSecondHeading;
+
+  /// No description provided for @receiptSplitApplyAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podziel'**
+  String get receiptSplitApplyAction;
 }
 
 class _AppLocalizationsDelegate
