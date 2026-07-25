@@ -260,6 +260,91 @@ void main() {
     expect(reopened, isTrue);
   });
 
+  test('removes closed SQLite sidecars before a database swap', () async {
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    await appDatabase!.open();
+
+    await appDatabase!.runMaintenance<void>((maintenance) async {
+      for (final suffix in const <String>['-wal', '-shm', '-journal']) {
+        await File(
+          '${maintenance.databaseFile.path}$suffix',
+        ).writeAsString('stale');
+      }
+      await maintenance.deleteSidecarFiles();
+    });
+
+    for (final suffix in const <String>['-wal', '-shm', '-journal']) {
+      expect(await File('$databasePath$suffix').exists(), isFalse);
+    }
+  });
+
+  test('validates a complete read-only restore candidate', () async {
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    await appDatabase!.open();
+    final candidate = File(
+      p.join(temporaryDirectory.path, 'candidate', 'budowapro.db'),
+    );
+    await appDatabase!.runMaintenance<void>(
+      (maintenance) => maintenance.createSnapshot(candidate),
+    );
+
+    final inspection = await appDatabase!.inspectRestoreCandidate(
+      databaseFile: candidate,
+      expectedSchemaVersion: AppDatabase.schemaVersion,
+      expectedProjectCount: 0,
+    );
+
+    expect(inspection.schemaVersion, AppDatabase.schemaVersion);
+    expect(inspection.projectIds, isEmpty);
+    expect(inspection.attachments, isEmpty);
+  });
+
+  test('rejects a candidate with mismatched schema metadata', () async {
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    await appDatabase!.open();
+    final candidate = File(
+      p.join(temporaryDirectory.path, 'candidate', 'budowapro.db'),
+    );
+    await appDatabase!.runMaintenance<void>(
+      (maintenance) => maintenance.createSnapshot(candidate),
+    );
+
+    await expectLater(
+      appDatabase!.inspectRestoreCandidate(
+        databaseFile: candidate,
+        expectedSchemaVersion: AppDatabase.schemaVersion - 1,
+        expectedProjectCount: 0,
+      ),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
+  test('rejects a candidate with an unexpected schema object', () async {
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    await appDatabase!.open();
+    final candidate = File(
+      p.join(temporaryDirectory.path, 'candidate', 'budowapro.db'),
+    );
+    await appDatabase!.runMaintenance<void>(
+      (maintenance) => maintenance.createSnapshot(candidate),
+    );
+    final modified = await databaseFactoryFfi.openDatabase(
+      candidate.path,
+      options: OpenDatabaseOptions(singleInstance: false),
+    );
+    await modified.execute('CREATE TABLE injected_table (value TEXT NOT NULL)');
+    await modified.close();
+
+    await expectLater(
+      appDatabase!.inspectRestoreCandidate(
+        databaseFile: candidate,
+        expectedSchemaVersion: AppDatabase.schemaVersion,
+        expectedProjectCount: 0,
+      ),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
   test('close waits for an in-flight open and closes its handle', () async {
     appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
 

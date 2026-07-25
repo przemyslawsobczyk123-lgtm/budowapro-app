@@ -5,10 +5,13 @@ import 'dart:isolate';
 import 'package:archive/archive_io.dart';
 import 'package:budowapro/core/database/app_database.dart';
 import 'package:budowapro/core/files/project_file_store.dart';
+import 'package:budowapro/core/storage/local_restore_journal.dart';
+import 'package:budowapro/core/storage/storage_capacity_probe.dart';
 import 'package:budowapro/features/backup/domain/backup_models.dart';
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
 
+import 'backup_archive_reader.dart';
 import 'backup_archive_format.dart';
 
 typedef BackupDirectoryProvider = Future<Directory> Function();
@@ -20,6 +23,20 @@ final class LocalBackupArtifact {
   final BackupPreview preview;
 }
 
+final class LocalBackupCandidate {
+  const LocalBackupCandidate({
+    required this.file,
+    required this.preview,
+    required this.inspection,
+    required this.archiveSha256,
+  });
+
+  final File file;
+  final BackupPreview preview;
+  final BackupArchiveInspection inspection;
+  final String archiveSha256;
+}
+
 final class LocalBackupService {
   factory LocalBackupService({
     required AppDatabase database,
@@ -27,6 +44,8 @@ final class LocalBackupService {
     required BackupDirectoryProvider outputDirectoryProvider,
     required DateTime Function() utcNow,
     required String Function() idGenerator,
+    StorageCapacityProbe storageCapacityProbe =
+        const PlatformStorageCapacityProbe(),
   }) {
     return LocalBackupService._(
       database,
@@ -34,6 +53,7 @@ final class LocalBackupService {
       outputDirectoryProvider,
       utcNow,
       idGenerator,
+      storageCapacityProbe,
     );
   }
 
@@ -43,13 +63,17 @@ final class LocalBackupService {
     this._outputDirectoryProvider,
     this._utcNow,
     this._idGenerator,
+    this._storageCapacityProbe,
   );
+
+  static const int restoreSafetyMarginBytes = 64 * 1024 * 1024;
 
   final AppDatabase _database;
   final ProjectFileStore _fileStore;
   final BackupDirectoryProvider _outputDirectoryProvider;
   final DateTime Function() _utcNow;
   final String Function() _idGenerator;
+  final StorageCapacityProbe _storageCapacityProbe;
 
   Future<LocalBackupArtifact> createBackup() async {
     final createdAtUtc = _utcNow().toUtc();
@@ -76,6 +100,11 @@ final class LocalBackupService {
             'SELECT COUNT(*) AS total FROM ${AppDatabase.projectsTable}',
           );
           final projectCount = projectRows.single['total']! as int;
+          if (projectCount > 10000) {
+            throw const FileSystemException(
+              'Project count exceeds the backup limit',
+            );
+          }
           final build = await _buildArchiveInIsolate(
             _ArchiveBuildRequest(
               rootPath: root.path,
@@ -106,6 +135,282 @@ final class LocalBackupService {
       await _deleteDirectoryIfPresent(workDirectory);
     }
   }
+
+  Future<LocalBackupCandidate> inspectBackup(File archiveFile) async {
+    final operationId = _validSegment(_idGenerator(), 'operationId');
+    final candidateDirectory = Directory(
+      p.join(_fileStore.rootDirectory.path, '.budowapro-restore-candidates'),
+    );
+    await candidateDirectory.create(recursive: true);
+    final privateArchive = File(
+      p.join(candidateDirectory.path, 'candidate-$operationId.zip'),
+    );
+    try {
+      final archiveSha256 = await _copyBackupCandidateInIsolate(
+        _CandidateCopyRequest(
+          sourcePath: archiveFile.absolute.path,
+          destinationPath: privateArchive.path,
+        ),
+      );
+      final inspection = await inspectBackupArchive(privateArchive);
+      if (inspection.manifest.schemaVersion != AppDatabase.schemaVersion) {
+        throw const FormatException(
+          'Backup was created by a newer app version',
+        );
+      }
+      final candidateToken = sha256
+          .convert(utf8.encode('$archiveSha256:${inspection.signature}'))
+          .toString();
+      return LocalBackupCandidate(
+        file: privateArchive,
+        preview: _previewFromInspection(
+          inspection,
+          candidateToken: candidateToken,
+        ),
+        inspection: inspection,
+        archiveSha256: archiveSha256,
+      );
+    } on Object catch (error, stackTrace) {
+      await _deleteFileIfPresent(privateArchive);
+      Error.throwWithStackTrace(error, stackTrace);
+    }
+  }
+
+  Future<void> discardCandidate(LocalBackupCandidate candidate) {
+    return _deleteFileIfPresent(candidate.file);
+  }
+
+  Future<BackupPreview> restoreBackup(LocalBackupCandidate candidate) async {
+    final root = _fileStore.rootDirectory;
+    final journal = LocalRestoreJournal(
+      rootDirectory: root,
+      databaseFileName: AppDatabase.databaseFileName,
+    );
+    if (await journal.hasPendingJournal()) {
+      throw const FileSystemException(
+        'An interrupted restore must be recovered on app startup',
+      );
+    }
+    await journal.removeAbandonedStage();
+
+    final currentArchiveSha256 = await _sha256FileInIsolate(candidate.file);
+    if (currentArchiveSha256 != candidate.archiveSha256) {
+      throw const FormatException('Backup changed after it was selected');
+    }
+    final currentInspection = await inspectBackupArchive(candidate.file);
+    if (currentInspection.signature != candidate.inspection.signature) {
+      throw const FormatException('Backup changed after it was selected');
+    }
+    if (currentInspection.manifest.schemaVersion != AppDatabase.schemaVersion) {
+      throw const FormatException('Backup was created by a newer app version');
+    }
+
+    final availableBytes = await _storageCapacityProbe.availableBytes(root);
+    final requiredBytes =
+        currentInspection.manifest.payloadBytes + restoreSafetyMarginBytes;
+    if (availableBytes < requiredBytes) {
+      throw const FileSystemException(
+        'There is not enough free storage to restore this backup',
+      );
+    }
+
+    try {
+      final extractedInspection = await extractBackupArchive(
+        archiveFile: candidate.file,
+        stageDirectory: journal.stageDirectory,
+      );
+      if (extractedInspection.signature != currentInspection.signature) {
+        throw const FormatException('Backup changed during extraction');
+      }
+      final databaseInspection = await _database.inspectRestoreCandidate(
+        databaseFile: journal.stagedDatabase,
+        expectedSchemaVersion: extractedInspection.manifest.schemaVersion,
+        expectedProjectCount: extractedInspection.manifest.projectCount,
+      );
+      await _validateStagedFiles(
+        journal: journal,
+        archive: extractedInspection,
+        database: databaseInspection,
+      );
+
+      await _fileStore.runMaintenance(() {
+        return _database.runMaintenance((maintenance) async {
+          await maintenance.deleteSidecarFiles();
+          await journal.prepare();
+          try {
+            await journal.moveActiveToOld();
+            await journal.promoteStaged();
+            final promotedDatabase = await maintenance.reopen();
+            final quickCheck = await promotedDatabase.rawQuery(
+              'PRAGMA quick_check',
+            );
+            if (quickCheck.isEmpty ||
+                quickCheck.any(
+                  (row) => row.values.length != 1 || row.values.single != 'ok',
+                ) ||
+                (await promotedDatabase.rawQuery(
+                  'PRAGMA foreign_key_check',
+                )).isNotEmpty) {
+              throw const FormatException(
+                'Restored database verification failed',
+              );
+            }
+            await maintenance.close();
+            await journal.markCommitted();
+            try {
+              await journal.finishCommitted();
+            } on FileSystemException {
+              // A committed journal is finalized safely during app startup.
+            }
+          } on Object catch (error, stackTrace) {
+            await maintenance.close();
+            await maintenance.deleteSidecarFiles();
+            await journal.rollback();
+            Error.throwWithStackTrace(error, stackTrace);
+          }
+        });
+      });
+
+      await discardCandidate(candidate);
+      return _previewFromInspection(
+        currentInspection,
+        candidateToken: candidate.preview.candidateToken,
+      );
+    } on Object catch (error, stackTrace) {
+      if (!await journal.hasPendingJournal()) {
+        await journal.removeAbandonedStage();
+      }
+      Error.throwWithStackTrace(error, stackTrace);
+    }
+  }
+}
+
+BackupPreview _previewFromInspection(
+  BackupArchiveInspection inspection, {
+  String? candidateToken,
+}) {
+  final manifest = inspection.manifest;
+  return BackupPreview(
+    createdAt: manifest.createdAtUtc,
+    schemaVersion: manifest.schemaVersion,
+    projectCount: manifest.projectCount,
+    payloadFileCount: manifest.payloadFileCount,
+    payloadBytes: manifest.payloadBytes,
+    candidateToken: candidateToken ?? inspection.signature,
+  );
+}
+
+Future<String> _copyBackupCandidateInIsolate(_CandidateCopyRequest request) {
+  return Isolate.run(() => _copyBackupCandidate(request));
+}
+
+Future<String> _copyBackupCandidate(_CandidateCopyRequest request) async {
+  final sourceType = await FileSystemEntity.type(
+    request.sourcePath,
+    followLinks: false,
+  );
+  if (sourceType != FileSystemEntityType.file) {
+    throw const FormatException('Backup must be a regular file');
+  }
+  final source = File(request.sourcePath);
+  final sourceLength = await source.length();
+  if (sourceLength < 22 || sourceLength > maximumBackupArchiveBytes) {
+    throw const FormatException('Backup archive size is unsupported');
+  }
+
+  final destination = File(request.destinationPath);
+  await destination.create(exclusive: true);
+  final sink = destination.openWrite(mode: FileMode.writeOnly);
+  var copiedBytes = 0;
+  try {
+    await for (final chunk in source.openRead()) {
+      copiedBytes += chunk.length;
+      if (copiedBytes > maximumBackupArchiveBytes) {
+        throw const FormatException('Backup archive size is unsupported');
+      }
+      sink.add(chunk);
+    }
+    await sink.flush();
+  } on Object catch (error, stackTrace) {
+    await sink.close();
+    await _deleteFileIfPresent(destination);
+    Error.throwWithStackTrace(error, stackTrace);
+  }
+  await sink.close();
+  if (copiedBytes != sourceLength ||
+      await destination.length() != sourceLength) {
+    await _deleteFileIfPresent(destination);
+    throw const FormatException('Backup changed while it was being copied');
+  }
+  final digest = await sha256.bind(destination.openRead()).first;
+  return digest.toString();
+}
+
+Future<String> _sha256FileInIsolate(File file) {
+  final path = file.absolute.path;
+  return Isolate.run(() async {
+    final digest = await sha256.bind(File(path).openRead()).first;
+    return digest.toString();
+  });
+}
+
+Future<void> _validateStagedFiles({
+  required LocalRestoreJournal journal,
+  required BackupArchiveInspection archive,
+  required DatabaseRestoreInspection database,
+}) async {
+  if (database.schemaVersion != archive.manifest.schemaVersion ||
+      database.projectIds.length != archive.manifest.projectCount ||
+      !database.projectIds.containsAll(archive.projectIds)) {
+    throw const FormatException(
+      'Backup project data does not match its manifest',
+    );
+  }
+
+  final checksums = <String, BackupChecksumEntry>{
+    for (final entry in archive.checksums.entries) entry.path: entry,
+  };
+  for (final attachment in database.attachments) {
+    final originalPath = p.posix.join(
+      'projects',
+      attachment.projectId,
+      ProjectFileArea.originals.directoryName,
+      attachment.originalStorageKey,
+    );
+    final original = checksums[originalPath];
+    if (attachment.isAvailable) {
+      if (original == null ||
+          original.byteSize != attachment.byteSize ||
+          (attachment.sha256 != null && attachment.sha256 != original.sha256)) {
+        throw const FormatException(
+          'Backup is missing an available attachment',
+        );
+      }
+    }
+
+    final previewKey = attachment.previewStorageKey;
+    if (previewKey != null) {
+      final previewPath = p.posix.join(
+        'projects',
+        attachment.projectId,
+        ProjectFileArea.previews.directoryName,
+        previewKey,
+      );
+      if (!checksums.containsKey(previewPath)) {
+        throw const FormatException('Backup is missing an attachment preview');
+      }
+    }
+  }
+
+  final stagedProjectsType = await FileSystemEntity.type(
+    journal.stagedProjects.path,
+    followLinks: false,
+  );
+  if (stagedProjectsType == FileSystemEntityType.notFound) {
+    await journal.stagedProjects.create(recursive: true);
+  } else if (stagedProjectsType != FileSystemEntityType.directory) {
+    throw const FormatException('Staged project storage is invalid');
+  }
 }
 
 Future<_ArchiveBuildResult> _buildArchiveInIsolate(
@@ -122,9 +427,15 @@ Future<_ArchiveBuildResult> _buildArchive(_ArchiveBuildRequest request) async {
   final checksumEntries = <BackupChecksumEntry>[];
   var payloadBytes = 0;
   final paths = payload.keys.toList(growable: false)..sort();
+  if (paths.length + 2 > maximumBackupEntryCount) {
+    throw const FileSystemException('Backup contains too many files');
+  }
   for (final archivePath in paths) {
     final file = payload[archivePath]!;
     final byteSize = await file.length();
+    if (byteSize > maximumBackupEntryBytes) {
+      throw const FileSystemException('Backup file exceeds the size limit');
+    }
     final digest = await sha256.bind(file.openRead()).first;
     checksumEntries.add(
       BackupChecksumEntry(
@@ -134,6 +445,9 @@ Future<_ArchiveBuildResult> _buildArchive(_ArchiveBuildRequest request) async {
       ),
     );
     payloadBytes += byteSize;
+    if (payloadBytes > maximumBackupPayloadBytes) {
+      throw const FileSystemException('Backup payload exceeds the size limit');
+    }
   }
 
   final manifest = BackupManifest(
@@ -168,6 +482,9 @@ Future<_ArchiveBuildResult> _buildArchive(_ArchiveBuildRequest request) async {
   } finally {
     await encoder.close();
   }
+  if (await File(request.outputPath).length() > maximumBackupArchiveBytes) {
+    throw const FileSystemException('Backup archive exceeds the size limit');
+  }
   return _ArchiveBuildResult(
     payloadFileCount: payload.length,
     payloadBytes: payloadBytes,
@@ -192,6 +509,16 @@ final class _ArchiveBuildRequest {
   final String createdAtIso;
   final int schemaVersion;
   final int projectCount;
+}
+
+final class _CandidateCopyRequest {
+  const _CandidateCopyRequest({
+    required this.sourcePath,
+    required this.destinationPath,
+  });
+
+  final String sourcePath;
+  final String destinationPath;
 }
 
 Future<Map<String, File>> _projectPayload(Directory projectsRoot) async {

@@ -2375,4 +2375,116 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get budgetReportEmptyCostsMessage =>
       'Dodaj zatwierdzony koszt, aby zobaczyć strukturę wydatków.';
+
+  @override
+  String get backupTitle => 'Kopia zapasowa i dane';
+
+  @override
+  String get backupScopeHeading => 'Wszystkie dane w jednym pliku';
+
+  @override
+  String get backupScopeDescription =>
+      'Kopia obejmuje projekty, koszty, etapy, harmonogram, kontakty, dokumenty, zdjęcia i pozostałe pliki.';
+
+  @override
+  String get backupLocalOnlyDescription =>
+      'Dane pozostają lokalne. Po utworzeniu kopii wybierzesz miejsce zapisu w systemowym panelu telefonu.';
+
+  @override
+  String get backupCreateHeading => 'Utwórz kopię';
+
+  @override
+  String get backupCreateDescription =>
+      'Zapisz aktualny stan aplikacji przed ważną zmianą, remontem urządzenia lub odtworzeniem starszej kopii.';
+
+  @override
+  String get backupCreateAction => 'Utwórz i zapisz kopię';
+
+  @override
+  String get backupCreating => 'Tworzenie i sprawdzanie kopii…';
+
+  @override
+  String get backupCreateSuccess => 'Kopia została utworzona.';
+
+  @override
+  String get backupCreateError =>
+      'Nie udało się utworzyć kopii. Dane w aplikacji nie zostały zmienione.';
+
+  @override
+  String get backupRestoreHeading => 'Odtwórz dane';
+
+  @override
+  String get backupRestoreDescription =>
+      'Najpierw sprawdzimy format, sumy kontrolne, bazę danych i wymagane miejsce. Aktualne dane zostaną zastąpione dopiero po potwierdzeniu.';
+
+  @override
+  String get backupPickAction => 'Wybierz plik ZIP';
+
+  @override
+  String get backupInspecting => 'Sprawdzanie wybranej kopii…';
+
+  @override
+  String get backupInspectError =>
+      'Nie można użyć tego pliku. Kopia jest uszkodzona, nieobsługiwana albo nie pochodzi z BudowaPRO.';
+
+  @override
+  String get backupCandidateHeading => 'Wybrana kopia';
+
+  @override
+  String get backupCreatedLabel => 'Utworzono';
+
+  @override
+  String get backupSchemaLabel => 'Wersja danych';
+
+  @override
+  String get backupProjectsLabel => 'Projekty';
+
+  @override
+  String get backupFilesLabel => 'Pliki';
+
+  @override
+  String get backupSizeLabel => 'Rozmiar danych';
+
+  @override
+  String get backupRestoreAction => 'Odtwórz tę kopię';
+
+  @override
+  String get backupRestoreConfirmTitle => 'Zastąpić wszystkie dane?';
+
+  @override
+  String get backupRestoreConfirmMessage =>
+      'Aktualne projekty, koszty, dokumenty i zdjęcia zostaną zastąpione zawartością wybranej kopii. Tej operacji nie można cofnąć bez innej kopii zapasowej.';
+
+  @override
+  String get backupRestoreConfirmAction => 'Zastąp dane';
+
+  @override
+  String get backupRestoring => 'Odtwarzanie i końcowe sprawdzanie danych…';
+
+  @override
+  String get backupRestoreSuccess => 'Dane zostały bezpiecznie odtworzone.';
+
+  @override
+  String get backupRestoreError =>
+      'Nie udało się odtworzyć kopii. Poprzednie dane zostały zachowane.';
+
+  @override
+  String backupBytesValue(String value) {
+    return '$value B';
+  }
+
+  @override
+  String backupKilobytesValue(String value) {
+    return '$value KB';
+  }
+
+  @override
+  String backupMegabytesValue(String value) {
+    return '$value MB';
+  }
+
+  @override
+  String backupGigabytesValue(String value) {
+    return '$value GB';
+  }
 }

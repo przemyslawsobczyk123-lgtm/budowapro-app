@@ -4479,6 +4479,198 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Dodaj zatwierdzony koszt, aby zobaczyć strukturę wydatków.'**
   String get budgetReportEmptyCostsMessage;
+
+  /// No description provided for @backupTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kopia zapasowa i dane'**
+  String get backupTitle;
+
+  /// No description provided for @backupScopeHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie dane w jednym pliku'**
+  String get backupScopeHeading;
+
+  /// No description provided for @backupScopeDescription.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kopia obejmuje projekty, koszty, etapy, harmonogram, kontakty, dokumenty, zdjęcia i pozostałe pliki.'**
+  String get backupScopeDescription;
+
+  /// No description provided for @backupLocalOnlyDescription.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dane pozostają lokalne. Po utworzeniu kopii wybierzesz miejsce zapisu w systemowym panelu telefonu.'**
+  String get backupLocalOnlyDescription;
+
+  /// No description provided for @backupCreateHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utwórz kopię'**
+  String get backupCreateHeading;
+
+  /// No description provided for @backupCreateDescription.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz aktualny stan aplikacji przed ważną zmianą, remontem urządzenia lub odtworzeniem starszej kopii.'**
+  String get backupCreateDescription;
+
+  /// No description provided for @backupCreateAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utwórz i zapisz kopię'**
+  String get backupCreateAction;
+
+  /// No description provided for @backupCreating.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tworzenie i sprawdzanie kopii…'**
+  String get backupCreating;
+
+  /// No description provided for @backupCreateSuccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kopia została utworzona.'**
+  String get backupCreateSuccess;
+
+  /// No description provided for @backupCreateError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się utworzyć kopii. Dane w aplikacji nie zostały zmienione.'**
+  String get backupCreateError;
+
+  /// No description provided for @backupRestoreHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odtwórz dane'**
+  String get backupRestoreHeading;
+
+  /// No description provided for @backupRestoreDescription.
+  ///
+  /// In pl, this message translates to:
+  /// **'Najpierw sprawdzimy format, sumy kontrolne, bazę danych i wymagane miejsce. Aktualne dane zostaną zastąpione dopiero po potwierdzeniu.'**
+  String get backupRestoreDescription;
+
+  /// No description provided for @backupPickAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz plik ZIP'**
+  String get backupPickAction;
+
+  /// No description provided for @backupInspecting.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdzanie wybranej kopii…'**
+  String get backupInspecting;
+
+  /// No description provided for @backupInspectError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie można użyć tego pliku. Kopia jest uszkodzona, nieobsługiwana albo nie pochodzi z BudowaPRO.'**
+  String get backupInspectError;
+
+  /// No description provided for @backupCandidateHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybrana kopia'**
+  String get backupCandidateHeading;
+
+  /// No description provided for @backupCreatedLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utworzono'**
+  String get backupCreatedLabel;
+
+  /// No description provided for @backupSchemaLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wersja danych'**
+  String get backupSchemaLabel;
+
+  /// No description provided for @backupProjectsLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Projekty'**
+  String get backupProjectsLabel;
+
+  /// No description provided for @backupFilesLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pliki'**
+  String get backupFilesLabel;
+
+  /// No description provided for @backupSizeLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozmiar danych'**
+  String get backupSizeLabel;
+
+  /// No description provided for @backupRestoreAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odtwórz tę kopię'**
+  String get backupRestoreAction;
+
+  /// No description provided for @backupRestoreConfirmTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zastąpić wszystkie dane?'**
+  String get backupRestoreConfirmTitle;
+
+  /// No description provided for @backupRestoreConfirmMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Aktualne projekty, koszty, dokumenty i zdjęcia zostaną zastąpione zawartością wybranej kopii. Tej operacji nie można cofnąć bez innej kopii zapasowej.'**
+  String get backupRestoreConfirmMessage;
+
+  /// No description provided for @backupRestoreConfirmAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zastąp dane'**
+  String get backupRestoreConfirmAction;
+
+  /// No description provided for @backupRestoring.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odtwarzanie i końcowe sprawdzanie danych…'**
+  String get backupRestoring;
+
+  /// No description provided for @backupRestoreSuccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dane zostały bezpiecznie odtworzone.'**
+  String get backupRestoreSuccess;
+
+  /// No description provided for @backupRestoreError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się odtworzyć kopii. Poprzednie dane zostały zachowane.'**
+  String get backupRestoreError;
+
+  /// No description provided for @backupBytesValue.
+  ///
+  /// In pl, this message translates to:
+  /// **'{value} B'**
+  String backupBytesValue(String value);
+
+  /// No description provided for @backupKilobytesValue.
+  ///
+  /// In pl, this message translates to:
+  /// **'{value} KB'**
+  String backupKilobytesValue(String value);
+
+  /// No description provided for @backupMegabytesValue.
+  ///
+  /// In pl, this message translates to:
+  /// **'{value} MB'**
+  String backupMegabytesValue(String value);
+
+  /// No description provided for @backupGigabytesValue.
+  ///
+  /// In pl, this message translates to:
+  /// **'{value} GB'**
+  String backupGigabytesValue(String value);
 }
 
 class _AppLocalizationsDelegate

@@ -1,3 +1,4 @@
+import 'package:budowapro/features/backup/presentation/backup_screen.dart';
 import 'package:budowapro/features/costs/presentation/cost_budget_screen.dart';
 import 'package:budowapro/features/costs/presentation/cost_details_screen.dart';
 import 'package:budowapro/features/costs/presentation/cost_form_screen.dart';
@@ -112,6 +113,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/reports',
         builder: (context, state) => const BudgetReportScreen(),
+      ),
+      GoRoute(
+        path: '/backup',
+        builder: (context, state) => const BackupScreen(),
       ),
       GoRoute(
         path: '/projects/:projectId/quotes/new',

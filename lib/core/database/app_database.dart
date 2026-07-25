@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:budowapro/core/storage/local_restore_journal.dart';
+import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -43,6 +46,31 @@ final class AppDatabase {
   static const String documentMetadataTable = 'document_metadata';
   static const String documentContextLinksTable = 'document_context_links';
   static const String schemaVersionKey = 'schema_version';
+  static const Set<String> requiredTableNames = <String>{
+    metadataTable,
+    projectsTable,
+    costEntriesTable,
+    costAttachmentsTable,
+    costEntryAttachmentsTable,
+    costEntryRevisionsTable,
+    costCorrectionsTable,
+    projectStagesTable,
+    checklistItemsTable,
+    checklistItemAttachmentsTable,
+    scheduleEventsTable,
+    scheduleDependenciesTable,
+    scheduleDateChangesTable,
+    reminderPreferencesTable,
+    contactsTable,
+    contactRolesTable,
+    contactStageAssignmentsTable,
+    siteVisitsTable,
+    contractorQuotesTable,
+    quoteScopeLinesTable,
+    quoteAttachmentsTable,
+    documentMetadataTable,
+    documentContextLinksTable,
+  };
 
   final DatabaseFactory _factory;
   final String _path;
@@ -55,6 +83,11 @@ final class AppDatabase {
   static Future<AppDatabase> onDevice() async {
     final supportDirectory = await getApplicationSupportDirectory();
     await supportDirectory.create(recursive: true);
+    await LocalRestoreJournal.recover(
+      rootDirectory: supportDirectory,
+      databaseFileName: databaseFileName,
+      validateCommitted: _validateRecoveredDatabase,
+    );
     return AppDatabase(
       factory: databaseFactory,
       path: p.join(supportDirectory.path, databaseFileName),
@@ -126,6 +159,150 @@ final class AppDatabase {
   ) async {
     final database = await open();
     return database.transaction(action);
+  }
+
+  Future<DatabaseRestoreInspection> inspectRestoreCandidate({
+    required File databaseFile,
+    required int expectedSchemaVersion,
+    required int expectedProjectCount,
+  }) async {
+    if (expectedSchemaVersion != schemaVersion ||
+        expectedProjectCount < 0 ||
+        expectedProjectCount > 10000) {
+      throw const FormatException('Unsupported backup database version');
+    }
+    final candidate = await _factory.openDatabase(
+      databaseFile.path,
+      options: OpenDatabaseOptions(readOnly: true, singleInstance: false),
+    );
+    try {
+      final actualVersion = await candidate.getVersion();
+      if (actualVersion != expectedSchemaVersion) {
+        throw const FormatException('Backup database version does not match');
+      }
+
+      final integrityRows = await candidate.rawQuery('PRAGMA integrity_check');
+      if (integrityRows.isEmpty ||
+          integrityRows.any(
+            (row) => row.values.length != 1 || row.values.single != 'ok',
+          )) {
+        throw const FormatException('Backup database integrity check failed');
+      }
+      if ((await candidate.rawQuery('PRAGMA foreign_key_check')).isNotEmpty) {
+        throw const FormatException('Backup database has broken references');
+      }
+
+      final expectedFingerprint = await _createExpectedSchemaFingerprint(
+        databaseFile,
+      );
+      final candidateFingerprint = await _schemaFingerprint(candidate);
+      if (candidateFingerprint != expectedFingerprint) {
+        throw const FormatException('Backup database schema does not match');
+      }
+
+      final metadataRows = await candidate.query(
+        metadataTable,
+        columns: const <String>['value'],
+        where: 'key = ?',
+        whereArgs: const <Object?>[schemaVersionKey],
+        limit: 1,
+      );
+      if (metadataRows.length != 1 ||
+          metadataRows.single['value'] != expectedSchemaVersion.toString()) {
+        throw const FormatException('Backup schema metadata does not match');
+      }
+
+      final projectCountRows = await candidate.rawQuery(
+        'SELECT COUNT(*) AS total FROM $projectsTable',
+      );
+      final actualProjectCount = projectCountRows.single['total'];
+      if (actualProjectCount is! int ||
+          actualProjectCount != expectedProjectCount) {
+        throw const FormatException('Backup project count does not match');
+      }
+      final projectRows = await candidate.query(
+        projectsTable,
+        columns: const <String>['id'],
+        orderBy: 'id ASC',
+      );
+      final projectIds = <String>{};
+      for (final row in projectRows) {
+        final projectId = row['id'];
+        if (projectId is! String || !_isSafePathSegment(projectId)) {
+          throw const FormatException('Backup contains an invalid project id');
+        }
+        projectIds.add(projectId);
+      }
+
+      final attachmentCountRows = await candidate.rawQuery(
+        'SELECT COUNT(*) AS total FROM $costAttachmentsTable',
+      );
+      final attachmentCount = attachmentCountRows.single['total'];
+      if (attachmentCount is! int || attachmentCount > 50000) {
+        throw const FormatException('Backup contains too many attachments');
+      }
+      final attachments = <DatabaseRestoreAttachment>[];
+      const pageSize = 1000;
+      for (var offset = 0; offset < attachmentCount; offset += pageSize) {
+        final attachmentRows = await candidate.query(
+          costAttachmentsTable,
+          columns: const <String>[
+            'project_id',
+            'original_storage_key',
+            'preview_storage_key',
+            'byte_size',
+            'sha256',
+            'availability',
+          ],
+          orderBy: 'project_id ASC, id ASC',
+          limit: pageSize,
+          offset: offset,
+        );
+        for (final row in attachmentRows) {
+          final projectId = row['project_id'];
+          final originalStorageKey = row['original_storage_key'];
+          final previewStorageKey = row['preview_storage_key'];
+          final byteSize = row['byte_size'];
+          final checksum = row['sha256'];
+          final availability = row['availability'];
+          if (projectId is! String ||
+              !projectIds.contains(projectId) ||
+              originalStorageKey is! String ||
+              !_isSafePathSegment(originalStorageKey) ||
+              (previewStorageKey != null &&
+                  (previewStorageKey is! String ||
+                      !_isSafePathSegment(previewStorageKey))) ||
+              byteSize is! int ||
+              byteSize < 0 ||
+              (checksum != null &&
+                  (checksum is! String ||
+                      !RegExp(r'^[a-f0-9]{64}$').hasMatch(checksum))) ||
+              availability is! String) {
+            throw const FormatException(
+              'Backup contains invalid attachment metadata',
+            );
+          }
+          attachments.add(
+            DatabaseRestoreAttachment(
+              projectId: projectId,
+              originalStorageKey: originalStorageKey,
+              previewStorageKey: previewStorageKey as String?,
+              byteSize: byteSize,
+              sha256: checksum as String?,
+              isAvailable: availability == 'available',
+            ),
+          );
+        }
+      }
+
+      return DatabaseRestoreInspection(
+        schemaVersion: actualVersion,
+        projectIds: projectIds,
+        attachments: attachments,
+      );
+    } finally {
+      await candidate.close();
+    }
   }
 
   Future<String?> readMetadata(String key) async {
@@ -1098,12 +1275,74 @@ final class AppDatabase {
       }, conflictAlgorithm: ConflictAlgorithm.replace);
     }
   }
+
+  static bool _isSafePathSegment(String value) {
+    return value.isNotEmpty &&
+        value != '.' &&
+        value != '..' &&
+        !value.contains('/') &&
+        !value.contains(r'\') &&
+        !value.contains('\u0000') &&
+        !p.posix.isAbsolute(value) &&
+        !p.windows.isAbsolute(value);
+  }
+
+  static Future<bool> _validateRecoveredDatabase(
+    File databaseFile,
+    Directory projects,
+  ) async {
+    Database? candidate;
+    try {
+      candidate = await databaseFactory.openDatabase(
+        databaseFile.path,
+        options: OpenDatabaseOptions(readOnly: true, singleInstance: false),
+      );
+      if (await candidate.getVersion() != schemaVersion) return false;
+      final quickCheck = await candidate.rawQuery('PRAGMA quick_check');
+      if (quickCheck.isEmpty ||
+          quickCheck.any(
+            (row) => row.values.length != 1 || row.values.single != 'ok',
+          )) {
+        return false;
+      }
+      return (await candidate.rawQuery('PRAGMA foreign_key_check')).isEmpty;
+    } on Object {
+      return false;
+    } finally {
+      await candidate?.close();
+    }
+  }
+
+  Future<String> _createExpectedSchemaFingerprint(File candidateFile) async {
+    final referencePath = '${candidateFile.path}.schema-reference';
+    final reference = AppDatabase(factory: _factory, path: referencePath);
+    try {
+      final database = await reference.open();
+      return await _schemaFingerprint(database);
+    } finally {
+      await reference.close();
+      await _factory.deleteDatabase(referencePath);
+    }
+  }
+
+  static Future<String> _schemaFingerprint(Database database) async {
+    final rows = await database.rawQuery('''
+      SELECT type, name, tbl_name, sql
+      FROM sqlite_master
+      WHERE type IN ('table', 'index', 'trigger', 'view')
+        AND name NOT LIKE 'sqlite_%'
+      ORDER BY type ASC, name ASC
+    ''');
+    return sha256.convert(utf8.encode(jsonEncode(rows))).toString();
+  }
 }
 
 abstract interface class AppDatabaseMaintenance {
   File get databaseFile;
 
   Future<void> createSnapshot(File destination);
+
+  Future<void> deleteSidecarFiles();
 
   Future<void> close();
 
@@ -1136,8 +1375,57 @@ final class _AppDatabaseMaintenance implements AppDatabaseMaintenance {
   }
 
   @override
+  Future<void> deleteSidecarFiles() async {
+    for (final suffix in const <String>['-wal', '-shm', '-journal']) {
+      final sidecar = File('${databaseFile.path}$suffix');
+      final type = await FileSystemEntity.type(
+        sidecar.path,
+        followLinks: false,
+      );
+      if (type == FileSystemEntityType.notFound) continue;
+      if (type != FileSystemEntityType.file) {
+        throw const FileSystemException(
+          'Database sidecar path is not a regular file',
+        );
+      }
+      await sidecar.delete();
+    }
+  }
+
+  @override
   Future<void> close() => _owner._closeWithoutMaintenanceWait();
 
   @override
   Future<Database> reopen() => _owner._openWithoutMaintenanceWait();
+}
+
+final class DatabaseRestoreInspection {
+  DatabaseRestoreInspection({
+    required this.schemaVersion,
+    required Set<String> projectIds,
+    required List<DatabaseRestoreAttachment> attachments,
+  }) : projectIds = Set<String>.unmodifiable(projectIds),
+       attachments = List<DatabaseRestoreAttachment>.unmodifiable(attachments);
+
+  final int schemaVersion;
+  final Set<String> projectIds;
+  final List<DatabaseRestoreAttachment> attachments;
+}
+
+final class DatabaseRestoreAttachment {
+  const DatabaseRestoreAttachment({
+    required this.projectId,
+    required this.originalStorageKey,
+    required this.previewStorageKey,
+    required this.byteSize,
+    required this.sha256,
+    required this.isAvailable,
+  });
+
+  final String projectId;
+  final String originalStorageKey;
+  final String? previewStorageKey;
+  final int byteSize;
+  final String? sha256;
+  final bool isAvailable;
 }

@@ -252,6 +252,31 @@ Last updated: 2026-07-21
   includes exact `IS NULL` handling for rows without stage, category or supplier assignment.
 - The More branch exposes the report without adding a sixth primary navigation destination.
 
+### Task 5.2 - CSV export and local backup
+
+- The cost register exports the exact active SQL filters and user-selected columns to semicolon CSV with UTF-8 BOM.
+  Export pages are streamed, effective gross includes corrections, and user-authored cells are neutralized against
+  spreadsheet formula injection before the Android share panel opens.
+- Backup format `budowapro-backup` version `1` contains a consistent `VACUUM INTO` snapshot at
+  `database/budowapro.db`, project originals/previews/exports, an exact manifest and SHA-256 catalog. Hashing,
+  ZIP creation, inspection and extraction run outside the UI isolate.
+- Restore copies a selected ZIP into private storage once, verifies its full hash, preflights the central directory
+  and rejects duplicate, encrypted, symbolic-link, traversal, unknown-compression and oversized entries. Extraction
+  writes only allowlisted paths through byte-bounded streams and verifies every payload hash.
+- Candidate SQLite validation requires the current schema version, exact schema fingerprint from a clean reference
+  database, integrity, foreign keys, bounded project/attachment counts and safe attachment storage keys. Available
+  attachment files must agree with both database sizes/hashes and the ZIP catalog.
+- Android `StatFs` checks free application storage before extraction. Active SQLite and project files are swapped
+  only under maintenance after staging passes. A checksummed two-slot journal retains old data through promotion,
+  rolls back interrupted/corrupt states at startup and finalizes committed data only after another database check.
+- The More branch opens the compact `Kopia zapasowa i dane` screen. It explains full local scope, opens system save
+  and file-pick panels only on user action, previews date/version/project/file/size metadata and requires a separate
+  destructive confirmation before restore. Loading, success and private error states fit a 320 px viewport.
+- E2E-07 creates a project cost linked to a hashed image, backs it up, mutates database/file/external ZIP state and
+  restores the original project, exact financial total, relation and attachment. Corrupt checksum, traversal,
+  duplicate path, encrypted flag, excessive entry count, low-storage and interrupted-journal fixtures are rejected
+  without replacing active data.
+
 ## Verified baseline
 
 ```text
@@ -270,6 +295,7 @@ url_launcher 6.3.2
 pdfrx 2.4.7
 image 4.9.1
 crypto 3.0.7
+archive 4.0.9
 share_plus 12.0.2
 ```
 
@@ -286,7 +312,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-21 with 272 tests. Debug APK:
+All commands passed on 2026-07-25. The full suite contains 298 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -294,10 +320,5 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 5.2 from `IMPLEMENTATION_PLAN.md`:
-
-1. Export the actively filtered cost register to a local CSV file.
-2. Build a versioned ZIP backup with a manifest, checksums and project attachments.
-3. Restore only through a validated temporary directory and reject path traversal.
-4. Keep export and backup work outside the UI isolate and avoid logging private paths or content.
-5. Cover E2E-07 with attachments and a corrupt-backup rejection fixture.
+Task 6.1 from `IMPLEMENTATION_PLAN.md`: add the scanner/OCR adapter, preserve review-required drafts and keep OCR
+output outside financial truth until explicit user confirmation.

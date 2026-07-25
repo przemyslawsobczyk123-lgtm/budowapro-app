@@ -1,11 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:archive/archive_io.dart';
 import 'package:budowapro/core/database/app_database.dart';
 import 'package:budowapro/core/files/project_file_store.dart';
+import 'package:budowapro/core/storage/local_restore_journal.dart';
+import 'package:budowapro/core/storage/storage_capacity_probe.dart';
+import 'package:budowapro/features/costs/data/sqlite_cost_repository.dart';
+import 'package:budowapro/features/costs/domain/cost_entry.dart';
+import 'package:budowapro/features/costs/domain/cost_repository.dart';
+import 'package:budowapro/features/costs/domain/money.dart';
+import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
+import 'package:budowapro/features/backup/data/backup_archive_reader.dart';
 import 'package:budowapro/features/backup/data/backup_archive_format.dart';
 import 'package:budowapro/features/backup/data/local_backup_service.dart';
+import 'package:budowapro/features/documents/data/local_attachment_stager.dart';
 import 'package:budowapro/features/projects/data/sqlite_project_repository.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
 import 'package:crypto/crypto.dart';
@@ -51,6 +61,7 @@ void main() {
       outputDirectoryProvider: () async => output,
       utcNow: () => DateTime.utc(2026, 7, 25, 9, 30),
       idGenerator: () => 'backup-test',
+      storageCapacityProbe: const _FixedCapacityProbe(1 << 40),
     );
   });
 
@@ -180,6 +191,278 @@ void main() {
 
     expect(output.listSync(), isEmpty);
   });
+
+  test('inspects and extracts a verified backup into staging', () async {
+    final original = await _sourceFile(
+      source,
+      'installation.jpg',
+      'installation-photo',
+    );
+    await files.importFile(
+      projectId: 'project-1',
+      area: ProjectFileArea.originals,
+      source: original,
+      fileName: 'installation.jpg',
+    );
+    final artifact = await service.createBackup();
+    final stage = Directory(p.join(root.path, 'restore-stage'));
+
+    final inspection = await inspectBackupArchive(artifact.file);
+    final extracted = await extractBackupArchive(
+      archiveFile: artifact.file,
+      stageDirectory: stage,
+    );
+
+    expect(inspection.signature, extracted.signature);
+    expect(inspection.manifest.projectCount, 1);
+    expect(inspection.projectIds, <String>{'project-1'});
+    expect(
+      await File(
+        p.join(
+          stage.path,
+          'projects',
+          'project-1',
+          'originals',
+          'installation.jpg',
+        ),
+      ).readAsString(),
+      'installation-photo',
+    );
+    expect(
+      await File(
+        p.join(stage.path, 'database', AppDatabase.databaseFileName),
+      ).exists(),
+      isTrue,
+    );
+  });
+
+  test('removes staging when a payload checksum is invalid', () async {
+    final original = await _sourceFile(source, 'receipt.jpg', 'receipt-data');
+    await files.importFile(
+      projectId: 'project-1',
+      area: ProjectFileArea.originals,
+      source: original,
+      fileName: 'receipt.jpg',
+    );
+    final artifact = await service.createBackup();
+    final input = InputFileStream(artifact.file.path);
+    final validArchive = ZipDecoder().decodeStream(input);
+    final corruptedArchive = Archive();
+    for (final entry in validArchive) {
+      final bytes = entry.readBytes()!.toList();
+      if (entry.name.endsWith('/receipt.jpg')) {
+        bytes[0] ^= 0xff;
+      }
+      corruptedArchive.addFile(ArchiveFile.bytes(entry.name, bytes));
+    }
+    await input.close();
+    final corrupted = File(p.join(output.path, 'corrupted.zip'));
+    await corrupted.writeAsBytes(ZipEncoder().encode(corruptedArchive));
+    final stage = Directory(p.join(root.path, 'restore-stage'));
+
+    await expectLater(
+      extractBackupArchive(archiveFile: corrupted, stageDirectory: stage),
+      throwsA(isA<FormatException>()),
+    );
+
+    expect(await stage.exists(), isFalse);
+  });
+
+  test('rejects duplicate and traversal ZIP paths before extraction', () async {
+    final first = await _sourceFile(source, 'first.json', '{}');
+    final second = await _sourceFile(source, 'second.json', '{}');
+    final duplicate = File(p.join(output.path, 'duplicate.zip'));
+    final duplicateEncoder = ZipFileEncoder();
+    duplicateEncoder.create(duplicate.path);
+    await duplicateEncoder.addFile(first, backupManifestPath);
+    await duplicateEncoder.addFile(second, backupManifestPath);
+    await duplicateEncoder.close();
+
+    await expectLater(
+      inspectBackupArchive(duplicate),
+      throwsA(isA<FormatException>()),
+    );
+
+    final traversal = File(p.join(output.path, 'traversal.zip'));
+    final traversalArchive = Archive()
+      ..addFile(ArchiveFile.string('../escape.txt', 'unsafe'));
+    await traversal.writeAsBytes(ZipEncoder().encode(traversalArchive));
+
+    await expectLater(
+      inspectBackupArchive(traversal),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
+  test('rejects encrypted flags and oversized central entry counts', () async {
+    final baseArchive = Archive()
+      ..addFile(ArchiveFile.string('manifest.json', '{}'));
+    final baseBytes = Uint8List.fromList(ZipEncoder().encode(baseArchive));
+
+    final encryptedBytes = Uint8List.fromList(baseBytes);
+    final encryptedData = ByteData.sublistView(encryptedBytes);
+    final localHeader = _findZipSignature(encryptedBytes, 0x04034b50);
+    final centralHeader = _findZipSignature(encryptedBytes, 0x02014b50);
+    encryptedData.setUint16(
+      localHeader + 6,
+      encryptedData.getUint16(localHeader + 6, Endian.little) | 1,
+      Endian.little,
+    );
+    encryptedData.setUint16(
+      centralHeader + 8,
+      encryptedData.getUint16(centralHeader + 8, Endian.little) | 1,
+      Endian.little,
+    );
+    final encrypted = File(p.join(output.path, 'encrypted.zip'));
+    await encrypted.writeAsBytes(encryptedBytes);
+    await expectLater(
+      inspectBackupArchive(encrypted),
+      throwsA(isA<FormatException>()),
+    );
+
+    final excessiveCountBytes = Uint8List.fromList(baseBytes);
+    final excessiveCountData = ByteData.sublistView(excessiveCountBytes);
+    final endRecord = _findZipSignature(
+      excessiveCountBytes,
+      0x06054b50,
+      backwards: true,
+    );
+    excessiveCountData.setUint16(endRecord + 8, 50001, Endian.little);
+    excessiveCountData.setUint16(endRecord + 10, 50001, Endian.little);
+    final excessiveCount = File(p.join(output.path, 'excessive-count.zip'));
+    await excessiveCount.writeAsBytes(excessiveCountBytes);
+    await expectLater(
+      inspectBackupArchive(excessiveCount),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
+  test('restores database and project files end to end', () async {
+    final original = await _sourceFile(
+      source,
+      'foundation.jpg',
+      'foundation-before-mutation',
+    );
+    final attachmentStager = LocalAttachmentStager(
+      database: database,
+      fileStore: files,
+      idGenerator: () => 'attachment-1',
+      utcNow: () => DateTime.utc(2026, 7, 25, 9),
+    );
+    final attachment = await attachmentStager.stage(
+      projectId: 'project-1',
+      pickedFile: PickedLocalAttachment(
+        sourceUri: original.uri,
+        displayName: 'foundation.jpg',
+        reportedByteSize: await original.length(),
+        mediaType: 'image/jpeg',
+      ),
+    );
+    var generatedCostId = 0;
+    final costs = SqliteCostRepository(
+      database: database,
+      idGenerator: () => 'backup-cost-${++generatedCostId}',
+      utcNow: () => DateTime.utc(2026, 7, 25, 9, generatedCostId),
+    );
+    await costs.create(
+      ConfirmedCostEntryInput(
+        CostEntryInput(
+          projectId: 'project-1',
+          name: 'Beton na fundament',
+          type: CostEntryType.cost,
+          status: CostStatus.paid,
+          amount: VatBreakdown.fromNet(
+            Money(minorUnits: 100000, currencyCode: 'PLN'),
+            VatRate.standard23,
+          ),
+          entryDate: DateTime.utc(2026, 7, 25),
+          attachmentIds: <String>[attachment.id],
+        ),
+      ),
+    );
+    final stored = files.fileFor(
+      projectId: 'project-1',
+      area: ProjectFileArea.originals,
+      fileName: 'attachment-1.jpg',
+    );
+    final artifact = await service.createBackup();
+    final candidate = await service.inspectBackup(artifact.file);
+    await artifact.file.writeAsString('replaced external archive');
+
+    final activeDatabase = await database.open();
+    await activeDatabase.update(
+      AppDatabase.projectsTable,
+      <String, Object?>{'name': 'Mutated project'},
+      where: 'id = ?',
+      whereArgs: const <Object?>['project-1'],
+    );
+    await activeDatabase.delete(
+      AppDatabase.costEntriesTable,
+      where: 'project_id = ?',
+      whereArgs: const <Object?>['project-1'],
+    );
+    await stored.writeAsString('mutated-file');
+
+    final restored = await service.restoreBackup(candidate);
+
+    final reopened = await database.open();
+    final projects = await reopened.query(
+      AppDatabase.projectsTable,
+      columns: const <String>['name'],
+      where: 'id = ?',
+      whereArgs: const <Object?>['project-1'],
+    );
+    expect(projects.single['name'], 'Dom testowy');
+    expect(await stored.readAsString(), 'foundation-before-mutation');
+    final restoredSummary = await costs.summarize(
+      CostSummaryQuery(projectId: 'project-1'),
+    );
+    expect(restoredSummary.actual.minorUnits, 123000);
+    expect(
+      await reopened.query(AppDatabase.costEntryAttachmentsTable),
+      hasLength(1),
+    );
+    expect(restored.candidateToken, candidate.preview.candidateToken);
+    expect(
+      await File(
+        p.join(root.path, LocalRestoreJournal.journalFileName),
+      ).exists(),
+      isFalse,
+    );
+  });
+
+  test(
+    'does not change active data when free storage is insufficient',
+    () async {
+      final artifact = await service.createBackup();
+      final candidate = await service.inspectBackup(artifact.file);
+      final limitedService = LocalBackupService(
+        database: database,
+        fileStore: files,
+        outputDirectoryProvider: () async => output,
+        utcNow: () => DateTime.utc(2026, 7, 25, 9, 30),
+        idGenerator: () => 'backup-limited',
+        storageCapacityProbe: const _FixedCapacityProbe(0),
+      );
+
+      await expectLater(
+        limitedService.restoreBackup(candidate),
+        throwsA(isA<FileSystemException>()),
+      );
+
+      final active = await database.open();
+      expect(
+        (await active.query(AppDatabase.projectsTable)).single['name'],
+        'Dom testowy',
+      );
+      expect(
+        await Directory(
+          p.join(root.path, LocalRestoreJournal.stageDirectoryName),
+        ).exists(),
+        isFalse,
+      );
+    },
+  );
 }
 
 Future<File> _sourceFile(
@@ -198,4 +481,31 @@ Map<String, Object?> _jsonObject(List<int> bytes) {
     throw const FormatException('Expected JSON object');
   }
   return value;
+}
+
+final class _FixedCapacityProbe implements StorageCapacityProbe {
+  const _FixedCapacityProbe(this.bytes);
+
+  final int bytes;
+
+  @override
+  Future<int> availableBytes(Directory directory) async => bytes;
+}
+
+int _findZipSignature(
+  Uint8List bytes,
+  int signature, {
+  bool backwards = false,
+}) {
+  final data = ByteData.sublistView(bytes);
+  if (backwards) {
+    for (var offset = bytes.length - 4; offset >= 0; offset -= 1) {
+      if (data.getUint32(offset, Endian.little) == signature) return offset;
+    }
+  } else {
+    for (var offset = 0; offset <= bytes.length - 4; offset += 1) {
+      if (data.getUint32(offset, Endian.little) == signature) return offset;
+    }
+  }
+  throw StateError('ZIP signature not found');
 }

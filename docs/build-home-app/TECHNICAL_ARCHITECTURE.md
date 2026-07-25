@@ -584,14 +584,57 @@ Backup is a user-triggered ZIP with a versioned manifest:
 {
   "format": "budowapro-backup",
   "version": 1,
-  "createdAt": "2026-07-13T12:00:00Z",
-  "database": "budowapro.sqlite",
-  "attachments": "projects/",
-  "checksums": "checksums.json"
+  "createdAt": "2026-07-25T12:00:00.000Z",
+  "schemaVersion": 8,
+  "database": "database/budowapro.db",
+  "projects": "projects/",
+  "checksums": "checksums.json",
+  "projectCount": 1,
+  "payloadFileCount": 5,
+  "payloadBytes": 1048576
 }
 ```
 
-Restore validates manifest version, paths, hashes and available space before changing local data. Restore runs into a staging directory and swaps only after full validation.
+`checksums.json` lists every payload path, exact byte size and lowercase
+SHA-256. The only accepted payload paths are:
+
+- `database/budowapro.db`,
+- `projects/<projectId>/originals/<fileName>`,
+- `projects/<projectId>/previews/<fileName>`,
+- `projects/<projectId>/exports/<fileName>`.
+
+Backup creation closes the active SQLite handle under maintenance, creates a
+consistent `VACUUM INTO` snapshot and streams file hashing plus ZIP encoding in
+an isolate. Temporary `.part` files are excluded. The Android share panel is
+opened only after an explicit user action; no backup is uploaded by the app.
+
+Restore first copies the selected ZIP once into private application storage,
+flushes it and records its full SHA-256. ZIP inspection and extraction run in
+isolates. Validation rejects multi-disk/ZIP64 archives, duplicate or unknown
+paths, absolute paths, `..`, backslashes, symbolic links, encrypted entries,
+unsupported compression, excessive central directories, entry/byte limits and
+decompression beyond each declared checksum size.
+
+Before active data changes, restore:
+
+1. checks the exact manifest/checksum contract and every payload SHA-256,
+2. checks free application-storage bytes through Android `StatFs`,
+3. extracts only allowlisted paths into `.budowapro-restore-stage`,
+4. verifies the SQLite header, schema version, exact schema fingerprint,
+   `integrity_check`, `foreign_key_check`, project count and attachment paths,
+5. verifies available attachment sizes and hashes against both SQLite and the
+   ZIP catalog.
+
+The final swap runs while database and project-file maintenance locks are held.
+A checksummed two-slot journal records `prepared`, `oldMoved`, `newMoved` and
+`committed`. The old database and project tree remain available until the
+promoted database passes a final read-only check. Startup recovery rolls back
+every incomplete, missing or corrupt marker conservatively; a committed marker
+is finalized only after version, `quick_check` and foreign keys pass. Closed
+SQLite WAL/SHM/journal sidecars are removed before a swap or rollback.
+
+Format version `1` accepts the current schema only. Password-protected or
+encrypted backups remain outside MVP until the separate threat-model decision.
 
 ## Security Model
 
