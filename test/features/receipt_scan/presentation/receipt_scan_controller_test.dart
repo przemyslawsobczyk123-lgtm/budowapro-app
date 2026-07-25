@@ -44,15 +44,15 @@ void main() {
           recognizedText: RecognizedReceiptText.fromRaw(
             'SKŁAD BUDOWLANY\nRAZEM 42,50',
           ),
-          seller: 'SKŁAD BUDOWLANY',
-          totalText: '42,50',
+          seller: ReceiptOcrField(value: 'SKŁAD BUDOWLANY', confidence: 0.96),
+          totalText: ReceiptOcrField(value: '42,50', confidence: 0.92),
         ),
       );
 
       await controller.start(ReceiptCaptureMethod.scanner);
 
       expect(controller.state.status, ReceiptScanViewStatus.result);
-      expect(controller.state.session?.candidates.totalText, '42,50');
+      expect(controller.state.session?.candidates.totalText?.value, '42,50');
     },
   );
 
@@ -75,7 +75,7 @@ void main() {
         source: _source,
         candidates: ReceiptOcrCandidates(
           recognizedText: RecognizedReceiptText.fromRaw('RAZEM 42,50'),
-          totalText: '42,50',
+          totalText: ReceiptOcrField(value: '42,50', confidence: 0.92),
         ),
       );
       await controller.retryRecognition();

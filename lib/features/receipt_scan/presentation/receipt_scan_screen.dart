@@ -241,22 +241,25 @@ class _ReceiptScanResult extends StatelessWidget {
         _ReceiptPreview(uri: session.source.previewUri),
         const SizedBox(height: 18),
         if (candidates.seller case final value?)
-          _ReceiptField(label: l10n.receiptSellerLabel, value: value),
+          _ReceiptField(label: l10n.receiptSellerLabel, value: value.value),
         if (candidates.dateText case final value?)
-          _ReceiptField(label: l10n.receiptDateLabel, value: value),
+          _ReceiptField(label: l10n.receiptDateLabel, value: value.value),
         if (candidates.documentNumber case final value?)
-          _ReceiptField(label: l10n.receiptDocumentNumberLabel, value: value),
+          _ReceiptField(
+            label: l10n.receiptDocumentNumberLabel,
+            value: value.value,
+          ),
         if (candidates.totalText case final value?)
-          _ReceiptField(label: l10n.receiptTotalLabel, value: value),
+          _ReceiptField(label: l10n.receiptTotalLabel, value: value.value),
         if (candidates.vatLines.isNotEmpty)
           _ReceiptTextSection(
             heading: l10n.receiptVatLinesLabel,
-            lines: candidates.vatLines,
+            lines: candidates.vatLines.map((line) => line.value),
           ),
         if (candidates.itemLines.isNotEmpty)
           _ReceiptTextSection(
             heading: l10n.receiptItemLinesLabel,
-            lines: candidates.itemLines,
+            lines: candidates.itemLines.map((line) => line.value),
           ),
         ExpansionTile(
           tilePadding: EdgeInsets.zero,

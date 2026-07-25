@@ -52,10 +52,12 @@ void main() {
           recognizedText: RecognizedReceiptText.fromRaw(
             'SKŁAD BUDOWLANY\nPTU A 23% 7,95\nRAZEM 42,50',
           ),
-          seller: 'SKŁAD BUDOWLANY',
-          dateText: '25.07.2026',
-          totalText: '42,50',
-          vatLines: const <String>['PTU A 23% 7,95'],
+          seller: ReceiptOcrField(value: 'SKŁAD BUDOWLANY', confidence: 0.96),
+          dateText: ReceiptOcrField(value: '25.07.2026', confidence: 0.93),
+          totalText: ReceiptOcrField(value: '42,50', confidence: 0.92),
+          vatLines: <ReceiptOcrField>[
+            ReceiptOcrField(value: 'PTU A 23% 7,95', confidence: 0.89),
+          ],
         ),
       ),
     );

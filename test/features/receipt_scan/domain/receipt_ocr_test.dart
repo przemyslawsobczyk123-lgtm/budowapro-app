@@ -33,6 +33,20 @@ void main() {
         lessThanOrEqualTo(RecognizedReceiptText.maximumCharacters),
       );
     });
+
+    test('preserves normalized line confidence from the OCR engine', () {
+      final text = RecognizedReceiptText.fromLines(<RecognizedReceiptLine>[
+        const RecognizedReceiptLine(
+          text: '  SKLAD   BUDOWLANY ',
+          confidence: 0.94,
+        ),
+        const RecognizedReceiptLine(text: ' RAZEM 42,50 ', confidence: 0.61),
+      ]);
+
+      expect(text.lines, <String>['SKLAD BUDOWLANY', 'RAZEM 42,50']);
+      expect(text.lineDetails[0].confidence, 0.94);
+      expect(text.lineDetails[1].confidence, 0.61);
+    });
   });
 
   group('ReceiptOcrCandidateParser', () {
@@ -56,12 +70,15 @@ KARTA 62,48
 '''),
       );
 
-      expect(result.seller, 'DOM I OGRÓD SP. Z O.O.');
-      expect(result.dateText, '2026-07-25');
-      expect(result.documentNumber, '004521/2026');
-      expect(result.totalText, '62,48');
-      expect(result.vatLines, contains('PTU A 23% 11,68'));
-      expect(result.itemLines, <String>[
+      expect(result.seller?.value, 'DOM I OGRÓD SP. Z O.O.');
+      expect(result.dateText?.value, '2026-07-25');
+      expect(result.documentNumber?.value, '004521/2026');
+      expect(result.totalText?.value, '62,48');
+      expect(
+        result.vatLines.map((line) => line.value),
+        contains('PTU A 23% 11,68'),
+      );
+      expect(result.itemLines.map((line) => line.value), <String>[
         'Zaprawa murarska 2 x 24,99 49,98 A',
         'Kołki montażowe 12,50 A',
       ]);
@@ -77,7 +94,7 @@ DO ZAPŁATY: 100,00 PLN
 '''),
       );
 
-      expect(result.totalText, '100,00');
+      expect(result.totalText?.value, '100,00');
     });
 
     test('accepts dotted dates and common document number labels', () {
@@ -91,9 +108,9 @@ TOTAL 15.99
 '''),
       );
 
-      expect(result.dateText, '25.07.2026');
-      expect(result.documentNumber, 'FV/12/07/2026');
-      expect(result.totalText, '15.99');
+      expect(result.dateText?.value, '25.07.2026');
+      expect(result.documentNumber?.value, 'FV/12/07/2026');
+      expect(result.totalText?.value, '15.99');
     });
 
     test('returns an empty proposal when no text was recognized', () {
@@ -103,6 +120,32 @@ TOTAL 15.99
       expect(result.seller, isNull);
       expect(result.vatLines, isEmpty);
       expect(result.itemLines, isEmpty);
+    });
+
+    test('carries field-level confidence and treats missing values as low', () {
+      final result = parser.parse(
+        RecognizedReceiptText.fromLines(<RecognizedReceiptLine>[
+          const RecognizedReceiptLine(
+            text: 'SKLAD BUDOWLANY',
+            confidence: 0.97,
+          ),
+          const RecognizedReceiptLine(text: '2026-07-25', confidence: null),
+          const RecognizedReceiptLine(
+            text: 'Klej elastyczny 42,50 A',
+            confidence: 0.72,
+          ),
+          const RecognizedReceiptLine(text: 'RAZEM 42,50', confidence: 0.91),
+        ]),
+      );
+
+      expect(result.seller?.value, 'SKLAD BUDOWLANY');
+      expect(result.seller?.confidence, 0.97);
+      expect(result.seller?.requiresReview, isFalse);
+      expect(result.date?.confidence, ReceiptOcrField.unknownConfidence);
+      expect(result.date?.requiresReview, isTrue);
+      expect(result.total?.confidence, 0.91);
+      expect(result.itemLines.single.confidence, 0.72);
+      expect(result.itemLines.single.requiresReview, isTrue);
     });
   });
 }

@@ -4,7 +4,8 @@ import 'package:budowapro/features/receipt_scan/domain/receipt_ocr.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_scan.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
-typedef RecognizeReceiptImage = Future<String> Function(String path);
+typedef RecognizeReceiptImage =
+    Future<List<RecognizedReceiptLine>> Function(String path);
 
 abstract interface class ReceiptTextRecognizer {
   Future<RecognizedReceiptText> recognize(Uri imageUri);
@@ -26,7 +27,7 @@ final class MlKitReceiptTextRecognizer implements ReceiptTextRecognizer {
       throw const ReceiptScanException(ReceiptScanFailureKind.unsupportedInput);
     }
     try {
-      return RecognizedReceiptText.fromRaw(
+      return RecognizedReceiptText.fromLines(
         await _recognizeImage(image.absolute.path),
       );
     } on ReceiptScanException {
@@ -36,13 +37,19 @@ final class MlKitReceiptTextRecognizer implements ReceiptTextRecognizer {
     }
   }
 
-  static Future<String> _recognizeWithMlKit(String path) async {
+  static Future<List<RecognizedReceiptLine>> _recognizeWithMlKit(
+    String path,
+  ) async {
     final recognizer = TextRecognizer(script: TextRecognitionScript.latin);
     try {
       final result = await recognizer.processImage(
         InputImage.fromFilePath(path),
       );
-      return result.text;
+      return <RecognizedReceiptLine>[
+        for (final block in result.blocks)
+          for (final line in block.lines)
+            RecognizedReceiptLine(text: line.text, confidence: line.confidence),
+      ];
     } finally {
       try {
         await recognizer.close();

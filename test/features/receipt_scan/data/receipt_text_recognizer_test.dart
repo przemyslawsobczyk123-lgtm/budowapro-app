@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:budowapro/features/receipt_scan/data/receipt_text_recognizer.dart';
+import 'package:budowapro/features/receipt_scan/domain/receipt_ocr.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_scan.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
@@ -28,7 +29,13 @@ void main() {
     final recognizer = MlKitReceiptTextRecognizer(
       recognizeImage: (path) async {
         receivedPath = path;
-        return '  SKŁAD   DOM  \n RAZEM 12,50 ';
+        return <RecognizedReceiptLine>[
+          const RecognizedReceiptLine(
+            text: '  SKŁAD   DOM  ',
+            confidence: 0.96,
+          ),
+          const RecognizedReceiptLine(text: ' RAZEM 12,50 ', confidence: 0.82),
+        ];
       },
     );
 
@@ -36,6 +43,8 @@ void main() {
 
     expect(receivedPath, imageFile.path);
     expect(result.lines, <String>['SKŁAD DOM', 'RAZEM 12,50']);
+    expect(result.lineDetails[0].confidence, 0.96);
+    expect(result.lineDetails[1].confidence, 0.82);
   });
 
   test('maps recognition failures without exposing the private path', () async {

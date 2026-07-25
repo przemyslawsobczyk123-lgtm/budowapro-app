@@ -130,8 +130,8 @@ void main() {
 
     expect(recognizer.receivedUri, privateOriginal.uri);
     expect(result.source, same(source));
-    expect(result.candidates.seller, 'SKŁAD BUDOWLANY');
-    expect(result.candidates.totalText, '42,50');
+    expect(result.candidates.seller?.value, 'SKŁAD BUDOWLANY');
+    expect(result.candidates.totalText?.value, '42,50');
     expect(preparer.disposeCalls, 1);
   });
 
