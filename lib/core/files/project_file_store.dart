@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:budowapro/core/storage/local_data_maintenance_lock.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -24,7 +25,10 @@ final class ProjectFileStore implements ProjectFileStorage {
     : _rootDirectory = rootDirectory.absolute;
 
   final Directory _rootDirectory;
+  final LocalDataMaintenanceLock _maintenanceLock = LocalDataMaintenanceLock();
   static final Set<String> _activeImportTargets = <String>{};
+
+  Directory get rootDirectory => _rootDirectory;
 
   static Future<ProjectFileStore> createForDevice({
     Future<Directory> Function()? applicationSupportDirectory,
@@ -55,7 +59,13 @@ final class ProjectFileStore implements ProjectFileStorage {
     );
   }
 
-  Future<void> ensureProjectDirectories(String projectId) async {
+  Future<void> ensureProjectDirectories(String projectId) {
+    return _maintenanceLock.runOperation(
+      () => _ensureProjectDirectories(projectId),
+    );
+  }
+
+  Future<void> _ensureProjectDirectories(String projectId) async {
     _validatePathSegment(projectId, argumentName: 'projectId');
     await _rootDirectory.create(recursive: true);
     final resolvedRoot = p.normalize(
@@ -86,6 +96,24 @@ final class ProjectFileStore implements ProjectFileStorage {
     required File source,
     required String fileName,
     int? maximumBytes,
+  }) {
+    return _maintenanceLock.runOperation(
+      () => _importFile(
+        projectId: projectId,
+        area: area,
+        source: source,
+        fileName: fileName,
+        maximumBytes: maximumBytes,
+      ),
+    );
+  }
+
+  Future<File> _importFile({
+    required String projectId,
+    required ProjectFileArea area,
+    required File source,
+    required String fileName,
+    int? maximumBytes,
   }) async {
     if (maximumBytes != null && maximumBytes < 0) {
       throw RangeError.value(maximumBytes, 'maximumBytes');
@@ -104,7 +132,7 @@ final class ProjectFileStore implements ProjectFileStorage {
     var ownsPart = false;
 
     try {
-      await ensureProjectDirectories(projectId);
+      await _ensureProjectDirectories(projectId);
 
       if (await _entityExists(target.path)) {
         await _deleteIfPresent(part);
@@ -153,6 +181,16 @@ final class ProjectFileStore implements ProjectFileStorage {
     required String projectId,
     required ProjectFileArea area,
     required String fileName,
+  }) {
+    return _maintenanceLock.runOperation(
+      () => _deleteFile(projectId: projectId, area: area, fileName: fileName),
+    );
+  }
+
+  Future<void> _deleteFile({
+    required String projectId,
+    required ProjectFileArea area,
+    required String fileName,
   }) async {
     final file = fileFor(projectId: projectId, area: area, fileName: fileName);
     final type = await FileSystemEntity.type(file.path, followLinks: false);
@@ -166,7 +204,11 @@ final class ProjectFileStore implements ProjectFileStorage {
   }
 
   @override
-  Future<int> countProjectFiles(String projectId) async {
+  Future<int> countProjectFiles(String projectId) {
+    return _maintenanceLock.runOperation(() => _countProjectFiles(projectId));
+  }
+
+  Future<int> _countProjectFiles(String projectId) async {
     final projectDirectory = await _existingProjectDirectory(projectId);
     if (projectDirectory == null) {
       return 0;
@@ -191,7 +233,11 @@ final class ProjectFileStore implements ProjectFileStorage {
   }
 
   @override
-  Future<void> deleteProjectFiles(String projectId) async {
+  Future<void> deleteProjectFiles(String projectId) {
+    return _maintenanceLock.runOperation(() => _deleteProjectFiles(projectId));
+  }
+
+  Future<void> _deleteProjectFiles(String projectId) async {
     final projectDirectory = await _existingProjectDirectory(projectId);
     if (projectDirectory == null) {
       return;
@@ -209,6 +255,10 @@ final class ProjectFileStore implements ProjectFileStorage {
       }
     }
     await projectDirectory.delete(recursive: true);
+  }
+
+  Future<T> runMaintenance<T>(Future<T> Function() action) {
+    return _maintenanceLock.runMaintenance(action);
   }
 
   Future<Directory?> _existingProjectDirectory(String projectId) async {

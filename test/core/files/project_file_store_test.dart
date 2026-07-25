@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:budowapro/core/files/project_file_store.dart';
@@ -69,6 +70,40 @@ void main() {
       p.normalize(
         p.join(rootDirectory.path, 'projects', 'project-123', 'originals'),
       ),
+    );
+  });
+
+  test('maintenance blocks new file operations until it completes', () async {
+    final entered = Completer<void>();
+    final release = Completer<void>();
+    final maintenance = store.runMaintenance(() async {
+      entered.complete();
+      await release.future;
+    });
+    await entered.future;
+
+    final operation = store.ensureProjectDirectories('blocked-project');
+    await Future<void>.delayed(Duration.zero);
+    expect(
+      store
+          .directoryFor(
+            projectId: 'blocked-project',
+            area: ProjectFileArea.originals,
+          )
+          .existsSync(),
+      isFalse,
+    );
+
+    release.complete();
+    await Future.wait<void>(<Future<void>>[maintenance, operation]);
+    expect(
+      store
+          .directoryFor(
+            projectId: 'blocked-project',
+            area: ProjectFileArea.originals,
+          )
+          .existsSync(),
+      isTrue,
     );
   });
 

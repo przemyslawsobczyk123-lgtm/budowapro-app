@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -43,6 +46,7 @@ final class AppDatabase {
 
   final DatabaseFactory _factory;
   final String _path;
+  Completer<void>? _maintenanceRelease;
 
   Database? _database;
   Future<Database>? _opening;
@@ -58,6 +62,11 @@ final class AppDatabase {
   }
 
   Future<Database> open() async {
+    await _waitForMaintenance();
+    return _openWithoutMaintenanceWait();
+  }
+
+  Future<Database> _openWithoutMaintenanceWait() async {
     final closing = _closing;
     if (closing != null) {
       await closing;
@@ -150,6 +159,11 @@ final class AppDatabase {
   }
 
   Future<void> close() async {
+    await _waitForMaintenance();
+    return _closeWithoutMaintenanceWait();
+  }
+
+  Future<void> _closeWithoutMaintenanceWait() async {
     final currentClosing = _closing;
     if (currentClosing != null) {
       return currentClosing;
@@ -163,6 +177,43 @@ final class AppDatabase {
     });
     _closing = closing;
     return closing;
+  }
+
+  Future<T> runMaintenance<T>(
+    Future<T> Function(AppDatabaseMaintenance maintenance) action,
+  ) async {
+    while (true) {
+      final current = _maintenanceRelease;
+      if (current == null) break;
+      await current.future;
+    }
+
+    final release = Completer<void>();
+    _maintenanceRelease = release;
+    try {
+      await _closeWithoutMaintenanceWait();
+      return await action(_AppDatabaseMaintenance(this));
+    } finally {
+      try {
+        final current = _database;
+        if (current == null || !current.isOpen) {
+          await _openWithoutMaintenanceWait();
+        }
+      } finally {
+        if (identical(_maintenanceRelease, release)) {
+          _maintenanceRelease = null;
+        }
+        release.complete();
+      }
+    }
+  }
+
+  Future<void> _waitForMaintenance() async {
+    while (true) {
+      final maintenance = _maintenanceRelease;
+      if (maintenance == null) return;
+      await maintenance.future;
+    }
   }
 
   Future<void> _closeDatabase() async {
@@ -1047,4 +1098,46 @@ final class AppDatabase {
       }, conflictAlgorithm: ConflictAlgorithm.replace);
     }
   }
+}
+
+abstract interface class AppDatabaseMaintenance {
+  File get databaseFile;
+
+  Future<void> createSnapshot(File destination);
+
+  Future<void> close();
+
+  Future<Database> reopen();
+}
+
+final class _AppDatabaseMaintenance implements AppDatabaseMaintenance {
+  const _AppDatabaseMaintenance(this._owner);
+
+  final AppDatabase _owner;
+
+  @override
+  File get databaseFile => File(_owner._path);
+
+  @override
+  Future<void> createSnapshot(File destination) async {
+    final destinationType = await FileSystemEntity.type(
+      destination.path,
+      followLinks: false,
+    );
+    if (destinationType != FileSystemEntityType.notFound) {
+      throw const FileSystemException('Snapshot destination already exists');
+    }
+    await destination.parent.create(recursive: true);
+    final database = await _owner._openWithoutMaintenanceWait();
+    await database.rawQuery('VACUUM INTO ?', <Object?>[destination.path]);
+    if (!await destination.exists() || await destination.length() == 0) {
+      throw const FileSystemException('Database snapshot was not created');
+    }
+  }
+
+  @override
+  Future<void> close() => _owner._closeWithoutMaintenanceWait();
+
+  @override
+  Future<Database> reopen() => _owner._openWithoutMaintenanceWait();
 }

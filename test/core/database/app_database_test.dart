@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 
 import 'package:budowapro/core/database/app_database.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -214,6 +215,49 @@ void main() {
     );
 
     expect(await appDatabase!.readMetadata('temporary'), isNull);
+  });
+
+  test('creates a consistent snapshot while new opens are blocked', () async {
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    await appDatabase!.writeMetadata(
+      key: 'snapshot-marker',
+      value: 'preserved',
+      updatedAt: DateTime.utc(2026, 7, 15),
+    );
+    final snapshot = File(
+      p.join(temporaryDirectory.path, 'snapshot', 'budowapro.db'),
+    );
+    final entered = Completer<void>();
+    final release = Completer<void>();
+    final maintenance = appDatabase!.runMaintenance<void>((access) async {
+      await access.createSnapshot(snapshot);
+      entered.complete();
+      await release.future;
+    });
+    await entered.future;
+
+    var reopened = false;
+    final opening = appDatabase!.open().then((database) {
+      reopened = database.isOpen;
+    });
+    await Future<void>.delayed(Duration.zero);
+    expect(reopened, isFalse);
+
+    release.complete();
+    await Future.wait<void>(<Future<void>>[maintenance, opening]);
+    final snapshotDatabase = await databaseFactoryFfi.openDatabase(
+      snapshot.path,
+      options: OpenDatabaseOptions(readOnly: true, singleInstance: false),
+    );
+    final rows = await snapshotDatabase.query(
+      AppDatabase.metadataTable,
+      where: 'key = ?',
+      whereArgs: <Object?>['snapshot-marker'],
+    );
+    await snapshotDatabase.close();
+
+    expect(rows.single['value'], 'preserved');
+    expect(reopened, isTrue);
   });
 
   test('close waits for an in-flight open and closes its handle', () async {
