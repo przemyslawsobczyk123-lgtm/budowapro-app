@@ -26,6 +26,11 @@ void main() {
             .evidenceRequirement,
         EvidenceRequirement.photo,
       );
+
+      final shellOpen = template.singleWhere(
+        (stage) => stage.stageKey == ProjectStageKey.shellOpen,
+      );
+      expect(shellOpen.checklistItems, isEmpty);
     });
 
     test('uses independent ordered stages for renovation projects', () {

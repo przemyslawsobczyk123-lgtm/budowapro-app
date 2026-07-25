@@ -91,6 +91,11 @@ void main() {
         checklist.map((item) => item.templateKey).toSet(),
         ChecklistTemplateKey.values.toSet(),
       );
+      final shellOpenChecklist = await repository.listChecklistItems(
+        projectId: 'project-1',
+        stageId: 'shell_open',
+      );
+      expect(shellOpenChecklist, isEmpty);
       final projectChecklist = await repository.listProjectChecklistItems(
         projectId: 'project-1',
       );
@@ -133,6 +138,69 @@ void main() {
     expect(renamed.customName, 'Teren zewnętrzny');
     expect(result.map((stage) => stage.id), reorderedIds);
     expect(result.first.customName, 'Teren zewnętrzny');
+  });
+
+  test('reseed preserves user edits and own checklist positions', () async {
+    await repository.listStages(
+      projectId: 'project-1',
+      template: ProjectTemplate.houseConstruction,
+    );
+    final grounding =
+        (await repository.listChecklistItems(
+          projectId: 'project-1',
+          stageId: 'state_zero',
+        )).singleWhere(
+          (item) =>
+              item.templateKey == ChecklistTemplateKey.foundationGrounding,
+        );
+    await repository.updateChecklistItem(
+      projectId: 'project-1',
+      checklistItemId: grounding.id,
+      input: ChecklistItemDetailsInput(
+        status: ChecklistStatus.inProgress,
+        importance: ChecklistImportance.critical,
+        evidenceRequirement: grounding.evidenceRequirement,
+        assignee: 'Elektryk',
+        note: 'Układ zaakceptowany przed betonowaniem.',
+        riskIfSkipped: 'Nie zakrywać bez pomiaru ciągłości.',
+      ),
+    );
+    final ownItem = await repository.addChecklistItem(
+      projectId: 'project-1',
+      stageId: 'state_zero',
+      title: 'Sprawdź rezerwę do ogrodu',
+      input: ChecklistItemDetailsInput(
+        status: ChecklistStatus.todo,
+        importance: ChecklistImportance.high,
+        evidenceRequirement: EvidenceRequirement.none,
+        assignee: 'Elektryk',
+        note: 'Potwierdzić oba końce przepustu.',
+      ),
+    );
+
+    await repository.listStages(
+      projectId: 'project-1',
+      template: ProjectTemplate.houseConstruction,
+    );
+    final reloaded = await repository.listChecklistItems(
+      projectId: 'project-1',
+      stageId: 'state_zero',
+    );
+    final templateItem = reloaded.singleWhere(
+      (item) => item.templateKey == ChecklistTemplateKey.foundationGrounding,
+    );
+    final reloadedOwnItem = reloaded.singleWhere(
+      (item) => item.id == ownItem.id,
+    );
+
+    expect(templateItem.status, ChecklistStatus.inProgress);
+    expect(templateItem.importance, ChecklistImportance.critical);
+    expect(templateItem.assignee, 'Elektryk');
+    expect(templateItem.note, 'Układ zaakceptowany przed betonowaniem.');
+    expect(templateItem.riskIfSkipped, 'Nie zakrywać bez pomiaru ciągłości.');
+    expect(reloadedOwnItem.customTitle, 'Sprawdź rezerwę do ogrodu');
+    expect(reloadedOwnItem.assignee, 'Elektryk');
+    expect(reloadedOwnItem.note, 'Potwierdzić oba końce przepustu.');
   });
 
   test('required item closes only after local evidence is linked', () async {

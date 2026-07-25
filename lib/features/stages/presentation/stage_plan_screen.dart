@@ -1,6 +1,9 @@
 import 'package:budowapro/features/projects/presentation/project_ui_text.dart';
+import 'package:budowapro/features/stages/domain/stage_guidance.dart';
 import 'package:budowapro/features/stages/domain/stage_plan.dart';
 import 'package:budowapro/features/stages/presentation/stage_editor_dialogs.dart';
+import 'package:budowapro/features/stages/presentation/stage_guidance_sheet.dart';
+import 'package:budowapro/features/stages/presentation/stage_guidance_ui_text.dart';
 import 'package:budowapro/features/stages/presentation/stage_plan_controller.dart';
 import 'package:budowapro/features/stages/presentation/stage_ui_text.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
@@ -118,6 +121,20 @@ class _StagePlanContent extends ConsumerWidget {
               onRename: () => _renameStage(context, ref, selectedStage),
             ),
           ),
+        if (selectedStage != null)
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+            sliver: SliverToBoxAdapter(
+              child: _StageGuidancePanel(
+                stage: selectedStage,
+                checklistItems: state.checklistItems,
+                enabled: !state.isSaving,
+                onAddOwn: () => _addChecklistItem(context, ref),
+                onOpenChecklistItem: (item) =>
+                    _editChecklistItem(context, ref, state, item),
+              ),
+            ),
+          ),
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
           sliver: SliverToBoxAdapter(
@@ -193,6 +210,130 @@ class _StagePlanContent extends ConsumerWidget {
       icon: const Icon(Icons.swap_vert_rounded),
     ),
   ];
+}
+
+class _StageGuidancePanel extends StatelessWidget {
+  const _StageGuidancePanel({
+    required this.stage,
+    required this.checklistItems,
+    required this.enabled,
+    required this.onAddOwn,
+    required this.onOpenChecklistItem,
+  });
+
+  final ProjectStage stage;
+  final List<ChecklistItem> checklistItems;
+  final bool enabled;
+  final VoidCallback onAddOwn;
+  final Future<void> Function(ChecklistItem item) onOpenChecklistItem;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final guidance = StageGuidanceCatalog.forStage(stage.templateKey);
+    return Material(
+      color: theme.colorScheme.surfaceContainerLowest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: theme.colorScheme.outlineVariant),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: ExpansionTile(
+        key: ValueKey<String>('stage-guidance-${stage.id}'),
+        initiallyExpanded: false,
+        maintainState: true,
+        tilePadding: const EdgeInsets.symmetric(horizontal: 12),
+        childrenPadding: const EdgeInsets.only(bottom: 8),
+        leading: const Icon(Icons.lightbulb_outline_rounded),
+        title: Text(
+          l10n.stageGuidanceHeading,
+          style: theme.textTheme.titleMedium,
+        ),
+        subtitle: guidance.isEmpty
+            ? null
+            : Text(l10n.stageGuidanceCount(guidance.length)),
+        children: [
+          const Divider(height: 1),
+          if (guidance.isEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Text(l10n.stageGuidanceEmpty),
+            )
+          else
+            for (final entry in guidance) ...[
+              _StageGuidanceRow(
+                guidance: entry,
+                checklistItems: checklistItems,
+                onOpenChecklistItem: onOpenChecklistItem,
+              ),
+              if (entry != guidance.last) const Divider(height: 1, indent: 56),
+            ],
+          ListTile(
+            leading: const Icon(Icons.playlist_add_rounded),
+            title: Text(l10n.stageGuidanceAddOwnAction),
+            enabled: enabled,
+            onTap: enabled ? onAddOwn : null,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StageGuidanceRow extends StatelessWidget {
+  const _StageGuidanceRow({
+    required this.guidance,
+    required this.checklistItems,
+    required this.onOpenChecklistItem,
+  });
+
+  final StageGuidanceDefinition guidance;
+  final List<ChecklistItem> checklistItems;
+  final Future<void> Function(ChecklistItem item) onOpenChecklistItem;
+
+  @override
+  Widget build(BuildContext context) {
+    final content = stageGuidanceContent(
+      AppLocalizations.of(context),
+      guidance.key,
+    );
+    final relatedItems = checklistItems
+        .where(
+          (item) =>
+              item.templateKey != null &&
+              guidance.relatedChecklistKeys.contains(item.templateKey),
+        )
+        .toList(growable: false);
+    return ListTile(
+      key: ValueKey<String>('guidance-${guidance.key.name}'),
+      minLeadingWidth: 32,
+      leading: Icon(_guidanceIcon(guidance.key)),
+      title: Text(content.title),
+      subtitle: Text(
+        content.timing,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: const Icon(Icons.chevron_right_rounded),
+      onTap: () async {
+        final selectedItemId = await showStageGuidanceSheet(
+          context,
+          guidance: guidance,
+          relatedItems: relatedItems,
+        );
+        if (!context.mounted || selectedItemId == null) return;
+        ChecklistItem? selectedItem;
+        for (final item in relatedItems) {
+          if (item.id == selectedItemId) {
+            selectedItem = item;
+            break;
+          }
+        }
+        if (selectedItem != null) await onOpenChecklistItem(selectedItem);
+      },
+    );
+  }
 }
 
 class _StageTabs extends ConsumerWidget {
@@ -383,7 +524,9 @@ class _StageMeta extends StatelessWidget {
       children: [
         Icon(icon, size: 16, color: color),
         const SizedBox(width: 6),
-        Text(label, style: TextStyle(color: color)),
+        Flexible(
+          child: Text(label, style: TextStyle(color: color)),
+        ),
       ],
     );
   }
@@ -545,11 +688,13 @@ class _ChecklistTag extends StatelessWidget {
           children: [
             Icon(icon, size: 14, color: foreground),
             const SizedBox(width: 4),
-            Text(
-              label,
-              style: Theme.of(
-                context,
-              ).textTheme.labelSmall?.copyWith(color: foreground),
+            Flexible(
+              child: Text(
+                label,
+                style: Theme.of(
+                  context,
+                ).textTheme.labelSmall?.copyWith(color: foreground),
+              ),
             ),
           ],
         ),
@@ -830,3 +975,12 @@ Color _statusColor(ColorScheme colors, ChecklistStatus status) =>
       ChecklistStatus.completed => colors.primary,
       ChecklistStatus.skipped => colors.outline,
     };
+
+IconData _guidanceIcon(StageGuidanceKey key) => switch (key) {
+  StageGuidanceKey.servicePenetrations => Icons.cable_rounded,
+  StageGuidanceKey.foundationGrounding => Icons.electric_bolt_rounded,
+  StageGuidanceKey.foundationWaterproofing => Icons.water_drop_outlined,
+  StageGuidanceKey.drainageAndGroundLevels => Icons.landscape_outlined,
+  StageGuidanceKey.concealedWorksEvidence => Icons.photo_camera_outlined,
+  StageGuidanceKey.windowShadingPreparation => Icons.window_rounded,
+};

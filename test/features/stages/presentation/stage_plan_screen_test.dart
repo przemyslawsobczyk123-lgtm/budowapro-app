@@ -24,12 +24,56 @@ void main() {
     expect(find.text('Stan zero'), findsWidgets);
     expect(find.text('0 z 18'), findsOneWidget);
     expect(find.text('Badania gruntu i warunki wodne'), findsOneWidget);
+    expect(find.text('Wskazówki dla tego etapu'), findsOneWidget);
     expect(find.text('Lista kontrolna'), findsOneWidget);
+    await tester.tap(find.text('Wskazówki dla tego etapu'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Przepusty i instalacje przed betonowaniem'),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('switches to a stage with an empty custom checklist', (
+  testWidgets('opens a technical recommendation with a safety boundary', (
     tester,
   ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(_testApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Wskazówki dla tego etapu'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Uziom fundamentowy bez zgadywania'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Uziom fundamentowy bez zgadywania'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('To nie jest projekt wykonawczy'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Sprawdź przed pracą'),
+      300,
+      scrollable: find.byType(Scrollable).last,
+    );
+    expect(find.text('Sprawdź przed pracą'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Pytania do fachowca'),
+      300,
+      scrollable: find.byType(Scrollable).last,
+    );
+    expect(find.text('Pytania do fachowca'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Źródła i podstawa'),
+      300,
+      scrollable: find.byType(Scrollable).last,
+    );
+    expect(find.text('Źródła i podstawa'), findsOneWidget);
+  });
+
+  testWidgets('switches to shell open informational guidance', (tester) async {
     await tester.pumpWidget(_testApp());
     await tester.pumpAndSettle();
 
@@ -37,7 +81,39 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Stan surowy otwarty'), findsWidgets);
+    await tester.ensureVisible(find.text('Ten etap nie ma jeszcze checklisty'));
+    await tester.pumpAndSettle();
     expect(find.text('Ten etap nie ma jeszcze checklisty'), findsOneWidget);
+    await tester.ensureVisible(find.text('Wskazówki dla tego etapu'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Wskazówki dla tego etapu'));
+    await tester.pumpAndSettle();
+    expect(find.text('Detal nadproża pod rolety lub żaluzje'), findsOneWidget);
+  });
+
+  testWidgets('opens an existing checklist item from related guidance', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_testApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Wskazówki dla tego etapu'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Uziom fundamentowy bez zgadywania'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Uziom fundamentowy bez zgadywania'));
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(
+      find.text('Powiązane punkty checklisty'),
+      300,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.tap(find.text('Bednarka i uziom fundamentowy').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Szczegóły punktu'), findsOneWidget);
+    expect(find.text('Bednarka i uziom fundamentowy'), findsOneWidget);
   });
 
   testWidgets('fits the stage plan on a compact Android viewport', (
@@ -53,6 +129,32 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.byKey(const ValueKey('stage-plan-screen')), findsOneWidget);
+  });
+
+  testWidgets('fits guidance at 320 px with 200 percent text scaling', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(_testApp(textScale: 2));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    await tester.ensureVisible(find.text('Wskazówki dla tego etapu'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Wskazówki dla tego etapu'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(
+      find.text('Przepusty i instalacje przed betonowaniem'),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Przepusty i instalacje przed betonowaniem'));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('To nie jest projekt wykonawczy'), findsOneWidget);
   });
 
   testWidgets('offers evidence or waiver when a required item is completed', (
@@ -78,7 +180,7 @@ void main() {
   });
 }
 
-Widget _testApp() {
+Widget _testApp({double textScale = 1}) {
   final project = _project();
   final projects = FakeProjectRepository(
     projects: <Project>[project],
@@ -95,6 +197,14 @@ Widget _testApp() {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: AppTheme.light,
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(textScale)),
+          child: child!,
+        );
+      },
       home: const StagePlanScreen(),
     ),
   );
@@ -138,31 +248,31 @@ final class _FakeStageRepository implements StageRepository {
           ),
         )
         .toList(growable: false);
-    final stateZero = definitions.singleWhere(
-      (stage) => stage.stageKey == ProjectStageKey.stateZero,
-    );
-    items = stateZero.checklistItems.indexed
-        .map(
-          (entry) => ChecklistItem(
-            id: 'item-${entry.$2.key.name}',
-            projectId: projectId,
-            stageId: 'state_zero',
-            templateKey: entry.$2.key,
-            status: ChecklistStatus.todo,
-            importance: entry.$2.importance,
-            evidenceRequirement: entry.$2.evidenceRequirement,
-            evidenceIds: const <String>[],
-            sortOrder: entry.$1,
-            createdAt: now,
-            updatedAt: now,
-          ),
-        )
-        .toList(growable: false);
+    itemsByStage = <String, List<ChecklistItem>>{
+      for (final definition in definitions)
+        _stageId(definition.stageKey): definition.checklistItems.indexed
+            .map(
+              (entry) => ChecklistItem(
+                id: 'item-${entry.$2.key.name}',
+                projectId: projectId,
+                stageId: _stageId(definition.stageKey),
+                templateKey: entry.$2.key,
+                status: ChecklistStatus.todo,
+                importance: entry.$2.importance,
+                evidenceRequirement: entry.$2.evidenceRequirement,
+                evidenceIds: const <String>[],
+                sortOrder: entry.$1,
+                createdAt: now,
+                updatedAt: now,
+              ),
+            )
+            .toList(growable: false),
+    };
   }
 
   final String projectId;
   late final List<ProjectStage> stages;
-  late final List<ChecklistItem> items;
+  late final Map<String, List<ChecklistItem>> itemsByStage;
 
   @override
   Future<List<ProjectStage>> listStages({
@@ -174,12 +284,12 @@ final class _FakeStageRepository implements StageRepository {
   Future<List<ChecklistItem>> listChecklistItems({
     required String projectId,
     required String stageId,
-  }) async => stageId == 'state_zero' ? items : const <ChecklistItem>[];
+  }) async => itemsByStage[stageId] ?? const <ChecklistItem>[];
 
   @override
   Future<List<ChecklistItem>> listProjectChecklistItems({
     required String projectId,
-  }) async => items;
+  }) async => itemsByStage.values.expand((items) => items).toList();
 
   @override
   Future<ChecklistItem> updateChecklistItem({
@@ -187,7 +297,9 @@ final class _FakeStageRepository implements StageRepository {
     required String checklistItemId,
     required ChecklistItemDetailsInput input,
   }) async {
-    final item = items.singleWhere((item) => item.id == checklistItemId);
+    final item = itemsByStage.values
+        .expand((items) => items)
+        .singleWhere((item) => item.id == checklistItemId);
     validateChecklistResolution(
       status: input.status,
       evidenceRequirement: input.evidenceRequirement,

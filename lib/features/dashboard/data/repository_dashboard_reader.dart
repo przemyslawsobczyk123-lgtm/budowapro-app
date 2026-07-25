@@ -61,11 +61,11 @@ final class RepositoryDashboardReader implements DashboardReader {
       statuses: const <CostStatus>{CostStatus.due, CostStatus.disputed},
     );
     final allCostsQuery = CostQuery(projectId: project.id, includeDrafts: true);
+    final stages = await _stageRepository.listStages(
+      projectId: project.id,
+      template: project.template,
+    );
     final results = await Future.wait<Object>([
-      _stageRepository.listStages(
-        projectId: project.id,
-        template: project.template,
-      ),
       _stageRepository.listProjectChecklistItems(projectId: project.id),
       _costRepository.summarize(CostSummaryQuery.fromCostQuery(spentQuery)),
       _costRepository.summarize(CostSummaryQuery.fromCostQuery(forecastQuery)),
@@ -82,15 +82,14 @@ final class RepositoryDashboardReader implements DashboardReader {
       _scheduleRepository.listOpen(projectId: project.id),
     ]);
 
-    final stages = results[0] as List<ProjectStage>;
-    final checklistItems = results[1] as List<ChecklistItem>;
-    final spent = results[2] as CostSummary;
-    final forecast = results[3] as CostSummary;
-    final unpaid = results[4] as CostSummary;
-    final unpaidPage = results[5] as Page<CostEntry>;
-    final allCostsPage = results[6] as Page<CostEntry>;
-    final todayAgenda = results[7] as List<ScheduleEvent>;
-    final openEvents = results[8] as List<ScheduleEvent>;
+    final checklistItems = results[0] as List<ChecklistItem>;
+    final spent = results[1] as CostSummary;
+    final forecast = results[2] as CostSummary;
+    final unpaid = results[3] as CostSummary;
+    final unpaidPage = results[4] as Page<CostEntry>;
+    final allCostsPage = results[5] as Page<CostEntry>;
+    final todayAgenda = results[6] as List<ScheduleEvent>;
+    final openEvents = results[7] as List<ScheduleEvent>;
     final upcomingVisits = openEvents
         .where(
           (event) =>

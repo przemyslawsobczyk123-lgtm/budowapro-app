@@ -1,6 +1,6 @@
 # BudowaPRO - implementation status
 
-Last updated: 2026-07-21
+Last updated: 2026-07-25
 
 ## Current release
 
@@ -134,6 +134,19 @@ Last updated: 2026-07-21
   costs or checklist items, and failed linking removes only the unlinked staged file.
 - Custom stages are available immediately in the cost form and budget filters; labels are resolved from
   persisted stage records rather than shown as raw IDs.
+- A versioned offline guidance catalog adds five compact `Stan 0` decision guides for service penetrations,
+  foundation earthing, waterproofing, drainage/ground levels and concealed-work evidence. Each detail shows
+  when to decide, inspection points, specialist questions, structured source metadata, content version and a clear
+  boundary that it is not an execution design.
+- The shell-open stage has an informational guide for agreeing the exact window/shading detail before lintels.
+  It does not seed a database row or change progress in existing projects. The content explicitly treats `5 cm`,
+  `30 x 4 mm`, PMBC/KMB, XPS, dimpled membrane and drainage as project/system-dependent rather than universal
+  instructions.
+- Users can add their own local position with a responsible person, note, skip risk, importance and evidence
+  policy in one form. Guidance opens related existing checklist items instead of creating duplicates. Idempotent
+  `Stan 0` reseeding is regression-tested not to replace user edits or custom items.
+- The guidance panel remains collapsed by default so the checklist stays visible. A scrollable near-full-screen
+  detail is verified at `320 x 640`; sources and editorial rules are recorded in `STAGE_GUIDANCE_SOURCES.md`.
 
 ### Task 3.2 - seven-day plan and local reminders
 
@@ -312,7 +325,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-25. The full suite contains 298 passing tests. Debug APK:
+All commands passed on 2026-07-25. The full suite contains 307 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk

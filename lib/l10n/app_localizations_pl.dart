@@ -836,6 +836,115 @@ class AppLocalizationsPl extends AppLocalizations {
   String get stageMutationError => 'Nie udało się zapisać zmiany.';
 
   @override
+  String get stageGuidanceHeading => 'Wskazówki dla tego etapu';
+
+  @override
+  String stageGuidanceCount(int count) {
+    return 'Porady: $count';
+  }
+
+  @override
+  String get stageGuidanceAddOwnAction => 'Dodaj własną pozycję';
+
+  @override
+  String get stageGuidanceDisclaimerTitle => 'To nie jest projekt wykonawczy';
+
+  @override
+  String get stageGuidanceDisclaimerMessage =>
+      'To ogólna lista kontrolna do rozmowy z projektantem, kierownikiem budowy i wykonawcą branżowym. Wymiary, materiały i układ zawsze potwierdź w dokumentacji swojego domu.';
+
+  @override
+  String get stageGuidanceCheckHeading => 'Sprawdź przed pracą';
+
+  @override
+  String get stageGuidanceQuestionsHeading => 'Pytania do fachowca';
+
+  @override
+  String get stageGuidanceSourcesHeading => 'Źródła i podstawa';
+
+  @override
+  String stageGuidanceVersion(int version, String date) {
+    return 'Wersja treści $version • sprawdzono $date';
+  }
+
+  @override
+  String get stageGuidanceCloseAction => 'Zamknij wskazówkę';
+
+  @override
+  String get stageGuidanceEmpty =>
+      'Brak gotowych wskazówek dla tego etapu. Możesz dodać własną pozycję do checklisty.';
+
+  @override
+  String get stageGuidanceRelatedChecklistHeading =>
+      'Powiązane punkty checklisty';
+
+  @override
+  String get stageGuidanceSourceRegulation => 'Przepis';
+
+  @override
+  String get stageGuidanceSourceStandard => 'Norma';
+
+  @override
+  String get stageGuidanceSourceOfficialGuidance => 'Wytyczne techniczne';
+
+  @override
+  String get stageGuidanceSourceSystemDocumentation => 'Dokumentacja systemowa';
+
+  @override
+  String stageGuidanceSourceRevision(String revision) {
+    return 'Wydanie: $revision';
+  }
+
+  @override
+  String stageGuidanceSourceVerifiedOn(String date) {
+    return 'Sprawdzono: $date';
+  }
+
+  @override
+  String get stageGuidanceSourceTechnicalConditions =>
+      'Warunki techniczne budynków i wykaz zmian MRiT';
+
+  @override
+  String get stageGuidanceSourceLowVoltageEarthing =>
+      'PN-HD 60364-5-54 - uziemienia i przewody ochronne';
+
+  @override
+  String get stageGuidanceSourceLightningConnections =>
+      'PN-EN IEC 62561-1 - elementy połączeniowe';
+
+  @override
+  String get stageGuidanceSourceLightningConductors =>
+      'PN-EN IEC 62561-2 - przewody i uziomy';
+
+  @override
+  String get stageGuidanceSourceItbWaterproofing =>
+      'ITB - izolacje części podziemnych budynków';
+
+  @override
+  String get stageGuidanceSourcePmbcStandard =>
+      'PN-EN 15814 - grubowarstwowe powłoki asfaltowe PMBC';
+
+  @override
+  String get stageGuidanceSourceDehnEarthing =>
+      'DEHN - poradnik uziomów fundamentowych';
+
+  @override
+  String get stageGuidanceSourceHauffEntries =>
+      'Hauff-Technik - systemowe przepusty do budynków';
+
+  @override
+  String get stageGuidanceSourceRemmersWaterproofing =>
+      'Remmers - system hydroizolacji MB 2K';
+
+  @override
+  String get stageGuidanceSourceUrsaInsulation =>
+      'URSA - termoizolacja fundamentów i cokołów';
+
+  @override
+  String get stageGuidanceSourceAluprofShading =>
+      'ALUPROF - kompendium systemów osłonowych';
+
+  @override
   String get checklistHeading => 'Lista kontrolna';
 
   @override
@@ -1095,6 +1204,126 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get checklistPostFoundationSurveyRisk =>
       'Odchyłki położenia mogą ujawnić się dopiero przy kolejnych etapach lub odbiorze.';
+
+  @override
+  String get guidanceServicePenetrationsTitle =>
+      'Przepusty i instalacje przed betonowaniem';
+
+  @override
+  String get guidanceServicePenetrationsTiming =>
+      'Przed zbrojeniem, szalowaniem i betonowaniem ław lub płyty';
+
+  @override
+  String get guidanceServicePenetrationsSummary =>
+      'Zbierz elektryka, instalatora sanitarnego i konstruktora nad jednym rysunkiem przejść. Po betonowaniu brakująca trasa zwykle oznacza przewiert przez konstrukcję lub hydroizolację.';
+
+  @override
+  String get guidanceServicePenetrationsChecks =>
+      'Ustal osie, rzędne, średnice i sposób uszczelnienia z projektów branżowych.\nSprawdź kanalizację, wodę, prąd, teletechnikę oraz rezerwy do bramy, domofonu, ogrodu, pompy ciepła, PV i ładowarki auta.\nZweryfikuj spadki kanalizacji, miejsca pionów, rewizji i pierwszej studzienki.\nZabezpiecz i oznacz tuleje przed przesunięciem oraz dostaniem się betonu.\nZrób zdjęcia z miarą i odniesieniem do stałych osi budynku przed zakryciem.';
+
+  @override
+  String get guidanceServicePenetrationsQuestions =>
+      'Czy wszystkie branże zatwierdziły wspólny rysunek przejść?\nKtóre przepusty mają być wodo- lub gazoszczelne?\nCzy później da się wymienić kabel bez kucia?\nJak przejście zachowa ciągłość hydroizolacji i nie osłabi zbrojenia?';
+
+  @override
+  String get guidanceFoundationGroundingTitle =>
+      'Uziom fundamentowy bez zgadywania';
+
+  @override
+  String get guidanceFoundationGroundingTiming =>
+      'Po wykonaniu zbrojenia, ale przed betonowaniem fundamentu';
+
+  @override
+  String get guidanceFoundationGroundingSummary =>
+      'Elektryk powinien dobrać typ uziomu do fundamentu, izolacji, instalacji odgromowej i planowanych urządzeń. Płaskownik 30×3-4 mm, w tym popularne 30×4 mm, jest spotykanym rozwiązaniem systemowym, a nie wartością właściwą dla każdego domu.';
+
+  @override
+  String get guidanceFoundationGroundingChecks =>
+      'Potwierdź projekt uziomu, materiał, przekrój, połączenia i ochronę antykorozyjną.\nSprawdź wpływ izolacji obwodowej, płyty w pełnej izolacji lub betonu wodoszczelnego na wybór uziomu fundamentowego albo otokowego.\nUstal wypust do głównej szyny uziemiającej, instalacji odgromowej, PV i innych wymaganych połączeń.\nStosuj elementy połączeniowe przeznaczone do uziomów i środowiska ich pracy.\nPrzed betonowaniem wykonaj odbiór, zdjęcia, pomiar ciągłości i dokumentację powykonawczą.';
+
+  @override
+  String get guidanceFoundationGroundingQuestions =>
+      'Czy fundament jest elektrycznie odizolowany od gruntu?\nCzy będzie instalacja odgromowa lub fotowoltaika?\nKto odpowiada za odbiór przed betonowaniem i protokół pomiarów?\nGdzie znajdą się wypusty i jak zostaną zabezpieczone przy przejściu beton-grunt?';
+
+  @override
+  String get guidanceFoundationWaterproofingTitle =>
+      'Hydroizolacja dobrana do wody, nie do nazwy produktu';
+
+  @override
+  String get guidanceFoundationWaterproofingTiming =>
+      'Po rozpoznaniu warunków gruntowo-wodnych, przed zakupem materiałów i zasypaniem';
+
+  @override
+  String get guidanceFoundationWaterproofingSummary =>
+      'Najpierw określ obciążenie wodą i oczekiwaną zdolność mostkowania rys. Dysperbit może być gruntem lub powłoką przeciwwilgociową zgodnie z kartą konkretnego produktu, lecz nie należy zakładać, że zastąpi izolację przeciwwodną przy naporze wody. KMB/PMBC 2K także musi być dobrane i wykonane jako kompletny system.';
+
+  @override
+  String get guidanceFoundationWaterproofingChecks =>
+      'Oprzyj rozwiązanie na geotechnice, maksymalnym poziomie wody i projekcie hydroizolacji.\nSprawdź przeznaczenie produktu, deklarację właściwości, wymaganą suchą grubość, liczbę cykli i czas wysychania.\nDopracuj podłoże, fasety, naroża, połączenie izolacji poziomej z pionową oraz każde przejście instalacyjne.\nPo odbiorze hydroizolacji zastosuj kompatybilne mocowanie XPS lub innej termoizolacji i warstwę ochronną przewidzianą w systemie.\nNie przebijaj powłoki mocowaniem i nie zasypuj jej przed wymaganym utwardzeniem.';
+
+  @override
+  String get guidanceFoundationWaterproofingQuestions =>
+      'Czy występuje tylko wilgoć gruntowa, woda zalegająca czy parcie hydrostatyczne?\nJaka jest minimalna grubość suchej warstwy i jak będzie kontrolowana?\nCzy klej, XPS i membrana ochronna są zgodne z wybraną masą?\nKto odbierze detale przed ich zakryciem?';
+
+  @override
+  String get guidanceDrainageAndGroundLevelsTitle =>
+      'Drenaż, odpływ i docelowe poziomy terenu';
+
+  @override
+  String get guidanceDrainageAndGroundLevelsTiming =>
+      'Przed zasypaniem fundamentów i wykonaniem docelowego terenu';
+
+  @override
+  String get guidanceDrainageAndGroundLevelsSummary =>
+      'Drenaż nie jest automatycznym dodatkiem do każdego domu. Musi wynikać z warunków wodnych i projektu oraz mieć legalne, drożne miejsce odprowadzenia. Folia kubełkowa może pełnić funkcję ochronną lub drenażową w danym systemie, ale sama nie jest hydroizolacją.';
+
+  @override
+  String get guidanceDrainageAndGroundLevelsChecks =>
+      'Potwierdź zasadność drenażu, poziomy, spadki, obsypkę, studzienki i możliwość czyszczenia.\nUstal odbiornik wody oraz zabezpieczenie przed cofaniem i zamuleniem.\nSprawdź docelowe rzędne tarasów, podjazdu i gruntu przy cokole.\nZaplanuj swobodny spływ wody opadowej od budynku.\nChroń hydroizolację podczas zasypywania zgodnie z wybranym systemem.';
+
+  @override
+  String get guidanceDrainageAndGroundLevelsQuestions =>
+      'Dokąd woda ma odpływać i czy jest na to zgoda?\nCzy drenaż może działać grawitacyjnie przez cały rok?\nJak będzie kontrolowany i czyszczony?\nCzy docelowe poziomy nie zasłonią cokołu ani wejść do budynku?';
+
+  @override
+  String get guidanceConcealedWorksEvidenceTitle =>
+      'Odbiór i zdjęcia zanim beton lub grunt wszystko zakryje';
+
+  @override
+  String get guidanceConcealedWorksEvidenceTiming =>
+      'Bezpośrednio przed każdym betonowaniem, zasypaniem lub zakryciem';
+
+  @override
+  String get guidanceConcealedWorksEvidenceSummary =>
+      'Zdjęcia bez skali i lokalizacji są mało użyteczne. Udokumentuj elementy ukryte tak, aby po latach można było znaleźć trasę, połączenie i punkt przejścia bez zgadywania.';
+
+  @override
+  String get guidanceConcealedWorksEvidenceChecks =>
+      'Zrób ujęcie ogólne i zbliżenia z miarą oraz odniesieniem do osi lub narożnika.\nFotografuj zbrojenie, uziom, wypusty, przepusty, kanalizację, detale hydroizolacji i naprawy.\nZapisz odbiór kierownika lub branżysty oraz wymagane protokoły i wyniki prób.\nZachowaj dokument WZ betonu i potwierdzenie jego parametrów.\nPo wykonaniu fundamentów dołącz inwentaryzację geodezyjną.';
+
+  @override
+  String get guidanceConcealedWorksEvidenceQuestions =>
+      'Czy ze zdjęć da się odtworzyć dokładne położenie elementu?\nCzy wymagane próby i pomiary mają podpisany protokół?\nCzy kierownik zaakceptował roboty przed zgodą na zakrycie?';
+
+  @override
+  String get guidanceWindowShadingPreparationTitle =>
+      'Detal nadproża pod rolety lub żaluzje';
+
+  @override
+  String get guidanceWindowShadingPreparationTiming =>
+      'Przed wykonaniem nadproży, zamówieniem okien i zamknięciem projektu elewacji';
+
+  @override
+  String get guidanceWindowShadingPreparationSummary =>
+      'Nie ma uniwersalnego cofnięcia o 5 cm. Potrzebna wnęka zależy od wybranego systemu, wymiaru skrzynki, pakietu lameli, prowadnic, położenia okna, ocieplenia i konstrukcji nadproża.';
+
+  @override
+  String get guidanceWindowShadingPreparationChecks =>
+      'Wybierz typ osłony i konkretny system dla każdego otworu.\nUzyskaj detal z wymiarami skrzynki, wnęki, prowadnic, mocowań i dostępu serwisowego.\nUzgodnij detal z architektem i konstruktorem przed zmianą geometrii nadproża.\nSprawdź ciągłość ocieplenia, szczelność połączenia okna oraz ryzyko mostka cieplnego.\nDoprowadź zasilanie i sterowanie do właściwej strony, zachowując dostęp do napędu.';
+
+  @override
+  String get guidanceWindowShadingPreparationQuestions =>
+      'Roleta czy żaluzja fasadowa i w jakim systemie zabudowy?\nJakie są rzeczywiste wymiary skrzynki i pakietu dla tego okna?\nGdzie będzie rewizja serwisowa, przewód i napęd?\nCzy detal nie osłabia nadproża i mieści projektowaną grubość elewacji?';
 
   @override
   String get scheduleWeekTab => '7 dni';

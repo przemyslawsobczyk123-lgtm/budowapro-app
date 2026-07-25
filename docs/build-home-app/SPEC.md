@@ -193,6 +193,10 @@ Globalny wybor projektu jest dostepny z kazdego glownego ekranu. Zmiana projektu
 | PLAN-008 | P0 | Plan 7 dni laczy zadania, wizyty, dostawy, odbiory i prace blokowane. |
 | PLAN-009 | P1 | Zaleznosci pokazuja, co blokuje nastepna prace i jaki jest termin decyzji. |
 | PLAN-010 | P1 | Kalendarz pozwala przelozyc zdarzenie i zachowuje historie zmiany terminu. |
+| PLAN-011 | P0 | Etap moze pokazac wersjonowane wskazowki offline: kiedy podjac decyzje, co sprawdzic, o co zapytac fachowca i na jakich zrodlach oparto tresc. |
+| PLAN-012 | P0 | Wskazowka techniczna zawsze informuje, ze nie zastepuje projektu, warunkow gruntowo-wodnych ani decyzji projektanta lub kierownika budowy. |
+| PLAN-013 | P0 | Uzytkownik moze dodac wlasna pozycje z tytulem, fachowcem, notatka, ryzykiem, waznoscia i wymaganym dowodem; aktualizacja katalogu nie nadpisuje danych uzytkownika. |
+| PLAN-014 | P0 | Stan surowy otwarty przypomina o wyborze systemu rolet lub zaluzji przed nadprozami; wymiar wneki wynika z wybranego systemu i zatwierdzonego detalu. |
 
 ### 11.1 Minimalna checklista `Stan 0`
 
@@ -216,6 +220,12 @@ Szablon musi zawierac co najmniej:
 - zdjecia zbrojenia, przepustow i uziomu przed zakryciem,
 - dokument WZ betonu i protokol odbioru,
 - inwentaryzacje po wykonaniu fundamentow.
+
+Wskazowki `Stanu 0` grupuja przepusty i kanalizacje, uziom fundamentowy,
+dobor hydroizolacji, drenaz i poziomy terenu oraz dokumentacje robot
+zanikajacych. Wartosc `30 x 4 mm`, kolejnosc warstw lub produkt sa pokazywane
+wylacznie jako przyklad do potwierdzenia w projekcie i instrukcji kompletnego
+systemu.
 
 ## 12. Kontakty, ekipy, oferty i wizyty
 

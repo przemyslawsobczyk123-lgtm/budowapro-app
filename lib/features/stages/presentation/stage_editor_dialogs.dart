@@ -327,12 +327,18 @@ class _AddChecklistDialog extends StatefulWidget {
 class _AddChecklistDialogState extends State<_AddChecklistDialog> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
+  final _assigneeController = TextEditingController();
+  final _noteController = TextEditingController();
+  final _riskController = TextEditingController();
   var _importance = ChecklistImportance.normal;
   var _evidence = EvidenceRequirement.none;
 
   @override
   void dispose() {
     _titleController.dispose();
+    _assigneeController.dispose();
+    _noteController.dispose();
+    _riskController.dispose();
     super.dispose();
   }
 
@@ -377,6 +383,39 @@ class _AddChecklistDialogState extends State<_AddChecklistDialog> {
                 onChanged: (value) => setState(() => _importance = value!),
               ),
               const SizedBox(height: 12),
+              TextFormField(
+                controller: _assigneeController,
+                maxLength: 120,
+                textCapitalization: TextCapitalization.words,
+                decoration: InputDecoration(
+                  labelText: l10n.checklistAssigneeLabel,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _noteController,
+                maxLength: 2000,
+                minLines: 2,
+                maxLines: 4,
+                textCapitalization: TextCapitalization.sentences,
+                decoration: InputDecoration(
+                  labelText: l10n.checklistNoteLabel,
+                  alignLabelWithHint: true,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _riskController,
+                maxLength: 500,
+                minLines: 2,
+                maxLines: 3,
+                textCapitalization: TextCapitalization.sentences,
+                decoration: InputDecoration(
+                  labelText: l10n.checklistRiskLabel,
+                  alignLabelWithHint: true,
+                ),
+              ),
+              const SizedBox(height: 12),
               DropdownButtonFormField<EvidenceRequirement>(
                 initialValue: _evidence,
                 isExpanded: true,
@@ -417,6 +456,9 @@ class _AddChecklistDialogState extends State<_AddChecklistDialog> {
           status: ChecklistStatus.todo,
           importance: _importance,
           evidenceRequirement: _evidence,
+          assignee: _assigneeController.text,
+          note: _noteController.text,
+          riskIfSkipped: _riskController.text,
         ),
       ),
     );

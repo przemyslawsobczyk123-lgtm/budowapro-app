@@ -1660,6 +1660,180 @@ abstract class AppLocalizations {
   /// **'Nie udało się zapisać zmiany.'**
   String get stageMutationError;
 
+  /// No description provided for @stageGuidanceHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wskazówki dla tego etapu'**
+  String get stageGuidanceHeading;
+
+  /// No description provided for @stageGuidanceCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Porady: {count}'**
+  String stageGuidanceCount(int count);
+
+  /// No description provided for @stageGuidanceAddOwnAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj własną pozycję'**
+  String get stageGuidanceAddOwnAction;
+
+  /// No description provided for @stageGuidanceDisclaimerTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'To nie jest projekt wykonawczy'**
+  String get stageGuidanceDisclaimerTitle;
+
+  /// No description provided for @stageGuidanceDisclaimerMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'To ogólna lista kontrolna do rozmowy z projektantem, kierownikiem budowy i wykonawcą branżowym. Wymiary, materiały i układ zawsze potwierdź w dokumentacji swojego domu.'**
+  String get stageGuidanceDisclaimerMessage;
+
+  /// No description provided for @stageGuidanceCheckHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź przed pracą'**
+  String get stageGuidanceCheckHeading;
+
+  /// No description provided for @stageGuidanceQuestionsHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pytania do fachowca'**
+  String get stageGuidanceQuestionsHeading;
+
+  /// No description provided for @stageGuidanceSourcesHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Źródła i podstawa'**
+  String get stageGuidanceSourcesHeading;
+
+  /// No description provided for @stageGuidanceVersion.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wersja treści {version} • sprawdzono {date}'**
+  String stageGuidanceVersion(int version, String date);
+
+  /// No description provided for @stageGuidanceCloseAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamknij wskazówkę'**
+  String get stageGuidanceCloseAction;
+
+  /// No description provided for @stageGuidanceEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak gotowych wskazówek dla tego etapu. Możesz dodać własną pozycję do checklisty.'**
+  String get stageGuidanceEmpty;
+
+  /// No description provided for @stageGuidanceRelatedChecklistHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiązane punkty checklisty'**
+  String get stageGuidanceRelatedChecklistHeading;
+
+  /// No description provided for @stageGuidanceSourceRegulation.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przepis'**
+  String get stageGuidanceSourceRegulation;
+
+  /// No description provided for @stageGuidanceSourceStandard.
+  ///
+  /// In pl, this message translates to:
+  /// **'Norma'**
+  String get stageGuidanceSourceStandard;
+
+  /// No description provided for @stageGuidanceSourceOfficialGuidance.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wytyczne techniczne'**
+  String get stageGuidanceSourceOfficialGuidance;
+
+  /// No description provided for @stageGuidanceSourceSystemDocumentation.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokumentacja systemowa'**
+  String get stageGuidanceSourceSystemDocumentation;
+
+  /// No description provided for @stageGuidanceSourceRevision.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wydanie: {revision}'**
+  String stageGuidanceSourceRevision(String revision);
+
+  /// No description provided for @stageGuidanceSourceVerifiedOn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdzono: {date}'**
+  String stageGuidanceSourceVerifiedOn(String date);
+
+  /// No description provided for @stageGuidanceSourceTechnicalConditions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Warunki techniczne budynków i wykaz zmian MRiT'**
+  String get stageGuidanceSourceTechnicalConditions;
+
+  /// No description provided for @stageGuidanceSourceLowVoltageEarthing.
+  ///
+  /// In pl, this message translates to:
+  /// **'PN-HD 60364-5-54 - uziemienia i przewody ochronne'**
+  String get stageGuidanceSourceLowVoltageEarthing;
+
+  /// No description provided for @stageGuidanceSourceLightningConnections.
+  ///
+  /// In pl, this message translates to:
+  /// **'PN-EN IEC 62561-1 - elementy połączeniowe'**
+  String get stageGuidanceSourceLightningConnections;
+
+  /// No description provided for @stageGuidanceSourceLightningConductors.
+  ///
+  /// In pl, this message translates to:
+  /// **'PN-EN IEC 62561-2 - przewody i uziomy'**
+  String get stageGuidanceSourceLightningConductors;
+
+  /// No description provided for @stageGuidanceSourceItbWaterproofing.
+  ///
+  /// In pl, this message translates to:
+  /// **'ITB - izolacje części podziemnych budynków'**
+  String get stageGuidanceSourceItbWaterproofing;
+
+  /// No description provided for @stageGuidanceSourcePmbcStandard.
+  ///
+  /// In pl, this message translates to:
+  /// **'PN-EN 15814 - grubowarstwowe powłoki asfaltowe PMBC'**
+  String get stageGuidanceSourcePmbcStandard;
+
+  /// No description provided for @stageGuidanceSourceDehnEarthing.
+  ///
+  /// In pl, this message translates to:
+  /// **'DEHN - poradnik uziomów fundamentowych'**
+  String get stageGuidanceSourceDehnEarthing;
+
+  /// No description provided for @stageGuidanceSourceHauffEntries.
+  ///
+  /// In pl, this message translates to:
+  /// **'Hauff-Technik - systemowe przepusty do budynków'**
+  String get stageGuidanceSourceHauffEntries;
+
+  /// No description provided for @stageGuidanceSourceRemmersWaterproofing.
+  ///
+  /// In pl, this message translates to:
+  /// **'Remmers - system hydroizolacji MB 2K'**
+  String get stageGuidanceSourceRemmersWaterproofing;
+
+  /// No description provided for @stageGuidanceSourceUrsaInsulation.
+  ///
+  /// In pl, this message translates to:
+  /// **'URSA - termoizolacja fundamentów i cokołów'**
+  String get stageGuidanceSourceUrsaInsulation;
+
+  /// No description provided for @stageGuidanceSourceAluprofShading.
+  ///
+  /// In pl, this message translates to:
+  /// **'ALUPROF - kompendium systemów osłonowych'**
+  String get stageGuidanceSourceAluprofShading;
+
   /// No description provided for @checklistHeading.
   ///
   /// In pl, this message translates to:
@@ -2109,6 +2283,186 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Odchyłki położenia mogą ujawnić się dopiero przy kolejnych etapach lub odbiorze.'**
   String get checklistPostFoundationSurveyRisk;
+
+  /// No description provided for @guidanceServicePenetrationsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przepusty i instalacje przed betonowaniem'**
+  String get guidanceServicePenetrationsTitle;
+
+  /// No description provided for @guidanceServicePenetrationsTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed zbrojeniem, szalowaniem i betonowaniem ław lub płyty'**
+  String get guidanceServicePenetrationsTiming;
+
+  /// No description provided for @guidanceServicePenetrationsSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zbierz elektryka, instalatora sanitarnego i konstruktora nad jednym rysunkiem przejść. Po betonowaniu brakująca trasa zwykle oznacza przewiert przez konstrukcję lub hydroizolację.'**
+  String get guidanceServicePenetrationsSummary;
+
+  /// No description provided for @guidanceServicePenetrationsChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustal osie, rzędne, średnice i sposób uszczelnienia z projektów branżowych.\nSprawdź kanalizację, wodę, prąd, teletechnikę oraz rezerwy do bramy, domofonu, ogrodu, pompy ciepła, PV i ładowarki auta.\nZweryfikuj spadki kanalizacji, miejsca pionów, rewizji i pierwszej studzienki.\nZabezpiecz i oznacz tuleje przed przesunięciem oraz dostaniem się betonu.\nZrób zdjęcia z miarą i odniesieniem do stałych osi budynku przed zakryciem.'**
+  String get guidanceServicePenetrationsChecks;
+
+  /// No description provided for @guidanceServicePenetrationsQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy wszystkie branże zatwierdziły wspólny rysunek przejść?\nKtóre przepusty mają być wodo- lub gazoszczelne?\nCzy później da się wymienić kabel bez kucia?\nJak przejście zachowa ciągłość hydroizolacji i nie osłabi zbrojenia?'**
+  String get guidanceServicePenetrationsQuestions;
+
+  /// No description provided for @guidanceFoundationGroundingTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uziom fundamentowy bez zgadywania'**
+  String get guidanceFoundationGroundingTitle;
+
+  /// No description provided for @guidanceFoundationGroundingTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po wykonaniu zbrojenia, ale przed betonowaniem fundamentu'**
+  String get guidanceFoundationGroundingTiming;
+
+  /// No description provided for @guidanceFoundationGroundingSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Elektryk powinien dobrać typ uziomu do fundamentu, izolacji, instalacji odgromowej i planowanych urządzeń. Płaskownik 30×3-4 mm, w tym popularne 30×4 mm, jest spotykanym rozwiązaniem systemowym, a nie wartością właściwą dla każdego domu.'**
+  String get guidanceFoundationGroundingSummary;
+
+  /// No description provided for @guidanceFoundationGroundingChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potwierdź projekt uziomu, materiał, przekrój, połączenia i ochronę antykorozyjną.\nSprawdź wpływ izolacji obwodowej, płyty w pełnej izolacji lub betonu wodoszczelnego na wybór uziomu fundamentowego albo otokowego.\nUstal wypust do głównej szyny uziemiającej, instalacji odgromowej, PV i innych wymaganych połączeń.\nStosuj elementy połączeniowe przeznaczone do uziomów i środowiska ich pracy.\nPrzed betonowaniem wykonaj odbiór, zdjęcia, pomiar ciągłości i dokumentację powykonawczą.'**
+  String get guidanceFoundationGroundingChecks;
+
+  /// No description provided for @guidanceFoundationGroundingQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy fundament jest elektrycznie odizolowany od gruntu?\nCzy będzie instalacja odgromowa lub fotowoltaika?\nKto odpowiada za odbiór przed betonowaniem i protokół pomiarów?\nGdzie znajdą się wypusty i jak zostaną zabezpieczone przy przejściu beton-grunt?'**
+  String get guidanceFoundationGroundingQuestions;
+
+  /// No description provided for @guidanceFoundationWaterproofingTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Hydroizolacja dobrana do wody, nie do nazwy produktu'**
+  String get guidanceFoundationWaterproofingTitle;
+
+  /// No description provided for @guidanceFoundationWaterproofingTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po rozpoznaniu warunków gruntowo-wodnych, przed zakupem materiałów i zasypaniem'**
+  String get guidanceFoundationWaterproofingTiming;
+
+  /// No description provided for @guidanceFoundationWaterproofingSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Najpierw określ obciążenie wodą i oczekiwaną zdolność mostkowania rys. Dysperbit może być gruntem lub powłoką przeciwwilgociową zgodnie z kartą konkretnego produktu, lecz nie należy zakładać, że zastąpi izolację przeciwwodną przy naporze wody. KMB/PMBC 2K także musi być dobrane i wykonane jako kompletny system.'**
+  String get guidanceFoundationWaterproofingSummary;
+
+  /// No description provided for @guidanceFoundationWaterproofingChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oprzyj rozwiązanie na geotechnice, maksymalnym poziomie wody i projekcie hydroizolacji.\nSprawdź przeznaczenie produktu, deklarację właściwości, wymaganą suchą grubość, liczbę cykli i czas wysychania.\nDopracuj podłoże, fasety, naroża, połączenie izolacji poziomej z pionową oraz każde przejście instalacyjne.\nPo odbiorze hydroizolacji zastosuj kompatybilne mocowanie XPS lub innej termoizolacji i warstwę ochronną przewidzianą w systemie.\nNie przebijaj powłoki mocowaniem i nie zasypuj jej przed wymaganym utwardzeniem.'**
+  String get guidanceFoundationWaterproofingChecks;
+
+  /// No description provided for @guidanceFoundationWaterproofingQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy występuje tylko wilgoć gruntowa, woda zalegająca czy parcie hydrostatyczne?\nJaka jest minimalna grubość suchej warstwy i jak będzie kontrolowana?\nCzy klej, XPS i membrana ochronna są zgodne z wybraną masą?\nKto odbierze detale przed ich zakryciem?'**
+  String get guidanceFoundationWaterproofingQuestions;
+
+  /// No description provided for @guidanceDrainageAndGroundLevelsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Drenaż, odpływ i docelowe poziomy terenu'**
+  String get guidanceDrainageAndGroundLevelsTitle;
+
+  /// No description provided for @guidanceDrainageAndGroundLevelsTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed zasypaniem fundamentów i wykonaniem docelowego terenu'**
+  String get guidanceDrainageAndGroundLevelsTiming;
+
+  /// No description provided for @guidanceDrainageAndGroundLevelsSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Drenaż nie jest automatycznym dodatkiem do każdego domu. Musi wynikać z warunków wodnych i projektu oraz mieć legalne, drożne miejsce odprowadzenia. Folia kubełkowa może pełnić funkcję ochronną lub drenażową w danym systemie, ale sama nie jest hydroizolacją.'**
+  String get guidanceDrainageAndGroundLevelsSummary;
+
+  /// No description provided for @guidanceDrainageAndGroundLevelsChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potwierdź zasadność drenażu, poziomy, spadki, obsypkę, studzienki i możliwość czyszczenia.\nUstal odbiornik wody oraz zabezpieczenie przed cofaniem i zamuleniem.\nSprawdź docelowe rzędne tarasów, podjazdu i gruntu przy cokole.\nZaplanuj swobodny spływ wody opadowej od budynku.\nChroń hydroizolację podczas zasypywania zgodnie z wybranym systemem.'**
+  String get guidanceDrainageAndGroundLevelsChecks;
+
+  /// No description provided for @guidanceDrainageAndGroundLevelsQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokąd woda ma odpływać i czy jest na to zgoda?\nCzy drenaż może działać grawitacyjnie przez cały rok?\nJak będzie kontrolowany i czyszczony?\nCzy docelowe poziomy nie zasłonią cokołu ani wejść do budynku?'**
+  String get guidanceDrainageAndGroundLevelsQuestions;
+
+  /// No description provided for @guidanceConcealedWorksEvidenceTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odbiór i zdjęcia zanim beton lub grunt wszystko zakryje'**
+  String get guidanceConcealedWorksEvidenceTitle;
+
+  /// No description provided for @guidanceConcealedWorksEvidenceTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bezpośrednio przed każdym betonowaniem, zasypaniem lub zakryciem'**
+  String get guidanceConcealedWorksEvidenceTiming;
+
+  /// No description provided for @guidanceConcealedWorksEvidenceSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcia bez skali i lokalizacji są mało użyteczne. Udokumentuj elementy ukryte tak, aby po latach można było znaleźć trasę, połączenie i punkt przejścia bez zgadywania.'**
+  String get guidanceConcealedWorksEvidenceSummary;
+
+  /// No description provided for @guidanceConcealedWorksEvidenceChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zrób ujęcie ogólne i zbliżenia z miarą oraz odniesieniem do osi lub narożnika.\nFotografuj zbrojenie, uziom, wypusty, przepusty, kanalizację, detale hydroizolacji i naprawy.\nZapisz odbiór kierownika lub branżysty oraz wymagane protokoły i wyniki prób.\nZachowaj dokument WZ betonu i potwierdzenie jego parametrów.\nPo wykonaniu fundamentów dołącz inwentaryzację geodezyjną.'**
+  String get guidanceConcealedWorksEvidenceChecks;
+
+  /// No description provided for @guidanceConcealedWorksEvidenceQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy ze zdjęć da się odtworzyć dokładne położenie elementu?\nCzy wymagane próby i pomiary mają podpisany protokół?\nCzy kierownik zaakceptował roboty przed zgodą na zakrycie?'**
+  String get guidanceConcealedWorksEvidenceQuestions;
+
+  /// No description provided for @guidanceWindowShadingPreparationTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Detal nadproża pod rolety lub żaluzje'**
+  String get guidanceWindowShadingPreparationTitle;
+
+  /// No description provided for @guidanceWindowShadingPreparationTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed wykonaniem nadproży, zamówieniem okien i zamknięciem projektu elewacji'**
+  String get guidanceWindowShadingPreparationTiming;
+
+  /// No description provided for @guidanceWindowShadingPreparationSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie ma uniwersalnego cofnięcia o 5 cm. Potrzebna wnęka zależy od wybranego systemu, wymiaru skrzynki, pakietu lameli, prowadnic, położenia okna, ocieplenia i konstrukcji nadproża.'**
+  String get guidanceWindowShadingPreparationSummary;
+
+  /// No description provided for @guidanceWindowShadingPreparationChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz typ osłony i konkretny system dla każdego otworu.\nUzyskaj detal z wymiarami skrzynki, wnęki, prowadnic, mocowań i dostępu serwisowego.\nUzgodnij detal z architektem i konstruktorem przed zmianą geometrii nadproża.\nSprawdź ciągłość ocieplenia, szczelność połączenia okna oraz ryzyko mostka cieplnego.\nDoprowadź zasilanie i sterowanie do właściwej strony, zachowując dostęp do napędu.'**
+  String get guidanceWindowShadingPreparationChecks;
+
+  /// No description provided for @guidanceWindowShadingPreparationQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Roleta czy żaluzja fasadowa i w jakim systemie zabudowy?\nJakie są rzeczywiste wymiary skrzynki i pakietu dla tego okna?\nGdzie będzie rewizja serwisowa, przewód i napęd?\nCzy detal nie osłabia nadproża i mieści projektowaną grubość elewacji?'**
+  String get guidanceWindowShadingPreparationQuestions;
 
   /// No description provided for @scheduleWeekTab.
   ///

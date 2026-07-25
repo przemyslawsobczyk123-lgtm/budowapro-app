@@ -319,6 +319,31 @@ access. It contains all 18 minimum specification items. User-created stages and
 checklist items are project records and are never overwritten by template
 seeding.
 
+Stage guidance is a separate, schema-independent offline catalog. It groups
+related checklist keys into five `Stan 0` decision guides and one shell-open
+guide for window shading details. User-facing content stays in localization
+files; the domain catalog stores stable keys, stage ownership, related
+checklist keys, a content version and a verification date. Every source has a
+stable key, source type, revision, URL and independent verification date.
+Guidance details show timing, review points, questions for specialists, related
+existing checklist items, structured sources and a fixed boundary that the
+content is not an execution design.
+
+Built-in guidance is read-only and never changes stage progress. The action for
+an investor's own advice uses the existing custom `checklist_items` path,
+including assignee, note, skip risk, importance and evidence policy. Template
+seeding uses `ConflictAlgorithm.ignore`; catalog upgrades can add stable
+template rows but cannot replace user status, notes or custom checklist items.
+The source register and editorial constraints are maintained in
+`STAGE_GUIDANCE_SOURCES.md`.
+
+The shell-open window-shading guide is informational and does not seed a
+checklist row. This avoids changing completed-stage progress, the schema or the
+backup compatibility contract. An investor can create an explicit project-local
+checkpoint from the same panel. No fixed recess depth is stored because the
+approved detail depends on the selected box, guides, facade, window position
+and structure.
+
 ## Seven-Day Schedule And Reminders
 
 Schema `v5` adds four local tables:
