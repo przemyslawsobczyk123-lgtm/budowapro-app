@@ -76,7 +76,7 @@ Widget _app(BackupGateway gateway) {
 final class _FakeBackupGateway implements BackupGateway {
   final preview = BackupPreview(
     createdAt: DateTime.utc(2026, 7, 25, 9, 30),
-    schemaVersion: 8,
+    schemaVersion: 9,
     projectCount: 3,
     payloadFileCount: 28,
     payloadBytes: 12 * 1024 * 1024,

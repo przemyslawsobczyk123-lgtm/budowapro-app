@@ -63,6 +63,7 @@ void main() {
       AppDatabase.quoteAttachmentsTable,
       AppDatabase.documentMetadataTable,
       AppDatabase.documentContextLinksTable,
+      AppDatabase.receiptImportsTable,
     ]) {
       final table = await database.query(
         'sqlite_master',
@@ -180,6 +181,35 @@ void main() {
         'sqlite_master',
         where: 'type = ? AND name = ?',
         whereArgs: <Object?>['table', AppDatabase.costEntriesTable],
+      ),
+      hasLength(1),
+    );
+  });
+
+  test('migrates version 8 and preserves existing metadata', () async {
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    await appDatabase!.writeMetadata(
+      key: 'preserved-v8-setting',
+      value: 'keep-me',
+      updatedAt: DateTime.utc(2026, 7, 25),
+    );
+    final versionEightDatabase = await appDatabase!.open();
+    await versionEightDatabase.execute(
+      'DROP TABLE ${AppDatabase.receiptImportsTable}',
+    );
+    await versionEightDatabase.setVersion(8);
+    await appDatabase!.close();
+
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final migrated = await appDatabase!.open();
+
+    expect(await migrated.getVersion(), AppDatabase.schemaVersion);
+    expect(await appDatabase!.readMetadata('preserved-v8-setting'), 'keep-me');
+    expect(
+      await migrated.query(
+        'sqlite_master',
+        where: 'type = ? AND name = ?',
+        whereArgs: <Object?>['table', AppDatabase.receiptImportsTable],
       ),
       hasLength(1),
     );

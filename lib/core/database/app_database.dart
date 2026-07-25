@@ -18,7 +18,7 @@ final class AppDatabase {
 
   AppDatabase._(this._factory, this._path);
 
-  static const int schemaVersion = 8;
+  static const int schemaVersion = 9;
   static const String databaseFileName = 'budowapro.db';
   static const String metadataTable = 'app_metadata';
   static const String projectsTable = 'projects';
@@ -45,6 +45,7 @@ final class AppDatabase {
   static const String quoteAttachmentsTable = 'quote_attachments';
   static const String documentMetadataTable = 'document_metadata';
   static const String documentContextLinksTable = 'document_context_links';
+  static const String receiptImportsTable = 'receipt_imports';
   static const String schemaVersionKey = 'schema_version';
   static const Set<String> requiredTableNames = <String>{
     metadataTable,
@@ -70,6 +71,7 @@ final class AppDatabase {
     quoteAttachmentsTable,
     documentMetadataTable,
     documentContextLinksTable,
+    receiptImportsTable,
   };
 
   final DatabaseFactory _factory;
@@ -1263,6 +1265,50 @@ final class AppDatabase {
           relation_type,
           target_id,
           attachment_id
+        )
+      ''');
+    }
+
+    if (fromVersion < 9 && toVersion >= 9) {
+      await database.execute('''
+        CREATE TABLE $receiptImportsTable (
+          id TEXT PRIMARY KEY NOT NULL,
+          project_id TEXT NOT NULL,
+          attachment_id TEXT NOT NULL,
+          seller_name TEXT NOT NULL,
+          seller_key TEXT NOT NULL,
+          purchase_date_utc_ms INTEGER NOT NULL,
+          document_number TEXT,
+          total_gross_minor_units INTEGER NOT NULL CHECK (
+            total_gross_minor_units > 0
+          ),
+          currency_code TEXT NOT NULL CHECK (
+            length(currency_code) = 3 AND
+            currency_code GLOB '[A-Z][A-Z][A-Z]'
+          ),
+          duplicate_acknowledged INTEGER NOT NULL DEFAULT 0 CHECK (
+            duplicate_acknowledged IN (0, 1)
+          ),
+          total_mismatch_acknowledged INTEGER NOT NULL DEFAULT 0 CHECK (
+            total_mismatch_acknowledged IN (0, 1)
+          ),
+          created_at_utc_ms INTEGER NOT NULL,
+          UNIQUE (id, project_id),
+          UNIQUE (project_id, attachment_id),
+          FOREIGN KEY (project_id) REFERENCES $projectsTable(id)
+            ON DELETE CASCADE,
+          FOREIGN KEY (attachment_id, project_id)
+            REFERENCES $costAttachmentsTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX receipt_imports_project_signature_idx
+        ON $receiptImportsTable (
+          project_id,
+          seller_key,
+          purchase_date_utc_ms,
+          total_gross_minor_units,
+          currency_code
         )
       ''');
     }
