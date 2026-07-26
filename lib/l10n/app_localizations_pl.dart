@@ -908,8 +908,20 @@ class AppLocalizationsPl extends AppLocalizations {
       'Warunki techniczne budynków i wykaz zmian MRiT';
 
   @override
+  String get stageGuidanceSourceTechnicalConditionsEarthing =>
+      'Warunki techniczne § 184 - uziomy instalacji elektrycznej';
+
+  @override
   String get stageGuidanceSourceLowVoltageEarthing =>
       'PN-HD 60364-5-54 - uziemienia i przewody ochronne';
+
+  @override
+  String get stageGuidanceSourceElectricalVerification =>
+      'PN-HD 60364-6 - sprawdzanie instalacji elektrycznych';
+
+  @override
+  String get stageGuidanceSourceLightningProtection =>
+      'PN-EN IEC 62305-3 - projektowanie i sprawdzanie LPS';
 
   @override
   String get stageGuidanceSourceLightningConnections =>
@@ -1631,19 +1643,19 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get guidanceFoundationGroundingTiming =>
-      'Po wykonaniu zbrojenia, ale przed betonowaniem fundamentu';
+      'Projekt przed zbrojeniem; odbiór przed betonowaniem; pomiar po wykonaniu układu';
 
   @override
   String get guidanceFoundationGroundingSummary =>
-      'Elektryk powinien dobrać typ uziomu do fundamentu, izolacji, instalacji odgromowej i planowanych urządzeń. Płaskownik 30×3-4 mm, w tym popularne 30×4 mm, jest spotykanym rozwiązaniem systemowym, a nie wartością właściwą dla każdego domu.';
+      'Nie istnieje jedna właściwa bednarka, liczba szpilek ani uniwersalna rezystancja dla każdego domu. Projektant instalacji elektrycznej dobiera układ do ochrony przeciwporażeniowej, fundamentu i gruntu, a przy LPS także do PN-EN IEC 62305-3. Po wykonaniu fundamentu można zaprojektować uziom otokowy lub pionowe elektrody uziemiające, lecz nie zastępuje to projektu i pomiarów.';
 
   @override
   String get guidanceFoundationGroundingChecks =>
-      'Potwierdź projekt uziomu, materiał, przekrój, połączenia i ochronę antykorozyjną.\nSprawdź wpływ izolacji obwodowej, płyty w pełnej izolacji lub betonu wodoszczelnego na wybór uziomu fundamentowego albo otokowego.\nUstal wypust do głównej szyny uziemiającej, instalacji odgromowej, PV i innych wymaganych połączeń.\nStosuj elementy połączeniowe przeznaczone do uziomów i środowiska ich pracy.\nPrzed betonowaniem wykonaj odbiór, zdjęcia, pomiar ciągłości i dokumentację powykonawczą.';
+      'Przed betonowaniem potwierdź projekt uziomu fundamentowego: przebieg, materiał, przekrój, połączenia ze zbrojeniem, wypusty i ochronę przed korozją.\nSprawdź, czy fundament zachowa trwały kontakt elektryczny z gruntem. Przy pełnej izolacji obwodowej, płycie izolowanej lub betonie wodoszczelnym projekt może wymagać uziomu otokowego w gruncie oraz przewodu wyrównania potencjałów w fundamencie.\nJeżeli fundament jest już wykonany, projektant może dobrać zamknięty uziom otokowy albo uziomy pionowe, nazywane szpilkami. Ich materiał, długość, liczba i rozstaw wynikają z warunków gruntu, ryzyka korozji, funkcji układu i wyników pomiarów.\nUstal połączenie z główną szyną uziemiającą oraz wypusty dla LPS, PV i innych projektowanych instalacji. Użyj elementów połączeniowych i uziomów o potwierdzonej zgodności z właściwym środowiskiem pracy.\nPrzed betonowaniem wykonaj oględziny, zdjęcia z miarą i sprawdzenie ciągłości. Po ukończeniu układu zleć pomiary oraz protokół; kryterium odbioru wynika z projektu i zastosowanego środka ochrony, nie z jednej liczby znalezionej w internecie.';
 
   @override
   String get guidanceFoundationGroundingQuestions =>
-      'Czy fundament jest elektrycznie odizolowany od gruntu?\nCzy będzie instalacja odgromowa lub fotowoltaika?\nKto odpowiada za odbiór przed betonowaniem i protokół pomiarów?\nGdzie znajdą się wypusty i jak zostaną zabezpieczone przy przejściu beton-grunt?';
+      'Jaką funkcję ma pełnić układ: ochronną, funkcjonalną, odgromową czy kilka naraz?\nCzy hydroizolacja, termoizolacja lub beton wodoszczelny odizolują fundament od gruntu?\nCzy projekt przewiduje uziom fundamentowy, otokowy, pionowy lub układ łączony i na jakiej podstawie?\nGdzie będą główna szyna uziemiająca, wypusty i dostępne złącza kontrolne?\nKto wykona odbiór przed betonowaniem, pomiary końcowe i podpisze protokół?';
 
   @override
   String get guidanceFoundationWaterproofingTitle =>

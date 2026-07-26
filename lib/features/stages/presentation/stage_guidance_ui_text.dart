@@ -148,8 +148,14 @@ String stageGuidanceSourceTitle(
     l10n.stageGuidanceSourceGddkiaSiteAccess,
   StageGuidanceSourceKey.technicalConditions =>
     l10n.stageGuidanceSourceTechnicalConditions,
+  StageGuidanceSourceKey.technicalConditionsEarthing =>
+    l10n.stageGuidanceSourceTechnicalConditionsEarthing,
   StageGuidanceSourceKey.lowVoltageEarthingStandard =>
     l10n.stageGuidanceSourceLowVoltageEarthing,
+  StageGuidanceSourceKey.electricalVerificationStandard =>
+    l10n.stageGuidanceSourceElectricalVerification,
+  StageGuidanceSourceKey.lightningProtectionStandard =>
+    l10n.stageGuidanceSourceLightningProtection,
   StageGuidanceSourceKey.lightningConnectionStandard =>
     l10n.stageGuidanceSourceLightningConnections,
   StageGuidanceSourceKey.lightningConductorStandard =>

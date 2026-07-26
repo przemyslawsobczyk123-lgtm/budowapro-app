@@ -237,9 +237,10 @@ Szablon musi zawierac co najmniej:
 
 Wskazowki `Stanu 0` grupuja przepusty i kanalizacje, uziom fundamentowy,
 dobor hydroizolacji, drenaz i poziomy terenu oraz dokumentacje robot
-zanikajacych. Wartosc `30 x 4 mm`, kolejnosc warstw lub produkt sa pokazywane
-wylacznie jako przyklad do potwierdzenia w projekcie i instrukcji kompletnego
-systemu.
+zanikajacych. Dla uziemienia aplikacja rozroznia uziom fundamentowy, otokowy
+i pionowy, ale nie podaje uniwersalnego przekroju, liczby szpilek ani
+rezystancji odbiorczej. Rozwiazanie, kolejnosc warstw lub produkt wymagaja
+potwierdzenia w projekcie, pomiarach i instrukcji kompletnego systemu.
 
 ## 12. Kontakty, ekipy, oferty i wizyty
 

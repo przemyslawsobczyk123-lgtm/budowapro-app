@@ -65,9 +65,10 @@ void main() {
         }),
       );
       expect(
-        <StageGuidanceDefinition>[...formalities, ...sitePreparation].every(
-          (item) => item.sources.isNotEmpty,
-        ),
+        <StageGuidanceDefinition>[
+          ...formalities,
+          ...sitePreparation,
+        ].every((item) => item.sources.isNotEmpty),
         isTrue,
       );
     });
@@ -79,6 +80,23 @@ void main() {
       );
 
       expect(grounding.sources, isNotEmpty);
+      expect(StageGuidanceCatalog.contentVersion, 3);
+      expect(
+        grounding.sources.map((source) => source.key),
+        containsAll(<StageGuidanceSourceKey>{
+          StageGuidanceSourceKey.technicalConditionsEarthing,
+          StageGuidanceSourceKey.lowVoltageEarthingStandard,
+          StageGuidanceSourceKey.electricalVerificationStandard,
+          StageGuidanceSourceKey.lightningProtectionStandard,
+          StageGuidanceSourceKey.lightningConnectionStandard,
+          StageGuidanceSourceKey.lightningConductorStandard,
+          StageGuidanceSourceKey.dehnFoundationEarthing,
+        }),
+      );
+      expect(
+        grounding.sources.map((source) => source.key).toSet(),
+        hasLength(grounding.sources.length),
+      );
       expect(
         grounding.sources.map((source) => source.type).toSet(),
         containsAll(<StageGuidanceSourceType>{

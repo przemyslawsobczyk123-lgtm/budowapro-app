@@ -140,13 +140,21 @@ Last updated: 2026-07-26
   foundation earthing, waterproofing, drainage/ground levels and concealed-work evidence. Each detail shows
   when to decide, inspection points, specialist questions, structured source metadata, content version and a clear
   boundary that it is not an execution design.
+- Foundation-earthing guidance content version `3` separates a foundation earth electrode from a ring earth
+  electrode and vertical electrodes. It explains that ring or vertical electrodes can be designed after the
+  foundation is complete, but their material, layout and quantity require ground conditions, system function,
+  corrosion assessment and measured results. It deliberately provides no universal conductor size, electrode
+  count or acceptance resistance.
+- The grounding source set now links directly to `Warunki techniczne` section 184, PN-HD 60364-5-54,
+  PN-HD 60364-6, the current PN-EN IEC 62305-3:2025-09 record, PN-EN IEC 62561-1/-2 and separate system
+  documentation. Manufacturer guidance remains visibly distinct from Polish regulations and standards.
 - Six additional source-backed guides cover planning and ground conditions, coordinated approvals, lawful
   construction start, site access and logistics, temporary utilities/facilities, and site safety/evidence.
   The content remains collapsed and task-oriented rather than becoming a wall of legal text.
 - The shell-open stage has an informational guide for agreeing the exact window/shading detail before lintels.
   It does not seed a database row or change progress in existing projects. The content explicitly treats `5 cm`,
-  `30 x 4 mm`, PMBC/KMB, XPS, dimpled membrane and drainage as project/system-dependent rather than universal
-  instructions.
+  conductor dimensions, PMBC/KMB, XPS, dimpled membrane and drainage as project/system-dependent rather than
+  universal instructions.
 - Users can add their own local position with a responsible person, note, skip risk, importance and evidence
   policy in one form. Guidance opens related existing checklist items instead of creating duplicates. Idempotent
   `Stan 0` reseeding is regression-tested not to replace user edits or custom items.
@@ -402,7 +410,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-26. The full suite contains 378 passing tests. Debug APK:
+All commands passed on 2026-07-26. The full suite contains 395 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk

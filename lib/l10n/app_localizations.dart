@@ -1780,11 +1780,29 @@ abstract class AppLocalizations {
   /// **'Warunki techniczne budynków i wykaz zmian MRiT'**
   String get stageGuidanceSourceTechnicalConditions;
 
+  /// No description provided for @stageGuidanceSourceTechnicalConditionsEarthing.
+  ///
+  /// In pl, this message translates to:
+  /// **'Warunki techniczne § 184 - uziomy instalacji elektrycznej'**
+  String get stageGuidanceSourceTechnicalConditionsEarthing;
+
   /// No description provided for @stageGuidanceSourceLowVoltageEarthing.
   ///
   /// In pl, this message translates to:
   /// **'PN-HD 60364-5-54 - uziemienia i przewody ochronne'**
   String get stageGuidanceSourceLowVoltageEarthing;
+
+  /// No description provided for @stageGuidanceSourceElectricalVerification.
+  ///
+  /// In pl, this message translates to:
+  /// **'PN-HD 60364-6 - sprawdzanie instalacji elektrycznych'**
+  String get stageGuidanceSourceElectricalVerification;
+
+  /// No description provided for @stageGuidanceSourceLightningProtection.
+  ///
+  /// In pl, this message translates to:
+  /// **'PN-EN IEC 62305-3 - projektowanie i sprawdzanie LPS'**
+  String get stageGuidanceSourceLightningProtection;
 
   /// No description provided for @stageGuidanceSourceLightningConnections.
   ///
@@ -2935,25 +2953,25 @@ abstract class AppLocalizations {
   /// No description provided for @guidanceFoundationGroundingTiming.
   ///
   /// In pl, this message translates to:
-  /// **'Po wykonaniu zbrojenia, ale przed betonowaniem fundamentu'**
+  /// **'Projekt przed zbrojeniem; odbiór przed betonowaniem; pomiar po wykonaniu układu'**
   String get guidanceFoundationGroundingTiming;
 
   /// No description provided for @guidanceFoundationGroundingSummary.
   ///
   /// In pl, this message translates to:
-  /// **'Elektryk powinien dobrać typ uziomu do fundamentu, izolacji, instalacji odgromowej i planowanych urządzeń. Płaskownik 30×3-4 mm, w tym popularne 30×4 mm, jest spotykanym rozwiązaniem systemowym, a nie wartością właściwą dla każdego domu.'**
+  /// **'Nie istnieje jedna właściwa bednarka, liczba szpilek ani uniwersalna rezystancja dla każdego domu. Projektant instalacji elektrycznej dobiera układ do ochrony przeciwporażeniowej, fundamentu i gruntu, a przy LPS także do PN-EN IEC 62305-3. Po wykonaniu fundamentu można zaprojektować uziom otokowy lub pionowe elektrody uziemiające, lecz nie zastępuje to projektu i pomiarów.'**
   String get guidanceFoundationGroundingSummary;
 
   /// No description provided for @guidanceFoundationGroundingChecks.
   ///
   /// In pl, this message translates to:
-  /// **'Potwierdź projekt uziomu, materiał, przekrój, połączenia i ochronę antykorozyjną.\nSprawdź wpływ izolacji obwodowej, płyty w pełnej izolacji lub betonu wodoszczelnego na wybór uziomu fundamentowego albo otokowego.\nUstal wypust do głównej szyny uziemiającej, instalacji odgromowej, PV i innych wymaganych połączeń.\nStosuj elementy połączeniowe przeznaczone do uziomów i środowiska ich pracy.\nPrzed betonowaniem wykonaj odbiór, zdjęcia, pomiar ciągłości i dokumentację powykonawczą.'**
+  /// **'Przed betonowaniem potwierdź projekt uziomu fundamentowego: przebieg, materiał, przekrój, połączenia ze zbrojeniem, wypusty i ochronę przed korozją.\nSprawdź, czy fundament zachowa trwały kontakt elektryczny z gruntem. Przy pełnej izolacji obwodowej, płycie izolowanej lub betonie wodoszczelnym projekt może wymagać uziomu otokowego w gruncie oraz przewodu wyrównania potencjałów w fundamencie.\nJeżeli fundament jest już wykonany, projektant może dobrać zamknięty uziom otokowy albo uziomy pionowe, nazywane szpilkami. Ich materiał, długość, liczba i rozstaw wynikają z warunków gruntu, ryzyka korozji, funkcji układu i wyników pomiarów.\nUstal połączenie z główną szyną uziemiającą oraz wypusty dla LPS, PV i innych projektowanych instalacji. Użyj elementów połączeniowych i uziomów o potwierdzonej zgodności z właściwym środowiskiem pracy.\nPrzed betonowaniem wykonaj oględziny, zdjęcia z miarą i sprawdzenie ciągłości. Po ukończeniu układu zleć pomiary oraz protokół; kryterium odbioru wynika z projektu i zastosowanego środka ochrony, nie z jednej liczby znalezionej w internecie.'**
   String get guidanceFoundationGroundingChecks;
 
   /// No description provided for @guidanceFoundationGroundingQuestions.
   ///
   /// In pl, this message translates to:
-  /// **'Czy fundament jest elektrycznie odizolowany od gruntu?\nCzy będzie instalacja odgromowa lub fotowoltaika?\nKto odpowiada za odbiór przed betonowaniem i protokół pomiarów?\nGdzie znajdą się wypusty i jak zostaną zabezpieczone przy przejściu beton-grunt?'**
+  /// **'Jaką funkcję ma pełnić układ: ochronną, funkcjonalną, odgromową czy kilka naraz?\nCzy hydroizolacja, termoizolacja lub beton wodoszczelny odizolują fundament od gruntu?\nCzy projekt przewiduje uziom fundamentowy, otokowy, pionowy lub układ łączony i na jakiej podstawie?\nGdzie będą główna szyna uziemiająca, wypusty i dostępne złącza kontrolne?\nKto wykona odbiór przed betonowaniem, pomiary końcowe i podpisze protokół?'**
   String get guidanceFoundationGroundingQuestions;
 
   /// No description provided for @guidanceFoundationWaterproofingTitle.

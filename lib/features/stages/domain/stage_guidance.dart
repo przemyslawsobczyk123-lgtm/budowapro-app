@@ -37,7 +37,10 @@ enum StageGuidanceSourceKey {
   pipConstructionChecklist,
   gddkiaSiteAccess,
   technicalConditions,
+  technicalConditionsEarthing,
   lowVoltageEarthingStandard,
+  electricalVerificationStandard,
+  lightningProtectionStandard,
   lightningConnectionStandard,
   lightningConductorStandard,
   itbBelowGroundWaterproofing,
@@ -82,7 +85,7 @@ final class StageGuidanceDefinition {
 }
 
 abstract final class StageGuidanceCatalog {
-  static const int contentVersion = 2;
+  static const int contentVersion = 3;
   static const String verifiedOnIso = '2026-07-26';
 
   static List<StageGuidanceDefinition> forStage(ProjectStageKey? stageKey) {
@@ -212,8 +215,10 @@ abstract final class StageGuidanceCatalog {
         ChecklistTemplateKey.continuityMeasurement,
       ],
       sources: <StageGuidanceSourceReference>[
-        _technicalConditions,
+        _technicalConditionsEarthing,
         _lowVoltageEarthingStandard,
+        _electricalVerificationStandard,
+        _lightningProtectionStandard,
         _lightningConnectionStandard,
         _lightningConductorStandard,
         _dehnFoundationEarthing,
@@ -376,6 +381,15 @@ abstract final class StageGuidanceCatalog {
             'najwazniejsze-przepisy/warunki-techniczne/',
         verifiedOnIso: verifiedOnIso,
       );
+  static const StageGuidanceSourceReference _technicalConditionsEarthing =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.technicalConditionsEarthing,
+        type: StageGuidanceSourceType.regulation,
+        revision:
+            'Warunki techniczne, § 184; tekst jednolity Dz.U. 2022 poz. 1225',
+        urlValue: 'https://eli.gov.pl/api/acts/DU/2022/1225/text.html',
+        verifiedOnIso: verifiedOnIso,
+      );
   static const StageGuidanceSourceReference _lowVoltageEarthingStandard =
       StageGuidanceSourceReference(
         key: StageGuidanceSourceKey.lowVoltageEarthingStandard,
@@ -384,6 +398,22 @@ abstract final class StageGuidanceCatalog {
         urlValue:
             'https://sklep.pkn.pl/'
             'pn-hd-60364-5-54-2011-a1-2023-04p.html',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _electricalVerificationStandard =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.electricalVerificationStandard,
+        type: StageGuidanceSourceType.standard,
+        revision: 'PN-HD 60364-6:2016-07 z elementami dodatkowymi',
+        urlValue: 'https://sklep.pkn.pl/pn-hd-60364-6-2016-07p.html',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _lightningProtectionStandard =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.lightningProtectionStandard,
+        type: StageGuidanceSourceType.standard,
+        revision: 'PN-EN IEC 62305-3:2025-09, wersja angielska',
+        urlValue: 'https://sklep.pkn.pl/pn-en-iec-62305-3-2025-09e.html',
         verifiedOnIso: verifiedOnIso,
       );
   static const StageGuidanceSourceReference _lightningConnectionStandard =
