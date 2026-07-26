@@ -22,6 +22,48 @@ StageGuidanceContent stageGuidanceContent(
   StageGuidanceKey key,
 ) {
   return switch (key) {
+    StageGuidanceKey.planningAndGroundConditions => StageGuidanceContent(
+      title: l10n.guidancePlanningAndGroundConditionsTitle,
+      timing: l10n.guidancePlanningAndGroundConditionsTiming,
+      summary: l10n.guidancePlanningAndGroundConditionsSummary,
+      checks: _lines(l10n.guidancePlanningAndGroundConditionsChecks),
+      questions: _lines(l10n.guidancePlanningAndGroundConditionsQuestions),
+    ),
+    StageGuidanceKey.designUtilitiesAndApprovals => StageGuidanceContent(
+      title: l10n.guidanceDesignUtilitiesAndApprovalsTitle,
+      timing: l10n.guidanceDesignUtilitiesAndApprovalsTiming,
+      summary: l10n.guidanceDesignUtilitiesAndApprovalsSummary,
+      checks: _lines(l10n.guidanceDesignUtilitiesAndApprovalsChecks),
+      questions: _lines(l10n.guidanceDesignUtilitiesAndApprovalsQuestions),
+    ),
+    StageGuidanceKey.legalConstructionStart => StageGuidanceContent(
+      title: l10n.guidanceLegalConstructionStartTitle,
+      timing: l10n.guidanceLegalConstructionStartTiming,
+      summary: l10n.guidanceLegalConstructionStartSummary,
+      checks: _lines(l10n.guidanceLegalConstructionStartChecks),
+      questions: _lines(l10n.guidanceLegalConstructionStartQuestions),
+    ),
+    StageGuidanceKey.siteLogisticsAndAccess => StageGuidanceContent(
+      title: l10n.guidanceSiteLogisticsAndAccessTitle,
+      timing: l10n.guidanceSiteLogisticsAndAccessTiming,
+      summary: l10n.guidanceSiteLogisticsAndAccessSummary,
+      checks: _lines(l10n.guidanceSiteLogisticsAndAccessChecks),
+      questions: _lines(l10n.guidanceSiteLogisticsAndAccessQuestions),
+    ),
+    StageGuidanceKey.temporaryUtilitiesAndFacilities => StageGuidanceContent(
+      title: l10n.guidanceTemporaryUtilitiesAndFacilitiesTitle,
+      timing: l10n.guidanceTemporaryUtilitiesAndFacilitiesTiming,
+      summary: l10n.guidanceTemporaryUtilitiesAndFacilitiesSummary,
+      checks: _lines(l10n.guidanceTemporaryUtilitiesAndFacilitiesChecks),
+      questions: _lines(l10n.guidanceTemporaryUtilitiesAndFacilitiesQuestions),
+    ),
+    StageGuidanceKey.siteSafetyAndEvidence => StageGuidanceContent(
+      title: l10n.guidanceSiteSafetyAndEvidenceTitle,
+      timing: l10n.guidanceSiteSafetyAndEvidenceTiming,
+      summary: l10n.guidanceSiteSafetyAndEvidenceSummary,
+      checks: _lines(l10n.guidanceSiteSafetyAndEvidenceChecks),
+      questions: _lines(l10n.guidanceSiteSafetyAndEvidenceQuestions),
+    ),
     StageGuidanceKey.servicePenetrations => StageGuidanceContent(
       title: l10n.guidanceServicePenetrationsTitle,
       timing: l10n.guidanceServicePenetrationsTiming,
@@ -83,6 +125,27 @@ String stageGuidanceSourceTitle(
   AppLocalizations l10n,
   StageGuidanceSourceKey key,
 ) => switch (key) {
+  StageGuidanceSourceKey.constructionLaw =>
+    l10n.stageGuidanceSourceConstructionLaw,
+  StageGuidanceSourceKey.gunbProcedures =>
+    l10n.stageGuidanceSourceGunbProcedures,
+  StageGuidanceSourceKey.gunbForms => l10n.stageGuidanceSourceGunbForms,
+  StageGuidanceSourceKey.spatialPlanningGuidance =>
+    l10n.stageGuidanceSourceSpatialPlanning,
+  StageGuidanceSourceKey.geotechnicalRegulation =>
+    l10n.stageGuidanceSourceGeotechnicalRegulation,
+  StageGuidanceSourceKey.eurocodeGeotechnicalDesign =>
+    l10n.stageGuidanceSourceEurocodeGeotechnical,
+  StageGuidanceSourceKey.geodeticGuidance =>
+    l10n.stageGuidanceSourceGeodeticGuidance,
+  StageGuidanceSourceKey.electronicConstructionLog =>
+    l10n.stageGuidanceSourceElectronicConstructionLog,
+  StageGuidanceSourceKey.constructionSafetyRegulation =>
+    l10n.stageGuidanceSourceConstructionSafety,
+  StageGuidanceSourceKey.pipConstructionChecklist =>
+    l10n.stageGuidanceSourcePipChecklist,
+  StageGuidanceSourceKey.gddkiaSiteAccess =>
+    l10n.stageGuidanceSourceGddkiaSiteAccess,
   StageGuidanceSourceKey.technicalConditions =>
     l10n.stageGuidanceSourceTechnicalConditions,
   StageGuidanceSourceKey.lowVoltageEarthingStandard =>

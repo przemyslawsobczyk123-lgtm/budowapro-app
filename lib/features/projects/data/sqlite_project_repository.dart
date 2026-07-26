@@ -393,7 +393,8 @@ final class SqliteProjectRepository implements ProjectRepository {
       'planned_start_utc_ms': _dateToStorage(project.plannedStart),
       'planned_end_utc_ms': _dateToStorage(project.plannedEnd),
       'date_format': _dateFormatToStorage(project.dateFormat),
-      'current_stage_key': _stageToStorage(project.currentStage),
+      'current_stage_key': _stageToLegacyStorage(project.currentStage),
+      'current_stage_key_v2': _stageToStorage(project.currentStage),
       'is_archived': project.isArchived ? 1 : 0,
       'created_at_utc_ms': DatabaseValueCodec.dateTimeToUtcMilliseconds(
         project.createdAtUtc,
@@ -418,7 +419,10 @@ final class SqliteProjectRepository implements ProjectRepository {
         plannedStart: _dateFromStorage(row['planned_start_utc_ms'] as int?),
         plannedEnd: _dateFromStorage(row['planned_end_utc_ms'] as int?),
         dateFormat: _dateFormatFromStorage(row['date_format']! as String),
-        currentStage: _stageFromStorage(row['current_stage_key']! as String),
+        currentStage: _stageFromStorage(
+          row['current_stage_key_v2'] as String? ??
+              row['current_stage_key']! as String,
+        ),
       ),
       createdAt: DatabaseValueCodec.utcMillisecondsToDateTime(
         row['created_at_utc_ms']! as int,
@@ -483,6 +487,7 @@ final class SqliteProjectRepository implements ProjectRepository {
   static String _stageToStorage(ProjectStageKey value) => switch (value) {
     ProjectStageKey.planning => 'planning',
     ProjectStageKey.formalities => 'formalities',
+    ProjectStageKey.sitePreparation => 'site_preparation',
     ProjectStageKey.stateZero => 'state_zero',
     ProjectStageKey.shellOpen => 'shell_open',
     ProjectStageKey.shellClosed => 'shell_closed',
@@ -493,9 +498,15 @@ final class SqliteProjectRepository implements ProjectRepository {
     ProjectStageKey.handover => 'handover',
   };
 
+  static String _stageToLegacyStorage(ProjectStageKey value) =>
+      value == ProjectStageKey.sitePreparation
+      ? 'formalities'
+      : _stageToStorage(value);
+
   static ProjectStageKey _stageFromStorage(String value) => switch (value) {
     'planning' => ProjectStageKey.planning,
     'formalities' => ProjectStageKey.formalities,
+    'site_preparation' => ProjectStageKey.sitePreparation,
     'state_zero' => ProjectStageKey.stateZero,
     'shell_open' => ProjectStageKey.shellOpen,
     'shell_closed' => ProjectStageKey.shellClosed,

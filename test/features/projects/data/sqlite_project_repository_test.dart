@@ -130,6 +130,48 @@ void main() {
     expect(updated.templateVersion, 3);
   });
 
+  test(
+    'persists the site preparation stage with legacy compatibility',
+    () async {
+      final created = await repository.create(_houseDraft('Dom'));
+
+      await repository.update(
+        created.id,
+        ProjectDraft(
+          name: created.name,
+          type: ProjectType.houseBuild,
+          template: ProjectTemplate.houseConstruction,
+          currentStage: ProjectStageKey.sitePreparation,
+        ),
+      );
+      await appDatabase.close();
+      appDatabase = AppDatabase(
+        factory: databaseFactoryFfi,
+        path: databasePath,
+      );
+      repository = SqliteProjectRepository(
+        database: appDatabase,
+        fileStore: fileStore,
+        idGenerator: () => 'unused',
+        utcNow: () => now,
+      );
+
+      expect(
+        (await repository.findById(created.id))?.currentStage,
+        ProjectStageKey.sitePreparation,
+      );
+      final rawDatabase = await appDatabase.open();
+      final row = (await rawDatabase.query(
+        AppDatabase.projectsTable,
+        columns: const <String>['current_stage_key', 'current_stage_key_v2'],
+        where: 'id = ?',
+        whereArgs: <Object?>[created.id],
+      )).single;
+      expect(row['current_stage_key'], 'formalities');
+      expect(row['current_stage_key_v2'], 'site_preparation');
+    },
+  );
+
   test('rejects a currency change after a cost entry is recorded', () async {
     final created = await repository.create(_houseDraft('Dom'));
     await _insertCostEntry(appDatabase, projectId: created.id, id: 'cost-1');

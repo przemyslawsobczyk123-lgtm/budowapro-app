@@ -30,26 +30,144 @@ abstract final class StageTemplateCatalog {
         .map(
           (stage) => StageTemplateDefinition(
             stageKey: stage,
-            checklistItems: stage == ProjectStageKey.stateZero
-                ? stateZeroChecklist
-                : const <ChecklistTemplateDefinition>[],
+            checklistItems: switch (stage) {
+              ProjectStageKey.formalities => formalitiesChecklist,
+              ProjectStageKey.sitePreparation => sitePreparationChecklist,
+              ProjectStageKey.stateZero => stateZeroChecklist,
+              _ => const <ChecklistTemplateDefinition>[],
+            },
           ),
         )
         .toList(growable: false);
   }
 
-  static const List<ChecklistTemplateDefinition> stateZeroChecklist = [
+  static const List<ChecklistTemplateDefinition> formalitiesChecklist = [
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.planningPermissionBasis,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.landTitleAndRoadAccess,
+      importance: ChecklistImportance.high,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.designMap,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
     ChecklistTemplateDefinition(
       key: ChecklistTemplateKey.soilResearch,
       importance: ChecklistImportance.high,
       evidenceRequirement: EvidenceRequirement.anyAttachment,
     ),
+    ChecklistTemplateDefinition(key: ChecklistTemplateKey.houseDesignSelection),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.readyDesignAdaptation,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.utilityConnectionConditions,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.coordinatedBuildingDesign,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.buildingPermitOrNotification,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.constructionManagerAppointment,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.constructionLog,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.constructionCommencementNotice,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.managerDocumentationHandover,
+      importance: ChecklistImportance.high,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.additionalPermitsAudit,
+      importance: ChecklistImportance.high,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.preStartDocumentAudit,
+      importance: ChecklistImportance.critical,
+    ),
+  ];
+
+  static const List<ChecklistTemplateDefinition> sitePreparationChecklist = [
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.siteLogisticsPlan,
+      importance: ChecklistImportance.high,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.temporarySiteFence,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(key: ChecklistTemplateKey.heavyEquipmentGate),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.stabilizedSiteEntrance,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(key: ChecklistTemplateKey.toolStorageContainer),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.temporaryConstructionPower,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.constructionWaterSupply,
+      importance: ChecklistImportance.high,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.portableToilet,
+      importance: ChecklistImportance.high,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.siteUtilitiesAndHazardsMarking,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.siteSafetySetup,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.materialAndWasteZones,
+      importance: ChecklistImportance.high,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.preConstructionPhotoRecord,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+  ];
+
+  static const List<ChecklistTemplateDefinition> stateZeroChecklist = [
     ChecklistTemplateDefinition(
       key: ChecklistTemplateKey.surveyorBuildingSetout,
       importance: ChecklistImportance.high,
       evidenceRequirement: EvidenceRequirement.anyAttachment,
     ),
-    ChecklistTemplateDefinition(key: ChecklistTemplateKey.siteRoadPowerWater),
     ChecklistTemplateDefinition(
       key: ChecklistTemplateKey.excavationFoundationLevels,
       importance: ChecklistImportance.high,

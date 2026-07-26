@@ -35,6 +35,43 @@ void main() {
       expect(guidance.single.relatedChecklistKeys, isEmpty);
     });
 
+    test('keeps formal and site guidance compact and source-backed', () {
+      final formalities = StageGuidanceCatalog.forStage(
+        ProjectStageKey.formalities,
+      );
+      final sitePreparation = StageGuidanceCatalog.forStage(
+        ProjectStageKey.sitePreparation,
+      );
+
+      expect(formalities, hasLength(3));
+      expect(sitePreparation, hasLength(3));
+      expect(
+        formalities.expand((item) => item.relatedChecklistKeys).toSet(),
+        containsAll(<ChecklistTemplateKey>{
+          ChecklistTemplateKey.planningPermissionBasis,
+          ChecklistTemplateKey.soilResearch,
+          ChecklistTemplateKey.buildingPermitOrNotification,
+          ChecklistTemplateKey.constructionCommencementNotice,
+        }),
+      );
+      expect(
+        sitePreparation.expand((item) => item.relatedChecklistKeys).toSet(),
+        containsAll(<ChecklistTemplateKey>{
+          ChecklistTemplateKey.temporarySiteFence,
+          ChecklistTemplateKey.stabilizedSiteEntrance,
+          ChecklistTemplateKey.temporaryConstructionPower,
+          ChecklistTemplateKey.portableToilet,
+          ChecklistTemplateKey.siteSafetySetup,
+        }),
+      );
+      expect(
+        <StageGuidanceDefinition>[...formalities, ...sitePreparation].every(
+          (item) => item.sources.isNotEmpty,
+        ),
+        isTrue,
+      );
+    });
+
     test('keeps auditable structured sources per recommendation', () {
       final guidance = StageGuidanceCatalog.forStage(ProjectStageKey.stateZero);
       final grounding = guidance.singleWhere(

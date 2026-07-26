@@ -10,6 +10,10 @@ void main() {
     expect(definition.supports(ProjectType.houseRenovation), isFalse);
     expect(definition.supports(ProjectType.apartmentRenovation), isFalse);
     expect(definition.initialStage, ProjectStageKey.formalities);
+    expect(
+      definition.stages.indexOf(ProjectStageKey.sitePreparation),
+      definition.stages.indexOf(ProjectStageKey.stateZero) - 1,
+    );
     expect(definition.stages, contains(ProjectStageKey.stateZero));
     expect(definition.stages, contains(ProjectStageKey.shellClosed));
     expect(definition.stages.last, ProjectStageKey.handover);

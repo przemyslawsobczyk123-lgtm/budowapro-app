@@ -831,6 +831,8 @@ String _stageLabel(AppLocalizations localizations, ProjectStageKey stage) {
   return switch (stage) {
     ProjectStageKey.planning => localizations.projectStagePlanning,
     ProjectStageKey.formalities => localizations.projectStageFormalities,
+    ProjectStageKey.sitePreparation =>
+      localizations.projectStageSitePreparation,
     ProjectStageKey.stateZero => localizations.projectStageStateZero,
     ProjectStageKey.shellOpen => localizations.projectStageShellOpen,
     ProjectStageKey.shellClosed => localizations.projectStageShellClosed,

@@ -197,14 +197,28 @@ Globalny wybor projektu jest dostepny z kazdego glownego ekranu. Zmiana projektu
 | PLAN-012 | P0 | Wskazowka techniczna zawsze informuje, ze nie zastepuje projektu, warunkow gruntowo-wodnych ani decyzji projektanta lub kierownika budowy. |
 | PLAN-013 | P0 | Uzytkownik moze dodac wlasna pozycje z tytulem, fachowcem, notatka, ryzykiem, waznoscia i wymaganym dowodem; aktualizacja katalogu nie nadpisuje danych uzytkownika. |
 | PLAN-014 | P0 | Stan surowy otwarty przypomina o wyborze systemu rolet lub zaluzji przed nadprozami; wymiar wneki wynika z wybranego systemu i zatwierdzonego detalu. |
+| PLAN-015 | P0 | Uzytkownik moze zaznaczyc wiele otwartych punktow i zakonczyc je jedna operacja; wymagania dowodowe nadal obowiazuja, a zapis jest atomowy. |
 
-### 11.1 Minimalna checklista `Stan 0`
+### 11.1 Formalnosci
+
+Szablon domu obejmuje: MPZP albo WZ, tytul prawny i dostep do drogi, mape do
+celow projektowych, badania gruntu, wybor i adaptacje projektu, warunki
+przylaczenia mediow, skoordynowany projekt, pozwolenie albo zgloszenie,
+kierownika, dziennik budowy, zawiadomienie o rozpoczeciu, przekazanie
+dokumentacji, dodatkowe uzgodnienia i koncowy audyt kompletnosci.
+
+### 11.2 Przygotowanie placu budowy
+
+Osobny etap przed `Stanem 0` obejmuje plan logistyki, ogrodzenie, szeroka brame,
+utwardzony wjazd, kontener, prad i wode budowlana, toalete, oznaczenie sieci i
+zagrozen, zabezpieczenia BHP, strefy materialow/odpadow oraz dokumentacje
+fotograficzna stanu poczatkowego.
+
+### 11.3 Minimalna checklista `Stan 0`
 
 Szablon musi zawierac co najmniej:
 
-- badania gruntu i warunki wodne,
 - geodete oraz wytyczenie budynku,
-- droge, prad i wode na budowe,
 - poziomy wykopu, law i posadowienia,
 - kanalizacje podposadzkowa i piony,
 - przepust wody,

@@ -61,7 +61,7 @@ void main() {
   });
 
   test(
-    'seeds ordered house stages and the complete Stan 0 checklist once',
+    'seeds ordered early stages and every built-in checklist once',
     () async {
       final firstLoad = await repository.listStages(
         projectId: 'project-1',
@@ -74,6 +74,7 @@ void main() {
 
       expect(firstLoad.map((stage) => stage.id), <String>[
         'formalities',
+        'site_preparation',
         'state_zero',
         'shell_open',
         'shell_closed',
@@ -86,10 +87,26 @@ void main() {
         projectId: 'project-1',
         stageId: 'state_zero',
       );
-      expect(checklist, hasLength(18));
+      expect(checklist, hasLength(16));
+      final formalities = await repository.listChecklistItems(
+        projectId: 'project-1',
+        stageId: 'formalities',
+      );
+      expect(formalities, hasLength(15));
+      final sitePreparation = await repository.listChecklistItems(
+        projectId: 'project-1',
+        stageId: 'site_preparation',
+      );
+      expect(sitePreparation, hasLength(12));
       expect(
-        checklist.map((item) => item.templateKey).toSet(),
-        ChecklistTemplateKey.values.toSet(),
+        <ChecklistItem>[
+          ...formalities,
+          ...sitePreparation,
+          ...checklist,
+        ].map((item) => item.templateKey).toSet(),
+        ChecklistTemplateKey.values
+            .where((key) => key != ChecklistTemplateKey.siteRoadPowerWater)
+            .toSet(),
       );
       final shellOpenChecklist = await repository.listChecklistItems(
         projectId: 'project-1',
@@ -99,13 +116,155 @@ void main() {
       final projectChecklist = await repository.listProjectChecklistItems(
         projectId: 'project-1',
       );
-      expect(projectChecklist, hasLength(18));
+      expect(projectChecklist, hasLength(43));
       expect(
         projectChecklist.every((item) => item.projectId == 'project-1'),
         isTrue,
       );
     },
   );
+
+  test(
+    'upgrades an older house checklist without losing user progress',
+    () async {
+      final sqlite = await database.open();
+      const createdAt = 1;
+      for (final stage in <(String, int)>[
+        ('formalities', 0),
+        ('state_zero', 1),
+      ]) {
+        await sqlite.insert(AppDatabase.projectStagesTable, <String, Object?>{
+          'project_id': 'project-1',
+          'id': stage.$1,
+          'template_stage_key': stage.$1,
+          'custom_name': null,
+          'status': 'planned',
+          'sort_order': stage.$2,
+          'planned_start_utc_ms': null,
+          'planned_end_utc_ms': null,
+          'planned_budget_minor_units': null,
+          'created_at_utc_ms': createdAt,
+          'updated_at_utc_ms': createdAt,
+        });
+      }
+      await sqlite.insert(AppDatabase.checklistItemsTable, <String, Object?>{
+        'project_id': 'project-1',
+        'id': 'state_zero_soil_research',
+        'stage_id': 'state_zero',
+        'template_item_key': 'soil_research',
+        'custom_title': null,
+        'status': 'completed',
+        'importance': 'high',
+        'due_at_utc_ms': null,
+        'assignee_label': 'Geotechnik',
+        'note': 'Wyniki przekazane projektantowi.',
+        'risk_if_skipped': null,
+        'status_reason': null,
+        'evidence_requirement': 'any_attachment',
+        'evidence_waiver_comment': 'Dokument pozostaje u projektanta.',
+        'sort_order': 0,
+        'created_at_utc_ms': createdAt,
+        'updated_at_utc_ms': createdAt,
+      });
+      await sqlite.insert(AppDatabase.checklistItemsTable, <String, Object?>{
+        'project_id': 'project-1',
+        'id': 'state_zero_site_road_power_water',
+        'stage_id': 'state_zero',
+        'template_item_key': 'site_road_power_water',
+        'custom_title': null,
+        'status': 'todo',
+        'importance': 'normal',
+        'due_at_utc_ms': null,
+        'assignee_label': null,
+        'note': null,
+        'risk_if_skipped': null,
+        'status_reason': null,
+        'evidence_requirement': 'none',
+        'evidence_waiver_comment': null,
+        'sort_order': 1,
+        'created_at_utc_ms': createdAt,
+        'updated_at_utc_ms': createdAt,
+      });
+
+      final stages = await repository.listStages(
+        projectId: 'project-1',
+        template: ProjectTemplate.houseConstruction,
+      );
+      final formalities = await repository.listChecklistItems(
+        projectId: 'project-1',
+        stageId: 'formalities',
+      );
+      final stateZero = await repository.listChecklistItems(
+        projectId: 'project-1',
+        stageId: 'state_zero',
+      );
+
+      expect(stages.take(3).map((stage) => stage.id), <String>[
+        'formalities',
+        'site_preparation',
+        'state_zero',
+      ]);
+      final migratedSoil = formalities.singleWhere(
+        (item) => item.templateKey == ChecklistTemplateKey.soilResearch,
+      );
+      expect(migratedSoil.id, 'state_zero_soil_research');
+      expect(migratedSoil.status, ChecklistStatus.completed);
+      expect(migratedSoil.assignee, 'Geotechnik');
+      expect(migratedSoil.hasEvidenceWaiver, isTrue);
+      expect(
+        stateZero.any(
+          (item) => item.templateKey == ChecklistTemplateKey.siteRoadPowerWater,
+        ),
+        isFalse,
+      );
+      expect(
+        await repository.listProjectChecklistItems(projectId: 'project-1'),
+        hasLength(43),
+      );
+    },
+  );
+
+  test('keeps a legacy site setup item with user-edited importance', () async {
+    await repository.listStages(
+      projectId: 'project-1',
+      template: ProjectTemplate.houseConstruction,
+    );
+    final sqlite = await database.open();
+    await sqlite.insert(AppDatabase.checklistItemsTable, <String, Object?>{
+      'project_id': 'project-1',
+      'id': 'edited_legacy_site_setup',
+      'stage_id': 'state_zero',
+      'template_item_key': 'site_road_power_water',
+      'custom_title': null,
+      'status': 'todo',
+      'importance': 'high',
+      'due_at_utc_ms': null,
+      'assignee_label': null,
+      'note': null,
+      'risk_if_skipped': null,
+      'status_reason': null,
+      'evidence_requirement': 'none',
+      'evidence_waiver_comment': null,
+      'sort_order': 99,
+      'created_at_utc_ms': 1,
+      'updated_at_utc_ms': 2,
+    });
+
+    await repository.listStages(
+      projectId: 'project-1',
+      template: ProjectTemplate.houseConstruction,
+    );
+    final checklist = await repository.listChecklistItems(
+      projectId: 'project-1',
+      stageId: 'state_zero',
+    );
+    final legacy = checklist.singleWhere(
+      (item) => item.templateKey == ChecklistTemplateKey.siteRoadPowerWater,
+    );
+
+    expect(legacy.id, 'edited_legacy_site_setup');
+    expect(legacy.importance, ChecklistImportance.high);
+  });
 
   test('adds, renames and reorders a custom stage', () async {
     final seeded = await repository.listStages(
@@ -270,7 +429,7 @@ void main() {
       template: ProjectTemplate.houseConstruction,
     )).singleWhere((stage) => stage.id == 'state_zero');
     expect(stage.progress.completedItems, 1);
-    expect(stage.progress.totalItems, 18);
+    expect(stage.progress.totalItems, 16);
   });
 
   test('documented waiver is an explicit alternative to evidence', () async {
@@ -281,7 +440,7 @@ void main() {
     final item =
         (await repository.listChecklistItems(
           projectId: 'project-1',
-          stageId: 'state_zero',
+          stageId: 'formalities',
         )).singleWhere(
           (item) => item.templateKey == ChecklistTemplateKey.soilResearch,
         );
@@ -301,6 +460,50 @@ void main() {
     expect(completed.hasEvidence, isFalse);
     expect(completed.hasEvidenceWaiver, isTrue);
   });
+
+  test(
+    'bulk completion is atomic when one item still requires evidence',
+    () async {
+      await repository.listStages(
+        projectId: 'project-1',
+        template: ProjectTemplate.houseConstruction,
+      );
+      final items = await repository.listChecklistItems(
+        projectId: 'project-1',
+        stageId: 'formalities',
+      );
+      final quickItem = items.singleWhere(
+        (item) => item.templateKey == ChecklistTemplateKey.houseDesignSelection,
+      );
+      final evidenceItem = items.singleWhere(
+        (item) =>
+            item.templateKey == ChecklistTemplateKey.planningPermissionBasis,
+      );
+
+      await expectLater(
+        repository.completeChecklistItems(
+          projectId: 'project-1',
+          checklistItemIds: <String>[quickItem.id, evidenceItem.id],
+        ),
+        throwsA(isA<ChecklistEvidenceRequiredException>()),
+      );
+
+      final unchanged = await repository.listChecklistItems(
+        projectId: 'project-1',
+        stageId: 'formalities',
+      );
+      expect(
+        unchanged.singleWhere((item) => item.id == quickItem.id).status,
+        ChecklistStatus.todo,
+      );
+
+      final completed = await repository.completeChecklistItems(
+        projectId: 'project-1',
+        checklistItemIds: <String>[quickItem.id],
+      );
+      expect(completed.single.status, ChecklistStatus.completed);
+    },
+  );
 
   test('rejects a reordered list that omits a project stage', () async {
     await repository.listStages(

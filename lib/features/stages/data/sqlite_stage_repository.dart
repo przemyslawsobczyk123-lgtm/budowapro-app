@@ -273,6 +273,61 @@ final class SqliteStageRepository implements StageRepository {
   }
 
   @override
+  Future<List<ChecklistItem>> completeChecklistItems({
+    required String projectId,
+    required List<String> checklistItemIds,
+  }) {
+    final requestedIds = checklistItemIds
+        .map((id) => _requiredText(id, 'checklistItemId', maximumLength: 64))
+        .toList(growable: false);
+    if (requestedIds.isEmpty ||
+        requestedIds.length > 200 ||
+        requestedIds.toSet().length != requestedIds.length) {
+      throw ArgumentError.value(checklistItemIds, 'checklistItemIds');
+    }
+    return _database.transaction<List<ChecklistItem>>((transaction) async {
+      final projectItems = await _listChecklistItems(transaction, projectId);
+      final itemsById = <String, ChecklistItem>{
+        for (final item in projectItems) item.id: item,
+      };
+      final requestedItems = <ChecklistItem>[];
+      for (final id in requestedIds) {
+        final item = itemsById[id];
+        if (item == null) {
+          throw const ChecklistItemNotFoundException();
+        }
+        validateChecklistResolution(
+          status: ChecklistStatus.completed,
+          evidenceRequirement: item.evidenceRequirement,
+          evidenceCount: item.evidenceIds.length,
+          evidenceWaiverComment: item.evidenceWaiverComment,
+        );
+        requestedItems.add(item);
+      }
+
+      final updatedAt = _dateToStorage(_utcNow());
+      for (final item in requestedItems) {
+        await transaction.update(
+          AppDatabase.checklistItemsTable,
+          <String, Object?>{
+            'status': _checklistStatusToStorage(ChecklistStatus.completed),
+            'status_reason': null,
+            'updated_at_utc_ms': updatedAt,
+          },
+          where: 'project_id = ? AND id = ?',
+          whereArgs: <Object?>[projectId, item.id],
+        );
+      }
+
+      final updatedItems = await _listChecklistItems(transaction, projectId);
+      final updatedById = <String, ChecklistItem>{
+        for (final item in updatedItems) item.id: item,
+      };
+      return requestedIds.map((id) => updatedById[id]!).toList(growable: false);
+    });
+  }
+
+  @override
   Future<ChecklistItem> attachEvidence({
     required String projectId,
     required String checklistItemId,
@@ -370,70 +425,208 @@ final class SqliteStageRepository implements StageRepository {
     ProjectTemplate template,
   ) async {
     await _requireProject(transaction, projectId);
-    final existingRows = await transaction.query(
+    final now = _utcNow().toUtc();
+    final definitions = StageTemplateCatalog.forProject(template);
+    await _ensureTemplateStages(
+      transaction,
+      projectId: projectId,
+      definitions: definitions,
+      now: now,
+    );
+    if (template == ProjectTemplate.houseConstruction) {
+      await _migrateHouseConstructionChecklist(
+        transaction,
+        projectId: projectId,
+        now: now,
+      );
+    }
+
+    for (final definition in definitions) {
+      final stageId = _stageKeyToStorage(definition.stageKey);
+      await _seedChecklistItems(
+        transaction,
+        projectId: projectId,
+        stageId: stageId,
+        definitions: definition.checklistItems,
+        now: now,
+      );
+    }
+  }
+
+  Future<void> _ensureTemplateStages(
+    DatabaseExecutor transaction, {
+    required String projectId,
+    required List<StageTemplateDefinition> definitions,
+    required DateTime now,
+  }) async {
+    final rows = await transaction.query(
       AppDatabase.projectStagesTable,
-      columns: const <String>['id'],
+      columns: const <String>['id', 'sort_order'],
       where: 'project_id = ?',
       whereArgs: <Object?>[projectId],
     );
-    final existingIds = existingRows.map((row) => row['id']! as String).toSet();
-    final now = _utcNow().toUtc();
-    final definitions = StageTemplateCatalog.forProject(template);
+    final sortOrderById = <String, int>{
+      for (final row in rows) row['id']! as String: row['sort_order']! as int,
+    };
+
     for (var stageIndex = 0; stageIndex < definitions.length; stageIndex++) {
       final definition = definitions[stageIndex];
       final stageId = _stageKeyToStorage(definition.stageKey);
-      if (!existingIds.contains(stageId)) {
-        await transaction.insert(
-          AppDatabase.projectStagesTable,
-          <String, Object?>{
-            'project_id': projectId,
-            'id': stageId,
-            'template_stage_key': stageId,
-            'custom_name': null,
-            'status': _stageStatusToStorage(StageStatus.planned),
-            'sort_order': stageIndex,
-            'planned_start_utc_ms': null,
-            'planned_end_utc_ms': null,
-            'planned_budget_minor_units': null,
-            'created_at_utc_ms': _dateToStorage(now),
-            'updated_at_utc_ms': _dateToStorage(now),
-          },
-          conflictAlgorithm: ConflictAlgorithm.ignore,
-        );
+      if (sortOrderById.containsKey(stageId)) {
+        continue;
       }
+
+      int? insertionOrder;
       for (
-        var itemIndex = 0;
-        itemIndex < definition.checklistItems.length;
-        itemIndex++
+        var nextIndex = stageIndex + 1;
+        nextIndex < definitions.length;
+        nextIndex++
       ) {
-        final item = definition.checklistItems[itemIndex];
-        final itemStorageKey = _checklistKeyToStorage(item.key);
-        await transaction.insert(
-          AppDatabase.checklistItemsTable,
-          <String, Object?>{
-            'project_id': projectId,
-            'id': '${stageId}_$itemStorageKey',
-            'stage_id': stageId,
-            'template_item_key': itemStorageKey,
-            'custom_title': null,
-            'status': _checklistStatusToStorage(ChecklistStatus.todo),
-            'importance': _importanceToStorage(item.importance),
-            'due_at_utc_ms': null,
-            'assignee_label': null,
-            'note': null,
-            'risk_if_skipped': null,
-            'status_reason': null,
-            'evidence_requirement': _evidenceToStorage(
-              item.evidenceRequirement,
-            ),
-            'evidence_waiver_comment': null,
-            'sort_order': itemIndex,
-            'created_at_utc_ms': _dateToStorage(now),
-            'updated_at_utc_ms': _dateToStorage(now),
-          },
-          conflictAlgorithm: ConflictAlgorithm.ignore,
-        );
+        insertionOrder =
+            sortOrderById[_stageKeyToStorage(definitions[nextIndex].stageKey)];
+        if (insertionOrder != null) {
+          break;
+        }
       }
+      insertionOrder ??=
+          sortOrderById.values.fold<int>(
+            -1,
+            (maximum, order) => max(maximum, order),
+          ) +
+          1;
+
+      await transaction.rawUpdate(
+        '''
+          UPDATE ${AppDatabase.projectStagesTable}
+          SET sort_order = sort_order + 1, updated_at_utc_ms = ?
+          WHERE project_id = ? AND sort_order >= ?
+        ''',
+        <Object?>[_dateToStorage(now), projectId, insertionOrder],
+      );
+      for (final entry in sortOrderById.entries.toList(growable: false)) {
+        if (entry.value >= insertionOrder) {
+          sortOrderById[entry.key] = entry.value + 1;
+        }
+      }
+      await transaction.insert(
+        AppDatabase.projectStagesTable,
+        <String, Object?>{
+          'project_id': projectId,
+          'id': stageId,
+          'template_stage_key': stageId,
+          'custom_name': null,
+          'status': _stageStatusToStorage(StageStatus.planned),
+          'sort_order': insertionOrder,
+          'planned_start_utc_ms': null,
+          'planned_end_utc_ms': null,
+          'planned_budget_minor_units': null,
+          'created_at_utc_ms': _dateToStorage(now),
+          'updated_at_utc_ms': _dateToStorage(now),
+        },
+        conflictAlgorithm: ConflictAlgorithm.ignore,
+      );
+      sortOrderById[stageId] = insertionOrder;
+    }
+  }
+
+  Future<void> _migrateHouseConstructionChecklist(
+    DatabaseExecutor transaction, {
+    required String projectId,
+    required DateTime now,
+  }) async {
+    const formalitiesStageId = 'formalities';
+    const soilResearchKey = 'soil_research';
+    final targetRows = await transaction.query(
+      AppDatabase.checklistItemsTable,
+      columns: const <String>['id'],
+      where: 'project_id = ? AND stage_id = ? AND template_item_key = ?',
+      whereArgs: <Object?>[projectId, formalitiesStageId, soilResearchKey],
+      limit: 1,
+    );
+    if (targetRows.isEmpty) {
+      await transaction.update(
+        AppDatabase.checklistItemsTable,
+        <String, Object?>{
+          'stage_id': formalitiesStageId,
+          'sort_order': 3,
+          'updated_at_utc_ms': _dateToStorage(now),
+        },
+        where: 'project_id = ? AND template_item_key = ? AND stage_id != ?',
+        whereArgs: <Object?>[projectId, soilResearchKey, formalitiesStageId],
+      );
+    }
+
+    const legacyKey = 'site_road_power_water';
+    final legacyRows = await transaction.query(
+      AppDatabase.checklistItemsTable,
+      where: 'project_id = ? AND template_item_key = ?',
+      whereArgs: <Object?>[projectId, legacyKey],
+      limit: 1,
+    );
+    if (legacyRows.isEmpty) {
+      return;
+    }
+    final legacy = legacyRows.single;
+    final evidenceRows = await transaction.query(
+      AppDatabase.checklistItemAttachmentsTable,
+      columns: const <String>['attachment_id'],
+      where: 'project_id = ? AND checklist_item_id = ?',
+      whereArgs: <Object?>[projectId, legacy['id']],
+      limit: 1,
+    );
+    final isPristine =
+        legacy['status'] == 'todo' &&
+        legacy['importance'] == 'normal' &&
+        legacy['evidence_requirement'] == 'none' &&
+        legacy['due_at_utc_ms'] == null &&
+        legacy['assignee_label'] == null &&
+        legacy['note'] == null &&
+        legacy['risk_if_skipped'] == null &&
+        legacy['status_reason'] == null &&
+        legacy['evidence_waiver_comment'] == null &&
+        evidenceRows.isEmpty;
+    if (isPristine) {
+      await transaction.delete(
+        AppDatabase.checklistItemsTable,
+        where: 'project_id = ? AND id = ?',
+        whereArgs: <Object?>[projectId, legacy['id']],
+      );
+    }
+  }
+
+  Future<void> _seedChecklistItems(
+    DatabaseExecutor transaction, {
+    required String projectId,
+    required String stageId,
+    required List<ChecklistTemplateDefinition> definitions,
+    required DateTime now,
+  }) async {
+    for (var itemIndex = 0; itemIndex < definitions.length; itemIndex++) {
+      final item = definitions[itemIndex];
+      final itemStorageKey = _checklistKeyToStorage(item.key);
+      await transaction.insert(
+        AppDatabase.checklistItemsTable,
+        <String, Object?>{
+          'project_id': projectId,
+          'id': '${stageId}_$itemStorageKey',
+          'stage_id': stageId,
+          'template_item_key': itemStorageKey,
+          'custom_title': null,
+          'status': _checklistStatusToStorage(ChecklistStatus.todo),
+          'importance': _importanceToStorage(item.importance),
+          'due_at_utc_ms': null,
+          'assignee_label': null,
+          'note': null,
+          'risk_if_skipped': null,
+          'status_reason': null,
+          'evidence_requirement': _evidenceToStorage(item.evidenceRequirement),
+          'evidence_waiver_comment': null,
+          'sort_order': itemIndex,
+          'created_at_utc_ms': _dateToStorage(now),
+          'updated_at_utc_ms': _dateToStorage(now),
+        },
+        conflictAlgorithm: ConflictAlgorithm.ignore,
+      );
     }
   }
 
@@ -653,6 +846,7 @@ ChecklistItem _checklistItemFromRow(
 String _stageKeyToStorage(ProjectStageKey value) => switch (value) {
   ProjectStageKey.planning => 'planning',
   ProjectStageKey.formalities => 'formalities',
+  ProjectStageKey.sitePreparation => 'site_preparation',
   ProjectStageKey.stateZero => 'state_zero',
   ProjectStageKey.shellOpen => 'shell_open',
   ProjectStageKey.shellClosed => 'shell_closed',
@@ -666,6 +860,7 @@ String _stageKeyToStorage(ProjectStageKey value) => switch (value) {
 ProjectStageKey _stageKeyFromStorage(String value) => switch (value) {
   'planning' => ProjectStageKey.planning,
   'formalities' => ProjectStageKey.formalities,
+  'site_preparation' => ProjectStageKey.sitePreparation,
   'state_zero' => ProjectStageKey.stateZero,
   'shell_open' => ProjectStageKey.shellOpen,
   'shell_closed' => ProjectStageKey.shellClosed,
@@ -678,7 +873,42 @@ ProjectStageKey _stageKeyFromStorage(String value) => switch (value) {
 };
 
 String _checklistKeyToStorage(ChecklistTemplateKey value) => switch (value) {
+  ChecklistTemplateKey.planningPermissionBasis => 'planning_permission_basis',
+  ChecklistTemplateKey.landTitleAndRoadAccess => 'land_title_and_road_access',
+  ChecklistTemplateKey.designMap => 'design_map',
   ChecklistTemplateKey.soilResearch => 'soil_research',
+  ChecklistTemplateKey.houseDesignSelection => 'house_design_selection',
+  ChecklistTemplateKey.readyDesignAdaptation => 'ready_design_adaptation',
+  ChecklistTemplateKey.utilityConnectionConditions =>
+    'utility_connection_conditions',
+  ChecklistTemplateKey.coordinatedBuildingDesign =>
+    'coordinated_building_design',
+  ChecklistTemplateKey.buildingPermitOrNotification =>
+    'building_permit_or_notification',
+  ChecklistTemplateKey.constructionManagerAppointment =>
+    'construction_manager_appointment',
+  ChecklistTemplateKey.constructionLog => 'construction_log',
+  ChecklistTemplateKey.constructionCommencementNotice =>
+    'construction_commencement_notice',
+  ChecklistTemplateKey.managerDocumentationHandover =>
+    'manager_documentation_handover',
+  ChecklistTemplateKey.additionalPermitsAudit => 'additional_permits_audit',
+  ChecklistTemplateKey.preStartDocumentAudit => 'pre_start_document_audit',
+  ChecklistTemplateKey.siteLogisticsPlan => 'site_logistics_plan',
+  ChecklistTemplateKey.temporarySiteFence => 'temporary_site_fence',
+  ChecklistTemplateKey.heavyEquipmentGate => 'heavy_equipment_gate',
+  ChecklistTemplateKey.stabilizedSiteEntrance => 'stabilized_site_entrance',
+  ChecklistTemplateKey.toolStorageContainer => 'tool_storage_container',
+  ChecklistTemplateKey.temporaryConstructionPower =>
+    'temporary_construction_power',
+  ChecklistTemplateKey.constructionWaterSupply => 'construction_water_supply',
+  ChecklistTemplateKey.portableToilet => 'portable_toilet',
+  ChecklistTemplateKey.siteUtilitiesAndHazardsMarking =>
+    'site_utilities_and_hazards_marking',
+  ChecklistTemplateKey.siteSafetySetup => 'site_safety_setup',
+  ChecklistTemplateKey.materialAndWasteZones => 'material_and_waste_zones',
+  ChecklistTemplateKey.preConstructionPhotoRecord =>
+    'pre_construction_photo_record',
   ChecklistTemplateKey.surveyorBuildingSetout => 'surveyor_building_setout',
   ChecklistTemplateKey.siteRoadPowerWater => 'site_road_power_water',
   ChecklistTemplateKey.excavationFoundationLevels =>
@@ -703,7 +933,42 @@ String _checklistKeyToStorage(ChecklistTemplateKey value) => switch (value) {
 };
 
 ChecklistTemplateKey _checklistKeyFromStorage(String value) => switch (value) {
+  'planning_permission_basis' => ChecklistTemplateKey.planningPermissionBasis,
+  'land_title_and_road_access' => ChecklistTemplateKey.landTitleAndRoadAccess,
+  'design_map' => ChecklistTemplateKey.designMap,
   'soil_research' => ChecklistTemplateKey.soilResearch,
+  'house_design_selection' => ChecklistTemplateKey.houseDesignSelection,
+  'ready_design_adaptation' => ChecklistTemplateKey.readyDesignAdaptation,
+  'utility_connection_conditions' =>
+    ChecklistTemplateKey.utilityConnectionConditions,
+  'coordinated_building_design' =>
+    ChecklistTemplateKey.coordinatedBuildingDesign,
+  'building_permit_or_notification' =>
+    ChecklistTemplateKey.buildingPermitOrNotification,
+  'construction_manager_appointment' =>
+    ChecklistTemplateKey.constructionManagerAppointment,
+  'construction_log' => ChecklistTemplateKey.constructionLog,
+  'construction_commencement_notice' =>
+    ChecklistTemplateKey.constructionCommencementNotice,
+  'manager_documentation_handover' =>
+    ChecklistTemplateKey.managerDocumentationHandover,
+  'additional_permits_audit' => ChecklistTemplateKey.additionalPermitsAudit,
+  'pre_start_document_audit' => ChecklistTemplateKey.preStartDocumentAudit,
+  'site_logistics_plan' => ChecklistTemplateKey.siteLogisticsPlan,
+  'temporary_site_fence' => ChecklistTemplateKey.temporarySiteFence,
+  'heavy_equipment_gate' => ChecklistTemplateKey.heavyEquipmentGate,
+  'stabilized_site_entrance' => ChecklistTemplateKey.stabilizedSiteEntrance,
+  'tool_storage_container' => ChecklistTemplateKey.toolStorageContainer,
+  'temporary_construction_power' =>
+    ChecklistTemplateKey.temporaryConstructionPower,
+  'construction_water_supply' => ChecklistTemplateKey.constructionWaterSupply,
+  'portable_toilet' => ChecklistTemplateKey.portableToilet,
+  'site_utilities_and_hazards_marking' =>
+    ChecklistTemplateKey.siteUtilitiesAndHazardsMarking,
+  'site_safety_setup' => ChecklistTemplateKey.siteSafetySetup,
+  'material_and_waste_zones' => ChecklistTemplateKey.materialAndWasteZones,
+  'pre_construction_photo_record' =>
+    ChecklistTemplateKey.preConstructionPhotoRecord,
   'surveyor_building_setout' => ChecklistTemplateKey.surveyorBuildingSetout,
   'site_road_power_water' => ChecklistTemplateKey.siteRoadPowerWater,
   'excavation_foundation_levels' =>

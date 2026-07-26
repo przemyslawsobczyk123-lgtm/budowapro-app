@@ -215,6 +215,204 @@ void main() {
     );
   });
 
+  test(
+    'migrates version 9 for site preparation without losing child rows',
+    () async {
+      final versionNineDatabase = await databaseFactoryFfi.openDatabase(
+        databasePath,
+        options: OpenDatabaseOptions(
+          version: 9,
+          onConfigure: (database) =>
+              database.execute('PRAGMA foreign_keys = ON'),
+          onCreate: (database, version) async {
+            await database.execute('''
+              CREATE TABLE app_metadata (
+                key TEXT PRIMARY KEY NOT NULL,
+                value TEXT NOT NULL,
+                updated_at_utc_ms INTEGER NOT NULL
+              )
+            ''');
+            await database.execute('''
+        CREATE TABLE projects (
+          id TEXT PRIMARY KEY NOT NULL,
+          name TEXT NOT NULL,
+          location_label TEXT,
+          project_type TEXT NOT NULL CHECK (
+            project_type IN (
+              'house_build',
+              'house_renovation',
+              'apartment_renovation'
+            )
+          ),
+          template_key TEXT NOT NULL CHECK (
+            template_key IN ('build_house', 'renovation')
+          ),
+          template_version INTEGER NOT NULL CHECK (template_version > 0),
+          currency_code TEXT NOT NULL,
+          area_square_meters INTEGER CHECK (area_square_meters > 0),
+          planned_budget_minor_units INTEGER CHECK (
+            planned_budget_minor_units >= 0
+          ),
+          planned_start_utc_ms INTEGER,
+          planned_end_utc_ms INTEGER,
+          date_format TEXT NOT NULL CHECK (
+            date_format IN ('day_month_year', 'year_month_day')
+          ),
+          current_stage_key TEXT NOT NULL CHECK (
+            current_stage_key IN (
+              'planning',
+              'formalities',
+              'state_zero',
+              'shell_open',
+              'shell_closed',
+              'demolition',
+              'installations',
+              'plaster',
+              'finishing',
+              'handover'
+            )
+          ),
+          is_archived INTEGER NOT NULL DEFAULT 0 CHECK (
+            is_archived IN (0, 1)
+          ),
+          deletion_pending INTEGER NOT NULL DEFAULT 0 CHECK (
+            deletion_pending IN (0, 1)
+          ),
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL
+        )
+      ''');
+            await database.execute('''
+              CREATE INDEX projects_active_updated_idx
+              ON projects (
+                deletion_pending,
+                is_archived,
+                updated_at_utc_ms DESC,
+                id ASC
+              )
+            ''');
+            await database.execute('''
+              CREATE TABLE project_stages (
+                project_id TEXT NOT NULL,
+                id TEXT NOT NULL,
+                PRIMARY KEY (project_id, id),
+                FOREIGN KEY (project_id) REFERENCES projects(id)
+                  ON DELETE CASCADE
+              )
+            ''');
+            await database.insert('projects', <String, Object?>{
+              'id': 'project-v9',
+              'name': 'Existing house',
+              'location_label': null,
+              'project_type': 'house_build',
+              'template_key': 'build_house',
+              'template_version': 1,
+              'currency_code': 'PLN',
+              'area_square_meters': null,
+              'planned_budget_minor_units': null,
+              'planned_start_utc_ms': null,
+              'planned_end_utc_ms': null,
+              'date_format': 'day_month_year',
+              'current_stage_key': 'state_zero',
+              'is_archived': 0,
+              'deletion_pending': 0,
+              'created_at_utc_ms': 1,
+              'updated_at_utc_ms': 1,
+            });
+            await database.insert('project_stages', <String, Object?>{
+              'project_id': 'project-v9',
+              'id': 'state_zero',
+            });
+          },
+        ),
+      );
+      await versionNineDatabase.close();
+
+      appDatabase = AppDatabase(
+        factory: databaseFactoryFfi,
+        path: databasePath,
+      );
+      final migrated = await appDatabase!.open();
+
+      expect(await migrated.getVersion(), AppDatabase.schemaVersion);
+      expect(
+        await migrated.query(
+          AppDatabase.projectsTable,
+          columns: const <String>['id'],
+        ),
+        <Map<String, Object?>>[
+          <String, Object?>{'id': 'project-v9'},
+        ],
+      );
+      expect(
+        await migrated.query(
+          AppDatabase.projectStagesTable,
+          columns: const <String>['project_id', 'id'],
+        ),
+        <Map<String, Object?>>[
+          <String, Object?>{'project_id': 'project-v9', 'id': 'state_zero'},
+        ],
+      );
+      expect(
+        await migrated.update(
+          AppDatabase.projectsTable,
+          const <String, Object?>{
+            'current_stage_key': 'formalities',
+            'current_stage_key_v2': 'site_preparation',
+          },
+          where: 'id = ?',
+          whereArgs: const <Object?>['project-v9'],
+        ),
+        1,
+      );
+      expect(
+        await migrated.query(
+          AppDatabase.projectsTable,
+          columns: const <String>['current_stage_key', 'current_stage_key_v2'],
+        ),
+        <Map<String, Object?>>[
+          <String, Object?>{
+            'current_stage_key': 'formalities',
+            'current_stage_key_v2': 'site_preparation',
+          },
+        ],
+      );
+      expect(await migrated.rawQuery('PRAGMA foreign_key_check'), isEmpty);
+
+      final migratedProjectSchema =
+          (await migrated.query(
+                'sqlite_master',
+                columns: const <String>['sql'],
+                where: 'type = ? AND name = ?',
+                whereArgs: const <Object?>['table', AppDatabase.projectsTable],
+              )).single['sql']
+              as String;
+      final freshPath = p.join(temporaryDirectory.path, 'fresh-v10.db');
+      final freshDatabase = AppDatabase(
+        factory: databaseFactoryFfi,
+        path: freshPath,
+      );
+      try {
+        final fresh = await freshDatabase.open();
+        final freshProjectSchema =
+            (await fresh.query(
+                  'sqlite_master',
+                  columns: const <String>['sql'],
+                  where: 'type = ? AND name = ?',
+                  whereArgs: const <Object?>[
+                    'table',
+                    AppDatabase.projectsTable,
+                  ],
+                )).single['sql']
+                as String;
+        expect(migratedProjectSchema, freshProjectSchema);
+      } finally {
+        await freshDatabase.close();
+        await databaseFactoryFfi.deleteDatabase(freshPath);
+      }
+    },
+  );
+
   test('uses bound arguments for metadata keys', () async {
     appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
     const unusualKey = "owner' OR 1 = 1 --";

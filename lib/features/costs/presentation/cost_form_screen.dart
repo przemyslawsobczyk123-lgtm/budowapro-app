@@ -1209,6 +1209,7 @@ String costPaymentLabel(AppLocalizations l10n, CostPaymentMethod value) =>
 String _stageStorageId(ProjectStageKey value) => switch (value) {
   ProjectStageKey.planning => 'planning',
   ProjectStageKey.formalities => 'formalities',
+  ProjectStageKey.sitePreparation => 'site_preparation',
   ProjectStageKey.stateZero => 'state_zero',
   ProjectStageKey.shellOpen => 'shell_open',
   ProjectStageKey.shellClosed => 'shell_closed',

@@ -1,6 +1,6 @@
 # Stage guidance source register
 
-Status: content version `1`, verified on `2026-07-25`.
+Status: content version `2`, verified on `2026-07-26`.
 
 The in-app guidance is an offline decision checklist. It does not replace a
 construction design, geotechnical assessment, product system specification or
@@ -26,6 +26,14 @@ the decisions of the designer and site manager.
 
 | Area | Reference | Use in BudowaPRO |
 | --- | --- | --- |
+| Construction start | [Construction Law, consolidated text Dz.U. 2026 item 524](https://api.sejm.gov.pl/eli/acts/DU/2026/524/text.pdf) | Separates document preparation from preparatory work that can legally start construction, including site development, temporary objects, connections and surveying. |
+| Procedures and current forms | [GUNB procedures](https://www.gunb.gov.pl/strona/procedury-budowlane) and [GUNB forms](https://www.gov.pl/web/gunb/wzory-wnioskow-zgloszen-i-zawiadomien) | Keeps permit, notification and commencement prompts tied to current official procedures instead of embedding a fixed form version. |
+| Spatial planning | [MRiT: spatial-planning reform](https://www.gov.pl/web/rozwoj-technologia/reforma-planowania-przestrzennego-2) | Prompts the investor to confirm the current MPZP/WZ route with the municipality; the app does not predict local planning status. |
+| Surveying | [Budowlane ABC: geodetic activities and studies](https://budowlaneabc.gov.pl/praktyczny-przewodnik-inwestora/wnioski-elektroniczne/czynnosci-i-opracowania-geodezyjne/) | Supports commissioning the design map and construction setting-out to qualified professionals. |
+| Ground conditions | [Regulation Dz.U. 2012 item 463](https://eli.gov.pl/api/acts/DU/2012/463/text.html) and [PN-EN 1997-1:2025-10 scope at PKN](https://sklep.pkn.pl/pn-en-1997-1-2025-10e.html) | Keeps investigation scope and geotechnical category with the designer and qualified geotechnical professional. |
+| Construction log | [GUNB Electronic Construction Log](https://e-dziennikbudowy.gunb.gov.pl/) | Links users to the official EDB service without treating the app checklist as a statutory construction log. |
+| Site organization and safety | [Construction-site safety regulation, Dz.U. 2003 item 401](https://eli.gov.pl/eli/DU/2003/401/ogl) and [PIP construction checklist](https://www.pip.gov.pl/publikacje/publikacje-dla-pracodawcow/bezpiecznie-i-zgodnie-z-prawem-lista-kontrolna-z-komentarezem) | Covers fencing, roads and walkways, temporary utilities, hygienic facilities and dangerous-zone controls in compact site-preparation prompts. |
+| Access from a public road | [GDDKiA: exits](https://www.gov.pl/web/gddkia/zjazdy) | Reminds the user that a temporary or permanent site entrance may need road-administrator verification. |
 | Current regulation register | [MRiT: Warunki techniczne and amendment list](https://budowlaneabc.gov.pl/praktyczny-przewodnik-inwestora/najwazniejsze-przepisy/warunki-techniczne/) | The app links to the official register because the 2022 consolidated text has later amendments. Content review must check this list before publication. |
 | Moisture and groundwater | [2022 consolidated Warunki techniczne, sections 315-318](https://eli.gov.pl/api/acts/DU/2022/1225/text.html) | The building must be protected against precipitation, groundwater, surface water and capillary moisture; the solution depends on site conditions. |
 | Water and sewer installations | [2022 consolidated Warunki techniczne, sections 113-127](https://eli.gov.pl/api/acts/DU/2022/1225/text.html) | Prompts for coordinated water, sewer, riser and inspection-point design before concrete. |

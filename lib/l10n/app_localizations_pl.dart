@@ -195,6 +195,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get projectStageFormalities => 'Formalności';
 
   @override
+  String get projectStageSitePreparation => 'Przygotowanie placu';
+
+  @override
   String get projectStageStateZero => 'Stan zero';
 
   @override
@@ -851,7 +854,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get stageGuidanceDisclaimerMessage =>
-      'To ogólna lista kontrolna do rozmowy z projektantem, kierownikiem budowy i wykonawcą branżowym. Wymiary, materiały i układ zawsze potwierdź w dokumentacji swojego domu.';
+      'To ogólna lista kontrolna do rozmowy z projektantem, kierownikiem budowy, wykonawcą branżowym lub właściwym urzędem. Aktualne wymogi, wymiary, materiały i układ zawsze potwierdź dla swojej działki i dokumentacji.';
 
   @override
   String get stageGuidanceCheckHeading => 'Sprawdź przed pracą';
@@ -945,7 +948,81 @@ class AppLocalizationsPl extends AppLocalizations {
       'ALUPROF - kompendium systemów osłonowych';
 
   @override
+  String get stageGuidanceSourceConstructionLaw =>
+      'Prawo budowlane - aktualny tekst ustawy';
+
+  @override
+  String get stageGuidanceSourceGunbProcedures => 'GUNB - procedury budowlane';
+
+  @override
+  String get stageGuidanceSourceGunbForms =>
+      'GUNB - aktualne formularze budowlane';
+
+  @override
+  String get stageGuidanceSourceSpatialPlanning =>
+      'MRiT - planowanie przestrzenne';
+
+  @override
+  String get stageGuidanceSourceGeotechnicalRegulation =>
+      'Rozporządzenie - geotechniczne warunki posadowienia';
+
+  @override
+  String get stageGuidanceSourceEurocodeGeotechnical =>
+      'Eurokod 7 - projektowanie i badania geotechniczne';
+
+  @override
+  String get stageGuidanceSourceGeodeticGuidance =>
+      'Budowlane ABC - opracowania geodezyjne';
+
+  @override
+  String get stageGuidanceSourceElectronicConstructionLog =>
+      'GUNB - Elektroniczny Dziennik Budowy';
+
+  @override
+  String get stageGuidanceSourceConstructionSafety =>
+      'Rozporządzenie BHP podczas robót budowlanych';
+
+  @override
+  String get stageGuidanceSourcePipChecklist =>
+      'PIP - lista kontrolna bezpieczeństwa budowy';
+
+  @override
+  String get stageGuidanceSourceGddkiaSiteAccess =>
+      'GDDKiA - zasady dotyczące zjazdów';
+
+  @override
   String get checklistHeading => 'Lista kontrolna';
+
+  @override
+  String get checklistBulkSelectAction => 'Zaznacz wiele';
+
+  @override
+  String checklistBulkSelectedCount(int count) {
+    return '$count zaznaczonych';
+  }
+
+  @override
+  String get checklistBulkSelectAllAction => 'Zaznacz wszystkie otwarte';
+
+  @override
+  String get checklistBulkCancelAction => 'Zakończ wybieranie';
+
+  @override
+  String get checklistBulkCompleteAction => 'Oznacz jako wykonane';
+
+  @override
+  String checklistBulkCompletedMessage(int count) {
+    return 'Oznaczono jako wykonane: $count.';
+  }
+
+  @override
+  String checklistBulkEvidencePendingMessage(int completed, int pending) {
+    return 'Oznaczono: $completed. Pozostałe wymagają dowodu: $pending.';
+  }
+
+  @override
+  String get checklistBulkOnlyEvidencePendingMessage =>
+      'Wybrane punkty wymagają najpierw dodania dowodu lub zapisanego odstępstwa.';
 
   @override
   String get checklistAddAction => 'Dodaj punkt';
@@ -1068,6 +1145,211 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get checklistEvidenceImportError =>
       'Nie udało się dodać dowodu. Sprawdź typ pliku i spróbuj ponownie.';
+
+  @override
+  String get checklistPlanningPermissionBasis =>
+      'Sprawdź MPZP albo uzyskaj warunki zabudowy';
+
+  @override
+  String get checklistPlanningPermissionBasisRisk =>
+      'Projekt niezgodny z ustaleniami planistycznymi może nie uzyskać zgody albo wymagać kosztownych zmian.';
+
+  @override
+  String get checklistLandTitleAndRoadAccess =>
+      'Sprawdź prawo do działki i dostęp do drogi';
+
+  @override
+  String get checklistLandTitleAndRoadAccessRisk =>
+      'Niejasne granice, służebności lub brak prawnego dojazdu mogą zablokować projekt i dostawy.';
+
+  @override
+  String get checklistDesignMap => 'Zleć mapę do celów projektowych';
+
+  @override
+  String get checklistDesignMapRisk =>
+      'Nieaktualna lub nieprawidłowa mapa może pominąć uzbrojenie i wymusić korektę projektu.';
+
+  @override
+  String get checklistHouseDesignSelection =>
+      'Wybierz projekt domu zgodny z działką';
+
+  @override
+  String get checklistHouseDesignSelectionRisk =>
+      'Zakup projektu przed sprawdzeniem MPZP lub WZ, stron świata, gruntu i budżetu często kończy się zmianami.';
+
+  @override
+  String get checklistReadyDesignAdaptation =>
+      'Zaadaptuj projekt gotowy do działki, jeżeli dotyczy';
+
+  @override
+  String get checklistReadyDesignAdaptationRisk =>
+      'Projekt gotowy bez adaptacji nie uwzględnia konkretnej działki, gruntu, otoczenia ani lokalnych wymagań.';
+
+  @override
+  String get checklistUtilityConnectionConditions =>
+      'Uzyskaj warunki przyłączenia planowanych mediów';
+
+  @override
+  String get checklistUtilityConnectionConditionsRisk =>
+      'Brak uzgodnień z operatorami może zmienić trasy, koszty i terminy przyłączy.';
+
+  @override
+  String get checklistCoordinatedBuildingDesign =>
+      'Skompletuj i skoordynuj projekt budowlany oraz techniczny';
+
+  @override
+  String get checklistCoordinatedBuildingDesignRisk =>
+      'Nieskoordynowane branże powodują kolizje instalacji, konstrukcji i przyłączy już na budowie.';
+
+  @override
+  String get checklistBuildingPermitOrNotification =>
+      'Uzyskaj pozwolenie albo skutecznie zgłoś budowę';
+
+  @override
+  String get checklistBuildingPermitOrNotificationRisk =>
+      'Rozpoczęcie bez właściwej podstawy prawnej grozi wstrzymaniem robót i postępowaniem naprawczym.';
+
+  @override
+  String get checklistConstructionManagerAppointment =>
+      'Ustanów kierownika budowy, jeżeli jest wymagany';
+
+  @override
+  String get checklistConstructionManagerAppointmentRisk =>
+      'Bez osoby z właściwymi uprawnieniami nie wolno rozpoczynać robót wymagających kierownika.';
+
+  @override
+  String get checklistConstructionLog => 'Uzyskaj i uruchom dziennik budowy';
+
+  @override
+  String get checklistConstructionLogRisk =>
+      'Brak wymaganego dziennika utrudnia legalne rozpoczęcie i rzetelne dokumentowanie robót.';
+
+  @override
+  String get checklistConstructionCommencementNotice =>
+      'Zawiadom nadzór i projektanta o rozpoczęciu robót';
+
+  @override
+  String get checklistConstructionCommencementNoticeRisk =>
+      'Zagospodarowanie placu i przyłącza mogą być pracami przygotowawczymi, więc zawiadomienie złóż wcześniej.';
+
+  @override
+  String get checklistManagerDocumentationHandover =>
+      'Przekaż kierownikowi projekt i dokumentację';
+
+  @override
+  String get checklistManagerDocumentationHandoverRisk =>
+      'Kierownik bez kompletnego projektu, decyzji i uzgodnień nie może bezpiecznie zorganizować robót.';
+
+  @override
+  String get checklistAdditionalPermitsAudit =>
+      'Sprawdź dodatkowe zgody i ograniczenia';
+
+  @override
+  String get checklistAdditionalPermitsAuditRisk =>
+      'Drzewa, zabytki, grunty rolne lub leśne, wody i zjazd z drogi mogą wymagać osobnych decyzji.';
+
+  @override
+  String get checklistPreStartDocumentAudit =>
+      'Sprawdź komplet dokumentów przed pierwszą pracą';
+
+  @override
+  String get checklistPreStartDocumentAuditRisk =>
+      'Jedna brakująca decyzja, data ważności lub podpis może zatrzymać rozpoczęcie budowy.';
+
+  @override
+  String get checklistSiteLogisticsPlan =>
+      'Uzgodnij z kierownikiem logistykę placu';
+
+  @override
+  String get checklistSiteLogisticsPlanRisk =>
+      'Brak planu wjazdu, składowania i pracy maszyn zwiększa ryzyko kolizji, szkód i przestojów.';
+
+  @override
+  String get checklistTemporarySiteFence =>
+      'Przygotuj tymczasowe ogrodzenie działki';
+
+  @override
+  String get checklistTemporarySiteFenceRisk =>
+      'Niezabezpieczony teren naraża osoby postronne na wejście w strefę robót.';
+
+  @override
+  String get checklistHeavyEquipmentGate =>
+      'Przygotuj szeroką bramę i bezpieczne wejście piesze';
+
+  @override
+  String get checklistHeavyEquipmentGateRisk =>
+      'Zbyt wąski wjazd lub wspólna trasa pieszych i maszyn utrudni dostawy i zwiększy ryzyko wypadku.';
+
+  @override
+  String get checklistStabilizedSiteEntrance =>
+      'Przygotuj legalny i utwardzony wjazd';
+
+  @override
+  String get checklistStabilizedSiteEntranceRisk =>
+      'Grząski albo nieuzgodniony zjazd może zatrzymać ciężki sprzęt, uszkodzić drogę i nanosić błoto.';
+
+  @override
+  String get checklistToolStorageContainer =>
+      'Ustaw blaszak lub kontener na narzędzia';
+
+  @override
+  String get checklistToolStorageContainerRisk =>
+      'Źle ustawione lub niezabezpieczone zaplecze utrudnia pracę i zwiększa ryzyko kradzieży albo pożaru.';
+
+  @override
+  String get checklistTemporaryConstructionPower =>
+      'Zapewnij bezpieczny prąd budowlany';
+
+  @override
+  String get checklistTemporaryConstructionPowerRisk =>
+      'Prowizoryczne zasilanie bez zabezpieczeń i pomiarów grozi porażeniem, pożarem oraz przestojem.';
+
+  @override
+  String get checklistConstructionWaterSupply =>
+      'Zapewnij wodę do robót, higieny i picia';
+
+  @override
+  String get checklistConstructionWaterSupplyRisk =>
+      'Brak rozdzielenia wody technologicznej i pitnej utrudnia roboty oraz bezpieczne zaplecze pracowników.';
+
+  @override
+  String get checklistPortableToilet => 'Ustaw toaletę przenośną i punkt mycia';
+
+  @override
+  String get checklistPortableToiletRisk =>
+      'Brak dostępnego i regularnie serwisowanego zaplecza sanitarnego narusza podstawowe warunki pracy.';
+
+  @override
+  String get checklistSiteUtilitiesAndHazardsMarking =>
+      'Oznacz uzbrojenie, drzewa i strefy niebezpieczne';
+
+  @override
+  String get checklistSiteUtilitiesAndHazardsMarkingRisk =>
+      'Nieoznaczone sieci i strefy pracy maszyn zwiększają ryzyko uszkodzeń, porażenia i wypadków.';
+
+  @override
+  String get checklistSiteSafetySetup =>
+      'Przygotuj tablicę, BIOZ i wyposażenie bezpieczeństwa';
+
+  @override
+  String get checklistSiteSafetySetupRisk =>
+      'Brak oznakowania, apteczki, gaśnicy lub wymaganej dokumentacji utrudni reakcję na zagrożenie.';
+
+  @override
+  String get checklistMaterialAndWasteZones =>
+      'Wyznacz miejsca materiałów, dostaw i odpadów';
+
+  @override
+  String get checklistMaterialAndWasteZonesRisk =>
+      'Chaotyczne składowanie blokuje przejazdy, niszczy materiały i utrudnia legalne przekazanie odpadów.';
+
+  @override
+  String get checklistPreConstructionPhotoRecord =>
+      'Zrób dokumentację stanu przed budową';
+
+  @override
+  String get checklistPreConstructionPhotoRecordRisk =>
+      'Bez zdjęć granic, drogi, drzew i sąsiednich ogrodzeń trudno później rozstrzygnąć odpowiedzialność za szkody.';
 
   @override
   String get checklistSoilResearch => 'Badania gruntu i warunki wodne';
@@ -1204,6 +1486,124 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get checklistPostFoundationSurveyRisk =>
       'Odchyłki położenia mogą ujawnić się dopiero przy kolejnych etapach lub odbiorze.';
+
+  @override
+  String get guidancePlanningAndGroundConditionsTitle =>
+      'Plan miejscowy, mapa i grunt';
+
+  @override
+  String get guidancePlanningAndGroundConditionsTiming =>
+      'Przed wyborem i adaptacją projektu domu';
+
+  @override
+  String get guidancePlanningAndGroundConditionsSummary =>
+      'Najpierw potwierdź w gminie aktualną podstawę planistyczną dla działki: MPZP albo potrzebę uzyskania WZ. Mapa projektowa i rozpoznanie gruntu powinny trafić do projektanta przed ustaleniem posadowienia.';
+
+  @override
+  String get guidancePlanningAndGroundConditionsChecks =>
+      'Pobierz aktualne ustalenia MPZP albo potwierdź tryb uzyskania WZ i wymagane załączniki.\nSprawdź tytuł prawny, dostęp do drogi oraz ograniczenia widoczne w dokumentach działki.\nZleć mapę do celów projektowych uprawnionemu geodecie.\nUzgodnij z projektantem zakres rozpoznania geotechnicznego i przekaż mu wyniki przed doborem fundamentów.';
+
+  @override
+  String get guidancePlanningAndGroundConditionsQuestions =>
+      'Czy urząd potwierdził aktualną ścieżkę planistyczną dla tej działki?\nCzy mapa obejmuje potrzebny teren i uzbrojenie?\nCzy warunki gruntowo-wodne mogą zmienić fundament, odwodnienie lub hydroizolację?';
+
+  @override
+  String get guidanceDesignUtilitiesAndApprovalsTitle =>
+      'Spójny projekt i zgody';
+
+  @override
+  String get guidanceDesignUtilitiesAndApprovalsTiming =>
+      'Przed złożeniem wniosku lub zgłoszenia i przed zamówieniem robót';
+
+  @override
+  String get guidanceDesignUtilitiesAndApprovalsSummary =>
+      'Projekt gotowy wymaga adaptacji do działki. Warunki przyłączenia i projekty branżowe skoordynuj z architekturą oraz konstrukcją, a właściwy tryb pozwolenia albo zgłoszenia potwierdź dla konkretnej inwestycji.';
+
+  @override
+  String get guidanceDesignUtilitiesAndApprovalsChecks =>
+      'Porównaj projekt z MPZP albo WZ, mapą, geotechniką i warunkami przyłączenia.\nZbierz uzgodnione rozwiązania prądu, wody, kanalizacji, gazu i teletechniki.\nSprawdź komplet projektu zagospodarowania działki, projektu architektoniczno-budowlanego i wymaganej dokumentacji technicznej.\nUżyj aktualnego formularza GUNB i sprawdź, czy potrzebne są dodatkowe decyzje lub uzgodnienia.';
+
+  @override
+  String get guidanceDesignUtilitiesAndApprovalsQuestions =>
+      'Czy adaptujący projektant potwierdził komplet i zgodność wszystkich branż?\nCzy każde przyłącze ma ustaloną trasę, punkt wejścia i odpowiedzialnego wykonawcę?\nCzy urząd wskazał dodatkowe załączniki właściwe dla lokalizacji?';
+
+  @override
+  String get guidanceLegalConstructionStartTitle => 'Legalny start budowy';
+
+  @override
+  String get guidanceLegalConstructionStartTiming =>
+      'Zanim rozpoczną się roboty przygotowawcze na działce';
+
+  @override
+  String get guidanceLegalConstructionStartSummary =>
+      'Zagospodarowanie terenu budowy, obiekty tymczasowe, przyłącza i wytyczenie geodezyjne mogą stanowić rozpoczęcie budowy. Najpierw zapewnij skuteczną podstawę realizacji, kierownika, dziennik i wymagane zawiadomienie o rozpoczęciu robót.';
+
+  @override
+  String get guidanceLegalConstructionStartChecks =>
+      'Potwierdź z kierownikiem, że pozwolenie jest wykonalne albo zgłoszenie pozwala rozpocząć roboty.\nUstal kierownika budowy i uzyskaj wymagane oświadczenia.\nZałóż właściwy dziennik budowy: papierowy albo elektroniczny.\nZłóż aktualne zawiadomienie o rozpoczęciu robót wraz z wymaganymi załącznikami.\nPrzekaż kierownikowi zatwierdzony projekt, dokumentację techniczną, decyzje i warunki przyłączy.';
+
+  @override
+  String get guidanceLegalConstructionStartQuestions =>
+      'Czy kierownik pisemnie potwierdził gotowość do przejęcia budowy?\nCzy zawiadomienie obejmuje właściwy organ i komplet załączników?\nCzy na budowie jest aktualna dokumentacja do kontroli i prowadzenia robót?';
+
+  @override
+  String get guidanceSiteLogisticsAndAccessTitle => 'Dojazd i logistyka placu';
+
+  @override
+  String get guidanceSiteLogisticsAndAccessTiming =>
+      'Przed pierwszą dostawą, koparką i ustawieniem zaplecza';
+
+  @override
+  String get guidanceSiteLogisticsAndAccessSummary =>
+      'Rozrysuj ruch ciężkiego sprzętu, strefy rozładunku i składowania. Ogrodzenie, brama i utwardzony dojazd mają ograniczać ryzyko dla ludzi, drogi, instalacji podziemnych i przyszłych elementów domu.';
+
+  @override
+  String get guidanceSiteLogisticsAndAccessChecks =>
+      'Uzgodnij kierunek wjazdu, promień skrętu, szerokość i nośność trasy z dostawcami.\nCo do zasady zabezpiecz teren ogrodzeniem o wysokości co najmniej 1,5 m; gdy nie jest to możliwe, zastosuj rozwiązanie przewidziane w przepisach i uzgodnione z kierownikiem.\nOddziel ruch pieszy od maszyn oraz wyznacz bezpieczne miejsce rozładunku.\nSprawdź formalności dotyczące istniejącego lub tymczasowego zjazdu z drogi.\nUstaw kontener i składowiska poza wykopem, trasami instalacji i zasięgiem pracy maszyn.';
+
+  @override
+  String get guidanceSiteLogisticsAndAccessQuestions =>
+      'Czy betoniarka, pompa i dźwig wjadą oraz bezpiecznie wyjadą?\nCzy podłoże wytrzyma ruch po deszczu?\nCzy brama i składowiska nie kolidują z przyłączami ani docelowym zagospodarowaniem?';
+
+  @override
+  String get guidanceTemporaryUtilitiesAndFacilitiesTitle =>
+      'Prąd, woda i zaplecze';
+
+  @override
+  String get guidanceTemporaryUtilitiesAndFacilitiesTiming =>
+      'Przed uruchomieniem elektronarzędzi i stałej pracy ekip';
+
+  @override
+  String get guidanceTemporaryUtilitiesAndFacilitiesSummary =>
+      'Tymczasowe instalacje są częścią organizacji bezpiecznej budowy. Zasilanie powinien przygotować i sprawdzić uprawniony elektryk, a woda i toaleta muszą odpowiadać rzeczywistemu składowi ekip oraz zakresowi robót.';
+
+  @override
+  String get guidanceTemporaryUtilitiesAndFacilitiesChecks =>
+      'Ustal legalny punkt poboru, moc i trasę zasilania bez kabli leżących w przejeździe lub wodzie.\nZleć elektrykowi rozdzielnicę, ochronę przeciwporażeniową, uziemienie i wymagane pomiary.\nZapewnij wodę do robót oraz osobno wodę zdatną do picia, jeśli źródło techniczne jej nie gwarantuje.\nUstaw i regularnie serwisuj toaletę w dostępnym, stabilnym miejscu.\nOznacz istniejące sieci i zabezpiecz punkty poboru przed uszkodzeniem oraz dostępem osób postronnych.';
+
+  @override
+  String get guidanceTemporaryUtilitiesAndFacilitiesQuestions =>
+      'Czy protokół instalacji tymczasowej i zabezpieczenia są aktualne?\nCzy zapas mocy wystarczy dla planowanego sprzętu?\nKto odpowiada za wodę, opróżnianie toalety i porządek zaplecza?';
+
+  @override
+  String get guidanceSiteSafetyAndEvidenceTitle =>
+      'Bezpieczeństwo i stan początkowy';
+
+  @override
+  String get guidanceSiteSafetyAndEvidenceTiming =>
+      'Przed przekazaniem placu ekipie i przed pierwszym wykopem';
+
+  @override
+  String get guidanceSiteSafetyAndEvidenceSummary =>
+      'Kierownik organizuje zabezpieczenie terenu i ocenia obowiązki dotyczące planu BIOZ oraz tablicy informacyjnej. Zdjęcia stanu początkowego pomagają później rozstrzygać uszkodzenia drogi, granic i sąsiedniego terenu.';
+
+  @override
+  String get guidanceSiteSafetyAndEvidenceChecks =>
+      'Oznacz granice, uzbrojenie, strefy niebezpieczne, wykopy i miejsca o ograniczonym dostępie.\nPotwierdź z kierownikiem wymagane zabezpieczenia, plan BIOZ, tablicę informacyjną i instrukcje dla ekip.\nZapewnij oświetlenie, dojścia, porządek oraz bezpieczne magazynowanie materiałów i odpadów.\nWykonaj datowane zdjęcia drogi, zjazdu, ogrodzeń, punktów granicznych, zieleni i istniejących sieci.\nZapisz odbiór placu i osoby odpowiedzialne za codzienną kontrolę zabezpieczeń.';
+
+  @override
+  String get guidanceSiteSafetyAndEvidenceQuestions =>
+      'Czy każda ekipa zna zasady ruchu, składowania i zgłaszania zagrożeń?\nCzy zdjęcia pokazują skalę, lokalizację i cały obszar możliwych uszkodzeń?\nKto kontroluje ogrodzenie, rozdzielnicę i strefy niebezpieczne po pracy?';
 
   @override
   String get guidanceServicePenetrationsTitle =>

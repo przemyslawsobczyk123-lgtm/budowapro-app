@@ -207,6 +207,12 @@ final class _EmptyStages implements StageRepository {
   }) async => const <ChecklistItem>[];
 
   @override
+  Future<List<ChecklistItem>> completeChecklistItems({
+    required String projectId,
+    required List<String> checklistItemIds,
+  }) => throw UnimplementedError();
+
+  @override
   Future<ProjectStage> addCustomStage({
     required String projectId,
     required String name,

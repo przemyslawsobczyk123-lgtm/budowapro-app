@@ -61,7 +61,54 @@ String checklistTemplateTitle(
   AppLocalizations l10n,
   ChecklistTemplateKey key,
 ) => switch (key) {
+  ChecklistTemplateKey.planningPermissionBasis =>
+    l10n.checklistPlanningPermissionBasis,
+  ChecklistTemplateKey.landTitleAndRoadAccess =>
+    l10n.checklistLandTitleAndRoadAccess,
+  ChecklistTemplateKey.designMap => l10n.checklistDesignMap,
   ChecklistTemplateKey.soilResearch => l10n.checklistSoilResearch,
+  ChecklistTemplateKey.houseDesignSelection =>
+    l10n.checklistHouseDesignSelection,
+  ChecklistTemplateKey.readyDesignAdaptation =>
+    l10n.checklistReadyDesignAdaptation,
+  ChecklistTemplateKey.utilityConnectionConditions =>
+    l10n.checklistUtilityConnectionConditions,
+  ChecklistTemplateKey.coordinatedBuildingDesign =>
+    l10n.checklistCoordinatedBuildingDesign,
+  ChecklistTemplateKey.buildingPermitOrNotification =>
+    l10n.checklistBuildingPermitOrNotification,
+  ChecklistTemplateKey.constructionManagerAppointment =>
+    l10n.checklistConstructionManagerAppointment,
+  ChecklistTemplateKey.constructionLog => l10n.checklistConstructionLog,
+  ChecklistTemplateKey.constructionCommencementNotice =>
+    l10n.checklistConstructionCommencementNotice,
+  ChecklistTemplateKey.managerDocumentationHandover =>
+    l10n.checklistManagerDocumentationHandover,
+  ChecklistTemplateKey.additionalPermitsAudit =>
+    l10n.checklistAdditionalPermitsAudit,
+  ChecklistTemplateKey.preStartDocumentAudit =>
+    l10n.checklistPreStartDocumentAudit,
+  ChecklistTemplateKey.siteLogisticsPlan => l10n.checklistSiteLogisticsPlan,
+  ChecklistTemplateKey.temporarySiteFence =>
+    l10n.checklistTemporarySiteFence,
+  ChecklistTemplateKey.heavyEquipmentGate =>
+    l10n.checklistHeavyEquipmentGate,
+  ChecklistTemplateKey.stabilizedSiteEntrance =>
+    l10n.checklistStabilizedSiteEntrance,
+  ChecklistTemplateKey.toolStorageContainer =>
+    l10n.checklistToolStorageContainer,
+  ChecklistTemplateKey.temporaryConstructionPower =>
+    l10n.checklistTemporaryConstructionPower,
+  ChecklistTemplateKey.constructionWaterSupply =>
+    l10n.checklistConstructionWaterSupply,
+  ChecklistTemplateKey.portableToilet => l10n.checklistPortableToilet,
+  ChecklistTemplateKey.siteUtilitiesAndHazardsMarking =>
+    l10n.checklistSiteUtilitiesAndHazardsMarking,
+  ChecklistTemplateKey.siteSafetySetup => l10n.checklistSiteSafetySetup,
+  ChecklistTemplateKey.materialAndWasteZones =>
+    l10n.checklistMaterialAndWasteZones,
+  ChecklistTemplateKey.preConstructionPhotoRecord =>
+    l10n.checklistPreConstructionPhotoRecord,
   ChecklistTemplateKey.surveyorBuildingSetout =>
     l10n.checklistSurveyorBuildingSetout,
   ChecklistTemplateKey.siteRoadPowerWater => l10n.checklistSiteRoadPowerWater,
@@ -95,7 +142,55 @@ String checklistTemplateRisk(
   AppLocalizations l10n,
   ChecklistTemplateKey key,
 ) => switch (key) {
+  ChecklistTemplateKey.planningPermissionBasis =>
+    l10n.checklistPlanningPermissionBasisRisk,
+  ChecklistTemplateKey.landTitleAndRoadAccess =>
+    l10n.checklistLandTitleAndRoadAccessRisk,
+  ChecklistTemplateKey.designMap => l10n.checklistDesignMapRisk,
   ChecklistTemplateKey.soilResearch => l10n.checklistSoilResearchRisk,
+  ChecklistTemplateKey.houseDesignSelection =>
+    l10n.checklistHouseDesignSelectionRisk,
+  ChecklistTemplateKey.readyDesignAdaptation =>
+    l10n.checklistReadyDesignAdaptationRisk,
+  ChecklistTemplateKey.utilityConnectionConditions =>
+    l10n.checklistUtilityConnectionConditionsRisk,
+  ChecklistTemplateKey.coordinatedBuildingDesign =>
+    l10n.checklistCoordinatedBuildingDesignRisk,
+  ChecklistTemplateKey.buildingPermitOrNotification =>
+    l10n.checklistBuildingPermitOrNotificationRisk,
+  ChecklistTemplateKey.constructionManagerAppointment =>
+    l10n.checklistConstructionManagerAppointmentRisk,
+  ChecklistTemplateKey.constructionLog => l10n.checklistConstructionLogRisk,
+  ChecklistTemplateKey.constructionCommencementNotice =>
+    l10n.checklistConstructionCommencementNoticeRisk,
+  ChecklistTemplateKey.managerDocumentationHandover =>
+    l10n.checklistManagerDocumentationHandoverRisk,
+  ChecklistTemplateKey.additionalPermitsAudit =>
+    l10n.checklistAdditionalPermitsAuditRisk,
+  ChecklistTemplateKey.preStartDocumentAudit =>
+    l10n.checklistPreStartDocumentAuditRisk,
+  ChecklistTemplateKey.siteLogisticsPlan =>
+    l10n.checklistSiteLogisticsPlanRisk,
+  ChecklistTemplateKey.temporarySiteFence =>
+    l10n.checklistTemporarySiteFenceRisk,
+  ChecklistTemplateKey.heavyEquipmentGate =>
+    l10n.checklistHeavyEquipmentGateRisk,
+  ChecklistTemplateKey.stabilizedSiteEntrance =>
+    l10n.checklistStabilizedSiteEntranceRisk,
+  ChecklistTemplateKey.toolStorageContainer =>
+    l10n.checklistToolStorageContainerRisk,
+  ChecklistTemplateKey.temporaryConstructionPower =>
+    l10n.checklistTemporaryConstructionPowerRisk,
+  ChecklistTemplateKey.constructionWaterSupply =>
+    l10n.checklistConstructionWaterSupplyRisk,
+  ChecklistTemplateKey.portableToilet => l10n.checklistPortableToiletRisk,
+  ChecklistTemplateKey.siteUtilitiesAndHazardsMarking =>
+    l10n.checklistSiteUtilitiesAndHazardsMarkingRisk,
+  ChecklistTemplateKey.siteSafetySetup => l10n.checklistSiteSafetySetupRisk,
+  ChecklistTemplateKey.materialAndWasteZones =>
+    l10n.checklistMaterialAndWasteZonesRisk,
+  ChecklistTemplateKey.preConstructionPhotoRecord =>
+    l10n.checklistPreConstructionPhotoRecordRisk,
   ChecklistTemplateKey.surveyorBuildingSetout =>
     l10n.checklistSurveyorBuildingSetoutRisk,
   ChecklistTemplateKey.siteRoadPowerWater =>

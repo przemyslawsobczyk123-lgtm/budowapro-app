@@ -18,7 +18,7 @@ final class AppDatabase {
 
   AppDatabase._(this._factory, this._path);
 
-  static const int schemaVersion = 9;
+  static const int schemaVersion = 10;
   static const String databaseFileName = 'budowapro.db';
   static const String metadataTable = 'app_metadata';
   static const String projectsTable = 'projects';
@@ -1311,6 +1311,24 @@ final class AppDatabase {
           currency_code
         )
       ''');
+    }
+
+    if (fromVersion < 10 && toVersion >= 10) {
+      final projectColumns = (await database.rawQuery(
+        'PRAGMA table_info($projectsTable)',
+      )).map((row) => row['name']).whereType<String>().toSet();
+      if (projectColumns.contains('current_stage_key')) {
+        if (!projectColumns.contains('current_stage_key_v2')) {
+          await database.execute(
+            'ALTER TABLE $projectsTable ADD COLUMN current_stage_key_v2 TEXT',
+          );
+        }
+        await database.execute('''
+          UPDATE $projectsTable
+          SET current_stage_key_v2 = current_stage_key
+          WHERE current_stage_key_v2 IS NULL
+        ''');
+      }
     }
 
     if (fromVersion < toVersion) {

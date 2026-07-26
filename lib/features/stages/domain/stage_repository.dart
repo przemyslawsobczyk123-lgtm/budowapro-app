@@ -52,6 +52,11 @@ abstract interface class StageRepository {
     required ChecklistItemDetailsInput input,
   });
 
+  Future<List<ChecklistItem>> completeChecklistItems({
+    required String projectId,
+    required List<String> checklistItemIds,
+  });
+
   Future<ChecklistItem> attachEvidence({
     required String projectId,
     required String checklistItemId,

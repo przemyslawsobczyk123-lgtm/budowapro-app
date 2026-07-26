@@ -5,33 +5,82 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('StageTemplateCatalog', () {
-    test('seeds every required Stan 0 checklist item once', () {
-      final template = StageTemplateCatalog.forProject(
-        ProjectTemplate.houseConstruction,
-      );
-      final stateZero = template.singleWhere(
-        (stage) => stage.stageKey == ProjectStageKey.stateZero,
-      );
+    test(
+      'seeds formalities, site preparation and Stan 0 without duplicates',
+      () {
+        final template = StageTemplateCatalog.forProject(
+          ProjectTemplate.houseConstruction,
+        );
+        final formalities = template.singleWhere(
+          (stage) => stage.stageKey == ProjectStageKey.formalities,
+        );
+        final sitePreparation = template.singleWhere(
+          (stage) => stage.stageKey == ProjectStageKey.sitePreparation,
+        );
+        final stateZero = template.singleWhere(
+          (stage) => stage.stageKey == ProjectStageKey.stateZero,
+        );
 
-      expect(stateZero.checklistItems, hasLength(18));
-      expect(
-        stateZero.checklistItems.map((item) => item.key).toSet(),
-        ChecklistTemplateKey.values.toSet(),
-      );
-      expect(
-        stateZero.checklistItems
-            .singleWhere(
-              (item) => item.key == ChecklistTemplateKey.foundationGrounding,
-            )
-            .evidenceRequirement,
-        EvidenceRequirement.photo,
-      );
+        expect(formalities.checklistItems, hasLength(15));
+        expect(sitePreparation.checklistItems, hasLength(12));
+        expect(stateZero.checklistItems, hasLength(16));
+        expect(
+          template
+              .expand((stage) => stage.checklistItems)
+              .map((item) => item.key)
+              .toSet(),
+          ChecklistTemplateKey.values
+              .where((key) => key != ChecklistTemplateKey.siteRoadPowerWater)
+              .toSet(),
+        );
+        expect(
+          template.expand((stage) => stage.checklistItems),
+          hasLength(
+            template
+                .expand((stage) => stage.checklistItems)
+                .map((item) => item.key)
+                .toSet()
+                .length,
+          ),
+        );
+        expect(
+          formalities.checklistItems.map((item) => item.key),
+          containsAll(<ChecklistTemplateKey>{
+            ChecklistTemplateKey.planningPermissionBasis,
+            ChecklistTemplateKey.designMap,
+            ChecklistTemplateKey.soilResearch,
+            ChecklistTemplateKey.buildingPermitOrNotification,
+            ChecklistTemplateKey.constructionCommencementNotice,
+            ChecklistTemplateKey.preStartDocumentAudit,
+          }),
+        );
+        expect(
+          sitePreparation.checklistItems.map((item) => item.key),
+          containsAll(<ChecklistTemplateKey>{
+            ChecklistTemplateKey.temporarySiteFence,
+            ChecklistTemplateKey.heavyEquipmentGate,
+            ChecklistTemplateKey.stabilizedSiteEntrance,
+            ChecklistTemplateKey.toolStorageContainer,
+            ChecklistTemplateKey.temporaryConstructionPower,
+            ChecklistTemplateKey.constructionWaterSupply,
+            ChecklistTemplateKey.portableToilet,
+          }),
+        );
+        expect(
+          stateZero.checklistItems
+              .singleWhere(
+                (item) => item.key == ChecklistTemplateKey.foundationGrounding,
+              )
+              .evidenceRequirement,
+          EvidenceRequirement.photo,
+        );
 
-      final shellOpen = template.singleWhere(
-        (stage) => stage.stageKey == ProjectStageKey.shellOpen,
-      );
-      expect(shellOpen.checklistItems, isEmpty);
-    });
+        final shellOpen = template.singleWhere(
+          (stage) => stage.stageKey == ProjectStageKey.shellOpen,
+        );
+        expect(shellOpen.checklistItems, isEmpty);
+      },
+    );
 
     test('uses independent ordered stages for renovation projects', () {
       final template = StageTemplateCatalog.forProject(

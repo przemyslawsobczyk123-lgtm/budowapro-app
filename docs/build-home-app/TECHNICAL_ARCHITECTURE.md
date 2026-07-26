@@ -330,20 +330,21 @@ is validated in the repository transaction and succeeds only when a compatible
 available attachment is linked or a non-empty waiver comment is stored. A
 system photo requirement cannot be downgraded through the editor.
 
-The `Stan 0` catalog is code-versioned and seeded idempotently on first plan
-access. It contains all 18 minimum specification items. User-created stages and
-checklist items are project records and are never overwritten by template
-seeding.
+The house catalog is code-versioned and seeded idempotently on first plan
+access. It contains 15 formalities, 12 site-preparation checkpoints and 16
+`Stan 0` checkpoints. User-created stages and checklist items are project
+records and are never overwritten by template seeding.
 
 Stage guidance is a separate, schema-independent offline catalog. It groups
-related checklist keys into five `Stan 0` decision guides and one shell-open
-guide for window shading details. User-facing content stays in localization
-files; the domain catalog stores stable keys, stage ownership, related
-checklist keys, a content version and a verification date. Every source has a
-stable key, source type, revision, URL and independent verification date.
-Guidance details show timing, review points, questions for specialists, related
-existing checklist items, structured sources and a fixed boundary that the
-content is not an execution design.
+related checklist keys into three formalities guides, three site-preparation
+guides, five `Stan 0` decision guides and one shell-open guide for window
+shading details. User-facing content stays in localization files; the domain
+catalog stores stable keys, stage ownership, related checklist keys, a content
+version and a verification date. Every source has a stable key, source type,
+revision, URL and independent verification date. Guidance details show timing,
+review points, questions for specialists, related existing checklist items,
+structured sources and a fixed boundary that the content is not an execution
+design or legal determination.
 
 Built-in guidance is read-only and never changes stage progress. The action for
 an investor's own advice uses the existing custom `checklist_items` path,
@@ -352,6 +353,14 @@ seeding uses `ConflictAlgorithm.ignore`; catalog upgrades can add stable
 template rows but cannot replace user status, notes or custom checklist items.
 The source register and editorial constraints are maintained in
 `STAGE_GUIDANCE_SOURCES.md`.
+
+Bulk completion validates every requested item before any row is updated and
+runs in one SQLite transaction. The UI sends only items whose evidence policy
+is already satisfied and reports the remaining selection. Schema `v10` extends
+the project stage value additively instead of rebuilding the parent table, so
+foreign-key child records remain untouched. Catalog migration moves the stable
+ground-research row to formalities and removes the former combined site-setup
+row only when it is still pristine.
 
 The shell-open window-shading guide is informational and does not seed a
 checklist row. This avoids changing completed-stage progress, the schema or the
@@ -626,7 +635,7 @@ Backup is a user-triggered ZIP with a versioned manifest:
   "format": "budowapro-backup",
   "version": 1,
   "createdAt": "2026-07-25T12:00:00.000Z",
-  "schemaVersion": 9,
+  "schemaVersion": 10,
   "database": "database/budowapro.db",
   "projects": "projects/",
   "checksums": "checksums.json",

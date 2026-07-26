@@ -12,13 +12,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class StagePlanScreen extends ConsumerWidget {
+class StagePlanScreen extends ConsumerStatefulWidget {
   const StagePlanScreen({this.embedded = false, super.key});
 
   final bool embedded;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<StagePlanScreen> createState() => _StagePlanScreenState();
+}
+
+class _StagePlanScreenState extends ConsumerState<StagePlanScreen> {
+  bool _bulkMode = false;
+
+  @override
+  Widget build(BuildContext context) {
     final plan = ref.watch(stagePlanControllerProvider);
     final l10n = AppLocalizations.of(context);
     return Scaffold(
@@ -43,11 +50,15 @@ class StagePlanScreen extends ConsumerWidget {
                 onAction: () => context.push('/projects/new'),
               );
             }
-            return _StagePlanContent(state: state, showHeader: !embedded);
+            return _StagePlanContent(
+              state: state,
+              showHeader: !widget.embedded,
+              onBulkModeChanged: _setBulkMode,
+            );
           },
         ),
       ),
-      floatingActionButton: plan.value?.selectedStage == null
+      floatingActionButton: _bulkMode || plan.value?.selectedStage == null
           ? null
           : FloatingActionButton.extended(
               onPressed: plan.value!.isSaving
@@ -58,137 +69,331 @@ class StagePlanScreen extends ConsumerWidget {
             ),
     );
   }
+
+  void _setBulkMode(bool enabled) {
+    if (mounted && _bulkMode != enabled) {
+      setState(() => _bulkMode = enabled);
+    }
+  }
 }
 
-class _StagePlanContent extends ConsumerWidget {
-  const _StagePlanContent({required this.state, required this.showHeader});
+class _StagePlanContent extends ConsumerStatefulWidget {
+  const _StagePlanContent({
+    required this.state,
+    required this.showHeader,
+    required this.onBulkModeChanged,
+  });
 
   final StagePlanState state;
   final bool showHeader;
+  final ValueChanged<bool> onBulkModeChanged;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_StagePlanContent> createState() => _StagePlanContentState();
+}
+
+class _StagePlanContentState extends ConsumerState<_StagePlanContent> {
+  bool _bulkMode = false;
+  final Set<String> _selectedIds = <String>{};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        widget.onBulkModeChanged(false);
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant _StagePlanContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.state.selectedStageId != widget.state.selectedStageId) {
+      final wasBulkMode = _bulkMode;
+      _bulkMode = false;
+      _selectedIds.clear();
+      if (wasBulkMode) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            widget.onBulkModeChanged(false);
+          }
+        });
+      }
+    } else {
+      final visibleIds = widget.state.checklistItems
+          .map((item) => item.id)
+          .toSet();
+      _selectedIds.removeWhere((id) => !visibleIds.contains(id));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = widget.state;
+    final showHeader = widget.showHeader;
     final l10n = AppLocalizations.of(context);
     final selectedStage = state.selectedStage;
-    return CustomScrollView(
-      slivers: [
-        if (showHeader)
-          SliverAppBar(
-            pinned: true,
-            automaticallyImplyLeading: false,
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.stagePlanEyebrow,
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-                Text(l10n.planTitle),
-              ],
-            ),
-            actions: _stageActions(context, ref, l10n),
-            bottom: state.isSaving
-                ? const PreferredSize(
-                    preferredSize: Size.fromHeight(2),
-                    child: LinearProgressIndicator(minHeight: 2),
-                  )
-                : null,
-          )
-        else
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 8, 4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      l10n.stagePlanEyebrow,
-                      style: Theme.of(context).textTheme.titleMedium,
+    return Column(
+      children: [
+        Expanded(
+          child: CustomScrollView(
+            slivers: [
+              if (showHeader)
+                SliverAppBar(
+                  pinned: true,
+                  automaticallyImplyLeading: false,
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.stagePlanEyebrow,
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                      Text(l10n.planTitle),
+                    ],
+                  ),
+                  actions: _stageActions(context, ref, l10n),
+                  bottom: state.isSaving
+                      ? const PreferredSize(
+                          preferredSize: Size.fromHeight(2),
+                          child: LinearProgressIndicator(minHeight: 2),
+                        )
+                      : null,
+                )
+              else
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 8, 4),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            l10n.stagePlanEyebrow,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ),
+                        ..._stageActions(context, ref, l10n),
+                      ],
                     ),
                   ),
-                  ..._stageActions(context, ref, l10n),
-                ],
+                ),
+              SliverToBoxAdapter(child: _StageTabs(state: state)),
+              if (selectedStage != null)
+                SliverToBoxAdapter(
+                  child: _StageOverview(
+                    stage: selectedStage,
+                    state: state,
+                    onEdit: () => _editStage(context, ref, state),
+                    onRename: () => _renameStage(context, ref, selectedStage),
+                  ),
+                ),
+              if (selectedStage != null)
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+                  sliver: SliverToBoxAdapter(
+                    child: _StageGuidancePanel(
+                      stage: selectedStage,
+                      checklistItems: state.checklistItems,
+                      enabled: !state.isSaving,
+                      onAddOwn: () => _addChecklistItem(context, ref),
+                      onOpenChecklistItem: (item) =>
+                          _editChecklistItem(context, ref, state, item),
+                    ),
+                  ),
+                ),
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                sliver: SliverToBoxAdapter(
+                  child: _ChecklistHeader(
+                    selectionMode: _bulkMode,
+                    selectedCount: _selectedIds.length,
+                    enabled: !state.isSaving && state.checklistItems.isNotEmpty,
+                    onStartSelection: _startBulkSelection,
+                    onSelectAll: () => _selectAll(state.checklistItems),
+                    onCancel: _cancelBulkSelection,
+                  ),
+                ),
               ),
-            ),
-          ),
-        SliverToBoxAdapter(child: _StageTabs(state: state)),
-        if (selectedStage != null)
-          SliverToBoxAdapter(
-            child: _StageOverview(
-              stage: selectedStage,
-              state: state,
-              onEdit: () => _editStage(context, ref, state),
-              onRename: () => _renameStage(context, ref, selectedStage),
-            ),
-          ),
-        if (selectedStage != null)
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
-            sliver: SliverToBoxAdapter(
-              child: _StageGuidancePanel(
-                stage: selectedStage,
-                checklistItems: state.checklistItems,
-                enabled: !state.isSaving,
-                onAddOwn: () => _addChecklistItem(context, ref),
-                onOpenChecklistItem: (item) =>
-                    _editChecklistItem(context, ref, state, item),
-              ),
-            ),
-          ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-          sliver: SliverToBoxAdapter(
-            child: Text(
-              l10n.checklistHeading,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+              if (state.checklistItems.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: AppEmptyState(
+                    icon: Icons.checklist_rounded,
+                    title: l10n.stageNoChecklistTitle,
+                    message: l10n.stageNoChecklistMessage,
+                    actionLabel: l10n.checklistAddAction,
+                    onAction: () => _addChecklistItem(context, ref),
+                  ),
+                )
+              else
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 104),
+                  sliver: SliverList.separated(
+                    itemCount: state.checklistItems.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 8),
+                    itemBuilder: (context, index) {
+                      final item = state.checklistItems[index];
+                      return _ChecklistRow(
+                        key: ValueKey<String>(
+                          'checklist-item-${item.templateKey?.name ?? item.id}',
+                        ),
+                        item: item,
+                        enabled: !state.isSaving,
+                        selectionMode: _bulkMode,
+                        selected: _selectedIds.contains(item.id),
+                        onSelected: (selected) =>
+                            _selectItem(item.id, selected),
+                        onTap: () =>
+                            _editChecklistItem(context, ref, state, item),
+                        onOpenEvidence: item.evidenceIds.isEmpty
+                            ? null
+                            : () async {
+                                final changed = await _openChecklistEvidence(
+                                  context,
+                                  projectId: state.project!.id,
+                                  evidenceIds: item.evidenceIds,
+                                );
+                                if (changed && context.mounted) {
+                                  await ref
+                                      .read(
+                                        stagePlanControllerProvider.notifier,
+                                      )
+                                      .refresh();
+                                }
+                              },
+                      );
+                    },
+                  ),
+                ),
+            ],
           ),
         ),
-        if (state.checklistItems.isEmpty)
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: AppEmptyState(
-              icon: Icons.checklist_rounded,
-              title: l10n.stageNoChecklistTitle,
-              message: l10n.stageNoChecklistMessage,
-              actionLabel: l10n.checklistAddAction,
-              onAction: () => _addChecklistItem(context, ref),
-            ),
-          )
-        else
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 104),
-            sliver: SliverList.separated(
-              itemCount: state.checklistItems.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                final item = state.checklistItems[index];
-                return _ChecklistRow(
-                  key: ValueKey<String>(
-                    'checklist-item-${item.templateKey?.name ?? item.id}',
+        if (_bulkMode && _selectedIds.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+            child: SafeArea(
+              top: false,
+              child: Material(
+                elevation: 3,
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        l10n.checklistBulkSelectedCount(_selectedIds.length),
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
+                      const SizedBox(height: 6),
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          onPressed: state.isSaving
+                              ? null
+                              : () => _completeSelected(state),
+                          child: Text(
+                            l10n.checklistBulkCompleteAction,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  item: item,
-                  enabled: !state.isSaving,
-                  onTap: () => _editChecklistItem(context, ref, state, item),
-                  onOpenEvidence: item.evidenceIds.isEmpty
-                      ? null
-                      : () async {
-                          final changed = await _openChecklistEvidence(
-                            context,
-                            projectId: state.project!.id,
-                            evidenceIds: item.evidenceIds,
-                          );
-                          if (changed && context.mounted) {
-                            await ref
-                                .read(stagePlanControllerProvider.notifier)
-                                .refresh();
-                          }
-                        },
-                );
-              },
+                ),
+              ),
             ),
           ),
       ],
+    );
+  }
+
+  void _startBulkSelection() {
+    setState(() {
+      _bulkMode = true;
+      _selectedIds.clear();
+    });
+    widget.onBulkModeChanged(true);
+  }
+
+  void _cancelBulkSelection() {
+    setState(() {
+      _bulkMode = false;
+      _selectedIds.clear();
+    });
+    widget.onBulkModeChanged(false);
+  }
+
+  void _selectItem(String itemId, bool selected) {
+    setState(() {
+      if (selected) {
+        _selectedIds.add(itemId);
+      } else {
+        _selectedIds.remove(itemId);
+      }
+    });
+  }
+
+  void _selectAll(List<ChecklistItem> items) {
+    setState(() {
+      _selectedIds
+        ..clear()
+        ..addAll(
+          items
+              .where(
+                (item) =>
+                    item.status != ChecklistStatus.completed &&
+                    item.status != ChecklistStatus.skipped,
+              )
+              .map((item) => item.id),
+        );
+    });
+  }
+
+  Future<void> _completeSelected(StagePlanState state) async {
+    final l10n = AppLocalizations.of(context);
+    final selectedItems = state.checklistItems
+        .where((item) => _selectedIds.contains(item.id))
+        .toList(growable: false);
+    final completable = selectedItems
+        .where(
+          (item) =>
+              item.evidenceRequirement == EvidenceRequirement.none ||
+              item.hasEvidence ||
+              item.hasEvidenceWaiver,
+        )
+        .toList(growable: false);
+    final pendingCount = selectedItems.length - completable.length;
+    if (completable.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.checklistBulkOnlyEvidencePendingMessage)),
+      );
+      return;
+    }
+
+    await ref
+        .read(stagePlanControllerProvider.notifier)
+        .completeChecklistItems(completable.map((item) => item.id));
+    if (!mounted) return;
+    setState(() {
+      _bulkMode = false;
+      _selectedIds.clear();
+    });
+    widget.onBulkModeChanged(false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          pendingCount == 0
+              ? l10n.checklistBulkCompletedMessage(completable.length)
+              : l10n.checklistBulkEvidencePendingMessage(
+                  completable.length,
+                  pendingCount,
+                ),
+        ),
+      ),
     );
   }
 
@@ -196,20 +401,84 @@ class _StagePlanContent extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     AppLocalizations l10n,
-  ) => <Widget>[
-    IconButton(
-      tooltip: l10n.stageAddAction,
-      onPressed: state.isSaving ? null : () => _addStage(context, ref),
-      icon: const Icon(Icons.add_rounded),
-    ),
-    IconButton(
-      tooltip: l10n.stageReorderAction,
-      onPressed: state.isSaving || state.stages.length < 2
-          ? null
-          : () => _reorderStages(context, ref, state),
-      icon: const Icon(Icons.swap_vert_rounded),
-    ),
-  ];
+  ) {
+    final state = widget.state;
+    return <Widget>[
+      IconButton(
+        tooltip: l10n.stageAddAction,
+        onPressed: state.isSaving ? null : () => _addStage(context, ref),
+        icon: const Icon(Icons.add_rounded),
+      ),
+      IconButton(
+        tooltip: l10n.stageReorderAction,
+        onPressed: state.isSaving || state.stages.length < 2
+            ? null
+            : () => _reorderStages(context, ref, state),
+        icon: const Icon(Icons.swap_vert_rounded),
+      ),
+    ];
+  }
+}
+
+class _ChecklistHeader extends StatelessWidget {
+  const _ChecklistHeader({
+    required this.selectionMode,
+    required this.selectedCount,
+    required this.enabled,
+    required this.onStartSelection,
+    required this.onSelectAll,
+    required this.onCancel,
+  });
+
+  final bool selectionMode;
+  final int selectedCount;
+  final bool enabled;
+  final VoidCallback onStartSelection;
+  final VoidCallback onSelectAll;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    if (selectionMode) {
+      return Row(
+        children: [
+          Expanded(
+            child: Text(
+              l10n.checklistBulkSelectedCount(selectedCount),
+              style: theme.textTheme.titleLarge,
+            ),
+          ),
+          IconButton(
+            tooltip: l10n.checklistBulkSelectAllAction,
+            onPressed: enabled ? onSelectAll : null,
+            icon: const Icon(Icons.select_all_rounded),
+          ),
+          IconButton(
+            tooltip: l10n.checklistBulkCancelAction,
+            onPressed: onCancel,
+            icon: const Icon(Icons.close_rounded),
+          ),
+        ],
+      );
+    }
+    return Wrap(
+      alignment: WrapAlignment.spaceBetween,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 8,
+      runSpacing: 4,
+      children: [
+        Text(l10n.checklistHeading, style: theme.textTheme.titleLarge),
+        TextButton.icon(
+          key: const ValueKey<String>('checklist-bulk-toggle'),
+          onPressed: enabled ? onStartSelection : null,
+          icon: const Icon(Icons.library_add_check_outlined),
+          label: Text(l10n.checklistBulkSelectAction),
+        ),
+      ],
+    );
+  }
 }
 
 class _StageGuidancePanel extends StatelessWidget {
@@ -536,6 +805,9 @@ class _ChecklistRow extends StatelessWidget {
   const _ChecklistRow({
     required this.item,
     required this.enabled,
+    required this.selectionMode,
+    required this.selected,
+    required this.onSelected,
     required this.onTap,
     required this.onOpenEvidence,
     super.key,
@@ -543,6 +815,9 @@ class _ChecklistRow extends StatelessWidget {
 
   final ChecklistItem item;
   final bool enabled;
+  final bool selectionMode;
+  final bool selected;
+  final ValueChanged<bool> onSelected;
   final VoidCallback onTap;
   final VoidCallback? onOpenEvidence;
 
@@ -552,6 +827,9 @@ class _ChecklistRow extends StatelessWidget {
     final theme = Theme.of(context);
     final risk = checklistRisk(l10n, item);
     final statusColor = _statusColor(theme.colorScheme, item.status);
+    final selectable =
+        item.status != ChecklistStatus.completed &&
+        item.status != ChecklistStatus.skipped;
     return Card(
       margin: EdgeInsets.zero,
       elevation: 0,
@@ -561,7 +839,13 @@ class _ChecklistRow extends StatelessWidget {
       ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: enabled ? onTap : null,
+        onTap: !enabled
+            ? null
+            : selectionMode
+            ? selectable
+                  ? () => onSelected(!selected)
+                  : null
+            : onTap,
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(
@@ -569,11 +853,18 @@ class _ChecklistRow extends StatelessWidget {
             children: [
               SizedBox.square(
                 dimension: 40,
-                child: Icon(
-                  _statusIcon(item.status),
-                  color: statusColor,
-                  semanticLabel: checklistStatusLabel(l10n, item.status),
-                ),
+                child: selectionMode
+                    ? Checkbox(
+                        value: selected,
+                        onChanged: enabled && selectable
+                            ? (value) => onSelected(value ?? false)
+                            : null,
+                      )
+                    : Icon(
+                        _statusIcon(item.status),
+                        color: statusColor,
+                        semanticLabel: checklistStatusLabel(l10n, item.status),
+                      ),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -642,10 +933,11 @@ class _ChecklistRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 4),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+              if (!selectionMode)
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
             ],
           ),
         ),
@@ -977,6 +1269,13 @@ Color _statusColor(ColorScheme colors, ChecklistStatus status) =>
     };
 
 IconData _guidanceIcon(StageGuidanceKey key) => switch (key) {
+  StageGuidanceKey.planningAndGroundConditions => Icons.map_outlined,
+  StageGuidanceKey.designUtilitiesAndApprovals => Icons.draw_outlined,
+  StageGuidanceKey.legalConstructionStart => Icons.gavel_outlined,
+  StageGuidanceKey.siteLogisticsAndAccess => Icons.local_shipping_outlined,
+  StageGuidanceKey.temporaryUtilitiesAndFacilities =>
+    Icons.electrical_services_outlined,
+  StageGuidanceKey.siteSafetyAndEvidence => Icons.health_and_safety_outlined,
   StageGuidanceKey.servicePenetrations => Icons.cable_rounded,
   StageGuidanceKey.foundationGrounding => Icons.electric_bolt_rounded,
   StageGuidanceKey.foundationWaterproofing => Icons.water_drop_outlined,

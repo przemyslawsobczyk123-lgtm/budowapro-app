@@ -161,6 +161,20 @@ final class StagePlanController extends AsyncNotifier<StagePlanState> {
     });
   }
 
+  Future<void> completeChecklistItems(Iterable<String> checklistItemIds) {
+    final uniqueIds = checklistItemIds.toSet().toList(growable: false);
+    if (uniqueIds.isEmpty) {
+      return Future<void>.value();
+    }
+    return _mutate((repository, current) async {
+      await repository.completeChecklistItems(
+        projectId: current.project!.id,
+        checklistItemIds: uniqueIds,
+      );
+      return current.selectedStageId;
+    });
+  }
+
   Future<bool> attachEvidence(String checklistItemId) async {
     var attached = false;
     await _mutate((repository, current) async {
@@ -242,6 +256,7 @@ final class StagePlanController extends AsyncNotifier<StagePlanState> {
 String _stageId(ProjectStageKey key) => switch (key) {
   ProjectStageKey.planning => 'planning',
   ProjectStageKey.formalities => 'formalities',
+  ProjectStageKey.sitePreparation => 'site_preparation',
   ProjectStageKey.stateZero => 'state_zero',
   ProjectStageKey.shellOpen => 'shell_open',
   ProjectStageKey.shellClosed => 'shell_closed',

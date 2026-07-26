@@ -205,7 +205,7 @@ void main() {
 
     expect(snapshot.isEmptyProject, isTrue);
     expect(snapshot.stages, isNotEmpty);
-    expect(snapshot.checklistItems, hasLength(18));
+    expect(snapshot.checklistItems, hasLength(43));
   });
 }
 

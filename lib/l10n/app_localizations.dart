@@ -454,6 +454,12 @@ abstract class AppLocalizations {
   /// **'Formalności'**
   String get projectStageFormalities;
 
+  /// Etap projektu: przygotowanie placu budowy.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przygotowanie placu'**
+  String get projectStageSitePreparation;
+
   /// Etap projektu: stan zero.
   ///
   /// In pl, this message translates to:
@@ -1687,7 +1693,7 @@ abstract class AppLocalizations {
   /// No description provided for @stageGuidanceDisclaimerMessage.
   ///
   /// In pl, this message translates to:
-  /// **'To ogólna lista kontrolna do rozmowy z projektantem, kierownikiem budowy i wykonawcą branżowym. Wymiary, materiały i układ zawsze potwierdź w dokumentacji swojego domu.'**
+  /// **'To ogólna lista kontrolna do rozmowy z projektantem, kierownikiem budowy, wykonawcą branżowym lub właściwym urzędem. Aktualne wymogi, wymiary, materiały i układ zawsze potwierdź dla swojej działki i dokumentacji.'**
   String get stageGuidanceDisclaimerMessage;
 
   /// No description provided for @stageGuidanceCheckHeading.
@@ -1834,11 +1840,125 @@ abstract class AppLocalizations {
   /// **'ALUPROF - kompendium systemów osłonowych'**
   String get stageGuidanceSourceAluprofShading;
 
+  /// No description provided for @stageGuidanceSourceConstructionLaw.
+  ///
+  /// In pl, this message translates to:
+  /// **'Prawo budowlane - aktualny tekst ustawy'**
+  String get stageGuidanceSourceConstructionLaw;
+
+  /// No description provided for @stageGuidanceSourceGunbProcedures.
+  ///
+  /// In pl, this message translates to:
+  /// **'GUNB - procedury budowlane'**
+  String get stageGuidanceSourceGunbProcedures;
+
+  /// No description provided for @stageGuidanceSourceGunbForms.
+  ///
+  /// In pl, this message translates to:
+  /// **'GUNB - aktualne formularze budowlane'**
+  String get stageGuidanceSourceGunbForms;
+
+  /// No description provided for @stageGuidanceSourceSpatialPlanning.
+  ///
+  /// In pl, this message translates to:
+  /// **'MRiT - planowanie przestrzenne'**
+  String get stageGuidanceSourceSpatialPlanning;
+
+  /// No description provided for @stageGuidanceSourceGeotechnicalRegulation.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozporządzenie - geotechniczne warunki posadowienia'**
+  String get stageGuidanceSourceGeotechnicalRegulation;
+
+  /// No description provided for @stageGuidanceSourceEurocodeGeotechnical.
+  ///
+  /// In pl, this message translates to:
+  /// **'Eurokod 7 - projektowanie i badania geotechniczne'**
+  String get stageGuidanceSourceEurocodeGeotechnical;
+
+  /// No description provided for @stageGuidanceSourceGeodeticGuidance.
+  ///
+  /// In pl, this message translates to:
+  /// **'Budowlane ABC - opracowania geodezyjne'**
+  String get stageGuidanceSourceGeodeticGuidance;
+
+  /// No description provided for @stageGuidanceSourceElectronicConstructionLog.
+  ///
+  /// In pl, this message translates to:
+  /// **'GUNB - Elektroniczny Dziennik Budowy'**
+  String get stageGuidanceSourceElectronicConstructionLog;
+
+  /// No description provided for @stageGuidanceSourceConstructionSafety.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozporządzenie BHP podczas robót budowlanych'**
+  String get stageGuidanceSourceConstructionSafety;
+
+  /// No description provided for @stageGuidanceSourcePipChecklist.
+  ///
+  /// In pl, this message translates to:
+  /// **'PIP - lista kontrolna bezpieczeństwa budowy'**
+  String get stageGuidanceSourcePipChecklist;
+
+  /// No description provided for @stageGuidanceSourceGddkiaSiteAccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'GDDKiA - zasady dotyczące zjazdów'**
+  String get stageGuidanceSourceGddkiaSiteAccess;
+
   /// No description provided for @checklistHeading.
   ///
   /// In pl, this message translates to:
   /// **'Lista kontrolna'**
   String get checklistHeading;
+
+  /// No description provided for @checklistBulkSelectAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaznacz wiele'**
+  String get checklistBulkSelectAction;
+
+  /// No description provided for @checklistBulkSelectedCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count} zaznaczonych'**
+  String checklistBulkSelectedCount(int count);
+
+  /// No description provided for @checklistBulkSelectAllAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaznacz wszystkie otwarte'**
+  String get checklistBulkSelectAllAction;
+
+  /// No description provided for @checklistBulkCancelAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zakończ wybieranie'**
+  String get checklistBulkCancelAction;
+
+  /// No description provided for @checklistBulkCompleteAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oznacz jako wykonane'**
+  String get checklistBulkCompleteAction;
+
+  /// No description provided for @checklistBulkCompletedMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oznaczono jako wykonane: {count}.'**
+  String checklistBulkCompletedMessage(int count);
+
+  /// No description provided for @checklistBulkEvidencePendingMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oznaczono: {completed}. Pozostałe wymagają dowodu: {pending}.'**
+  String checklistBulkEvidencePendingMessage(int completed, int pending);
+
+  /// No description provided for @checklistBulkOnlyEvidencePendingMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybrane punkty wymagają najpierw dodania dowodu lub zapisanego odstępstwa.'**
+  String get checklistBulkOnlyEvidencePendingMessage;
 
   /// No description provided for @checklistAddAction.
   ///
@@ -2068,6 +2188,318 @@ abstract class AppLocalizations {
   /// **'Nie udało się dodać dowodu. Sprawdź typ pliku i spróbuj ponownie.'**
   String get checklistEvidenceImportError;
 
+  /// No description provided for @checklistPlanningPermissionBasis.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź MPZP albo uzyskaj warunki zabudowy'**
+  String get checklistPlanningPermissionBasis;
+
+  /// No description provided for @checklistPlanningPermissionBasisRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Projekt niezgodny z ustaleniami planistycznymi może nie uzyskać zgody albo wymagać kosztownych zmian.'**
+  String get checklistPlanningPermissionBasisRisk;
+
+  /// No description provided for @checklistLandTitleAndRoadAccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź prawo do działki i dostęp do drogi'**
+  String get checklistLandTitleAndRoadAccess;
+
+  /// No description provided for @checklistLandTitleAndRoadAccessRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Niejasne granice, służebności lub brak prawnego dojazdu mogą zablokować projekt i dostawy.'**
+  String get checklistLandTitleAndRoadAccessRisk;
+
+  /// No description provided for @checklistDesignMap.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zleć mapę do celów projektowych'**
+  String get checklistDesignMap;
+
+  /// No description provided for @checklistDesignMapRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieaktualna lub nieprawidłowa mapa może pominąć uzbrojenie i wymusić korektę projektu.'**
+  String get checklistDesignMapRisk;
+
+  /// No description provided for @checklistHouseDesignSelection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz projekt domu zgodny z działką'**
+  String get checklistHouseDesignSelection;
+
+  /// No description provided for @checklistHouseDesignSelectionRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zakup projektu przed sprawdzeniem MPZP lub WZ, stron świata, gruntu i budżetu często kończy się zmianami.'**
+  String get checklistHouseDesignSelectionRisk;
+
+  /// No description provided for @checklistReadyDesignAdaptation.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaadaptuj projekt gotowy do działki, jeżeli dotyczy'**
+  String get checklistReadyDesignAdaptation;
+
+  /// No description provided for @checklistReadyDesignAdaptationRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Projekt gotowy bez adaptacji nie uwzględnia konkretnej działki, gruntu, otoczenia ani lokalnych wymagań.'**
+  String get checklistReadyDesignAdaptationRisk;
+
+  /// No description provided for @checklistUtilityConnectionConditions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzyskaj warunki przyłączenia planowanych mediów'**
+  String get checklistUtilityConnectionConditions;
+
+  /// No description provided for @checklistUtilityConnectionConditionsRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak uzgodnień z operatorami może zmienić trasy, koszty i terminy przyłączy.'**
+  String get checklistUtilityConnectionConditionsRisk;
+
+  /// No description provided for @checklistCoordinatedBuildingDesign.
+  ///
+  /// In pl, this message translates to:
+  /// **'Skompletuj i skoordynuj projekt budowlany oraz techniczny'**
+  String get checklistCoordinatedBuildingDesign;
+
+  /// No description provided for @checklistCoordinatedBuildingDesignRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieskoordynowane branże powodują kolizje instalacji, konstrukcji i przyłączy już na budowie.'**
+  String get checklistCoordinatedBuildingDesignRisk;
+
+  /// No description provided for @checklistBuildingPermitOrNotification.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzyskaj pozwolenie albo skutecznie zgłoś budowę'**
+  String get checklistBuildingPermitOrNotification;
+
+  /// No description provided for @checklistBuildingPermitOrNotificationRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozpoczęcie bez właściwej podstawy prawnej grozi wstrzymaniem robót i postępowaniem naprawczym.'**
+  String get checklistBuildingPermitOrNotificationRisk;
+
+  /// No description provided for @checklistConstructionManagerAppointment.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustanów kierownika budowy, jeżeli jest wymagany'**
+  String get checklistConstructionManagerAppointment;
+
+  /// No description provided for @checklistConstructionManagerAppointmentRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez osoby z właściwymi uprawnieniami nie wolno rozpoczynać robót wymagających kierownika.'**
+  String get checklistConstructionManagerAppointmentRisk;
+
+  /// No description provided for @checklistConstructionLog.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzyskaj i uruchom dziennik budowy'**
+  String get checklistConstructionLog;
+
+  /// No description provided for @checklistConstructionLogRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak wymaganego dziennika utrudnia legalne rozpoczęcie i rzetelne dokumentowanie robót.'**
+  String get checklistConstructionLogRisk;
+
+  /// No description provided for @checklistConstructionCommencementNotice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zawiadom nadzór i projektanta o rozpoczęciu robót'**
+  String get checklistConstructionCommencementNotice;
+
+  /// No description provided for @checklistConstructionCommencementNoticeRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zagospodarowanie placu i przyłącza mogą być pracami przygotowawczymi, więc zawiadomienie złóż wcześniej.'**
+  String get checklistConstructionCommencementNoticeRisk;
+
+  /// No description provided for @checklistManagerDocumentationHandover.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przekaż kierownikowi projekt i dokumentację'**
+  String get checklistManagerDocumentationHandover;
+
+  /// No description provided for @checklistManagerDocumentationHandoverRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kierownik bez kompletnego projektu, decyzji i uzgodnień nie może bezpiecznie zorganizować robót.'**
+  String get checklistManagerDocumentationHandoverRisk;
+
+  /// No description provided for @checklistAdditionalPermitsAudit.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź dodatkowe zgody i ograniczenia'**
+  String get checklistAdditionalPermitsAudit;
+
+  /// No description provided for @checklistAdditionalPermitsAuditRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Drzewa, zabytki, grunty rolne lub leśne, wody i zjazd z drogi mogą wymagać osobnych decyzji.'**
+  String get checklistAdditionalPermitsAuditRisk;
+
+  /// No description provided for @checklistPreStartDocumentAudit.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź komplet dokumentów przed pierwszą pracą'**
+  String get checklistPreStartDocumentAudit;
+
+  /// No description provided for @checklistPreStartDocumentAuditRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jedna brakująca decyzja, data ważności lub podpis może zatrzymać rozpoczęcie budowy.'**
+  String get checklistPreStartDocumentAuditRisk;
+
+  /// No description provided for @checklistSiteLogisticsPlan.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzgodnij z kierownikiem logistykę placu'**
+  String get checklistSiteLogisticsPlan;
+
+  /// No description provided for @checklistSiteLogisticsPlanRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak planu wjazdu, składowania i pracy maszyn zwiększa ryzyko kolizji, szkód i przestojów.'**
+  String get checklistSiteLogisticsPlanRisk;
+
+  /// No description provided for @checklistTemporarySiteFence.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przygotuj tymczasowe ogrodzenie działki'**
+  String get checklistTemporarySiteFence;
+
+  /// No description provided for @checklistTemporarySiteFenceRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Niezabezpieczony teren naraża osoby postronne na wejście w strefę robót.'**
+  String get checklistTemporarySiteFenceRisk;
+
+  /// No description provided for @checklistHeavyEquipmentGate.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przygotuj szeroką bramę i bezpieczne wejście piesze'**
+  String get checklistHeavyEquipmentGate;
+
+  /// No description provided for @checklistHeavyEquipmentGateRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zbyt wąski wjazd lub wspólna trasa pieszych i maszyn utrudni dostawy i zwiększy ryzyko wypadku.'**
+  String get checklistHeavyEquipmentGateRisk;
+
+  /// No description provided for @checklistStabilizedSiteEntrance.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przygotuj legalny i utwardzony wjazd'**
+  String get checklistStabilizedSiteEntrance;
+
+  /// No description provided for @checklistStabilizedSiteEntranceRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Grząski albo nieuzgodniony zjazd może zatrzymać ciężki sprzęt, uszkodzić drogę i nanosić błoto.'**
+  String get checklistStabilizedSiteEntranceRisk;
+
+  /// No description provided for @checklistToolStorageContainer.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustaw blaszak lub kontener na narzędzia'**
+  String get checklistToolStorageContainer;
+
+  /// No description provided for @checklistToolStorageContainerRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Źle ustawione lub niezabezpieczone zaplecze utrudnia pracę i zwiększa ryzyko kradzieży albo pożaru.'**
+  String get checklistToolStorageContainerRisk;
+
+  /// No description provided for @checklistTemporaryConstructionPower.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapewnij bezpieczny prąd budowlany'**
+  String get checklistTemporaryConstructionPower;
+
+  /// No description provided for @checklistTemporaryConstructionPowerRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Prowizoryczne zasilanie bez zabezpieczeń i pomiarów grozi porażeniem, pożarem oraz przestojem.'**
+  String get checklistTemporaryConstructionPowerRisk;
+
+  /// No description provided for @checklistConstructionWaterSupply.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapewnij wodę do robót, higieny i picia'**
+  String get checklistConstructionWaterSupply;
+
+  /// No description provided for @checklistConstructionWaterSupplyRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak rozdzielenia wody technologicznej i pitnej utrudnia roboty oraz bezpieczne zaplecze pracowników.'**
+  String get checklistConstructionWaterSupplyRisk;
+
+  /// No description provided for @checklistPortableToilet.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustaw toaletę przenośną i punkt mycia'**
+  String get checklistPortableToilet;
+
+  /// No description provided for @checklistPortableToiletRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak dostępnego i regularnie serwisowanego zaplecza sanitarnego narusza podstawowe warunki pracy.'**
+  String get checklistPortableToiletRisk;
+
+  /// No description provided for @checklistSiteUtilitiesAndHazardsMarking.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oznacz uzbrojenie, drzewa i strefy niebezpieczne'**
+  String get checklistSiteUtilitiesAndHazardsMarking;
+
+  /// No description provided for @checklistSiteUtilitiesAndHazardsMarkingRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieoznaczone sieci i strefy pracy maszyn zwiększają ryzyko uszkodzeń, porażenia i wypadków.'**
+  String get checklistSiteUtilitiesAndHazardsMarkingRisk;
+
+  /// No description provided for @checklistSiteSafetySetup.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przygotuj tablicę, BIOZ i wyposażenie bezpieczeństwa'**
+  String get checklistSiteSafetySetup;
+
+  /// No description provided for @checklistSiteSafetySetupRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak oznakowania, apteczki, gaśnicy lub wymaganej dokumentacji utrudni reakcję na zagrożenie.'**
+  String get checklistSiteSafetySetupRisk;
+
+  /// No description provided for @checklistMaterialAndWasteZones.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyznacz miejsca materiałów, dostaw i odpadów'**
+  String get checklistMaterialAndWasteZones;
+
+  /// No description provided for @checklistMaterialAndWasteZonesRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Chaotyczne składowanie blokuje przejazdy, niszczy materiały i utrudnia legalne przekazanie odpadów.'**
+  String get checklistMaterialAndWasteZonesRisk;
+
+  /// No description provided for @checklistPreConstructionPhotoRecord.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zrób dokumentację stanu przed budową'**
+  String get checklistPreConstructionPhotoRecord;
+
+  /// No description provided for @checklistPreConstructionPhotoRecordRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez zdjęć granic, drogi, drzew i sąsiednich ogrodzeń trudno później rozstrzygnąć odpowiedzialność za szkody.'**
+  String get checklistPreConstructionPhotoRecordRisk;
+
   /// No description provided for @checklistSoilResearch.
   ///
   /// In pl, this message translates to:
@@ -2283,6 +2715,186 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Odchyłki położenia mogą ujawnić się dopiero przy kolejnych etapach lub odbiorze.'**
   String get checklistPostFoundationSurveyRisk;
+
+  /// No description provided for @guidancePlanningAndGroundConditionsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plan miejscowy, mapa i grunt'**
+  String get guidancePlanningAndGroundConditionsTitle;
+
+  /// No description provided for @guidancePlanningAndGroundConditionsTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed wyborem i adaptacją projektu domu'**
+  String get guidancePlanningAndGroundConditionsTiming;
+
+  /// No description provided for @guidancePlanningAndGroundConditionsSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Najpierw potwierdź w gminie aktualną podstawę planistyczną dla działki: MPZP albo potrzebę uzyskania WZ. Mapa projektowa i rozpoznanie gruntu powinny trafić do projektanta przed ustaleniem posadowienia.'**
+  String get guidancePlanningAndGroundConditionsSummary;
+
+  /// No description provided for @guidancePlanningAndGroundConditionsChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pobierz aktualne ustalenia MPZP albo potwierdź tryb uzyskania WZ i wymagane załączniki.\nSprawdź tytuł prawny, dostęp do drogi oraz ograniczenia widoczne w dokumentach działki.\nZleć mapę do celów projektowych uprawnionemu geodecie.\nUzgodnij z projektantem zakres rozpoznania geotechnicznego i przekaż mu wyniki przed doborem fundamentów.'**
+  String get guidancePlanningAndGroundConditionsChecks;
+
+  /// No description provided for @guidancePlanningAndGroundConditionsQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy urząd potwierdził aktualną ścieżkę planistyczną dla tej działki?\nCzy mapa obejmuje potrzebny teren i uzbrojenie?\nCzy warunki gruntowo-wodne mogą zmienić fundament, odwodnienie lub hydroizolację?'**
+  String get guidancePlanningAndGroundConditionsQuestions;
+
+  /// No description provided for @guidanceDesignUtilitiesAndApprovalsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Spójny projekt i zgody'**
+  String get guidanceDesignUtilitiesAndApprovalsTitle;
+
+  /// No description provided for @guidanceDesignUtilitiesAndApprovalsTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed złożeniem wniosku lub zgłoszenia i przed zamówieniem robót'**
+  String get guidanceDesignUtilitiesAndApprovalsTiming;
+
+  /// No description provided for @guidanceDesignUtilitiesAndApprovalsSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Projekt gotowy wymaga adaptacji do działki. Warunki przyłączenia i projekty branżowe skoordynuj z architekturą oraz konstrukcją, a właściwy tryb pozwolenia albo zgłoszenia potwierdź dla konkretnej inwestycji.'**
+  String get guidanceDesignUtilitiesAndApprovalsSummary;
+
+  /// No description provided for @guidanceDesignUtilitiesAndApprovalsChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Porównaj projekt z MPZP albo WZ, mapą, geotechniką i warunkami przyłączenia.\nZbierz uzgodnione rozwiązania prądu, wody, kanalizacji, gazu i teletechniki.\nSprawdź komplet projektu zagospodarowania działki, projektu architektoniczno-budowlanego i wymaganej dokumentacji technicznej.\nUżyj aktualnego formularza GUNB i sprawdź, czy potrzebne są dodatkowe decyzje lub uzgodnienia.'**
+  String get guidanceDesignUtilitiesAndApprovalsChecks;
+
+  /// No description provided for @guidanceDesignUtilitiesAndApprovalsQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy adaptujący projektant potwierdził komplet i zgodność wszystkich branż?\nCzy każde przyłącze ma ustaloną trasę, punkt wejścia i odpowiedzialnego wykonawcę?\nCzy urząd wskazał dodatkowe załączniki właściwe dla lokalizacji?'**
+  String get guidanceDesignUtilitiesAndApprovalsQuestions;
+
+  /// No description provided for @guidanceLegalConstructionStartTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Legalny start budowy'**
+  String get guidanceLegalConstructionStartTitle;
+
+  /// No description provided for @guidanceLegalConstructionStartTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zanim rozpoczną się roboty przygotowawcze na działce'**
+  String get guidanceLegalConstructionStartTiming;
+
+  /// No description provided for @guidanceLegalConstructionStartSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zagospodarowanie terenu budowy, obiekty tymczasowe, przyłącza i wytyczenie geodezyjne mogą stanowić rozpoczęcie budowy. Najpierw zapewnij skuteczną podstawę realizacji, kierownika, dziennik i wymagane zawiadomienie o rozpoczęciu robót.'**
+  String get guidanceLegalConstructionStartSummary;
+
+  /// No description provided for @guidanceLegalConstructionStartChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potwierdź z kierownikiem, że pozwolenie jest wykonalne albo zgłoszenie pozwala rozpocząć roboty.\nUstal kierownika budowy i uzyskaj wymagane oświadczenia.\nZałóż właściwy dziennik budowy: papierowy albo elektroniczny.\nZłóż aktualne zawiadomienie o rozpoczęciu robót wraz z wymaganymi załącznikami.\nPrzekaż kierownikowi zatwierdzony projekt, dokumentację techniczną, decyzje i warunki przyłączy.'**
+  String get guidanceLegalConstructionStartChecks;
+
+  /// No description provided for @guidanceLegalConstructionStartQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy kierownik pisemnie potwierdził gotowość do przejęcia budowy?\nCzy zawiadomienie obejmuje właściwy organ i komplet załączników?\nCzy na budowie jest aktualna dokumentacja do kontroli i prowadzenia robót?'**
+  String get guidanceLegalConstructionStartQuestions;
+
+  /// No description provided for @guidanceSiteLogisticsAndAccessTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dojazd i logistyka placu'**
+  String get guidanceSiteLogisticsAndAccessTitle;
+
+  /// No description provided for @guidanceSiteLogisticsAndAccessTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed pierwszą dostawą, koparką i ustawieniem zaplecza'**
+  String get guidanceSiteLogisticsAndAccessTiming;
+
+  /// No description provided for @guidanceSiteLogisticsAndAccessSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozrysuj ruch ciężkiego sprzętu, strefy rozładunku i składowania. Ogrodzenie, brama i utwardzony dojazd mają ograniczać ryzyko dla ludzi, drogi, instalacji podziemnych i przyszłych elementów domu.'**
+  String get guidanceSiteLogisticsAndAccessSummary;
+
+  /// No description provided for @guidanceSiteLogisticsAndAccessChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzgodnij kierunek wjazdu, promień skrętu, szerokość i nośność trasy z dostawcami.\nCo do zasady zabezpiecz teren ogrodzeniem o wysokości co najmniej 1,5 m; gdy nie jest to możliwe, zastosuj rozwiązanie przewidziane w przepisach i uzgodnione z kierownikiem.\nOddziel ruch pieszy od maszyn oraz wyznacz bezpieczne miejsce rozładunku.\nSprawdź formalności dotyczące istniejącego lub tymczasowego zjazdu z drogi.\nUstaw kontener i składowiska poza wykopem, trasami instalacji i zasięgiem pracy maszyn.'**
+  String get guidanceSiteLogisticsAndAccessChecks;
+
+  /// No description provided for @guidanceSiteLogisticsAndAccessQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy betoniarka, pompa i dźwig wjadą oraz bezpiecznie wyjadą?\nCzy podłoże wytrzyma ruch po deszczu?\nCzy brama i składowiska nie kolidują z przyłączami ani docelowym zagospodarowaniem?'**
+  String get guidanceSiteLogisticsAndAccessQuestions;
+
+  /// No description provided for @guidanceTemporaryUtilitiesAndFacilitiesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Prąd, woda i zaplecze'**
+  String get guidanceTemporaryUtilitiesAndFacilitiesTitle;
+
+  /// No description provided for @guidanceTemporaryUtilitiesAndFacilitiesTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed uruchomieniem elektronarzędzi i stałej pracy ekip'**
+  String get guidanceTemporaryUtilitiesAndFacilitiesTiming;
+
+  /// No description provided for @guidanceTemporaryUtilitiesAndFacilitiesSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tymczasowe instalacje są częścią organizacji bezpiecznej budowy. Zasilanie powinien przygotować i sprawdzić uprawniony elektryk, a woda i toaleta muszą odpowiadać rzeczywistemu składowi ekip oraz zakresowi robót.'**
+  String get guidanceTemporaryUtilitiesAndFacilitiesSummary;
+
+  /// No description provided for @guidanceTemporaryUtilitiesAndFacilitiesChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustal legalny punkt poboru, moc i trasę zasilania bez kabli leżących w przejeździe lub wodzie.\nZleć elektrykowi rozdzielnicę, ochronę przeciwporażeniową, uziemienie i wymagane pomiary.\nZapewnij wodę do robót oraz osobno wodę zdatną do picia, jeśli źródło techniczne jej nie gwarantuje.\nUstaw i regularnie serwisuj toaletę w dostępnym, stabilnym miejscu.\nOznacz istniejące sieci i zabezpiecz punkty poboru przed uszkodzeniem oraz dostępem osób postronnych.'**
+  String get guidanceTemporaryUtilitiesAndFacilitiesChecks;
+
+  /// No description provided for @guidanceTemporaryUtilitiesAndFacilitiesQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy protokół instalacji tymczasowej i zabezpieczenia są aktualne?\nCzy zapas mocy wystarczy dla planowanego sprzętu?\nKto odpowiada za wodę, opróżnianie toalety i porządek zaplecza?'**
+  String get guidanceTemporaryUtilitiesAndFacilitiesQuestions;
+
+  /// No description provided for @guidanceSiteSafetyAndEvidenceTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bezpieczeństwo i stan początkowy'**
+  String get guidanceSiteSafetyAndEvidenceTitle;
+
+  /// No description provided for @guidanceSiteSafetyAndEvidenceTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed przekazaniem placu ekipie i przed pierwszym wykopem'**
+  String get guidanceSiteSafetyAndEvidenceTiming;
+
+  /// No description provided for @guidanceSiteSafetyAndEvidenceSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kierownik organizuje zabezpieczenie terenu i ocenia obowiązki dotyczące planu BIOZ oraz tablicy informacyjnej. Zdjęcia stanu początkowego pomagają później rozstrzygać uszkodzenia drogi, granic i sąsiedniego terenu.'**
+  String get guidanceSiteSafetyAndEvidenceSummary;
+
+  /// No description provided for @guidanceSiteSafetyAndEvidenceChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oznacz granice, uzbrojenie, strefy niebezpieczne, wykopy i miejsca o ograniczonym dostępie.\nPotwierdź z kierownikiem wymagane zabezpieczenia, plan BIOZ, tablicę informacyjną i instrukcje dla ekip.\nZapewnij oświetlenie, dojścia, porządek oraz bezpieczne magazynowanie materiałów i odpadów.\nWykonaj datowane zdjęcia drogi, zjazdu, ogrodzeń, punktów granicznych, zieleni i istniejących sieci.\nZapisz odbiór placu i osoby odpowiedzialne za codzienną kontrolę zabezpieczeń.'**
+  String get guidanceSiteSafetyAndEvidenceChecks;
+
+  /// No description provided for @guidanceSiteSafetyAndEvidenceQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy każda ekipa zna zasady ruchu, składowania i zgłaszania zagrożeń?\nCzy zdjęcia pokazują skalę, lokalizację i cały obszar możliwych uszkodzeń?\nKto kontroluje ogrodzenie, rozdzielnicę i strefy niebezpieczne po pracy?'**
+  String get guidanceSiteSafetyAndEvidenceQuestions;
 
   /// No description provided for @guidanceServicePenetrationsTitle.
   ///

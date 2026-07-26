@@ -704,6 +704,7 @@ String _stageOptionLabel(AppLocalizations l10n, DocumentFilterOption option) {
   final key = switch (option.id) {
     'planning' => ProjectStageKey.planning,
     'formalities' => ProjectStageKey.formalities,
+    'site_preparation' => ProjectStageKey.sitePreparation,
     'state_zero' => ProjectStageKey.stateZero,
     'shell_open' => ProjectStageKey.shellOpen,
     'shell_closed' => ProjectStageKey.shellClosed,

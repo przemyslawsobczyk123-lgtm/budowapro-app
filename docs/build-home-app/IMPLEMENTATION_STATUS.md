@@ -117,9 +117,9 @@ Last updated: 2026-07-26
 
 - Schema `v4` persists ordered project stages, checklist items and many-to-many links to generic
   local attachments. Project deletion impact now counts stage and checklist records as well as costs.
-- House and renovation templates are seeded idempotently. The house template contains all 18 required
-  `Stan 0` items, including water, power, telecom and optional gas penetrations, reserves for external
-  systems, foundation grounding, continuity measurement, waterproofing and concealed-work evidence.
+- House and renovation templates are seeded idempotently. The house template now has 15 formalities,
+  12 site-preparation tasks and 16 `Stan 0` tasks. Ground investigation is kept with formalities, while
+  access, fencing, site facilities and temporary utilities form a dedicated stage before foundations.
 - Users can add and rename project-local stages, reorder the complete stage timeline, and edit stage
   status, planned dates and planned budget. Stable stage IDs preserve existing cost assignments.
 - The Plan branch provides a compact horizontal stage selector, derived progress, blocked-item count,
@@ -127,6 +127,8 @@ Last updated: 2026-07-26
   implemented, including a tested 320 px layout.
 - Checklist items support five statuses, four importance levels, due date, responsible person, notes,
   skip risk, status reason and evidence policy. Custom checklist items can be added to every stage.
+- Multi-select mode uses accessible checkboxes, a live selection count and one atomic completion action.
+  Items that still require evidence remain open and are reported instead of silently bypassing policy.
 - A skipped item requires a reason. A system item requiring evidence cannot be completed or downgraded
   without a compatible local attachment or a documented waiver. Photo requirements accept only
   `image/*` attachments.
@@ -138,6 +140,9 @@ Last updated: 2026-07-26
   foundation earthing, waterproofing, drainage/ground levels and concealed-work evidence. Each detail shows
   when to decide, inspection points, specialist questions, structured source metadata, content version and a clear
   boundary that it is not an execution design.
+- Six additional source-backed guides cover planning and ground conditions, coordinated approvals, lawful
+  construction start, site access and logistics, temporary utilities/facilities, and site safety/evidence.
+  The content remains collapsed and task-oriented rather than becoming a wall of legal text.
 - The shell-open stage has an informational guide for agreeing the exact window/shading detail before lintels.
   It does not seed a database row or change progress in existing projects. The content explicitly treats `5 cm`,
   `30 x 4 mm`, PMBC/KMB, XPS, dimpled membrane and drainage as project/system-dependent rather than universal
@@ -147,6 +152,9 @@ Last updated: 2026-07-26
   `Stan 0` reseeding is regression-tested not to replace user edits or custom items.
 - The guidance panel remains collapsed by default so the checklist stays visible. A scrollable near-full-screen
   detail is verified at `320 x 640`; sources and editorial rules are recorded in `STAGE_GUIDANCE_SOURCES.md`.
+- Schema `v10` adds an additive current-stage compatibility field. Existing child records are never rebuilt.
+  On catalog refresh, completed ground-research progress is moved to formalities with its notes and evidence,
+  while only an untouched legacy road/power/water item is replaced by the detailed site-preparation checklist.
 
 ### Task 3.2 - seven-day plan and local reminders
 

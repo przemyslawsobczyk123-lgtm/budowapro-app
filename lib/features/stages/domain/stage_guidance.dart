@@ -3,6 +3,12 @@ import 'package:budowapro/features/projects/domain/project_template.dart';
 import 'stage_plan.dart';
 
 enum StageGuidanceKey {
+  planningAndGroundConditions,
+  designUtilitiesAndApprovals,
+  legalConstructionStart,
+  siteLogisticsAndAccess,
+  temporaryUtilitiesAndFacilities,
+  siteSafetyAndEvidence,
   servicePenetrations,
   foundationGrounding,
   foundationWaterproofing,
@@ -19,6 +25,17 @@ enum StageGuidanceSourceType {
 }
 
 enum StageGuidanceSourceKey {
+  constructionLaw,
+  gunbProcedures,
+  gunbForms,
+  spatialPlanningGuidance,
+  geotechnicalRegulation,
+  eurocodeGeotechnicalDesign,
+  geodeticGuidance,
+  electronicConstructionLog,
+  constructionSafetyRegulation,
+  pipConstructionChecklist,
+  gddkiaSiteAccess,
   technicalConditions,
   lowVoltageEarthingStandard,
   lightningConnectionStandard,
@@ -65,8 +82,8 @@ final class StageGuidanceDefinition {
 }
 
 abstract final class StageGuidanceCatalog {
-  static const int contentVersion = 1;
-  static const String verifiedOnIso = '2026-07-25';
+  static const int contentVersion = 2;
+  static const String verifiedOnIso = '2026-07-26';
 
   static List<StageGuidanceDefinition> forStage(ProjectStageKey? stageKey) {
     if (stageKey == null) return const <StageGuidanceDefinition>[];
@@ -76,6 +93,101 @@ abstract final class StageGuidanceCatalog {
   }
 
   static const List<StageGuidanceDefinition> _items = [
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.planningAndGroundConditions,
+      stageKey: ProjectStageKey.formalities,
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.planningPermissionBasis,
+        ChecklistTemplateKey.landTitleAndRoadAccess,
+        ChecklistTemplateKey.designMap,
+        ChecklistTemplateKey.soilResearch,
+      ],
+      sources: <StageGuidanceSourceReference>[
+        _spatialPlanningGuidance,
+        _geodeticGuidance,
+        _geotechnicalRegulation,
+        _eurocodeGeotechnicalDesign,
+      ],
+    ),
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.designUtilitiesAndApprovals,
+      stageKey: ProjectStageKey.formalities,
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.houseDesignSelection,
+        ChecklistTemplateKey.readyDesignAdaptation,
+        ChecklistTemplateKey.utilityConnectionConditions,
+        ChecklistTemplateKey.coordinatedBuildingDesign,
+        ChecklistTemplateKey.buildingPermitOrNotification,
+        ChecklistTemplateKey.additionalPermitsAudit,
+      ],
+      sources: <StageGuidanceSourceReference>[
+        _constructionLaw,
+        _gunbProcedures,
+        _gunbForms,
+      ],
+    ),
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.legalConstructionStart,
+      stageKey: ProjectStageKey.formalities,
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.constructionManagerAppointment,
+        ChecklistTemplateKey.constructionLog,
+        ChecklistTemplateKey.constructionCommencementNotice,
+        ChecklistTemplateKey.managerDocumentationHandover,
+        ChecklistTemplateKey.preStartDocumentAudit,
+      ],
+      sources: <StageGuidanceSourceReference>[
+        _constructionLaw,
+        _gunbForms,
+        _electronicConstructionLog,
+      ],
+    ),
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.siteLogisticsAndAccess,
+      stageKey: ProjectStageKey.sitePreparation,
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.siteLogisticsPlan,
+        ChecklistTemplateKey.temporarySiteFence,
+        ChecklistTemplateKey.heavyEquipmentGate,
+        ChecklistTemplateKey.stabilizedSiteEntrance,
+        ChecklistTemplateKey.toolStorageContainer,
+        ChecklistTemplateKey.materialAndWasteZones,
+      ],
+      sources: <StageGuidanceSourceReference>[
+        _constructionSafetyRegulation,
+        _pipConstructionChecklist,
+        _gddkiaSiteAccess,
+      ],
+    ),
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.temporaryUtilitiesAndFacilities,
+      stageKey: ProjectStageKey.sitePreparation,
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.temporaryConstructionPower,
+        ChecklistTemplateKey.constructionWaterSupply,
+        ChecklistTemplateKey.portableToilet,
+        ChecklistTemplateKey.siteUtilitiesAndHazardsMarking,
+      ],
+      sources: <StageGuidanceSourceReference>[
+        _constructionSafetyRegulation,
+        _pipConstructionChecklist,
+      ],
+    ),
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.siteSafetyAndEvidence,
+      stageKey: ProjectStageKey.sitePreparation,
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.temporarySiteFence,
+        ChecklistTemplateKey.siteUtilitiesAndHazardsMarking,
+        ChecklistTemplateKey.siteSafetySetup,
+        ChecklistTemplateKey.preConstructionPhotoRecord,
+      ],
+      sources: <StageGuidanceSourceReference>[
+        _constructionLaw,
+        _constructionSafetyRegulation,
+        _pipConstructionChecklist,
+      ],
+    ),
     StageGuidanceDefinition(
       key: StageGuidanceKey.servicePenetrations,
       stageKey: ProjectStageKey.stateZero,
@@ -111,7 +223,6 @@ abstract final class StageGuidanceCatalog {
       key: StageGuidanceKey.foundationWaterproofing,
       stageKey: ProjectStageKey.stateZero,
       relatedChecklistKeys: <ChecklistTemplateKey>[
-        ChecklistTemplateKey.soilResearch,
         ChecklistTemplateKey.horizontalVerticalWaterproofing,
       ],
       sources: <StageGuidanceSourceReference>[
@@ -157,6 +268,103 @@ abstract final class StageGuidanceCatalog {
     ),
   ];
 
+  static const StageGuidanceSourceReference _constructionLaw =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.constructionLaw,
+        type: StageGuidanceSourceType.regulation,
+        revision: 'Prawo budowlane, tekst jednolity Dz.U. 2026 poz. 524',
+        urlValue: 'https://api.sejm.gov.pl/eli/acts/DU/2026/524/text.pdf',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _gunbProcedures =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.gunbProcedures,
+        type: StageGuidanceSourceType.officialGuidance,
+        revision: 'GUNB, procedury budowlane',
+        urlValue: 'https://www.gunb.gov.pl/strona/procedury-budowlane',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _gunbForms =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.gunbForms,
+        type: StageGuidanceSourceType.officialGuidance,
+        revision: 'GUNB, aktualne wzory wniosków i zawiadomień',
+        urlValue:
+            'https://www.gov.pl/web/gunb/'
+            'wzory-wnioskow-zgloszen-i-zawiadomien',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _spatialPlanningGuidance =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.spatialPlanningGuidance,
+        type: StageGuidanceSourceType.officialGuidance,
+        revision: 'MRiT, reforma planowania przestrzennego',
+        urlValue:
+            'https://www.gov.pl/web/rozwoj-technologia/'
+            'reforma-planowania-przestrzennego-2',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _geotechnicalRegulation =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.geotechnicalRegulation,
+        type: StageGuidanceSourceType.regulation,
+        revision: 'Rozporządzenie Dz.U. 2012 poz. 463',
+        urlValue: 'https://eli.gov.pl/api/acts/DU/2012/463/text.html',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _eurocodeGeotechnicalDesign =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.eurocodeGeotechnicalDesign,
+        type: StageGuidanceSourceType.standard,
+        revision: 'PN-EN 1997-1:2025-10 i PN-EN 1997-2:2025-10',
+        urlValue: 'https://sklep.pkn.pl/pn-en-1997-1-2025-10e.html',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _geodeticGuidance =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.geodeticGuidance,
+        type: StageGuidanceSourceType.officialGuidance,
+        revision: 'Budowlane ABC, czynności i opracowania geodezyjne',
+        urlValue:
+            'https://budowlaneabc.gov.pl/praktyczny-przewodnik-inwestora/'
+            'wnioski-elektroniczne/czynnosci-i-opracowania-geodezyjne/',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _electronicConstructionLog =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.electronicConstructionLog,
+        type: StageGuidanceSourceType.officialGuidance,
+        revision: 'GUNB, Elektroniczny Dziennik Budowy',
+        urlValue: 'https://e-dziennikbudowy.gunb.gov.pl/',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _constructionSafetyRegulation =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.constructionSafetyRegulation,
+        type: StageGuidanceSourceType.regulation,
+        revision: 'BHP podczas robót budowlanych, Dz.U. 2003 poz. 401',
+        urlValue: 'https://eli.gov.pl/eli/DU/2003/401/ogl',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _pipConstructionChecklist =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.pipConstructionChecklist,
+        type: StageGuidanceSourceType.officialGuidance,
+        revision: 'PIP, lista kontrolna dla budowy',
+        urlValue:
+            'https://www.pip.gov.pl/publikacje/'
+            'publikacje-dla-pracodawcow/'
+            'bezpiecznie-i-zgodnie-z-prawem-lista-kontrolna-z-komentarezem',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _gddkiaSiteAccess =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.gddkiaSiteAccess,
+        type: StageGuidanceSourceType.officialGuidance,
+        revision: 'GDDKiA, zasady dotyczące zjazdów',
+        urlValue: 'https://www.gov.pl/web/gddkia/zjazdy',
+        verifiedOnIso: verifiedOnIso,
+      );
   static const StageGuidanceSourceReference _technicalConditions =
       StageGuidanceSourceReference(
         key: StageGuidanceSourceKey.technicalConditions,

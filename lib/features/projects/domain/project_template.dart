@@ -5,6 +5,7 @@ enum ProjectTemplate { houseConstruction, renovation }
 enum ProjectStageKey {
   planning,
   formalities,
+  sitePreparation,
   stateZero,
   shellOpen,
   shellClosed,
@@ -43,6 +44,7 @@ const _houseConstruction = ProjectTemplateDefinition(
   compatibleTypes: <ProjectType>{ProjectType.houseBuild},
   stages: <ProjectStageKey>[
     ProjectStageKey.formalities,
+    ProjectStageKey.sitePreparation,
     ProjectStageKey.stateZero,
     ProjectStageKey.shellOpen,
     ProjectStageKey.shellClosed,

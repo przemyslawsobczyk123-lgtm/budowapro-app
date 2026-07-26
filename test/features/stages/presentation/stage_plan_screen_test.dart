@@ -22,8 +22,8 @@ void main() {
 
     expect(find.byKey(const ValueKey('stage-tab-state_zero')), findsOneWidget);
     expect(find.text('Stan zero'), findsWidgets);
-    expect(find.text('0 z 18'), findsOneWidget);
-    expect(find.text('Badania gruntu i warunki wodne'), findsOneWidget);
+    expect(find.text('0 z 16'), findsOneWidget);
+    expect(find.text('Badania gruntu i warunki wodne'), findsNothing);
     expect(find.text('Wskazówki dla tego etapu'), findsOneWidget);
     expect(find.text('Lista kontrolna'), findsOneWidget);
     await tester.tap(find.text('Wskazówki dla tego etapu'));
@@ -77,6 +77,11 @@ void main() {
     await tester.pumpWidget(_testApp());
     await tester.pumpAndSettle();
 
+    await tester.drag(
+      find.byKey(const ValueKey('stage-tab-state_zero')),
+      const Offset(-400, 0),
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('stage-tab-shell_open')));
     await tester.pumpAndSettle();
 
@@ -163,6 +168,13 @@ void main() {
     await tester.pumpWidget(_testApp());
     await tester.pumpAndSettle();
 
+    await tester.tap(find.byKey(const ValueKey('stage-tab-formalities')));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Badania gruntu i warunki wodne'),
+      250,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.text('Badania gruntu i warunki wodne'));
     await tester.pumpAndSettle();
     await tester.tap(
@@ -178,20 +190,62 @@ void main() {
     expect(find.text('Dodaj dowód'), findsOneWidget);
     expect(find.text('Zapisz odstępstwo'), findsOneWidget);
   });
+
+  testWidgets('selects and completes several checklist items in one action', (
+    tester,
+  ) async {
+    final repository = _FakeStageRepository('project-1');
+    await tester.pumpWidget(_testApp(stageRepository: repository));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('stage-tab-formalities')));
+    await tester.pumpAndSettle();
+    expect(find.byType(FloatingActionButton), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('checklist-bulk-toggle')));
+    await tester.pumpAndSettle();
+    expect(find.byType(FloatingActionButton), findsNothing);
+
+    for (final key in <String>[
+      'checklist-item-houseDesignSelection',
+      'checklist-item-managerDocumentationHandover',
+    ]) {
+      final row = find.byKey(ValueKey<String>(key));
+      await tester.scrollUntilVisible(
+        row,
+        250,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await Scrollable.ensureVisible(tester.element(row), alignment: 0.5);
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.descendant(of: row, matching: find.byType(Checkbox)),
+      );
+      await tester.pump();
+    }
+
+    expect(find.text('2 zaznaczonych'), findsOneWidget);
+    await tester.tap(find.text('Oznacz jako wykonane'));
+    await tester.pumpAndSettle();
+
+    expect(repository.completedBatches, hasLength(1));
+    expect(repository.completedBatches.single, hasLength(2));
+    expect(find.byType(Checkbox), findsNothing);
+    expect(find.text('Oznacz jako wykonane'), findsNothing);
+    expect(find.byType(FloatingActionButton), findsOneWidget);
+  });
 }
 
-Widget _testApp({double textScale = 1}) {
+Widget _testApp({double textScale = 1, _FakeStageRepository? stageRepository}) {
   final project = _project();
   final projects = FakeProjectRepository(
     projects: <Project>[project],
     selectedProjectId: project.id,
   );
+  final stages = stageRepository ?? _FakeStageRepository(project.id);
   return ProviderScope(
     overrides: [
       projectRepositoryProvider.overrideWith((ref) async => projects),
-      stageRepositoryProvider.overrideWith(
-        (ref) async => _FakeStageRepository(project.id),
-      ),
+      stageRepositoryProvider.overrideWith((ref) async => stages),
     ],
     child: MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -273,6 +327,7 @@ final class _FakeStageRepository implements StageRepository {
   final String projectId;
   late final List<ProjectStage> stages;
   late final Map<String, List<ChecklistItem>> itemsByStage;
+  final List<List<String>> completedBatches = <List<String>>[];
 
   @override
   Future<List<ProjectStage>> listStages({
@@ -308,6 +363,46 @@ final class _FakeStageRepository implements StageRepository {
       evidenceWaiverComment: input.evidenceWaiverComment,
     );
     return item;
+  }
+
+  @override
+  Future<List<ChecklistItem>> completeChecklistItems({
+    required String projectId,
+    required List<String> checklistItemIds,
+  }) async {
+    completedBatches.add(List<String>.from(checklistItemIds));
+    final updated = <ChecklistItem>[];
+    for (final entry in itemsByStage.entries) {
+      itemsByStage[entry.key] = entry.value
+          .map((item) {
+            if (!checklistItemIds.contains(item.id)) {
+              return item;
+            }
+            final completed = ChecklistItem(
+              id: item.id,
+              projectId: item.projectId,
+              stageId: item.stageId,
+              templateKey: item.templateKey,
+              customTitle: item.customTitle,
+              status: ChecklistStatus.completed,
+              importance: item.importance,
+              evidenceRequirement: item.evidenceRequirement,
+              evidenceWaiverComment: item.evidenceWaiverComment,
+              evidenceIds: item.evidenceIds,
+              sortOrder: item.sortOrder,
+              createdAt: item.createdAtUtc,
+              updatedAt: item.updatedAtUtc.add(const Duration(minutes: 1)),
+              dueDate: item.dueDate,
+              assignee: item.assignee,
+              note: item.note,
+              riskIfSkipped: item.riskIfSkipped,
+            );
+            updated.add(completed);
+            return completed;
+          })
+          .toList(growable: false);
+    }
+    return updated;
   }
 
   @override
@@ -362,6 +457,7 @@ final class _FakeStageRepository implements StageRepository {
 String _stageId(ProjectStageKey key) => switch (key) {
   ProjectStageKey.planning => 'planning',
   ProjectStageKey.formalities => 'formalities',
+  ProjectStageKey.sitePreparation => 'site_preparation',
   ProjectStageKey.stateZero => 'state_zero',
   ProjectStageKey.shellOpen => 'shell_open',
   ProjectStageKey.shellClosed => 'shell_closed',
