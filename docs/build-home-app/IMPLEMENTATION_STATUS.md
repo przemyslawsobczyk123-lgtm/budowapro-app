@@ -215,6 +215,9 @@ Last updated: 2026-07-26
 - The More branch opens the searchable contacts workspace. Contact details require an explicit confirmation before
   launching the system phone or e-mail app. Contact visits opened from Plan, Start or a notification retain their
   specialist status/result view and edit through the visit form rather than the generic schedule form.
+- A new contact can import one explicitly selected phone entry through Android's system contact picker. The picker
+  fills the editable name and phone fields only, stores no device contact identifier and requests neither
+  `READ_CONTACTS` nor `WRITE_CONTACTS`; cancellation and picker failures preserve all manual form input.
 - Start derives up to three open visits in the next 30 local calendar days from existing schedule records. It adds no
   duplicate dashboard or calendar table. Contact names, phone numbers, e-mails, results and agreements are not logged.
 - List, filters, details and confirmation flows are covered at 320 px. Visit photos and durable links to follow-up

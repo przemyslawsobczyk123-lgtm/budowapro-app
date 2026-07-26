@@ -1,3 +1,4 @@
+import 'package:budowapro/features/contacts/data/contact_providers.dart';
 import 'package:budowapro/features/contacts/domain/contact.dart';
 import 'package:budowapro/features/contacts/presentation/contact_details_provider.dart';
 import 'package:budowapro/features/contacts/presentation/contact_ui_text.dart';
@@ -34,6 +35,7 @@ class _ContactFormScreenState extends ConsumerState<ContactFormScreen> {
   Set<String> _stageIds = <String>{};
   int? _rating;
   bool _saving = false;
+  bool _importingContact = false;
   bool _initialized = false;
 
   @override
@@ -122,10 +124,29 @@ class _ContactFormScreenState extends ConsumerState<ContactFormScreen> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 120),
             children: [
+              if (widget.contactId == null) ...[
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    key: const ValueKey('contactImportButton'),
+                    onPressed: _saving || _importingContact
+                        ? null
+                        : _importFromPhone,
+                    icon: _importingContact
+                        ? const SizedBox.square(
+                            dimension: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.contact_phone_outlined),
+                    label: Text(l10n.contactImportFromPhoneAction),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
               TextFormField(
                 key: const ValueKey('contactNameField'),
                 controller: _nameController,
-                maxLength: 160,
+                maxLength: ContactFieldLimits.displayName,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   labelText: l10n.contactNameLabel,
@@ -225,9 +246,10 @@ class _ContactFormScreenState extends ConsumerState<ContactFormScreen> {
                 ),
               const Divider(height: 32),
               TextFormField(
+                key: const ValueKey('contactPhoneField'),
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
-                maxLength: 40,
+                maxLength: ContactFieldLimits.phone,
                 decoration: InputDecoration(
                   labelText: l10n.contactPhoneLabel,
                   prefixIcon: const Icon(Icons.phone_outlined),
@@ -307,7 +329,7 @@ class _ContactFormScreenState extends ConsumerState<ContactFormScreen> {
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
           child: FilledButton.icon(
             key: const ValueKey('contactSaveButton'),
-            onPressed: _saving ? null : _save,
+            onPressed: _saving || _importingContact ? null : _save,
             icon: _saving
                 ? const SizedBox.square(
                     dimension: 18,
@@ -341,6 +363,30 @@ class _ContactFormScreenState extends ConsumerState<ContactFormScreen> {
     _roles = contact.roles.toSet();
     _stageIds = contact.stageIds.toSet();
     _rating = contact.rating;
+  }
+
+  Future<void> _importFromPhone() async {
+    FocusScope.of(context).unfocus();
+    setState(() => _importingContact = true);
+    try {
+      final selection = await ref.read(deviceContactPickerProvider).pick();
+      if (!mounted || selection == null) return;
+      _nameController.text = selection.displayName;
+      _phoneController.text = selection.phone;
+    } on Object {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context).contactImportFromPhoneError,
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _importingContact = false);
+      }
+    }
   }
 
   Future<void> _save() async {

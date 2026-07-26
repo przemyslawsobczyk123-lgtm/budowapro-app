@@ -1,11 +1,13 @@
 import 'dart:math';
 
+import 'package:budowapro/features/contacts/domain/device_contact.dart';
 import 'package:budowapro/features/contacts/domain/contact_repository.dart';
 import 'package:budowapro/features/contacts/domain/site_visit_repository.dart';
 import 'package:budowapro/features/projects/data/project_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'contact_action_gateway.dart';
+import 'device_contact_picker.dart';
 import 'sqlite_contact_repository.dart';
 import 'sqlite_site_visit_repository.dart';
 
@@ -31,6 +33,10 @@ final siteVisitRepositoryProvider = FutureProvider<SiteVisitRepository>((
 
 final contactActionGatewayProvider = Provider<ContactActionGateway>((ref) {
   return UrlLauncherContactActionGateway();
+});
+
+final deviceContactPickerProvider = Provider<DeviceContactPicker>((ref) {
+  return MethodChannelDeviceContactPicker();
 });
 
 String _secureId() {

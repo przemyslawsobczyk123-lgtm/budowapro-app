@@ -3814,6 +3814,18 @@ abstract class AppLocalizations {
   /// **'Nowy kontakt'**
   String get contactNewTitle;
 
+  /// No description provided for @contactImportFromPhoneAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz z kontaktów telefonu'**
+  String get contactImportFromPhoneAction;
+
+  /// No description provided for @contactImportFromPhoneError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się otworzyć kontaktów telefonu.'**
+  String get contactImportFromPhoneError;
+
   /// No description provided for @contactEditTitle.
   ///
   /// In pl, this message translates to:

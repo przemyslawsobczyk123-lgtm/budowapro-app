@@ -984,6 +984,8 @@
   "contactsNoResultsMessage": "Zmień wyszukiwanie albo filtry roli i etapu.",
   "contactsLoadError": "Nie udało się wczytać kontaktów.",
   "contactNewTitle": "Nowy kontakt",
+  "contactImportFromPhoneAction": "Wybierz z kontaktów telefonu",
+  "contactImportFromPhoneError": "Nie udało się otworzyć kontaktów telefonu.",
   "contactEditTitle": "Edytuj kontakt",
   "contactDetailsTitle": "Szczegóły kontaktu",
   "contactNameLabel": "Osoba lub firma",

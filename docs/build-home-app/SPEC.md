@@ -253,6 +253,7 @@ systemu.
 | CNT-006 | P0 | Status wizyty to: planowana, wykonana, odwolana albo wykonawca nie przyjechal. |
 | CNT-007 | P0 | Oferta zawiera zakres, kwote, wariant, termin waznosci, zalaczniki i wykluczenia. |
 | CNT-008 | P1 | Porownanie ofert zestawia ceny oraz zakres, aby najtansza nie byla automatycznie oznaczona jako najlepsza. |
+| CNT-009 | P0 | Przy tworzeniu kontaktu uzytkownik moze wybrac pojedynczy numer z systemowej ksiazki kontaktow; aplikacja uzupelnia nazwe i telefon bez dostepu do calej ksiazki i bez automatycznego zapisu. |
 
 ## 13. Dokumenty i zalaczniki
 

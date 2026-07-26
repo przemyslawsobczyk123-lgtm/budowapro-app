@@ -2139,6 +2139,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get contactNewTitle => 'Nowy kontakt';
 
   @override
+  String get contactImportFromPhoneAction => 'Wybierz z kontaktów telefonu';
+
+  @override
+  String get contactImportFromPhoneError =>
+      'Nie udało się otworzyć kontaktów telefonu.';
+
+  @override
   String get contactEditTitle => 'Edytuj kontakt';
 
   @override

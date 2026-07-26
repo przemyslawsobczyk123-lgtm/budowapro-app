@@ -453,6 +453,14 @@ Schema `v6` adds four local tables:
 - `site_visits` extends a schedule event with contact, expected result, dedicated
   visit status, result and agreements.
 
+Device contact import is a separate gateway from `ContactRepository`. Android
+opens `ACTION_PICK` for `CommonDataKinds.Phone.CONTENT_URI`, so the contacts app
+provides its own searchable picker and delegates temporary access only to the
+selected phone row. BudowaPRO copies the validated display name and selected
+number into the unsaved form. It does not request broad contacts permission,
+retain a provider URI or system contact ID, synchronize later, or select a trade
+role automatically.
+
 Contact list queries bind every search/filter value. Role and stage predicates use
 indexed `EXISTS` subqueries, while roles and stages for each result page are loaded
 in two batched queries. The controller follows `Page.nextRequest` until the complete

@@ -1,5 +1,10 @@
 import 'dart:collection';
 
+abstract final class ContactFieldLimits {
+  static const int displayName = 160;
+  static const int phone = 40;
+}
+
 enum ContactKind { person, company }
 
 enum ContactRole {
@@ -44,13 +49,17 @@ final class ContactDraft {
       throw ArgumentError.value(email, 'email');
     }
     return ContactDraft._(
-      displayName: _requiredText(displayName, 'displayName', 160),
+      displayName: _requiredText(
+        displayName,
+        'displayName',
+        ContactFieldLimits.displayName,
+      ),
       kind: kind,
       roles: UnmodifiableSetView<ContactRole>(normalizedRoles),
       stageIds: UnmodifiableSetView<String>(
         stageIds.map((value) => _requiredText(value, 'stageId', 64)).toSet(),
       ),
-      phone: _optionalText(phone, 'phone', 40),
+      phone: _optionalText(phone, 'phone', ContactFieldLimits.phone),
       email: normalizedEmail,
       taxId: _optionalText(taxId, 'taxId', 24),
       note: _optionalText(note, 'note', 2000),
