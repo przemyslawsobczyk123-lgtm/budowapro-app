@@ -1,6 +1,6 @@
 # Stage guidance source register
 
-Status: content version `3`, verified on `2026-07-26`.
+Status: content version `4`, verified on `2026-07-26`.
 
 The in-app guidance is an offline decision checklist. It does not replace a
 construction design, geotechnical assessment, product system specification or
@@ -21,6 +21,12 @@ the decisions of the designer and site manager.
   vertical electrodes as correct for every building.
 - Present a ring earth electrode or vertical electrodes as designed options,
   not automatic repairs for an omitted foundation earth electrode.
+- Treat `stan surowy otwarty` and `stan surowy zamkniety` as project workflow
+  stages, not terms with one statutory definition.
+- Never publish one universal construction-gate width, formwork removal time,
+  installation test pressure/time or substrate-moisture limit.
+- Keep foundation selection with the adapting/structural designer. The site
+  manager receives and executes the approved design.
 - Show the catalog version and verification date in every guidance detail.
 - Store each source with a stable key, type, title, revision, URL and
   verification date.
@@ -49,6 +55,17 @@ the decisions of the designer and site manager.
 | Lightning protection conductors | [PN-EN IEC 62561-2 scope at PKN](https://sklep.pkn.pl/pn-en-iec-62561-2-2018-04p.html) | Supports the prompt to select compliant conductor and earth-electrode components through the electrical design. |
 | Below-ground waterproofing | [ITB: Izolacje przeciwwilgociowe i wodochronne czesci podziemnych budynkow](https://www.itb.pl/aktualnosci/izolacje-przeciwwilgociowe-i-wodochronne-czesci-podziemnych-budynkow/) | Separates damp-proofing from waterproofing and requires selection from water exposure and substrate conditions. |
 | PMBC product scope | [PN-EN 15814 scope at PKN](https://sklep.pkn.pl/pn-en-15814-a2-2015-02e.html) | Identifies the product family; the selected system data sheet still controls application and dry-layer requirements. |
+| Concrete execution | [PN-EN 13670:2011 with Ap1:2026-04 scope at PKN](https://sklep.pkn.pl/pn-en-13670-2011p.html) | Supports pre-concreting checks and execution control. The app does not publish a universal formwork-removal date. |
+| Masonry execution | [PN-EN 1996-2:2010 scope at PKN](https://sklep.pkn.pl/pn-en-1996-2-2010p.html) | Supports project-based control of masonry execution, geometry and temporary stability. |
+| Roof coverings | [ITB: Pokrycia dachowe, part C, booklet 1, 2024](https://www.itb.pl/aktualnosci/pokrycia-dachowe/) | Keeps roof checks tied to documentation, substrate, covering, penetrations and acceptance. ITB states that the recommendations are technical assistance, not binding regulations. |
+| External windows and doors | [PN-EN 14351-1+A2:2016-10 scope at PKN](https://sklep.pkn.pl/pn-en-14351-1-a2-2016-10e.html) | Supports checking declared product performance. Installation support, fastening and sealing still come from the project and the selected installation system. |
+| Window and balcony-door installation | [ITB source register for WTWiORB B6/2016](https://www.itb.pl/odbiory/) | Supports installation and acceptance prompts for fastening, support and sealing. The project and the selected system documentation remain controlling. |
+| Water installations | [PN-EN 806-4:2010 scope at PKN](https://sklep.pkn.pl/pn-en-806-4-2010e.html) | Supports installation and commissioning prompts without copying one pressure or duration to every pipe system. |
+| Surface heating | [PN-EN 1264-4:2021-10 scope at PKN](https://sklep.pkn.pl/pn-en-1264-4-2021-10e.html) | Supports installation and pre-screed checks for embedded heating/cooling systems. Project and system documentation control the actual procedure. |
+| Ventilation acceptance | [PN-EN 12599:2013-04 scope at PKN](https://sklep.pkn.pl/normy/pn-en-12599-2013-04e.html) | Supports inspection and measurement prompts for completed ventilation and air-conditioning installations. |
+| Ceramic finishes | [ITB: Okladziny i posadzki z plytek ceramicznych, part B, booklet 5, 2023](https://www.itb.pl/aktualnosci/okladziny-i-posadzki-z-plytek-ceramicznych/) | Supports checking project documentation, substrates, materials and hidden work before accepting ceramic finishes. |
+| Liquid-applied waterproofing below tiles | [PN-EN 14891:2017-03 scope at PKN](https://sklep.pkn.pl/pn-en-14891-2017-03p.html) | Identifies the product family and declared performance. It does not replace design or installation instructions for corners, drains and penetrations. |
+| Wet-area waterproofing execution | [ITB WTWiORB C6/2023](https://www.itb.pl/aktualnosci/zabezpieczenia-wodochronne-pomieszczen-mokrych/) | Supports execution and acceptance prompts for waterproofing layers in wet rooms, including system details and documentation. |
 
 ## System and execution references
 

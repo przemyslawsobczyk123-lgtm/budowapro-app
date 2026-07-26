@@ -140,7 +140,7 @@ Last updated: 2026-07-26
   foundation earthing, waterproofing, drainage/ground levels and concealed-work evidence. Each detail shows
   when to decide, inspection points, specialist questions, structured source metadata, content version and a clear
   boundary that it is not an execution design.
-- Foundation-earthing guidance content version `3` separates a foundation earth electrode from a ring earth
+- Foundation-earthing guidance content version `4` separates a foundation earth electrode from a ring earth
   electrode and vertical electrodes. It explains that ring or vertical electrodes can be designed after the
   foundation is complete, but their material, layout and quantity require ground conditions, system function,
   corrosion assessment and measured results. It deliberately provides no universal conductor size, electrode
@@ -155,6 +155,15 @@ Last updated: 2026-07-26
   It does not seed a database row or change progress in existing projects. The content explicitly treats `5 cm`,
   conductor dimensions, PMBC/KMB, XPS, dimpled membrane and drainage as project/system-dependent rather than
   universal instructions.
+- Eight additional source-backed guides cover structural and roof checks in the open shell, window/door
+  installation and moisture control in the closed shell, coordinated routes and pre-covering tests for
+  installations, and substrate readiness plus wet-room waterproofing during finishing. These guides are also
+  read-only catalog content, so existing checklist progress and user data are not reseeded.
+- Formalities now explicitly send ground-investigation results to the adapting/structural designer before the
+  slab, footings or another foundation solution is selected. Site preparation explicitly covers a temporary
+  fence, equipment-sized gate and hardened route, plus a stable, secured sheet-metal shed or container.
+- Built-in checklist risk text is now shown in full in the item editor. A separate optional override remains
+  editable and the localized catalog text is not persisted into SQLite when the user saves without changing it.
 - Users can add their own local position with a responsible person, note, skip risk, importance and evidence
   policy in one form. Guidance opens related existing checklist items instead of creating duplicates. Idempotent
   `Stan 0` reseeding is regression-tested not to replace user edits or custom items.

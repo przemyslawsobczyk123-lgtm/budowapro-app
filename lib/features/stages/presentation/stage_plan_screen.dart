@@ -1281,5 +1281,13 @@ IconData _guidanceIcon(StageGuidanceKey key) => switch (key) {
   StageGuidanceKey.foundationWaterproofing => Icons.water_drop_outlined,
   StageGuidanceKey.drainageAndGroundLevels => Icons.landscape_outlined,
   StageGuidanceKey.concealedWorksEvidence => Icons.photo_camera_outlined,
+  StageGuidanceKey.structuralShellChecks => Icons.foundation_outlined,
+  StageGuidanceKey.roofAndWeatherProtection => Icons.roofing_outlined,
   StageGuidanceKey.windowShadingPreparation => Icons.window_rounded,
+  StageGuidanceKey.windowDoorInstallation => Icons.door_front_door_outlined,
+  StageGuidanceKey.closedShellMoistureControl => Icons.air_outlined,
+  StageGuidanceKey.installationRoutesAndAccess => Icons.account_tree_outlined,
+  StageGuidanceKey.installationTestsAndEvidence => Icons.fact_check_outlined,
+  StageGuidanceKey.finishSubstratesAndHeating => Icons.layers_outlined,
+  StageGuidanceKey.wetAreaWaterproofing => Icons.shower_outlined,
 };

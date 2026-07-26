@@ -27,13 +27,72 @@ void main() {
       );
     });
 
-    test('keeps the window shading decision in shell-open guidance', () {
-      final guidance = StageGuidanceCatalog.forStage(ProjectStageKey.shellOpen);
+    test(
+      'covers later construction stages without seeding checklist items',
+      () {
+        final guidance = StageGuidanceCatalog.forStage(
+          ProjectStageKey.shellOpen,
+        );
+        final shellClosed = StageGuidanceCatalog.forStage(
+          ProjectStageKey.shellClosed,
+        );
+        final installations = StageGuidanceCatalog.forStage(
+          ProjectStageKey.installations,
+        );
+        final finishing = StageGuidanceCatalog.forStage(
+          ProjectStageKey.finishing,
+        );
 
-      expect(guidance, hasLength(1));
-      expect(guidance.single.key, StageGuidanceKey.windowShadingPreparation);
-      expect(guidance.single.relatedChecklistKeys, isEmpty);
-    });
+        expect(guidance, hasLength(3));
+        expect(
+          guidance.map((item) => item.key),
+          contains(StageGuidanceKey.windowShadingPreparation),
+        );
+        expect(shellClosed, hasLength(2));
+        expect(installations, hasLength(2));
+        expect(finishing, hasLength(2));
+        expect(
+          shellClosed
+              .singleWhere(
+                (item) => item.key == StageGuidanceKey.windowDoorInstallation,
+              )
+              .sources
+              .map((source) => source.key),
+          contains(StageGuidanceSourceKey.itbWindowInstallation),
+        );
+        expect(
+          installations
+              .singleWhere(
+                (item) =>
+                    item.key == StageGuidanceKey.installationTestsAndEvidence,
+              )
+              .sources
+              .map((source) => source.key),
+          contains(StageGuidanceSourceKey.waterInstallationStandard),
+        );
+        expect(
+          finishing
+              .singleWhere(
+                (item) => item.key == StageGuidanceKey.wetAreaWaterproofing,
+              )
+              .sources
+              .map((source) => source.key),
+          contains(StageGuidanceSourceKey.itbWetAreaWaterproofing),
+        );
+        expect(
+          <StageGuidanceDefinition>[
+            ...guidance,
+            ...shellClosed,
+            ...installations,
+            ...finishing,
+          ].every(
+            (item) =>
+                item.relatedChecklistKeys.isEmpty && item.sources.isNotEmpty,
+          ),
+          isTrue,
+        );
+      },
+    );
 
     test('keeps formal and site guidance compact and source-backed', () {
       final formalities = StageGuidanceCatalog.forStage(
@@ -80,7 +139,7 @@ void main() {
       );
 
       expect(grounding.sources, isNotEmpty);
-      expect(StageGuidanceCatalog.contentVersion, 3);
+      expect(StageGuidanceCatalog.contentVersion, 4);
       expect(
         grounding.sources.map((source) => source.key),
         containsAll(<StageGuidanceSourceKey>{

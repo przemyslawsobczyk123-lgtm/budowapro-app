@@ -96,6 +96,27 @@ void main() {
     expect(find.text('Detal nadproża pod rolety lub żaluzje'), findsOneWidget);
   });
 
+  testWidgets('shows source-backed guidance in later construction stages', (
+    tester,
+  ) async {
+    for (final scenario in <(ProjectStageKey, String)>[
+      (
+        ProjectStageKey.shellClosed,
+        'Stolarka: podparcie, mocowanie i szczelność',
+      ),
+      (ProjectStageKey.installations, 'Koordynacja tras i dostęp serwisowy'),
+      (ProjectStageKey.finishing, 'Podłoże gotowe przed wykończeniem'),
+    ]) {
+      await tester.pumpWidget(_testApp(currentStage: scenario.$1));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Wskazówki dla tego etapu'));
+      await tester.tap(find.text('Wskazówki dla tego etapu'));
+      await tester.pumpAndSettle();
+
+      expect(find.text(scenario.$2), findsOneWidget);
+    }
+  });
+
   testWidgets('opens an existing checklist item from related guidance', (
     tester,
   ) async {
@@ -235,14 +256,19 @@ void main() {
   });
 }
 
-Widget _testApp({double textScale = 1, _FakeStageRepository? stageRepository}) {
-  final project = _project();
+Widget _testApp({
+  double textScale = 1,
+  _FakeStageRepository? stageRepository,
+  ProjectStageKey currentStage = ProjectStageKey.stateZero,
+}) {
+  final project = _project(currentStage: currentStage);
   final projects = FakeProjectRepository(
     projects: <Project>[project],
     selectedProjectId: project.id,
   );
   final stages = stageRepository ?? _FakeStageRepository(project.id);
   return ProviderScope(
+    key: ValueKey<ProjectStageKey>(currentStage),
     overrides: [
       projectRepositoryProvider.overrideWith((ref) async => projects),
       stageRepositoryProvider.overrideWith((ref) async => stages),
@@ -264,14 +290,14 @@ Widget _testApp({double textScale = 1, _FakeStageRepository? stageRepository}) {
   );
 }
 
-Project _project() {
+Project _project({ProjectStageKey currentStage = ProjectStageKey.stateZero}) {
   return Project(
     id: 'project-1',
     draft: ProjectDraft(
       name: 'Dom',
       type: ProjectType.houseBuild,
       template: ProjectTemplate.houseConstruction,
-      currentStage: ProjectStageKey.stateZero,
+      currentStage: currentStage,
     ),
     createdAt: DateTime.utc(2026, 7, 20),
     updatedAt: DateTime.utc(2026, 7, 20),

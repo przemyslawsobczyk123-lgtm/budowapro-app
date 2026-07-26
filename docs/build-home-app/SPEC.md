@@ -198,6 +198,8 @@ Globalny wybor projektu jest dostepny z kazdego glownego ekranu. Zmiana projektu
 | PLAN-013 | P0 | Uzytkownik moze dodac wlasna pozycje z tytulem, fachowcem, notatka, ryzykiem, waznoscia i wymaganym dowodem; aktualizacja katalogu nie nadpisuje danych uzytkownika. |
 | PLAN-014 | P0 | Stan surowy otwarty przypomina o wyborze systemu rolet lub zaluzji przed nadprozami; wymiar wneki wynika z wybranego systemu i zatwierdzonego detalu. |
 | PLAN-015 | P0 | Uzytkownik moze zaznaczyc wiele otwartych punktow i zakonczyc je jedna operacja; wymagania dowodowe nadal obowiazuja, a zapis jest atomowy. |
+| PLAN-016 | P0 | Szczegoly punktu pokazuja pelny wbudowany opis ryzyka bez limitu linii; opcjonalne nadpisanie uzytkownika pozostaje osobnym polem. |
+| PLAN-017 | P0 | Wskazowki obejmuja formalnosci, przygotowanie placu, Stan 0, stan surowy otwarty i zamkniety, instalacje oraz wykonczenie, bez automatycznego dopisywania checklist do istniejacych projektow. |
 
 ### 11.1 Formalnosci
 
@@ -206,6 +208,9 @@ celow projektowych, badania gruntu, wybor i adaptacje projektu, warunki
 przylaczenia mediow, skoordynowany projekt, pozwolenie albo zgloszenie,
 kierownika, dziennik budowy, zawiadomienie o rozpoczeciu, przekazanie
 dokumentacji, dodatkowe uzgodnienia i koncowy audyt kompletnosci.
+Badania gruntu trafiaja do projektanta adaptujacego i konstruktora przed doborem
+plyty, law lub innego posadowienia. Kierownik otrzymuje zatwierdzony projekt do
+realizacji, ale nie zastepuje projektanta konstrukcji.
 
 ### 11.2 Przygotowanie placu budowy
 
@@ -214,7 +219,15 @@ utwardzony wjazd, kontener, prad i wode budowlana, toalete, oznaczenie sieci i
 zagrozen, zabezpieczenia BHP, strefy materialow/odpadow oraz dokumentacje
 fotograficzna stanu poczatkowego.
 
-### 11.3 Minimalna checklista `Stan 0`
+### 11.3 Wskazowki dla dalszych etapow
+
+Stan surowy otwarty obejmuje odbior konstrukcji przed zakryciem, ochrone dachu
+przed woda oraz detale oslon okiennych. Stan surowy zamkniety obejmuje montaz
+stolarki i kontrole wilgoci. Instalacje obejmuja koordynacje tras, dostep
+serwisowy oraz proby przed zakryciem. Wykonczenie obejmuje gotowosc podlozy,
+ogrzewanie podlogowe i kompletny system hydroizolacji stref mokrych.
+
+### 11.4 Minimalna checklista `Stan 0`
 
 Szablon musi zawierac co najmniej:
 

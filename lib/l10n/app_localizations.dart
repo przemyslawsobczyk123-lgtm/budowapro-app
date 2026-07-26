@@ -1924,6 +1924,72 @@ abstract class AppLocalizations {
   /// **'GDDKiA - zasady dotyczące zjazdów'**
   String get stageGuidanceSourceGddkiaSiteAccess;
 
+  /// No description provided for @stageGuidanceSourceConcreteExecution.
+  ///
+  /// In pl, this message translates to:
+  /// **'PN-EN 13670 - wykonywanie konstrukcji z betonu'**
+  String get stageGuidanceSourceConcreteExecution;
+
+  /// No description provided for @stageGuidanceSourceMasonryExecution.
+  ///
+  /// In pl, this message translates to:
+  /// **'PN-EN 1996-2 - wykonanie konstrukcji murowych'**
+  String get stageGuidanceSourceMasonryExecution;
+
+  /// No description provided for @stageGuidanceSourceItbRoofCoverings.
+  ///
+  /// In pl, this message translates to:
+  /// **'ITB - wykonanie i odbiór pokryć dachowych'**
+  String get stageGuidanceSourceItbRoofCoverings;
+
+  /// No description provided for @stageGuidanceSourceWindowPerformance.
+  ///
+  /// In pl, this message translates to:
+  /// **'PN-EN 14351-1+A2 - właściwości okien i drzwi zewnętrznych'**
+  String get stageGuidanceSourceWindowPerformance;
+
+  /// No description provided for @stageGuidanceSourceItbWindowInstallation.
+  ///
+  /// In pl, this message translates to:
+  /// **'ITB WTWiORB B6 - montaż okien i drzwi balkonowych'**
+  String get stageGuidanceSourceItbWindowInstallation;
+
+  /// No description provided for @stageGuidanceSourceWaterInstallation.
+  ///
+  /// In pl, this message translates to:
+  /// **'PN-EN 806-4 - wykonanie instalacji wodociągowych'**
+  String get stageGuidanceSourceWaterInstallation;
+
+  /// No description provided for @stageGuidanceSourceSurfaceHeating.
+  ///
+  /// In pl, this message translates to:
+  /// **'PN-EN 1264-4 - instalowanie ogrzewania płaszczyznowego'**
+  String get stageGuidanceSourceSurfaceHeating;
+
+  /// No description provided for @stageGuidanceSourceVentilationAcceptance.
+  ///
+  /// In pl, this message translates to:
+  /// **'PN-EN 12599 - odbiór wentylacji i klimatyzacji'**
+  String get stageGuidanceSourceVentilationAcceptance;
+
+  /// No description provided for @stageGuidanceSourceItbTileFinishes.
+  ///
+  /// In pl, this message translates to:
+  /// **'ITB - okładziny i posadzki z płytek ceramicznych'**
+  String get stageGuidanceSourceItbTileFinishes;
+
+  /// No description provided for @stageGuidanceSourceLiquidWaterproofing.
+  ///
+  /// In pl, this message translates to:
+  /// **'PN-EN 14891 - ciekłe wyroby wodochronne pod płytki'**
+  String get stageGuidanceSourceLiquidWaterproofing;
+
+  /// No description provided for @stageGuidanceSourceItbWetAreaWaterproofing.
+  ///
+  /// In pl, this message translates to:
+  /// **'ITB WTWiORB C6 - zabezpieczenia wodochronne pomieszczeń mokrych'**
+  String get stageGuidanceSourceItbWetAreaWaterproofing;
+
   /// No description provided for @checklistHeading.
   ///
   /// In pl, this message translates to:
@@ -2097,6 +2163,24 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Ryzyko pominięcia'**
   String get checklistRiskLabel;
+
+  /// No description provided for @checklistBuiltInRiskTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dlaczego ten punkt jest ważny'**
+  String get checklistBuiltInRiskTitle;
+
+  /// No description provided for @checklistRiskOverrideLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Własny opis ryzyka'**
+  String get checklistRiskOverrideLabel;
+
+  /// No description provided for @checklistRiskOverrideHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pozostaw puste, aby używać opisu BudowaPRO.'**
+  String get checklistRiskOverrideHint;
 
   /// No description provided for @checklistReasonLabel.
   ///
@@ -2743,25 +2827,25 @@ abstract class AppLocalizations {
   /// No description provided for @guidancePlanningAndGroundConditionsTiming.
   ///
   /// In pl, this message translates to:
-  /// **'Przed wyborem i adaptacją projektu domu'**
+  /// **'Przed ostatecznym wyborem lub adaptacją projektu i posadowienia'**
   String get guidancePlanningAndGroundConditionsTiming;
 
   /// No description provided for @guidancePlanningAndGroundConditionsSummary.
   ///
   /// In pl, this message translates to:
-  /// **'Najpierw potwierdź w gminie aktualną podstawę planistyczną dla działki: MPZP albo potrzebę uzyskania WZ. Mapa projektowa i rozpoznanie gruntu powinny trafić do projektanta przed ustaleniem posadowienia.'**
+  /// **'Najpierw potwierdź w gminie aktualną podstawę planistyczną dla działki: MPZP albo potrzebę uzyskania WZ. Mapa i wyniki rozpoznania gruntu powinny trafić do projektanta adaptującego i konstruktora, zanim zaprojektują płytę, ławy albo inne posadowienie. Kierownik budowy realizuje zatwierdzony projekt, nie zastępuje projektanta konstrukcji.'**
   String get guidancePlanningAndGroundConditionsSummary;
 
   /// No description provided for @guidancePlanningAndGroundConditionsChecks.
   ///
   /// In pl, this message translates to:
-  /// **'Pobierz aktualne ustalenia MPZP albo potwierdź tryb uzyskania WZ i wymagane załączniki.\nSprawdź tytuł prawny, dostęp do drogi oraz ograniczenia widoczne w dokumentach działki.\nZleć mapę do celów projektowych uprawnionemu geodecie.\nUzgodnij z projektantem zakres rozpoznania geotechnicznego i przekaż mu wyniki przed doborem fundamentów.'**
+  /// **'Pobierz aktualne ustalenia MPZP albo potwierdź tryb uzyskania WZ i wymagane załączniki.\nSprawdź tytuł prawny, dostęp do drogi oraz ograniczenia widoczne w dokumentach działki.\nZleć mapę do celów projektowych uprawnionemu geodecie.\nUzgodnij z projektantem zakres rozpoznania geotechnicznego i przekaż wyniki projektantowi konstrukcji przed doborem posadowienia.\nPrzed robotami ziemnymi przekaż kierownikowi zatwierdzony projekt i opinię geotechniczną; rozbieżności ujawnione w wykopie konsultuj z projektantem przed dalszymi pracami.'**
   String get guidancePlanningAndGroundConditionsChecks;
 
   /// No description provided for @guidancePlanningAndGroundConditionsQuestions.
   ///
   /// In pl, this message translates to:
-  /// **'Czy urząd potwierdził aktualną ścieżkę planistyczną dla tej działki?\nCzy mapa obejmuje potrzebny teren i uzbrojenie?\nCzy warunki gruntowo-wodne mogą zmienić fundament, odwodnienie lub hydroizolację?'**
+  /// **'Czy urząd potwierdził aktualną ścieżkę planistyczną dla tej działki?\nCzy mapa obejmuje potrzebny teren i uzbrojenie?\nCzy projektant konstrukcji otrzymał wyniki badań przed doborem płyty, ław lub innego posadowienia?\nCo zrobić, jeśli warunki w wykopie różnią się od rozpoznanych?'**
   String get guidancePlanningAndGroundConditionsQuestions;
 
   /// No description provided for @guidanceDesignUtilitiesAndApprovalsTitle.
@@ -2839,19 +2923,19 @@ abstract class AppLocalizations {
   /// No description provided for @guidanceSiteLogisticsAndAccessSummary.
   ///
   /// In pl, this message translates to:
-  /// **'Rozrysuj ruch ciężkiego sprzętu, strefy rozładunku i składowania. Ogrodzenie, brama i utwardzony dojazd mają ograniczać ryzyko dla ludzi, drogi, instalacji podziemnych i przyszłych elementów domu.'**
+  /// **'Tymczasowe ogrodzenie, szeroka brama dla pojazdów, utwardzony wjazd oraz bezpiecznie ustawiony blaszak lub kontener tworzą podstawę sprawnej logistyki. Wymiary przejazdu i nośność trasy dobierz do rzeczywistego ciężkiego sprzętu, nie do jednej uniwersalnej liczby.'**
   String get guidanceSiteLogisticsAndAccessSummary;
 
   /// No description provided for @guidanceSiteLogisticsAndAccessChecks.
   ///
   /// In pl, this message translates to:
-  /// **'Uzgodnij kierunek wjazdu, promień skrętu, szerokość i nośność trasy z dostawcami.\nCo do zasady zabezpiecz teren ogrodzeniem o wysokości co najmniej 1,5 m; gdy nie jest to możliwe, zastosuj rozwiązanie przewidziane w przepisach i uzgodnione z kierownikiem.\nOddziel ruch pieszy od maszyn oraz wyznacz bezpieczne miejsce rozładunku.\nSprawdź formalności dotyczące istniejącego lub tymczasowego zjazdu z drogi.\nUstaw kontener i składowiska poza wykopem, trasami instalacji i zasięgiem pracy maszyn.'**
+  /// **'Zabezpiecz teren tymczasowym ogrodzeniem o wysokości co najmniej 1,5 m albo innym rozwiązaniem dopuszczonym przez przepisy, gdy ogrodzenie nie jest możliwe.\nZaplanuj szeroką bramę dla pojazdów oraz osobne, bezpieczne wejście piesze.\nUzgodnij szerokość, wysokość przejazdu, promień skrętu i nośność utwardzonego wjazdu z dostawcą betonu, pompą, HDS-em i innym planowanym sprzętem.\nSprawdź uzbrojenie podziemne, odwodnienie oraz formalności istniejącego lub tymczasowego zjazdu z drogi.\nUstaw blaszak lub kontener na stabilnym podłożu, poza drogami transportowymi, wykopem i strefami niebezpiecznymi; zapewnij zamknięcie i wentylację.\nPrzed ustawieniem zaplecza potwierdź z projektantem lub urzędem, czy sposób i czas użytkowania wymagają dodatkowej formalności.'**
   String get guidanceSiteLogisticsAndAccessChecks;
 
   /// No description provided for @guidanceSiteLogisticsAndAccessQuestions.
   ///
   /// In pl, this message translates to:
-  /// **'Czy betoniarka, pompa i dźwig wjadą oraz bezpiecznie wyjadą?\nCzy podłoże wytrzyma ruch po deszczu?\nCzy brama i składowiska nie kolidują z przyłączami ani docelowym zagospodarowaniem?'**
+  /// **'Czy betoniarka, pompa, HDS lub dźwig wjadą i wyjadą bez cofania w niebezpieczną strefę?\nCzy podłoże wytrzyma ruch po deszczu i umożliwi oczyszczenie kół przed wyjazdem?\nCzy brama, blaszak i składowiska nie kolidują z przyłączami ani docelowym zagospodarowaniem?\nKto codziennie sprawdza ogrodzenie, zamknięcie bramy i porządek dróg?'**
   String get guidanceSiteLogisticsAndAccessQuestions;
 
   /// No description provided for @guidanceTemporaryUtilitiesAndFacilitiesTitle.
@@ -3064,6 +3148,66 @@ abstract class AppLocalizations {
   /// **'Czy ze zdjęć da się odtworzyć dokładne położenie elementu?\nCzy wymagane próby i pomiary mają podpisany protokół?\nCzy kierownik zaakceptował roboty przed zgodą na zakrycie?'**
   String get guidanceConcealedWorksEvidenceQuestions;
 
+  /// No description provided for @guidanceStructuralShellChecksTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Konstrukcja przed betonem i zakryciem'**
+  String get guidanceStructuralShellChecksTitle;
+
+  /// No description provided for @guidanceStructuralShellChecksTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed każdym betonowaniem, zakryciem połączeń i usunięciem podpór'**
+  String get guidanceStructuralShellChecksTiming;
+
+  /// No description provided for @guidanceStructuralShellChecksSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odbieraj elementy konstrukcyjne według projektu przed ich zakryciem. Nie istnieje jedna liczba dni, po której zawsze wolno rozszalować strop: decydują projekt, technologia, warunki dojrzewania i osiągnięta wytrzymałość.'**
+  String get guidanceStructuralShellChecksSummary;
+
+  /// No description provided for @guidanceStructuralShellChecksChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź zbrojenie, otuliny, deskowanie, przepusty, kotwy i elementy osadzane przed betonowaniem.\nPorównaj z projektem geometrię ścian, stropów, otworów, nadproży, wieńców, schodów i konstrukcji dachu.\nPotwierdź stateczność tymczasową, stężenia i sposób podparcia; nie zmieniaj otworów ani elementów nośnych bez projektanta.\nZabezpiecz świeży beton i mur zgodnie z projektem, pogodą i instrukcją zastosowanej technologii.\nZapisz odbiór robót zanikających i wykonaj zdjęcia z miarą przed zakryciem.'**
+  String get guidanceStructuralShellChecksChecks;
+
+  /// No description provided for @guidanceStructuralShellChecksQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy kierownik odebrał element przed betonowaniem lub zakryciem?\nCzy wszystkie otwory i przepusty są zgodne ze skoordynowanymi projektami branżowymi?\nNa jakiej podstawie ustalono termin usunięcia podpór?\nCzy zmiana wykonawcza ma akceptację właściwego projektanta?'**
+  String get guidanceStructuralShellChecksQuestions;
+
+  /// No description provided for @guidanceRoofAndWeatherProtectionTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dach i ochrona stanu otwartego przed wodą'**
+  String get guidanceRoofAndWeatherProtectionTitle;
+
+  /// No description provided for @guidanceRoofAndWeatherProtectionTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed pierwszym opadem i przed zakryciem każdej warstwy dachu'**
+  String get guidanceRoofAndWeatherProtectionTiming;
+
+  /// No description provided for @guidanceRoofAndWeatherProtectionSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pokrycie jest częścią zaprojektowanego przekrycia dachowego. Szczelność zależy także od podłoża, warstwy wstępnego krycia, obróbek, przejść, odwodnienia i montażu zgodnego z wybranym systemem.'**
+  String get guidanceRoofAndWeatherProtectionSummary;
+
+  /// No description provided for @guidanceRoofAndWeatherProtectionChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź podłoże, spadki, warstwę wstępnego krycia i wymagane szczeliny wentylacyjne przed pokryciem.\nOdbierz obróbki kominów, okien dachowych, koszy, kalenicy, okapu i wszystkich przejść instalacyjnych.\nZapewnij drożne odwodnienie oraz kontrolowany odpływ z dala od niezabezpieczonych ścian i fundamentów.\nZabezpieczaj tymczasowo otwory i przerwane roboty przed opadem oraz silnym wiatrem.\nUdokumentuj warstwy ukryte i użyte materiały przed ich zakryciem.'**
+  String get guidanceRoofAndWeatherProtectionChecks;
+
+  /// No description provided for @guidanceRoofAndWeatherProtectionQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy detal każdego przejścia pochodzi z projektu i instrukcji wybranego systemu?\nDokąd odpłynie woda podczas budowy i po wykonaniu rynien?\nCzy połączenia będą dostępne do kontroli przed ociepleniem lub zabudową?\nKto odbiera pokrycie i obróbki przed zamknięciem kolejnych warstw?'**
+  String get guidanceRoofAndWeatherProtectionQuestions;
+
   /// No description provided for @guidanceWindowShadingPreparationTitle.
   ///
   /// In pl, this message translates to:
@@ -3093,6 +3237,186 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Roleta czy żaluzja fasadowa i w jakim systemie zabudowy?\nJakie są rzeczywiste wymiary skrzynki i pakietu dla tego okna?\nGdzie będzie rewizja serwisowa, przewód i napęd?\nCzy detal nie osłabia nadproża i mieści projektowaną grubość elewacji?'**
   String get guidanceWindowShadingPreparationQuestions;
+
+  /// No description provided for @guidanceWindowDoorInstallationTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Stolarka: podparcie, mocowanie i szczelność'**
+  String get guidanceWindowDoorInstallationTitle;
+
+  /// No description provided for @guidanceWindowDoorInstallationTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed zamówieniem stolarki, montażem i zakryciem złączy'**
+  String get guidanceWindowDoorInstallationTiming;
+
+  /// No description provided for @guidanceWindowDoorInstallationSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potwierdź parametry wyrobu oraz indywidualny detal montażu do muru, progu i elewacji. Sama piana nie zastępuje mechanicznego mocowania ani kompletnego uszczelnienia zaprojektowanego połączenia.'**
+  String get guidanceWindowDoorInstallationSummary;
+
+  /// No description provided for @guidanceWindowDoorInstallationChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmierz otwory i potwierdź poziomy gotowych posadzek, parapetów, progów, rolet i elewacji przed zamówieniem.\nDobierz położenie, podparcie, łączniki i uszczelnienie do projektu, rodzaju muru oraz instrukcji producenta stolarki i systemu montażowego.\nSprawdź mechaniczne mocowanie, stabilne podparcie, ciągłość uszczelnień i zabezpieczenie piany przed wilgocią oraz promieniowaniem UV.\nZachowaj drożność odwodnień profili, parapetów i progów; sprawdź spadki oraz zakończenia.\nPrzed zakryciem złączy sprawdź działanie skrzydeł, okucia, uszkodzenia i wykonaj zdjęcia detali.'**
+  String get guidanceWindowDoorInstallationChecks;
+
+  /// No description provided for @guidanceWindowDoorInstallationQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy zamówienie podaje uzgodnione właściwości i wymiary każdego wyrobu?\nKto przygotował detal mocowania i uszczelnienia dla tego muru oraz progu?\nCzy rolety, parapety i ocieplenie nie przerwą ciągłości połączenia?\nCzy złącze można jeszcze odebrać przed jego zakryciem?'**
+  String get guidanceWindowDoorInstallationQuestions;
+
+  /// No description provided for @guidanceClosedShellMoistureControlTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamknięty budynek bez uwięzionej wilgoci'**
+  String get guidanceClosedShellMoistureControlTitle;
+
+  /// No description provided for @guidanceClosedShellMoistureControlTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po montażu stolarki, przed tynkami, wylewkami i szczelną zabudową'**
+  String get guidanceClosedShellMoistureControlTiming;
+
+  /// No description provided for @guidanceClosedShellMoistureControlSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po zamknięciu budynku woda opadowa i wilgoć technologiczna nie mogą pozostać bez kontroli. Zapewnij szczelność zewnętrzną, odpływ wody oraz planowane wietrzenie, osuszanie i ogrzewanie zgodne z technologią robót.'**
+  String get guidanceClosedShellMoistureControlSummary;
+
+  /// No description provided for @guidanceClosedShellMoistureControlChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź dach, obróbki, rynny, parapety, progi i przejścia po opadzie, zanim połączenia zostaną zabudowane.\nUsuń źródła przecieków oraz wodę stojącą; nie przykrywaj zawilgoconych przegród.\nUstal kontrolowane wietrzenie lub osuszanie podczas mokrych robót i zapisuj warunki wymagane przez materiały.\nChroń budynek przed niekontrolowanym wychłodzeniem, kondensacją i zamarzaniem świeżych warstw.\nJeżeli wymaga tego projekt, umowa lub standard energetyczny, zaplanuj badanie szczelności przed końcowym zakryciem złączy.'**
+  String get guidanceClosedShellMoistureControlChecks;
+
+  /// No description provided for @guidanceClosedShellMoistureControlQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy po deszczu widać przecieki albo wodę w progach i narożach?\nJak będzie usuwana wilgoć z tynków i wylewek?\nKtóre połączenia trzeba sprawdzić przed ich zabudową?\nCzy badanie szczelności jest wymagane i na jakim etapie będzie najbardziej użyteczne?'**
+  String get guidanceClosedShellMoistureControlQuestions;
+
+  /// No description provided for @guidanceInstallationRoutesAndAccessTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Koordynacja tras i dostęp serwisowy'**
+  String get guidanceInstallationRoutesAndAccessTitle;
+
+  /// No description provided for @guidanceInstallationRoutesAndAccessTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed bruzdowaniem, przewiertami, zabudową i wykonaniem posadzek'**
+  String get guidanceInstallationRoutesAndAccessTiming;
+
+  /// No description provided for @guidanceInstallationRoutesAndAccessSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Elektrykę, wodę, kanalizację, ogrzewanie, wentylację, internet, alarm, PV i automatykę sprawdź na jednym skoordynowanym planie. Kolizje rozwiązuj przed wykonaniem, a nie przez przypadkowe osłabianie konstrukcji.'**
+  String get guidanceInstallationRoutesAndAccessSummary;
+
+  /// No description provided for @guidanceInstallationRoutesAndAccessChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzgodnij trasy, poziomy, przejścia, strefy montażowe i odpowiedzialność każdej branży.\nNie wykonuj bruzd ani przewiertów w elementach konstrukcyjnych bez zgody właściwego projektanta.\nSprawdź rozdział instalacji, izolacje, spadki kanalizacji oraz ochronę przewodów w miejscach skrzyżowań i przejść.\nZapewnij dostęp do rozdzielaczy, zaworów, filtrów, syfonów, rewizji, urządzeń i elementów wymagających czyszczenia.\nPrzed zakryciem sfotografuj trasy z miarą i odniesieniem do stałych krawędzi pomieszczeń.'**
+  String get guidanceInstallationRoutesAndAccessChecks;
+
+  /// No description provided for @guidanceInstallationRoutesAndAccessQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy wszystkie branże pracują na aktualnej, wspólnej wersji rysunków?\nKtóre elementy muszą pozostać dostępne po wykończeniu?\nCzy przewiert lub bruzda ma akceptację konstruktora, jeśli dotyka elementu nośnego?\nCzy zdjęcia pozwolą później bezpiecznie wiercić i serwisować instalacje?'**
+  String get guidanceInstallationRoutesAndAccessQuestions;
+
+  /// No description provided for @guidanceInstallationTestsAndEvidenceTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Próby i pomiary przed zakryciem'**
+  String get guidanceInstallationTestsAndEvidenceTitle;
+
+  /// No description provided for @guidanceInstallationTestsAndEvidenceTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po wykonaniu instalacji, zanim przykryją ją tynk, wylewka, izolacja lub zabudowa'**
+  String get guidanceInstallationTestsAndEvidenceTiming;
+
+  /// No description provided for @guidanceInstallationTestsAndEvidenceSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Każda branża ma własny zakres prób i kryteria odbioru. Nie stosuj jednego internetowego ciśnienia ani czasu do wszystkich systemów: parametry wynikają z projektu, normy właściwej dla instalacji i instrukcji użytego systemu.'**
+  String get guidanceInstallationTestsAndEvidenceSummary;
+
+  /// No description provided for @guidanceInstallationTestsAndEvidenceChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonaj i zapisz właściwe próby szczelności instalacji wodnych, kanalizacyjnych, grzewczych i innych przewodów przed zakryciem.\nZleć osobie z wymaganymi kwalifikacjami oględziny, próby i pomiary instalacji elektrycznej wraz z protokołem.\nSprawdź obiegi ogrzewania płaszczyznowego przed wylewką, oznacz pętle i zachowaj wymagane ciśnienie robocze lub kontrolne zgodnie z systemem.\nSprawdź wentylację przed zabudową: drożność, mocowanie, izolację, dostęp do czyszczenia, a przy odbiorze także wymagane pomiary.\nDołącz zdjęcia, wyniki, datę, użyte urządzenie pomiarowe i podpis odpowiedzialnej osoby.'**
+  String get guidanceInstallationTestsAndEvidenceChecks;
+
+  /// No description provided for @guidanceInstallationTestsAndEvidenceQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jaki dokument określa parametry próby dla tej konkretnej instalacji?\nKto ma uprawnienia lub kwalifikacje do wykonania i podpisania pomiarów?\nCzy wynik zapisano przed zakryciem oraz powiązano z właściwym obiegiem lub pomieszczeniem?\nCzy usterkę usunięto i próbę powtórzono po naprawie?'**
+  String get guidanceInstallationTestsAndEvidenceQuestions;
+
+  /// No description provided for @guidanceFinishSubstratesAndHeatingTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podłoże gotowe przed wykończeniem'**
+  String get guidanceFinishSubstratesAndHeatingTitle;
+
+  /// No description provided for @guidanceFinishSubstratesAndHeatingTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed gruntowaniem, malowaniem, klejeniem płytek i układaniem podłóg'**
+  String get guidanceFinishSubstratesAndHeatingTiming;
+
+  /// No description provided for @guidanceFinishSubstratesAndHeatingSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nośność, równość, czystość i wilgotność podłoża sprawdzaj metodą oraz limitem wymaganym przez konkretny podkład, klej i okładzinę. Jedna wartość procentowa nie jest poprawna dla wszystkich materiałów i metod pomiaru.'**
+  String get guidanceFinishSubstratesAndHeatingSummary;
+
+  /// No description provided for @guidanceFinishSubstratesAndHeatingChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zidentyfikuj rodzaj podłoża i sprawdź jego nośność, spękania, równość, czystość oraz warunki powierzchniowe.\nZapisz pomiar wilgotności z datą, miejscem, metodą i rodzajem podkładu; porównaj wynik z wymaganiem wybranego systemu.\nPrzed montażem podłogi wykonaj wymagane uruchomienie lub wygrzewanie ogrzewania podłogowego i zachowaj protokół.\nPrzenieś przewidziane dylatacje oraz sprawdź ich zgodność z układem pomieszczeń, ogrzewaniem i formatem okładziny.\nZapewnij temperaturę, wentylację i czas dojrzewania warstw zgodne z kartami technicznymi.'**
+  String get guidanceFinishSubstratesAndHeatingChecks;
+
+  /// No description provided for @guidanceFinishSubstratesAndHeatingQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jaką metodą zmierzono wilgotność i jaki limit podaje producent systemu?\nCzy podłoże ma pęknięcia lub dylatacje wymagające rozwiązania przed okładziną?\nCzy istnieje podpisany protokół uruchomienia ogrzewania podłogowego?\nCzy warunki w pomieszczeniu pozwalają na wykonanie i dojrzewanie wybranych materiałów?'**
+  String get guidanceFinishSubstratesAndHeatingQuestions;
+
+  /// No description provided for @guidanceWetAreaWaterproofingTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenie mokre jako kompletny system'**
+  String get guidanceWetAreaWaterproofingTitle;
+
+  /// No description provided for @guidanceWetAreaWaterproofingTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed klejeniem płytek i zakryciem narożników, odpływów oraz przejść'**
+  String get guidanceWetAreaWaterproofingTiming;
+
+  /// No description provided for @guidanceWetAreaWaterproofingSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Płytki i fuga nie są samodzielną hydroizolacją. Dobierz kompletny, kompatybilny system do podłoża i przewidywanego obciążenia wodą; sama nazwa „folia w płynie” nie potwierdza przydatności w każdym miejscu.'**
+  String get guidanceWetAreaWaterproofingSummary;
+
+  /// No description provided for @guidanceWetAreaWaterproofingChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Określ strefy narażone na wodę, rodzaj podłoża, ogrzewanie i wymagany zakres hydroizolacji.\nSprawdź deklarowane zastosowanie wyrobu, przygotowanie podłoża, wymaganą liczbę warstw, zużycie i czas schnięcia.\nWykonaj systemowe uszczelnienia narożników, dylatacji, odpływów, progów i wszystkich przejść instalacyjnych.\nUżyj kompatybilnych gruntów, taśm, manszet, hydroizolacji, kleju i fugi bez mieszania przypadkowych systemów.\nOdbierz i sfotografuj ciągłość izolacji przed ułożeniem płytek; wymagane próby wykonaj zgodnie z projektem i systemem.'**
+  String get guidanceWetAreaWaterproofingChecks;
+
+  /// No description provided for @guidanceWetAreaWaterproofingQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jakie obciążenie wodą przewidziano w tej strefie?\nCzy produkt jest przeznaczony pod płytki i zgodny z podłożem oraz ogrzewaniem?\nJak rozwiązano odpływ, spadki, narożniki i przejścia rurowe?\nKto odbierze hydroizolację przed jej zakryciem?'**
+  String get guidanceWetAreaWaterproofingQuestions;
 
   /// No description provided for @scheduleWeekTab.
   ///

@@ -519,6 +519,10 @@ class _ChecklistEditorSheetState extends State<_ChecklistEditorSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final templateRisk = switch (widget.item.templateKey) {
+      final ChecklistTemplateKey key => checklistTemplateRisk(l10n, key),
+      null => null,
+    };
     return _EditorSheet(
       title: l10n.checklistEditTitle,
       onSave: _submit,
@@ -533,6 +537,38 @@ class _ChecklistEditorSheetState extends State<_ChecklistEditorSheet> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
+            if (templateRisk != null) ...[
+              const SizedBox(height: 12),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.info_outline, size: 20),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l10n.checklistBuiltInRiskTitle,
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(templateRisk),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 16),
             DropdownButtonFormField<ChecklistStatus>(
               initialValue: _status,
@@ -612,8 +648,15 @@ class _ChecklistEditorSheetState extends State<_ChecklistEditorSheet> {
               controller: _riskController,
               maxLength: 500,
               minLines: 2,
-              maxLines: 3,
-              decoration: InputDecoration(labelText: l10n.checklistRiskLabel),
+              maxLines: null,
+              decoration: InputDecoration(
+                labelText: templateRisk == null
+                    ? l10n.checklistRiskLabel
+                    : l10n.checklistRiskOverrideLabel,
+                helperText: templateRisk == null
+                    ? null
+                    : l10n.checklistRiskOverrideHint,
+              ),
             ),
             const SizedBox(height: 12),
             TextFormField(

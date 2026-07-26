@@ -14,7 +14,15 @@ enum StageGuidanceKey {
   foundationWaterproofing,
   drainageAndGroundLevels,
   concealedWorksEvidence,
+  structuralShellChecks,
+  roofAndWeatherProtection,
   windowShadingPreparation,
+  windowDoorInstallation,
+  closedShellMoistureControl,
+  installationRoutesAndAccess,
+  installationTestsAndEvidence,
+  finishSubstratesAndHeating,
+  wetAreaWaterproofing,
 }
 
 enum StageGuidanceSourceType {
@@ -45,6 +53,17 @@ enum StageGuidanceSourceKey {
   lightningConductorStandard,
   itbBelowGroundWaterproofing,
   pmbcStandard,
+  concreteExecutionStandard,
+  masonryExecutionStandard,
+  itbRoofCoverings,
+  windowPerformanceStandard,
+  itbWindowInstallation,
+  waterInstallationStandard,
+  surfaceHeatingInstallationStandard,
+  ventilationAcceptanceStandard,
+  itbTileFinishes,
+  liquidWaterproofingStandard,
+  itbWetAreaWaterproofing,
   dehnFoundationEarthing,
   hauffBuildingEntries,
   remmersWaterproofingSystem,
@@ -85,7 +104,7 @@ final class StageGuidanceDefinition {
 }
 
 abstract final class StageGuidanceCatalog {
-  static const int contentVersion = 3;
+  static const int contentVersion = 4;
   static const String verifiedOnIso = '2026-07-26';
 
   static List<StageGuidanceDefinition> forStage(ProjectStageKey? stageKey) {
@@ -157,6 +176,7 @@ abstract final class StageGuidanceCatalog {
         ChecklistTemplateKey.materialAndWasteZones,
       ],
       sources: <StageGuidanceSourceReference>[
+        _constructionLaw,
         _constructionSafetyRegulation,
         _pipConstructionChecklist,
         _gddkiaSiteAccess,
@@ -266,10 +286,88 @@ abstract final class StageGuidanceCatalog {
       ],
     ),
     StageGuidanceDefinition(
+      key: StageGuidanceKey.structuralShellChecks,
+      stageKey: ProjectStageKey.shellOpen,
+      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      sources: <StageGuidanceSourceReference>[
+        _constructionLaw,
+        _concreteExecutionStandard,
+        _masonryExecutionStandard,
+      ],
+    ),
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.roofAndWeatherProtection,
+      stageKey: ProjectStageKey.shellOpen,
+      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      sources: <StageGuidanceSourceReference>[
+        _technicalConditions,
+        _itbRoofCoverings,
+      ],
+    ),
+    StageGuidanceDefinition(
       key: StageGuidanceKey.windowShadingPreparation,
       stageKey: ProjectStageKey.shellOpen,
       relatedChecklistKeys: <ChecklistTemplateKey>[],
       sources: <StageGuidanceSourceReference>[_aluprofShadingSystems],
+    ),
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.windowDoorInstallation,
+      stageKey: ProjectStageKey.shellClosed,
+      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      sources: <StageGuidanceSourceReference>[
+        _technicalConditions,
+        _windowPerformanceStandard,
+        _itbWindowInstallation,
+      ],
+    ),
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.closedShellMoistureControl,
+      stageKey: ProjectStageKey.shellClosed,
+      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      sources: <StageGuidanceSourceReference>[
+        _technicalConditions,
+        _itbRoofCoverings,
+      ],
+    ),
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.installationRoutesAndAccess,
+      stageKey: ProjectStageKey.installations,
+      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      sources: <StageGuidanceSourceReference>[
+        _technicalConditions,
+        _waterInstallationStandard,
+      ],
+    ),
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.installationTestsAndEvidence,
+      stageKey: ProjectStageKey.installations,
+      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      sources: <StageGuidanceSourceReference>[
+        _waterInstallationStandard,
+        _electricalVerificationStandard,
+        _surfaceHeatingInstallationStandard,
+        _ventilationAcceptanceStandard,
+      ],
+    ),
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.finishSubstratesAndHeating,
+      stageKey: ProjectStageKey.finishing,
+      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      sources: <StageGuidanceSourceReference>[
+        _surfaceHeatingInstallationStandard,
+        _itbTileFinishes,
+      ],
+    ),
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.wetAreaWaterproofing,
+      stageKey: ProjectStageKey.finishing,
+      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      sources: <StageGuidanceSourceReference>[
+        _technicalConditions,
+        _itbTileFinishes,
+        _liquidWaterproofingStandard,
+        _itbWetAreaWaterproofing,
+      ],
     ),
   ];
 
@@ -449,6 +547,100 @@ abstract final class StageGuidanceCatalog {
         type: StageGuidanceSourceType.standard,
         revision: 'PN-EN 15814+A2:2015-02',
         urlValue: 'https://sklep.pkn.pl/pn-en-15814-a2-2015-02e.html',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _concreteExecutionStandard =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.concreteExecutionStandard,
+        type: StageGuidanceSourceType.standard,
+        revision: 'PN-EN 13670:2011 z poprawką Ap1:2026-04',
+        urlValue: 'https://sklep.pkn.pl/pn-en-13670-2011p.html',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _masonryExecutionStandard =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.masonryExecutionStandard,
+        type: StageGuidanceSourceType.standard,
+        revision: 'PN-EN 1996-2:2010',
+        urlValue: 'https://sklep.pkn.pl/pn-en-1996-2-2010p.html',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _itbRoofCoverings =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.itbRoofCoverings,
+        type: StageGuidanceSourceType.officialGuidance,
+        revision: 'ITB, część C, zeszyt 1, wydanie 2024',
+        urlValue: 'https://www.itb.pl/aktualnosci/pokrycia-dachowe/',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _windowPerformanceStandard =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.windowPerformanceStandard,
+        type: StageGuidanceSourceType.standard,
+        revision: 'PN-EN 14351-1+A2:2016-10, wersja angielska',
+        urlValue: 'https://sklep.pkn.pl/pn-en-14351-1-a2-2016-10e.html',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _itbWindowInstallation =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.itbWindowInstallation,
+        type: StageGuidanceSourceType.officialGuidance,
+        revision:
+            'ITB, część B, zeszyt 6, wydanie 2016; '
+            'źródło wskazane przez ITB w 2026',
+        urlValue: 'https://www.itb.pl/odbiory/',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _waterInstallationStandard =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.waterInstallationStandard,
+        type: StageGuidanceSourceType.standard,
+        revision: 'PN-EN 806-4:2010, wersja angielska',
+        urlValue: 'https://sklep.pkn.pl/pn-en-806-4-2010e.html',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference
+  _surfaceHeatingInstallationStandard = StageGuidanceSourceReference(
+    key: StageGuidanceSourceKey.surfaceHeatingInstallationStandard,
+    type: StageGuidanceSourceType.standard,
+    revision: 'PN-EN 1264-4:2021-10, wersja angielska',
+    urlValue: 'https://sklep.pkn.pl/pn-en-1264-4-2021-10e.html',
+    verifiedOnIso: verifiedOnIso,
+  );
+  static const StageGuidanceSourceReference _ventilationAcceptanceStandard =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.ventilationAcceptanceStandard,
+        type: StageGuidanceSourceType.standard,
+        revision: 'PN-EN 12599:2013-04, wersja angielska',
+        urlValue: 'https://sklep.pkn.pl/normy/pn-en-12599-2013-04e.html',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _itbTileFinishes =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.itbTileFinishes,
+        type: StageGuidanceSourceType.officialGuidance,
+        revision: 'ITB, część B, zeszyt 5, wydanie 2023',
+        urlValue:
+            'https://www.itb.pl/aktualnosci/'
+            'okladziny-i-posadzki-z-plytek-ceramicznych/',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _liquidWaterproofingStandard =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.liquidWaterproofingStandard,
+        type: StageGuidanceSourceType.standard,
+        revision: 'PN-EN 14891:2017-03',
+        urlValue: 'https://sklep.pkn.pl/pn-en-14891-2017-03p.html',
+        verifiedOnIso: verifiedOnIso,
+      );
+  static const StageGuidanceSourceReference _itbWetAreaWaterproofing =
+      StageGuidanceSourceReference(
+        key: StageGuidanceSourceKey.itbWetAreaWaterproofing,
+        type: StageGuidanceSourceType.officialGuidance,
+        revision: 'ITB, część C, zeszyt 6, wydanie 2023',
+        urlValue:
+            'https://www.itb.pl/aktualnosci/'
+            'zabezpieczenia-wodochronne-pomieszczen-mokrych/',
         verifiedOnIso: verifiedOnIso,
       );
   static const StageGuidanceSourceReference _dehnFoundationEarthing =

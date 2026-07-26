@@ -99,12 +99,68 @@ StageGuidanceContent stageGuidanceContent(
       checks: _lines(l10n.guidanceConcealedWorksEvidenceChecks),
       questions: _lines(l10n.guidanceConcealedWorksEvidenceQuestions),
     ),
+    StageGuidanceKey.structuralShellChecks => StageGuidanceContent(
+      title: l10n.guidanceStructuralShellChecksTitle,
+      timing: l10n.guidanceStructuralShellChecksTiming,
+      summary: l10n.guidanceStructuralShellChecksSummary,
+      checks: _lines(l10n.guidanceStructuralShellChecksChecks),
+      questions: _lines(l10n.guidanceStructuralShellChecksQuestions),
+    ),
+    StageGuidanceKey.roofAndWeatherProtection => StageGuidanceContent(
+      title: l10n.guidanceRoofAndWeatherProtectionTitle,
+      timing: l10n.guidanceRoofAndWeatherProtectionTiming,
+      summary: l10n.guidanceRoofAndWeatherProtectionSummary,
+      checks: _lines(l10n.guidanceRoofAndWeatherProtectionChecks),
+      questions: _lines(l10n.guidanceRoofAndWeatherProtectionQuestions),
+    ),
     StageGuidanceKey.windowShadingPreparation => StageGuidanceContent(
       title: l10n.guidanceWindowShadingPreparationTitle,
       timing: l10n.guidanceWindowShadingPreparationTiming,
       summary: l10n.guidanceWindowShadingPreparationSummary,
       checks: _lines(l10n.guidanceWindowShadingPreparationChecks),
       questions: _lines(l10n.guidanceWindowShadingPreparationQuestions),
+    ),
+    StageGuidanceKey.windowDoorInstallation => StageGuidanceContent(
+      title: l10n.guidanceWindowDoorInstallationTitle,
+      timing: l10n.guidanceWindowDoorInstallationTiming,
+      summary: l10n.guidanceWindowDoorInstallationSummary,
+      checks: _lines(l10n.guidanceWindowDoorInstallationChecks),
+      questions: _lines(l10n.guidanceWindowDoorInstallationQuestions),
+    ),
+    StageGuidanceKey.closedShellMoistureControl => StageGuidanceContent(
+      title: l10n.guidanceClosedShellMoistureControlTitle,
+      timing: l10n.guidanceClosedShellMoistureControlTiming,
+      summary: l10n.guidanceClosedShellMoistureControlSummary,
+      checks: _lines(l10n.guidanceClosedShellMoistureControlChecks),
+      questions: _lines(l10n.guidanceClosedShellMoistureControlQuestions),
+    ),
+    StageGuidanceKey.installationRoutesAndAccess => StageGuidanceContent(
+      title: l10n.guidanceInstallationRoutesAndAccessTitle,
+      timing: l10n.guidanceInstallationRoutesAndAccessTiming,
+      summary: l10n.guidanceInstallationRoutesAndAccessSummary,
+      checks: _lines(l10n.guidanceInstallationRoutesAndAccessChecks),
+      questions: _lines(l10n.guidanceInstallationRoutesAndAccessQuestions),
+    ),
+    StageGuidanceKey.installationTestsAndEvidence => StageGuidanceContent(
+      title: l10n.guidanceInstallationTestsAndEvidenceTitle,
+      timing: l10n.guidanceInstallationTestsAndEvidenceTiming,
+      summary: l10n.guidanceInstallationTestsAndEvidenceSummary,
+      checks: _lines(l10n.guidanceInstallationTestsAndEvidenceChecks),
+      questions: _lines(l10n.guidanceInstallationTestsAndEvidenceQuestions),
+    ),
+    StageGuidanceKey.finishSubstratesAndHeating => StageGuidanceContent(
+      title: l10n.guidanceFinishSubstratesAndHeatingTitle,
+      timing: l10n.guidanceFinishSubstratesAndHeatingTiming,
+      summary: l10n.guidanceFinishSubstratesAndHeatingSummary,
+      checks: _lines(l10n.guidanceFinishSubstratesAndHeatingChecks),
+      questions: _lines(l10n.guidanceFinishSubstratesAndHeatingQuestions),
+    ),
+    StageGuidanceKey.wetAreaWaterproofing => StageGuidanceContent(
+      title: l10n.guidanceWetAreaWaterproofingTitle,
+      timing: l10n.guidanceWetAreaWaterproofingTiming,
+      summary: l10n.guidanceWetAreaWaterproofingSummary,
+      checks: _lines(l10n.guidanceWetAreaWaterproofingChecks),
+      questions: _lines(l10n.guidanceWetAreaWaterproofingQuestions),
     ),
   };
 }
@@ -163,6 +219,28 @@ String stageGuidanceSourceTitle(
   StageGuidanceSourceKey.itbBelowGroundWaterproofing =>
     l10n.stageGuidanceSourceItbWaterproofing,
   StageGuidanceSourceKey.pmbcStandard => l10n.stageGuidanceSourcePmbcStandard,
+  StageGuidanceSourceKey.concreteExecutionStandard =>
+    l10n.stageGuidanceSourceConcreteExecution,
+  StageGuidanceSourceKey.masonryExecutionStandard =>
+    l10n.stageGuidanceSourceMasonryExecution,
+  StageGuidanceSourceKey.itbRoofCoverings =>
+    l10n.stageGuidanceSourceItbRoofCoverings,
+  StageGuidanceSourceKey.windowPerformanceStandard =>
+    l10n.stageGuidanceSourceWindowPerformance,
+  StageGuidanceSourceKey.itbWindowInstallation =>
+    l10n.stageGuidanceSourceItbWindowInstallation,
+  StageGuidanceSourceKey.waterInstallationStandard =>
+    l10n.stageGuidanceSourceWaterInstallation,
+  StageGuidanceSourceKey.surfaceHeatingInstallationStandard =>
+    l10n.stageGuidanceSourceSurfaceHeating,
+  StageGuidanceSourceKey.ventilationAcceptanceStandard =>
+    l10n.stageGuidanceSourceVentilationAcceptance,
+  StageGuidanceSourceKey.itbTileFinishes =>
+    l10n.stageGuidanceSourceItbTileFinishes,
+  StageGuidanceSourceKey.liquidWaterproofingStandard =>
+    l10n.stageGuidanceSourceLiquidWaterproofing,
+  StageGuidanceSourceKey.itbWetAreaWaterproofing =>
+    l10n.stageGuidanceSourceItbWetAreaWaterproofing,
   StageGuidanceSourceKey.dehnFoundationEarthing =>
     l10n.stageGuidanceSourceDehnEarthing,
   StageGuidanceSourceKey.hauffBuildingEntries =>
