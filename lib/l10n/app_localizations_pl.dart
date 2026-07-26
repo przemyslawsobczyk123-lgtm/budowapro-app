@@ -2721,21 +2721,21 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get receiptScanTitle => 'Skan paragonu';
+  String get receiptScanTitle => 'Skan dokumentu zakupu';
 
   @override
-  String get receiptScanIdleTitle => 'Paragon do odczytu';
+  String get receiptScanIdleTitle => 'Paragon lub faktura';
 
   @override
   String get receiptScanIdleMessage =>
-      'Wybierz skanowanie albo plik z paragonem.';
+      'Zeskanuj paragon lub jednostronicową fakturę albo wybierz plik.';
 
   @override
   String get receiptScanLocalOnly =>
       'Oryginał i OCR pozostają na tym urządzeniu.';
 
   @override
-  String get receiptScanAction => 'Zeskanuj paragon';
+  String get receiptScanAction => 'Zeskanuj dokument';
 
   @override
   String get receiptImportAction => 'Importuj obraz lub PDF';
@@ -2744,10 +2744,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get receiptCaptureProcessing => 'Zabezpieczanie oryginału…';
 
   @override
-  String get receiptRecognitionProcessing => 'Odczytywanie paragonu…';
+  String get receiptRecognitionProcessing => 'Odczytywanie dokumentu…';
 
   @override
-  String get receiptResultTitle => 'Odczyt z paragonu';
+  String get receiptResultTitle => 'Odczyt z dokumentu';
 
   @override
   String get receiptBudgetUnchangedTitle => 'Budżet bez zmian';
@@ -2766,7 +2766,19 @@ class AppLocalizationsPl extends AppLocalizations {
   String get receiptDocumentNumberLabel => 'Numer dokumentu';
 
   @override
-  String get receiptTotalLabel => 'Razem';
+  String get receiptTotalLabel => 'Razem na dokumencie';
+
+  @override
+  String get receiptItemsTotalLabel => 'Suma pozycji';
+
+  @override
+  String get receiptUseItemsTotalAction => 'Użyj sumy pozycji';
+
+  @override
+  String get receiptReplaceItemsAction => 'Zapisz jako jedną pozycję';
+
+  @override
+  String get receiptSingleItemDefaultName => 'Zakup z dokumentu';
 
   @override
   String get receiptVatLinesLabel => 'Odczytane linie VAT';
@@ -2788,7 +2800,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get receiptScannerUnavailableMessage =>
-      'Możesz zaimportować zdjęcie paragonu albo PDF z pamięci telefonu.';
+      'Możesz zaimportować zdjęcie dokumentu albo PDF z pamięci telefonu.';
 
   @override
   String get receiptUnsupportedTitle => 'Nieobsługiwany plik';
@@ -2812,7 +2824,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Sprawdź wolne miejsce i spróbuj ponownie.';
 
   @override
-  String get receiptRecognitionErrorTitle => 'Nie udało się odczytać paragonu';
+  String get receiptRecognitionErrorTitle => 'Nie udało się odczytać dokumentu';
 
   @override
   String get receiptRecognitionErrorMessage =>
@@ -2839,6 +2851,31 @@ class AppLocalizationsPl extends AppLocalizations {
   String get receiptConfirmFieldTooltip => 'Potwierdź odczytaną wartość';
 
   @override
+  String get receiptSellerRequiredError => 'Wpisz nazwę sprzedawcy.';
+
+  @override
+  String get receiptSellerInvalidError =>
+      'Nazwa sprzedawcy jest nieprawidłowa.';
+
+  @override
+  String get receiptDateRequiredError => 'Wpisz datę z dokumentu.';
+
+  @override
+  String get receiptDateInvalidError =>
+      'Wpisz prawidłową datę, np. 25.07.2026.';
+
+  @override
+  String get receiptDocumentNumberInvalidError =>
+      'Numer dokumentu jest za długi lub nieprawidłowy.';
+
+  @override
+  String get receiptTotalRequiredError =>
+      'Wpisz kwotę razem albo użyj sumy pozycji.';
+
+  @override
+  String get receiptTotalInvalidError => 'Wpisz dodatnią kwotę, np. 19,40.';
+
+  @override
   String get receiptItemVatNeedsReview =>
       'OCR nie ustala pewnej stawki VAT. Wybierz stawkę albo potwierdź widoczną wartość.';
 
@@ -2854,6 +2891,16 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get receiptGrossAmountLabel => 'Kwota brutto';
+
+  @override
+  String get receiptItemNameRequiredError => 'Wpisz nazwę pozycji.';
+
+  @override
+  String get receiptItemNameInvalidError =>
+      'Nazwa pozycji jest za długa lub nieprawidłowa.';
+
+  @override
+  String get receiptItemAmountInvalidError => 'Wpisz dodatnią kwotę brutto.';
 
   @override
   String get receiptVatRateLabel => 'VAT';
@@ -2875,10 +2922,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get receiptValidationMessage =>
-      'Uzupełnij wymagane pola, popraw kwoty i potwierdź niepewne odczyty.';
+      'Popraw pola oznaczone błędem i potwierdź niepewne odczyty oraz stawki VAT.';
 
   @override
-  String get receiptTotalMismatchTitle => 'Suma pozycji różni się od paragonu';
+  String get receiptTotalMismatchTitle => 'Suma pozycji różni się od dokumentu';
 
   @override
   String get receiptTotalMismatchMessage =>
@@ -2888,7 +2935,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get receiptTotalMismatchAction => 'Potwierdzam różnicę';
 
   @override
-  String get receiptDuplicateTitle => 'Ten paragon może już być zapisany';
+  String get receiptDuplicateTitle => 'Ten dokument może już być zapisany';
 
   @override
   String get receiptDuplicateMessage =>
@@ -2921,7 +2968,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String receiptSavedMessage(int count) {
-    return 'Liczba zapisanych szkiców kosztów: $count. Utworzono też jeden dokument paragonu. Budżet zmieni się dopiero po zatwierdzeniu kosztów.';
+    return 'Liczba zapisanych szkiców kosztów: $count. Utworzono też jeden dokument zakupu. Budżet zmieni się dopiero po zatwierdzeniu kosztów.';
   }
 
   @override

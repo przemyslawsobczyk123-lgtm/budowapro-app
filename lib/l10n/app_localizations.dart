@@ -5035,19 +5035,19 @@ abstract class AppLocalizations {
   /// No description provided for @receiptScanTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Skan paragonu'**
+  /// **'Skan dokumentu zakupu'**
   String get receiptScanTitle;
 
   /// No description provided for @receiptScanIdleTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Paragon do odczytu'**
+  /// **'Paragon lub faktura'**
   String get receiptScanIdleTitle;
 
   /// No description provided for @receiptScanIdleMessage.
   ///
   /// In pl, this message translates to:
-  /// **'Wybierz skanowanie albo plik z paragonem.'**
+  /// **'Zeskanuj paragon lub jednostronicową fakturę albo wybierz plik.'**
   String get receiptScanIdleMessage;
 
   /// No description provided for @receiptScanLocalOnly.
@@ -5059,7 +5059,7 @@ abstract class AppLocalizations {
   /// No description provided for @receiptScanAction.
   ///
   /// In pl, this message translates to:
-  /// **'Zeskanuj paragon'**
+  /// **'Zeskanuj dokument'**
   String get receiptScanAction;
 
   /// No description provided for @receiptImportAction.
@@ -5077,13 +5077,13 @@ abstract class AppLocalizations {
   /// No description provided for @receiptRecognitionProcessing.
   ///
   /// In pl, this message translates to:
-  /// **'Odczytywanie paragonu…'**
+  /// **'Odczytywanie dokumentu…'**
   String get receiptRecognitionProcessing;
 
   /// No description provided for @receiptResultTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Odczyt z paragonu'**
+  /// **'Odczyt z dokumentu'**
   String get receiptResultTitle;
 
   /// No description provided for @receiptBudgetUnchangedTitle.
@@ -5119,8 +5119,32 @@ abstract class AppLocalizations {
   /// No description provided for @receiptTotalLabel.
   ///
   /// In pl, this message translates to:
-  /// **'Razem'**
+  /// **'Razem na dokumencie'**
   String get receiptTotalLabel;
+
+  /// No description provided for @receiptItemsTotalLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Suma pozycji'**
+  String get receiptItemsTotalLabel;
+
+  /// No description provided for @receiptUseItemsTotalAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Użyj sumy pozycji'**
+  String get receiptUseItemsTotalAction;
+
+  /// No description provided for @receiptReplaceItemsAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz jako jedną pozycję'**
+  String get receiptReplaceItemsAction;
+
+  /// No description provided for @receiptSingleItemDefaultName.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zakup z dokumentu'**
+  String get receiptSingleItemDefaultName;
 
   /// No description provided for @receiptVatLinesLabel.
   ///
@@ -5161,7 +5185,7 @@ abstract class AppLocalizations {
   /// No description provided for @receiptScannerUnavailableMessage.
   ///
   /// In pl, this message translates to:
-  /// **'Możesz zaimportować zdjęcie paragonu albo PDF z pamięci telefonu.'**
+  /// **'Możesz zaimportować zdjęcie dokumentu albo PDF z pamięci telefonu.'**
   String get receiptScannerUnavailableMessage;
 
   /// No description provided for @receiptUnsupportedTitle.
@@ -5203,7 +5227,7 @@ abstract class AppLocalizations {
   /// No description provided for @receiptRecognitionErrorTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Nie udało się odczytać paragonu'**
+  /// **'Nie udało się odczytać dokumentu'**
   String get receiptRecognitionErrorTitle;
 
   /// No description provided for @receiptRecognitionErrorMessage.
@@ -5248,6 +5272,48 @@ abstract class AppLocalizations {
   /// **'Potwierdź odczytaną wartość'**
   String get receiptConfirmFieldTooltip;
 
+  /// No description provided for @receiptSellerRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz nazwę sprzedawcy.'**
+  String get receiptSellerRequiredError;
+
+  /// No description provided for @receiptSellerInvalidError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa sprzedawcy jest nieprawidłowa.'**
+  String get receiptSellerInvalidError;
+
+  /// No description provided for @receiptDateRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz datę z dokumentu.'**
+  String get receiptDateRequiredError;
+
+  /// No description provided for @receiptDateInvalidError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz prawidłową datę, np. 25.07.2026.'**
+  String get receiptDateInvalidError;
+
+  /// No description provided for @receiptDocumentNumberInvalidError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Numer dokumentu jest za długi lub nieprawidłowy.'**
+  String get receiptDocumentNumberInvalidError;
+
+  /// No description provided for @receiptTotalRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz kwotę razem albo użyj sumy pozycji.'**
+  String get receiptTotalRequiredError;
+
+  /// No description provided for @receiptTotalInvalidError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz dodatnią kwotę, np. 19,40.'**
+  String get receiptTotalInvalidError;
+
   /// No description provided for @receiptItemVatNeedsReview.
   ///
   /// In pl, this message translates to:
@@ -5277,6 +5343,24 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Kwota brutto'**
   String get receiptGrossAmountLabel;
+
+  /// No description provided for @receiptItemNameRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz nazwę pozycji.'**
+  String get receiptItemNameRequiredError;
+
+  /// No description provided for @receiptItemNameInvalidError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa pozycji jest za długa lub nieprawidłowa.'**
+  String get receiptItemNameInvalidError;
+
+  /// No description provided for @receiptItemAmountInvalidError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz dodatnią kwotę brutto.'**
+  String get receiptItemAmountInvalidError;
 
   /// No description provided for @receiptVatRateLabel.
   ///
@@ -5317,13 +5401,13 @@ abstract class AppLocalizations {
   /// No description provided for @receiptValidationMessage.
   ///
   /// In pl, this message translates to:
-  /// **'Uzupełnij wymagane pola, popraw kwoty i potwierdź niepewne odczyty.'**
+  /// **'Popraw pola oznaczone błędem i potwierdź niepewne odczyty oraz stawki VAT.'**
   String get receiptValidationMessage;
 
   /// No description provided for @receiptTotalMismatchTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Suma pozycji różni się od paragonu'**
+  /// **'Suma pozycji różni się od dokumentu'**
   String get receiptTotalMismatchTitle;
 
   /// No description provided for @receiptTotalMismatchMessage.
@@ -5341,7 +5425,7 @@ abstract class AppLocalizations {
   /// No description provided for @receiptDuplicateTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Ten paragon może już być zapisany'**
+  /// **'Ten dokument może już być zapisany'**
   String get receiptDuplicateTitle;
 
   /// No description provided for @receiptDuplicateMessage.
@@ -5395,7 +5479,7 @@ abstract class AppLocalizations {
   /// No description provided for @receiptSavedMessage.
   ///
   /// In pl, this message translates to:
-  /// **'Liczba zapisanych szkiców kosztów: {count}. Utworzono też jeden dokument paragonu. Budżet zmieni się dopiero po zatwierdzeniu kosztów.'**
+  /// **'Liczba zapisanych szkiców kosztów: {count}. Utworzono też jeden dokument zakupu. Budżet zmieni się dopiero po zatwierdzeniu kosztów.'**
   String receiptSavedMessage(int count);
 
   /// No description provided for @receiptOpenDraftsAction.

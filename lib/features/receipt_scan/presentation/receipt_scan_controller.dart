@@ -163,6 +163,18 @@ final class ReceiptScanController extends ChangeNotifier {
     );
   }
 
+  void useItemTotalAsDocumentTotal() {
+    final draft = _state.reviewDraft;
+    if (_state.status != ReceiptScanViewStatus.result || draft == null) return;
+    _publishReview(draft.useItemTotalAsDocumentTotal());
+  }
+
+  void replaceItemsWithDocumentTotal({required String name}) {
+    final draft = _state.reviewDraft;
+    if (_state.status != ReceiptScanViewStatus.result || draft == null) return;
+    _publishReview(draft.replaceItemsWithDocumentTotal(name: name));
+  }
+
   void removeItem(String itemId) {
     final draft = _state.reviewDraft;
     if (_state.status != ReceiptScanViewStatus.result || draft == null) return;

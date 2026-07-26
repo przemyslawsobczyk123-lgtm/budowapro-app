@@ -22,7 +22,7 @@ void main() {
 
     expect(find.byKey(const ValueKey('receiptScanIdle')), findsOneWidget);
     expect(gateway.captureCalls, 0);
-    expect(find.text('Zeskanuj paragon'), findsOneWidget);
+    expect(find.text('Zeskanuj dokument'), findsOneWidget);
     expect(find.text('Importuj obraz lub PDF'), findsOneWidget);
   });
 
@@ -33,7 +33,9 @@ void main() {
     final gateway = _FakeGateway(captureFuture: capture.future);
     await tester.pumpWidget(_app(gateway));
 
-    await tester.tap(find.byKey(const ValueKey('scanReceiptButton')));
+    final scanButton = find.byKey(const ValueKey('scanReceiptButton'));
+    await tester.scrollUntilVisible(scanButton, 200);
+    await tester.tap(scanButton);
     await tester.pump();
 
     expect(find.byKey(const ValueKey('receiptScanProcessing')), findsOneWidget);
@@ -94,7 +96,9 @@ void main() {
     );
     await tester.pumpWidget(_app(gateway, textScaler: TextScaler.linear(2)));
 
-    await tester.tap(find.byKey(const ValueKey('scanReceiptButton')));
+    final scanButton = find.byKey(const ValueKey('scanReceiptButton'));
+    await tester.scrollUntilVisible(scanButton, 200);
+    await tester.tap(scanButton);
     await tester.pumpAndSettle();
     await _scrollReceiptResultTo(
       tester,
@@ -296,6 +300,81 @@ void main() {
     );
     expect(find.byKey(const ValueKey('receiptItem-ocr-item-2')), findsNothing);
   });
+
+  testWidgets('can copy the item sum into a missing document total', (
+    tester,
+  ) async {
+    final gateway = _FakeGateway(
+      captureResult: _source,
+      recognitionResult: ReceiptScanSession(
+        source: _source,
+        candidates: ReceiptOcrCandidates(
+          recognizedText: RecognizedReceiptText.fromRaw('PARAGON'),
+          seller: ReceiptOcrField(value: 'MARKET', confidence: 0.95),
+          dateText: ReceiptOcrField(value: '25.07.2026', confidence: 0.95),
+          itemLines: <ReceiptOcrField>[
+            ReceiptOcrField(value: 'Klej 5,99', confidence: 0.95),
+            ReceiptOcrField(value: 'Grunt 13,41', confidence: 0.95),
+          ],
+        ),
+      ),
+    );
+    await tester.pumpWidget(_app(gateway));
+
+    await tester.tap(find.byKey(const ValueKey('scanReceiptButton')));
+    await tester.pumpAndSettle();
+
+    final action = find.byKey(const ValueKey('useReceiptItemsTotalButton'));
+    await _scrollReceiptResultTo(tester, action);
+    expect(find.text('Suma pozycji'), findsOneWidget);
+    expect(find.text('19,40 PLN'), findsOneWidget);
+    await tester.tap(action);
+    await tester.pump();
+
+    await _scrollReceiptResultToStart(tester);
+    final totalField = find.byKey(const ValueKey('receiptTotalInput'));
+    expect(_editableText(tester, totalField), '19,40');
+  });
+
+  testWidgets('can replace unreliable OCR rows with one document cost', (
+    tester,
+  ) async {
+    final gateway = _FakeGateway(
+      captureResult: _source,
+      recognitionResult: _reviewableSession(),
+    );
+    await tester.pumpWidget(_app(gateway));
+
+    await tester.tap(find.byKey(const ValueKey('scanReceiptButton')));
+    await tester.pumpAndSettle();
+
+    final action = find.byKey(
+      const ValueKey('replaceReceiptItemsWithDocumentTotalButton'),
+    );
+    await _scrollReceiptResultTo(tester, action);
+    await tester.tap(action);
+    await tester.pump();
+
+    await _scrollReceiptResultToStart(tester);
+    final singleItem = find.byKey(const ValueKey('receiptItem-review-item-3'));
+    await _scrollReceiptResultTo(tester, singleItem);
+    expect(find.byKey(const ValueKey('receiptItem-ocr-item-1')), findsNothing);
+    expect(singleItem, findsOneWidget);
+    expect(
+      _editableText(
+        tester,
+        find.byKey(const ValueKey('receiptItemName-review-item-3')),
+      ),
+      'Zakup z dokumentu',
+    );
+    expect(
+      _editableText(
+        tester,
+        find.byKey(const ValueKey('receiptItemAmount-review-item-3')),
+      ),
+      '50,00',
+    );
+  });
 }
 
 Future<void> _confirmAllReceiptItems(WidgetTester tester) async {
@@ -316,6 +395,20 @@ Future<void> _scrollReceiptResultTo(WidgetTester tester, Finder target) async {
         .descendant(of: result, matching: find.byType(Scrollable))
         .first,
   );
+}
+
+Future<void> _scrollReceiptResultToStart(WidgetTester tester) async {
+  final result = find.byKey(const ValueKey('receiptScanResult'));
+  final scrollable = find
+      .descendant(of: result, matching: find.byType(Scrollable))
+      .first;
+  for (var attempt = 0; attempt < 8; attempt += 1) {
+    if (find.byKey(const ValueKey('receiptTotalInput')).evaluate().isNotEmpty) {
+      return;
+    }
+    await tester.drag(scrollable, const Offset(0, 500));
+    await tester.pump();
+  }
 }
 
 String _editableText(WidgetTester tester, Finder field) {

@@ -141,16 +141,14 @@ final class ReceiptOcrCandidateParser {
 
     return ReceiptOcrCandidates(
       recognizedText: recognizedText,
-      seller: _firstFieldWhere(lines, _isSellerCandidate),
-      dateText: _firstMatch(lines, _datePattern),
+      seller: _seller(lines),
+      dateText: _date(lines),
       documentNumber: _documentNumber(lines),
       totalText: _total(lines),
       vatLines: lines
           .where((line) => _isVatLine(line.text))
           .map(_wholeLineField),
-      itemLines: lines
-          .where((line) => _isItemLine(line.text))
-          .map(_wholeLineField),
+      itemLines: _itemLines(lines),
     );
   }
 }
@@ -162,6 +160,10 @@ final RegExp _datePattern = RegExp(
 );
 final RegExp _documentNumberPattern = RegExp(
   r'^(?:NR|NO|NUMER(?:\s+DOKUMENTU)?)\s*[:.#-]?\s*(.+)$',
+  caseSensitive: false,
+);
+final RegExp _invoiceNumberPattern = RegExp(
+  r'^FAKTURA(?:\s+VAT)?\s*(?:NR|NO|NUMER)?\s*[:.#-]?\s*(.+)$',
   caseSensitive: false,
 );
 final RegExp _moneyPattern = RegExp(
@@ -189,41 +191,112 @@ const List<String> _sellerExcludedMarkers = <String>[
   'DO ZAP',
   'KARTA',
   'GOTÓW',
+  'SPRZEDAWCA',
+  'NABYWCA',
+  'KLIENT',
+  'ADRES',
+  'E-MAIL',
+  'EMAIL',
+  'WWW.',
+  'TEL.',
 ];
 
-ReceiptOcrField? _firstFieldWhere(
-  List<RecognizedReceiptLine> lines,
-  bool Function(String value) predicate,
-) {
-  for (final line in lines) {
-    if (predicate(line.text)) return _wholeLineField(line);
+ReceiptOcrField? _seller(List<RecognizedReceiptLine> lines) {
+  RecognizedReceiptLine? best;
+  var bestScore = -1000;
+  final limit = lines.length < 24 ? lines.length : 24;
+  for (var index = 0; index < limit; index += 1) {
+    final line = lines[index];
+    if (!_isSellerCandidate(line.text)) continue;
+    final score = _sellerScore(line.text);
+    if (score > bestScore) {
+      best = line;
+      bestScore = score;
+    }
   }
-  return null;
+  return best == null ? null : _wholeLineField(best);
+}
+
+int _sellerScore(String value) {
+  final upper = value.toUpperCase();
+  var score = 0;
+  if (RegExp(r'\b(?:SP\.?\s*Z\s*O\.?O\.?|S\.?A\.?)\b').hasMatch(upper)) {
+    score += 8;
+  }
+  if (value == upper && _letter.allMatches(value).length >= 4) {
+    score += 3;
+  }
+  if (upper.contains('SKLEP') || upper.contains('MARKET')) score += 2;
+  if (RegExp(r'\bUL\.|\bAL\.|\bOS\.').hasMatch(upper)) score -= 8;
+  if (RegExp(r'\b\d{2}-\d{3}\b').hasMatch(value)) score -= 8;
+  if (value.contains('@') || upper.contains('HTTP')) score -= 8;
+  if (value.endsWith(':')) score -= 5;
+  return score;
 }
 
 ReceiptOcrField _wholeLineField(RecognizedReceiptLine line) {
   return ReceiptOcrField(value: line.text, confidence: line.confidence);
 }
 
-ReceiptOcrField? _firstMatch(
-  List<RecognizedReceiptLine> lines,
-  RegExp pattern,
-) {
+ReceiptOcrField? _date(List<RecognizedReceiptLine> lines) {
+  RecognizedReceiptLine? bestLine;
+  String? bestValue;
+  var bestScore = -1000;
   for (final line in lines) {
-    final match = pattern.firstMatch(line.text);
-    final value = match?.group(0);
-    if (value != null) {
-      return ReceiptOcrField(value: value, confidence: line.confidence);
+    for (final match in _datePattern.allMatches(line.text)) {
+      final value = match.group(0);
+      if (value == null || !_isPlausibleDate(value)) continue;
+      final upper = line.text.toUpperCase();
+      var score = 0;
+      if (upper.contains('DATA WYSTAWIENIA')) {
+        score += 12;
+      } else if (upper.contains('DATA')) {
+        score += 6;
+      }
+      if (upper.contains('FAKTURA NR') ||
+          upper.contains('NUMER') ||
+          upper.contains('NR SYS')) {
+        score -= 10;
+      }
+      if (RegExp(r'^\d{4}').hasMatch(value)) score += 2;
+      if (score > bestScore) {
+        bestLine = line;
+        bestValue = value;
+        bestScore = score;
+      }
     }
   }
-  return null;
+  if (bestLine == null || bestValue == null) return null;
+  return ReceiptOcrField(value: bestValue, confidence: bestLine.confidence);
+}
+
+bool _isPlausibleDate(String value) {
+  final parts = value.split(RegExp(r'[-./]'));
+  if (parts.length != 3) return false;
+  final yearFirst = parts[0].length == 4;
+  final year = int.tryParse(yearFirst ? parts[0] : parts[2]);
+  final month = int.tryParse(parts[1]);
+  final day = int.tryParse(yearFirst ? parts[2] : parts[0]);
+  if (year == null ||
+      month == null ||
+      day == null ||
+      year < 1990 ||
+      year > 2100) {
+    return false;
+  }
+  final date = DateTime.utc(year, month, day);
+  return date.year == year && date.month == month && date.day == day;
 }
 
 ReceiptOcrField? _documentNumber(List<RecognizedReceiptLine> lines) {
   for (final line in lines) {
-    final match = _documentNumberPattern.firstMatch(line.text);
+    final match =
+        _invoiceNumberPattern.firstMatch(line.text) ??
+        _documentNumberPattern.firstMatch(line.text);
     final value = match?.group(1)?.trim();
-    if (value != null && value.isNotEmpty) {
+    if (value != null &&
+        value.isNotEmpty &&
+        !value.toUpperCase().startsWith('SYS')) {
       return ReceiptOcrField(value: value, confidence: line.confidence);
     }
   }
@@ -231,25 +304,65 @@ ReceiptOcrField? _documentNumber(List<RecognizedReceiptLine> lines) {
 }
 
 ReceiptOcrField? _total(List<RecognizedReceiptLine> lines) {
-  for (final line in lines.reversed) {
+  ReceiptOcrField? best;
+  var bestScore = -1;
+  for (var index = 0; index < lines.length; index += 1) {
+    final line = lines[index];
     final upper = line.text.toUpperCase();
-    if (!_totalMarkers.any(upper.contains)) continue;
+    final score = _totalMarkerScore(upper);
+    if (score == null || score < bestScore) continue;
     final matches = _moneyPattern.allMatches(line.text).toList(growable: false);
     final value = matches.lastOrNull?.group(0);
     if (value != null) {
-      return ReceiptOcrField(value: value, confidence: line.confidence);
+      best = ReceiptOcrField(value: value, confidence: line.confidence);
+      bestScore = score;
+      continue;
+    }
+    final followingLimit = index + 3 < lines.length ? index + 3 : lines.length;
+    for (
+      var followingIndex = index + 1;
+      followingIndex < followingLimit;
+      followingIndex += 1
+    ) {
+      final following = lines[followingIndex];
+      final followingMatches = _moneyPattern
+          .allMatches(following.text)
+          .toList(growable: false);
+      final followingValue = followingMatches.lastOrNull?.group(0);
+      if (followingValue != null) {
+        best = ReceiptOcrField(
+          value: followingValue,
+          confidence: _minimumConfidence(line, following),
+        );
+        bestScore = score;
+        break;
+      }
     }
   }
-  return null;
+  return best;
 }
 
-const List<String> _totalMarkers = <String>[
-  'DO ZAPŁATY',
-  'DO ZAPLATY',
-  'RAZEM',
-  'TOTAL',
-  'SUMA',
-];
+int? _totalMarkerScore(String upper) {
+  if (upper.contains('SUMA PTU') || upper.contains('SUMA VAT')) return null;
+  if (upper.contains('CAŁKOWITA WARTOŚĆ BRUTTO') ||
+      upper.contains('CALKOWITA WARTOSC BRUTTO')) {
+    return 100;
+  }
+  if (upper.contains('RAZEM') ||
+      upper.contains('SUMA PLN') ||
+      upper.contains('TOTAL')) {
+    return 95;
+  }
+  if (upper.contains('WARTOŚĆ BRUTTO') || upper.contains('WARTOSC BRUTTO')) {
+    return 90;
+  }
+  if (upper.contains('PODSUMA')) return 40;
+  if (upper.contains('DO ZAPŁATY') || upper.contains('DO ZAPLATY')) {
+    return 70;
+  }
+  if (upper.contains('SUMA')) return 80;
+  return null;
+}
 
 bool _isVatLine(String line) {
   final upper = line.toUpperCase();
@@ -257,9 +370,72 @@ bool _isVatLine(String line) {
 }
 
 bool _isItemLine(String line) {
-  if (!_letter.hasMatch(line) || !_moneyPattern.hasMatch(line)) return false;
+  if (!_letter.hasMatch(line) ||
+      !_moneyPattern.hasMatch(line) ||
+      _isStandaloneAmountLine(line)) {
+    return false;
+  }
   final upper = line.toUpperCase();
   return !_itemExcludedMarkers.any(upper.contains);
+}
+
+bool _isStandaloneAmountLine(String value) {
+  final withoutAmounts = value.replaceAll(_moneyPattern, '').trim();
+  return RegExp(
+    r'^(?:PLN|ZŁ|ZL)?\s*[A-Z]?$',
+    caseSensitive: false,
+  ).hasMatch(withoutAmounts);
+}
+
+Iterable<ReceiptOcrField> _itemLines(List<RecognizedReceiptLine> lines) sync* {
+  for (var index = 0; index < lines.length; index += 1) {
+    final line = lines[index];
+    if (index > 0 &&
+        _looksLikeQuantityPriceLine(line.text) &&
+        _isProductNameOnly(lines[index - 1].text)) {
+      final amount = _moneyPattern
+          .allMatches(line.text)
+          .toList(growable: false)
+          .lastOrNull
+          ?.group(0);
+      if (amount != null) {
+        yield ReceiptOcrField(
+          value: '${lines[index - 1].text} $amount',
+          confidence: _minimumConfidence(lines[index - 1], line),
+        );
+        continue;
+      }
+    }
+    if (_isItemLine(line.text) && !_looksLikeQuantityPriceLine(line.text)) {
+      yield _wholeLineField(line);
+    }
+  }
+}
+
+bool _looksLikeQuantityPriceLine(String value) {
+  final amounts = _moneyPattern.allMatches(value).length;
+  return amounts >= 2 &&
+      (RegExp(r'^\s*\d+(?:[,.]\d+)?\s*[xX]').hasMatch(value) ||
+          !_letter.hasMatch(value.replaceAll(RegExp(r'[A-Za-z]$'), '')));
+}
+
+bool _isProductNameOnly(String value) {
+  if (!_letter.hasMatch(value) || _moneyPattern.hasMatch(value)) return false;
+  final upper = value.toUpperCase();
+  return !_itemExcludedMarkers.any(upper.contains);
+}
+
+double? _minimumConfidence(
+  RecognizedReceiptLine first,
+  RecognizedReceiptLine second,
+) {
+  final firstConfidence = first.confidence;
+  final secondConfidence = second.confidence;
+  if (firstConfidence == null) return secondConfidence;
+  if (secondConfidence == null) return firstConfidence;
+  return firstConfidence < secondConfidence
+      ? firstConfidence
+      : secondConfidence;
 }
 
 const List<String> _itemExcludedMarkers = <String>[
@@ -281,4 +457,8 @@ const List<String> _itemExcludedMarkers = <String>[
   'PLATNO',
   'RABAT',
   'PODSUMA',
+  'SPRZEDAŻ',
+  'SPRZEDAZ',
+  'SPRZEDAWCA',
+  'NABYWCA',
 ];

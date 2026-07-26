@@ -309,6 +309,11 @@ class _ReceiptScanResult extends StatelessWidget {
                 fieldKey: const ValueKey('receiptSellerInput'),
                 label: l10n.receiptSellerLabel,
                 field: draft.seller,
+                errorText: _fieldError(
+                  l10n,
+                  draft,
+                  ReceiptReviewFieldKey.seller,
+                ),
                 onChanged: (value) =>
                     controller.updateField(ReceiptReviewFieldKey.seller, value),
                 onConfirm: () =>
@@ -319,6 +324,7 @@ class _ReceiptScanResult extends StatelessWidget {
                 fieldKey: const ValueKey('receiptDateInput'),
                 label: l10n.receiptDateLabel,
                 field: draft.date,
+                errorText: _fieldError(l10n, draft, ReceiptReviewFieldKey.date),
                 keyboardType: TextInputType.datetime,
                 onChanged: (value) =>
                     controller.updateField(ReceiptReviewFieldKey.date, value),
@@ -330,6 +336,11 @@ class _ReceiptScanResult extends StatelessWidget {
                 fieldKey: const ValueKey('receiptDocumentNumberInput'),
                 label: l10n.receiptDocumentNumberLabel,
                 field: draft.documentNumber,
+                errorText: _fieldError(
+                  l10n,
+                  draft,
+                  ReceiptReviewFieldKey.documentNumber,
+                ),
                 onChanged: (value) => controller.updateField(
                   ReceiptReviewFieldKey.documentNumber,
                   value,
@@ -343,6 +354,11 @@ class _ReceiptScanResult extends StatelessWidget {
                 fieldKey: const ValueKey('receiptTotalInput'),
                 label: '${l10n.receiptTotalLabel} ($currencyCode)',
                 field: draft.total,
+                errorText: _fieldError(
+                  l10n,
+                  draft,
+                  ReceiptReviewFieldKey.total,
+                ),
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
@@ -393,6 +409,14 @@ class _ReceiptScanResult extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
           sliver: SliverList(
             delegate: SliverChildListDelegate(<Widget>[
+              _ReceiptTotalsSummary(
+                draft: draft,
+                currencyCode: currencyCode,
+                onUseItemsTotal: controller.useItemTotalAsDocumentTotal,
+                onReplaceItems: () => controller.replaceItemsWithDocumentTotal(
+                  name: l10n.receiptSingleItemDefaultName,
+                ),
+              ),
               if (draft.hasTotalMismatch)
                 _ReceiptTotalMismatchNotice(
                   accepted: draft.totalMismatchAccepted,
@@ -499,6 +523,7 @@ class _ReceiptReviewTextField extends StatelessWidget {
     required this.onChanged,
     required this.onConfirm,
     this.keyboardType,
+    this.errorText,
   });
 
   final Key fieldKey;
@@ -507,6 +532,7 @@ class _ReceiptReviewTextField extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final VoidCallback onConfirm;
   final TextInputType? keyboardType;
+  final String? errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -525,6 +551,8 @@ class _ReceiptReviewTextField extends StatelessWidget {
             ? l10n.receiptConfidenceNeedsReview
             : null,
         helperMaxLines: 2,
+        errorText: errorText,
+        errorMaxLines: 2,
         suffixIcon: field.requiresReview
             ? IconButton(
                 tooltip: l10n.receiptConfirmFieldTooltip,
@@ -624,7 +652,11 @@ class _ReceiptItemEditorState extends State<_ReceiptItemEditor> {
               key: ValueKey('receiptItemName-${item.id}'),
               controller: _nameController,
               onChanged: widget.onNameChanged,
-              decoration: InputDecoration(labelText: l10n.receiptItemNameLabel),
+              decoration: InputDecoration(
+                labelText: l10n.receiptItemNameLabel,
+                errorText: _itemNameError(l10n, item),
+                errorMaxLines: 2,
+              ),
             ),
             const SizedBox(height: 10),
             LayoutBuilder(
@@ -720,6 +752,8 @@ class _ReceiptItemEditorState extends State<_ReceiptItemEditor> {
       onChanged: widget.onAmountChanged,
       decoration: InputDecoration(
         labelText: '${l10n.receiptGrossAmountLabel} (${widget.currencyCode})',
+        errorText: _itemAmountError(l10n, item),
+        errorMaxLines: 2,
       ),
     );
   }
@@ -748,6 +782,81 @@ class _ReceiptItemEditorState extends State<_ReceiptItemEditor> {
     controller.value = TextEditingValue(
       text: value,
       selection: TextSelection.collapsed(offset: value.length),
+    );
+  }
+}
+
+class _ReceiptTotalsSummary extends StatelessWidget {
+  const _ReceiptTotalsSummary({
+    required this.draft,
+    required this.currencyCode,
+    required this.onUseItemsTotal,
+    required this.onReplaceItems,
+  });
+
+  final ReceiptReviewDraft draft;
+  final String currencyCode;
+  final VoidCallback onUseItemsTotal;
+  final VoidCallback onReplaceItems;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final itemTotal = draft.itemTotalMinorUnits;
+    final documentTotal = draft.receiptTotalMinorUnits;
+    final canUseItemsTotal =
+        itemTotal != null && itemTotal > 0 && itemTotal != documentTotal;
+    final canReplaceItems =
+        documentTotal != null &&
+        documentTotal > 0 &&
+        (draft.items.length != 1 ||
+            itemTotal != documentTotal ||
+            draft.items.single.name.trim().isEmpty);
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 4, bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Divider(),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.receiptItemsTotalLabel,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+              Text(
+                itemTotal == null
+                    ? '—'
+                    : '${formatReceiptMinorUnits(itemTotal)} $currencyCode',
+                key: const ValueKey('receiptItemsTotalValue'),
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ],
+          ),
+          if (canUseItemsTotal) ...[
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              key: const ValueKey('useReceiptItemsTotalButton'),
+              onPressed: onUseItemsTotal,
+              icon: const Icon(Icons.calculate_outlined),
+              label: Text(l10n.receiptUseItemsTotalAction),
+            ),
+          ],
+          if (canReplaceItems) ...[
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              key: const ValueKey('replaceReceiptItemsWithDocumentTotalButton'),
+              onPressed: onReplaceItems,
+              icon: const Icon(Icons.receipt_long_outlined),
+              label: Text(l10n.receiptReplaceItemsAction),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -1224,6 +1333,51 @@ class _BudgetUnchangedNotice extends StatelessWidget {
       ),
     );
   }
+}
+
+String? _fieldError(
+  AppLocalizations l10n,
+  ReceiptReviewDraft draft,
+  ReceiptReviewFieldKey key,
+) {
+  final issues = draft.validationIssues;
+  return switch (key) {
+    ReceiptReviewFieldKey.seller =>
+      issues.contains(ReceiptReviewIssue.sellerRequired)
+          ? l10n.receiptSellerRequiredError
+          : issues.contains(ReceiptReviewIssue.invalidSeller)
+          ? l10n.receiptSellerInvalidError
+          : null,
+    ReceiptReviewFieldKey.date =>
+      issues.contains(ReceiptReviewIssue.dateRequired)
+          ? l10n.receiptDateRequiredError
+          : issues.contains(ReceiptReviewIssue.invalidDate)
+          ? l10n.receiptDateInvalidError
+          : null,
+    ReceiptReviewFieldKey.documentNumber =>
+      issues.contains(ReceiptReviewIssue.invalidDocumentNumber)
+          ? l10n.receiptDocumentNumberInvalidError
+          : null,
+    ReceiptReviewFieldKey.total =>
+      issues.contains(ReceiptReviewIssue.totalRequired)
+          ? l10n.receiptTotalRequiredError
+          : issues.contains(ReceiptReviewIssue.invalidTotal)
+          ? l10n.receiptTotalInvalidError
+          : null,
+  };
+}
+
+String? _itemNameError(AppLocalizations l10n, ReceiptReviewItem item) {
+  if (item.name.trim().isEmpty) return l10n.receiptItemNameRequiredError;
+  if (!isValidReviewedReceiptLineName(item.name)) {
+    return l10n.receiptItemNameInvalidError;
+  }
+  return null;
+}
+
+String? _itemAmountError(AppLocalizations l10n, ReceiptReviewItem item) {
+  final amount = parseReceiptMinorUnits(item.grossAmountText);
+  return (amount ?? 0) <= 0 ? l10n.receiptItemAmountInvalidError : null;
 }
 
 String _vatLabel(VatRate rate) => switch (rate) {

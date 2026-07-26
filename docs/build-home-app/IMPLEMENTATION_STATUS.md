@@ -1,6 +1,6 @@
 # BudowaPRO - implementation status
 
-Last updated: 2026-07-25
+Last updated: 2026-07-26
 
 ## Current release
 
@@ -340,6 +340,17 @@ Last updated: 2026-07-25
 - Item cards use a lazy sliver list up to the 240-position boundary. Widget coverage includes a 320 px viewport at
   200% text scaling, low-confidence and VAT confirmation, explicit save, duplicate override, merge refresh and saved
   state. Repository coverage proves multi-line atomicity, duplicate behavior and rollback.
+- Real-world scan regressions are covered with anonymized OCR fixtures. The parser ignores system identifiers that
+  resemble dates, joins product names with following quantity/price rows, reads totals split after `SUMA PLN`, and
+  excludes payment/VAT summary rows from item candidates.
+- The same local flow now accepts a one-page purchase invoice. It prefers the issue date, reads `FAKTURA Nr`, and ranks
+  gross invoice totals above a paid `Pozostało do zapłaty: 0,00` balance. Imported multi-page PDFs still OCR only the
+  first page, matching the Task 6.1 image-preparation boundary.
+- Review now labels the document total separately from the calculated item sum and shows field-specific validation.
+  An explicit action can copy a valid item sum into a missing document total or replace unreliable OCR rows with one
+  editable document cost. VAT remains unconfirmed after replacement and still requires a user decision.
+- Financial VAT storage currently supports only `0%`, `8%` and `23%`. Adding Polish `5%`, exempt and not-applicable
+  rates requires a separate schema migration; OCR must not silently map those rates to `23%`.
 
 ## Verified baseline
 
@@ -380,7 +391,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-25. The full suite contains 370 passing tests. Debug APK:
+All commands passed on 2026-07-26. The full suite contains 378 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk

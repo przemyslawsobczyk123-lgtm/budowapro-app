@@ -345,6 +345,38 @@ final class ReceiptReviewDraft {
     );
   }
 
+  ReceiptReviewDraft useItemTotalAsDocumentTotal() {
+    final value = itemTotalMinorUnits;
+    if (value == null || value <= 0 || items.isEmpty) {
+      throw StateError('A valid item total is required');
+    }
+    return _copyWith(
+      total: total.update(formatReceiptMinorUnits(value)),
+      resetTotalMismatch: true,
+    );
+  }
+
+  ReceiptReviewDraft replaceItemsWithDocumentTotal({required String name}) {
+    final value = receiptTotalMinorUnits;
+    if (value == null || value <= 0) {
+      throw StateError('A valid document total is required');
+    }
+    final item = ReceiptReviewItem._(
+      id: 'review-item-$_nextItemNumber',
+      name: name,
+      grossAmountText: formatReceiptMinorUnits(value),
+      vatRate: VatRate.standard23,
+      confidence: 1,
+      reviewed: true,
+      vatReviewed: false,
+    );
+    return _copyWith(
+      items: <ReceiptReviewItem>[item],
+      nextItemNumber: _nextItemNumber + 1,
+      resetTotalMismatch: true,
+    );
+  }
+
   ReceiptReviewDraft removeItem(String itemId) {
     final updated = items
         .where((item) => item.id != itemId)

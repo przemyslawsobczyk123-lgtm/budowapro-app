@@ -147,5 +147,105 @@ TOTAL 15.99
       expect(result.itemLines.single.confidence, 0.72);
       expect(result.itemLines.single.requiresReview, isTrue);
     });
+
+    test(
+      'parses split fiscal receipt rows and ignores a system number date',
+      () {
+        final result = parser.parse(
+          RecognizedReceiptText.fromRaw('''
+MARKET SPOŻYWCZY SP. Z O.O.
+SKLEP NR 100
+ul. Przykładowa 1, 00-001 Warszawa
+NIP 0000000000
+nr:123456
+PARAGON FISKALNY
+ZESTAW KISZONEK 150 G
+1 x5,99 5,99C
+FILET Z PIERSI LUZ
+0,516 x25,99 13,41C
+SPRZEDAŻ OPODATKOWANA C
+19,40
+PTU C 5%
+0,92
+SUMA PTU
+0,92
+SUMA PLN
+19,40
+KARTA PŁATNICZA
+19,40 PLN
+2026-07-25 21:56
+Nr sys. 1420/26/07/25/1 /1014
+'''),
+        );
+
+        expect(result.seller?.value, 'MARKET SPOŻYWCZY SP. Z O.O.');
+        expect(result.dateText?.value, '2026-07-25');
+        expect(result.documentNumber?.value, '123456');
+        expect(result.totalText?.value, '19,40');
+        expect(result.itemLines.map((line) => line.value), <String>[
+          'ZESTAW KISZONEK 150 G 5,99',
+          'FILET Z PIERSI LUZ 13,41',
+        ]);
+      },
+    );
+
+    test('parses a purchase invoice header and split gross total', () {
+      final result = parser.parse(
+        RecognizedReceiptText.fromRaw('''
+FAKTURA Nr 29/06/2026
+Data dostawy/wykonania usługi: 24-06-2026
+Data wystawienia: 25-06-2026
+Sprzedawca:
+USŁUGI DLA DOMU SP. Z O.O.
+NIP: 0000000000
+Nabywca:
+KLIENT
+1 OBSŁUGA TECHNICZNA 1,0 usługa 200,00 23% 200,00 46,00 246,00
+2 DOKUMENTACJA 1,0 usługa 50,00 23% 50,00 11,50 61,50
+Całkowita wartość brutto:
+307,50 PLN
+Zapłacono:
+0,00 PLN
+Pozostało do zapłaty:
+307,50 PLN
+'''),
+      );
+
+      expect(result.seller?.value, 'USŁUGI DLA DOMU SP. Z O.O.');
+      expect(result.dateText?.value, '25-06-2026');
+      expect(result.documentNumber?.value, '29/06/2026');
+      expect(result.totalText?.value, '307,50');
+      expect(result.itemLines, hasLength(2));
+    });
+
+    test('prefers invoice gross total over a zero remaining balance', () {
+      final result = parser.parse(
+        RecognizedReceiptText.fromRaw('''
+FAKTURA Nr 30/06/2026
+Całkowita wartość brutto:
+565,80 PLN
+Zapłacono:
+565,80 PLN
+Pozostało do zapłaty:
+0,00 PLN
+'''),
+      );
+
+      expect(result.totalText?.value, '565,80');
+    });
+
+    test('keeps contractor service names as invoice items', () {
+      final result = parser.parse(
+        RecognizedReceiptText.fromRaw('''
+FAKTURA Nr FV/10/2026
+Usługi budowlane 1,00 23% 1 230,00
+RAZEM 1 230,00
+'''),
+      );
+
+      expect(result.itemLines.map((line) => line.value), <String>[
+        'Usługi budowlane 1,00 23% 1 230,00',
+      ]);
+    });
   });
 }

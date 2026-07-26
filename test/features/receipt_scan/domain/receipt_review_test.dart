@@ -120,6 +120,49 @@ void main() {
       );
     });
 
+    test(
+      'uses the verified item sum as the document total on explicit action',
+      () {
+        final draft = ReceiptReviewDraft.fromCandidates(
+          ReceiptOcrCandidates(
+            recognizedText: RecognizedReceiptText.fromRaw('PARAGON'),
+            seller: ReceiptOcrField(value: 'Market', confidence: 0.95),
+            dateText: ReceiptOcrField(value: '25.07.2026', confidence: 0.95),
+            itemLines: <ReceiptOcrField>[
+              ReceiptOcrField(value: 'Klej 5,99', confidence: 0.95),
+              ReceiptOcrField(value: 'Grunt 13,41', confidence: 0.95),
+            ],
+          ),
+        );
+
+        final updated = draft.useItemTotalAsDocumentTotal();
+
+        expect(updated.total.value, '19,40');
+        expect(updated.total.reviewed, isTrue);
+        expect(updated.hasTotalMismatch, isFalse);
+      },
+    );
+
+    test('replaces unreliable OCR rows with one reviewed document cost', () {
+      final draft = ReceiptReviewDraft.fromCandidates(
+        _candidates(
+          total: '19,40',
+          itemLines: const <String>['1 x5,99 5,99', '0,516 x25,99 13,41'],
+        ),
+      );
+
+      final updated = draft.replaceItemsWithDocumentTotal(
+        name: 'Zakup z dokumentu',
+      );
+
+      expect(updated.items, hasLength(1));
+      expect(updated.items.single.name, 'Zakup z dokumentu');
+      expect(updated.items.single.grossAmountText, '19,40');
+      expect(updated.items.single.requiresConfidenceReview, isFalse);
+      expect(updated.items.single.requiresVatReview, isTrue);
+      expect(updated.hasTotalMismatch, isFalse);
+    });
+
     test('requires explicit VAT review even for high-confidence OCR lines', () {
       final draft = ReceiptReviewDraft.fromCandidates(_candidates());
 
