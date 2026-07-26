@@ -324,9 +324,18 @@ final class SqliteProjectRepository implements ProjectRepository {
           (SELECT COUNT(*) FROM ${AppDatabase.scheduleEventsTable}
             WHERE project_id = ?) +
           (SELECT COUNT(*) FROM ${AppDatabase.contactsTable}
+            WHERE project_id = ?) +
+          (SELECT COUNT(*) FROM ${AppDatabase.captureDraftsTable}
             WHERE project_id = ?) AS total
       ''',
-      <Object?>[projectId, projectId, projectId, projectId, projectId],
+      <Object?>[
+        projectId,
+        projectId,
+        projectId,
+        projectId,
+        projectId,
+        projectId,
+      ],
     );
     return rows.single['total']! as int;
   }

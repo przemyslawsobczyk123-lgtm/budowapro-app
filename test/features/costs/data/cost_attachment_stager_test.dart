@@ -427,6 +427,54 @@ void main() {
     );
   });
 
+  test('startup recovery preserves a file linked to a capture draft', () async {
+    final source = File(p.join(temporaryDirectory.path, 'voice-note.m4a'));
+    await source.writeAsBytes(<int>[7, 8, 9], flush: true);
+    final attachment = await stager.stage(
+      projectId: 'project-1',
+      pickedFile: PickedCostAttachment(
+        sourceUri: source.uri,
+        displayName: 'voice-note.m4a',
+        reportedByteSize: 3,
+        mediaType: 'audio/mp4',
+      ),
+    );
+    final rawDatabase = await database.open();
+    await rawDatabase.insert(AppDatabase.captureDraftsTable, <String, Object?>{
+      'id': 'capture-1',
+      'project_id': 'project-1',
+      'capture_type': 'voice',
+      'status': 'ready',
+      'title': 'Ustalenia z elektrykiem',
+      'content': null,
+      'gross_amount_minor_units': null,
+      'vat_rate_basis_points': null,
+      'scheduled_at_utc_ms': null,
+      'time_zone_id': null,
+      'target_type': null,
+      'target_id': null,
+      'created_at_utc_ms': 0,
+      'updated_at_utc_ms': 0,
+    });
+    await rawDatabase
+        .insert(AppDatabase.captureDraftAttachmentsTable, <String, Object?>{
+          'project_id': 'project-1',
+          'capture_id': 'capture-1',
+          'attachment_id': attachment.id,
+          'sort_order': 0,
+        });
+
+    await stager.recoverUnlinkedAttachments();
+
+    expect(
+      await stager.findById(
+        projectId: 'project-1',
+        attachmentId: attachment.id,
+      ),
+      isNotNull,
+    );
+  });
+
   test('startup recovery preserves evidence linked to a checklist', () async {
     final source = File(p.join(temporaryDirectory.path, 'grounding.jpg'));
     await source.writeAsBytes(<int>[4, 5, 6], flush: true);

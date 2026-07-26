@@ -181,6 +181,37 @@ final class SqliteDocumentRepository implements DocumentRepository {
     });
   }
 
+  Future<ProjectDocument> saveDetailsInTransaction(
+    DatabaseExecutor transaction, {
+    required String projectId,
+    required String documentId,
+    required DocumentMetadata metadata,
+    required Iterable<DocumentRelation> contextLinks,
+  }) async {
+    await _requireDocument(
+      transaction,
+      projectId: projectId,
+      documentId: documentId,
+    );
+    await _upsertMetadata(
+      transaction,
+      projectId: projectId,
+      documentId: documentId,
+      metadata: metadata,
+    );
+    await _replaceContextLinks(
+      transaction,
+      projectId: projectId,
+      documentId: documentId,
+      links: contextLinks,
+    );
+    return (await _findDocument(
+      transaction,
+      projectId: projectId,
+      documentId: documentId,
+    ))!;
+  }
+
   @override
   Future<List<ProjectDocument>> findPotentialDuplicates({
     required String projectId,

@@ -64,6 +64,8 @@ void main() {
       AppDatabase.documentMetadataTable,
       AppDatabase.documentContextLinksTable,
       AppDatabase.receiptImportsTable,
+      AppDatabase.captureDraftsTable,
+      AppDatabase.captureDraftAttachmentsTable,
     ]) {
       final table = await database.query(
         'sqlite_master',
@@ -213,6 +215,44 @@ void main() {
       ),
       hasLength(1),
     );
+  });
+
+  test('migrates version 10 and adds the project capture inbox', () async {
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    await appDatabase!.writeMetadata(
+      key: 'preserved-v10-setting',
+      value: 'keep-me',
+      updatedAt: DateTime.utc(2026, 7, 27),
+    );
+    final versionTenDatabase = await appDatabase!.open();
+    await versionTenDatabase.execute(
+      'DROP TABLE ${AppDatabase.captureDraftAttachmentsTable}',
+    );
+    await versionTenDatabase.execute(
+      'DROP TABLE ${AppDatabase.captureDraftsTable}',
+    );
+    await versionTenDatabase.setVersion(10);
+    await appDatabase!.close();
+
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final migrated = await appDatabase!.open();
+
+    expect(await migrated.getVersion(), AppDatabase.schemaVersion);
+    expect(await appDatabase!.readMetadata('preserved-v10-setting'), 'keep-me');
+    for (final tableName in <String>[
+      AppDatabase.captureDraftsTable,
+      AppDatabase.captureDraftAttachmentsTable,
+    ]) {
+      expect(
+        await migrated.query(
+          'sqlite_master',
+          where: 'type = ? AND name = ?',
+          whereArgs: <Object?>['table', tableName],
+        ),
+        hasLength(1),
+      );
+    }
+    expect(await migrated.rawQuery('PRAGMA foreign_key_check'), isEmpty);
   });
 
   test(

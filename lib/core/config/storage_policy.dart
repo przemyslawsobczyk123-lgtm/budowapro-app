@@ -16,5 +16,11 @@ abstract final class StoragePolicy {
     'xlsx',
     'ppt',
     'pptx',
+    'mp3',
+    'm4a',
+    'aac',
+    'wav',
+    'ogg',
+    'opus',
   };
 }

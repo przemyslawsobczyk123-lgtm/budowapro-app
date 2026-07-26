@@ -18,7 +18,7 @@ final class AppDatabase {
 
   AppDatabase._(this._factory, this._path);
 
-  static const int schemaVersion = 10;
+  static const int schemaVersion = 11;
   static const String databaseFileName = 'budowapro.db';
   static const String metadataTable = 'app_metadata';
   static const String projectsTable = 'projects';
@@ -46,6 +46,9 @@ final class AppDatabase {
   static const String documentMetadataTable = 'document_metadata';
   static const String documentContextLinksTable = 'document_context_links';
   static const String receiptImportsTable = 'receipt_imports';
+  static const String captureDraftsTable = 'capture_drafts';
+  static const String captureDraftAttachmentsTable =
+      'capture_draft_attachments';
   static const String schemaVersionKey = 'schema_version';
   static const Set<String> requiredTableNames = <String>{
     metadataTable,
@@ -72,6 +75,8 @@ final class AppDatabase {
     documentMetadataTable,
     documentContextLinksTable,
     receiptImportsTable,
+    captureDraftsTable,
+    captureDraftAttachmentsTable,
   };
 
   final DatabaseFactory _factory;
@@ -1329,6 +1334,111 @@ final class AppDatabase {
           WHERE current_stage_key_v2 IS NULL
         ''');
       }
+    }
+
+    if (fromVersion < 11 && toVersion >= 11) {
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $captureDraftsTable (
+          id TEXT PRIMARY KEY NOT NULL,
+          project_id TEXT NOT NULL,
+          capture_type TEXT NOT NULL CHECK (
+            capture_type IN (
+              'photo',
+              'document',
+              'note',
+              'voice',
+              'cost',
+              'task',
+              'decision',
+              'defect'
+            )
+          ),
+          status TEXT NOT NULL CHECK (
+            status IN ('needs_review', 'ready', 'classified')
+          ),
+          title TEXT,
+          content TEXT,
+          gross_amount_minor_units INTEGER CHECK (
+            gross_amount_minor_units > 0
+          ),
+          vat_rate_basis_points INTEGER CHECK (
+            vat_rate_basis_points IN (0, 800, 2300)
+          ),
+          scheduled_at_utc_ms INTEGER,
+          time_zone_id TEXT,
+          target_type TEXT CHECK (
+            target_type IN (
+              'document',
+              'cost_draft',
+              'schedule_task',
+              'note',
+              'decision',
+              'defect'
+            )
+          ),
+          target_id TEXT,
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          UNIQUE (id, project_id),
+          CHECK (
+            (scheduled_at_utc_ms IS NULL AND time_zone_id IS NULL)
+            OR
+            (scheduled_at_utc_ms IS NOT NULL AND time_zone_id IS NOT NULL)
+          ),
+          CHECK (
+            (
+              status = 'classified'
+              AND target_type IS NOT NULL
+              AND target_id IS NOT NULL
+            )
+            OR
+            (
+              status != 'classified'
+              AND target_type IS NULL
+              AND target_id IS NULL
+            )
+          ),
+          FOREIGN KEY (project_id) REFERENCES $projectsTable(id)
+            ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS capture_drafts_project_status_date_idx
+        ON $captureDraftsTable (
+          project_id,
+          status,
+          created_at_utc_ms DESC,
+          id DESC
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS capture_drafts_project_type_date_idx
+        ON $captureDraftsTable (
+          project_id,
+          capture_type,
+          created_at_utc_ms DESC,
+          id DESC
+        )
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $captureDraftAttachmentsTable (
+          project_id TEXT NOT NULL,
+          capture_id TEXT NOT NULL,
+          attachment_id TEXT NOT NULL,
+          sort_order INTEGER NOT NULL CHECK (sort_order >= 0),
+          PRIMARY KEY (project_id, capture_id, attachment_id),
+          UNIQUE (project_id, capture_id, sort_order),
+          FOREIGN KEY (capture_id, project_id)
+            REFERENCES $captureDraftsTable(id, project_id) ON DELETE CASCADE,
+          FOREIGN KEY (attachment_id, project_id)
+            REFERENCES $costAttachmentsTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS capture_draft_attachments_attachment_idx
+        ON $captureDraftAttachmentsTable (project_id, attachment_id)
+      ''');
     }
 
     if (fromVersion < toVersion) {

@@ -26,32 +26,41 @@ final class SqliteScheduleRepository implements ScheduleRepository {
     required String projectId,
     required ScheduleEventInput input,
   }) {
-    return _database.transaction<ScheduleEvent>((transaction) async {
-      final now = _utcNow().toUtc();
-      final event = ScheduleEvent(
-        id: _idGenerator(),
-        projectId: projectId,
-        title: input.title,
-        kind: input.kind,
-        status: input.status,
-        startsAt: input.startsAtUtc,
-        endsAt: input.endsAtUtc,
-        timeZoneId: input.timeZoneId,
-        isAllDay: input.isAllDay,
-        stageId: input.stageId,
-        assignee: input.assignee,
-        note: input.note,
-        reminderEnabled: input.reminderEnabled,
-        reminderLeadMinutes: input.reminderLeadMinutes,
-        createdAt: now,
-        updatedAt: now,
-      );
-      await transaction.insert(
-        AppDatabase.scheduleEventsTable,
-        _eventToRow(event),
-      );
-      return event;
-    });
+    return _database.transaction<ScheduleEvent>(
+      (transaction) =>
+          insertInTransaction(transaction, projectId: projectId, input: input),
+    );
+  }
+
+  Future<ScheduleEvent> insertInTransaction(
+    DatabaseExecutor transaction, {
+    required String projectId,
+    required ScheduleEventInput input,
+  }) async {
+    final now = _utcNow().toUtc();
+    final event = ScheduleEvent(
+      id: _idGenerator(),
+      projectId: projectId,
+      title: input.title,
+      kind: input.kind,
+      status: input.status,
+      startsAt: input.startsAtUtc,
+      endsAt: input.endsAtUtc,
+      timeZoneId: input.timeZoneId,
+      isAllDay: input.isAllDay,
+      stageId: input.stageId,
+      assignee: input.assignee,
+      note: input.note,
+      reminderEnabled: input.reminderEnabled,
+      reminderLeadMinutes: input.reminderLeadMinutes,
+      createdAt: now,
+      updatedAt: now,
+    );
+    await transaction.insert(
+      AppDatabase.scheduleEventsTable,
+      _eventToRow(event),
+    );
+    return event;
   }
 
   @override

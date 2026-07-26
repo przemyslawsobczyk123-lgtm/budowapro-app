@@ -249,6 +249,31 @@ void main() {
     expect(impact.linkedRecordCount, 1);
   });
 
+  test('deletion impact counts open capture drafts', () async {
+    final project = await repository.create(_houseDraft('Skrzynka'));
+    final database = await appDatabase.open();
+    await database.insert(AppDatabase.captureDraftsTable, <String, Object?>{
+      'id': 'capture-1',
+      'project_id': project.id,
+      'capture_type': 'note',
+      'status': 'ready',
+      'title': 'Ustalenia',
+      'content': 'Przesunąć gniazdo.',
+      'gross_amount_minor_units': null,
+      'vat_rate_basis_points': null,
+      'scheduled_at_utc_ms': null,
+      'time_zone_id': null,
+      'target_type': null,
+      'target_id': null,
+      'created_at_utc_ms': 0,
+      'updated_at_utc_ms': 0,
+    });
+
+    final impact = await repository.deletionImpact(project.id);
+
+    expect(impact.linkedRecordCount, 1);
+  });
+
   test(
     'failed file deletion keeps the project selected and retryable',
     () async {
