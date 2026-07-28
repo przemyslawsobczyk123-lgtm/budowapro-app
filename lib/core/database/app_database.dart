@@ -137,9 +137,7 @@ final class AppDatabase {
       _path,
       options: OpenDatabaseOptions(
         version: schemaVersion,
-        onConfigure: (database) async {
-          await database.execute('PRAGMA foreign_keys = ON');
-        },
+        onConfigure: _configureConnection,
         onCreate: (database, version) {
           return _migrate(database, fromVersion: 0, toVersion: version);
         },
@@ -178,6 +176,79 @@ final class AppDatabase {
         expectedProjectCount > 10000) {
       throw const FormatException('Unsupported backup database version');
     }
+    return _inspectRestoreCandidateExact(
+      databaseFile: databaseFile,
+      expectedSchemaVersion: expectedSchemaVersion,
+      expectedProjectCount: expectedProjectCount,
+    );
+  }
+
+  Future<DatabaseRestoreInspection> prepareRestoreCandidate({
+    required File databaseFile,
+    required int sourceSchemaVersion,
+    required int expectedProjectCount,
+  }) async {
+    if (sourceSchemaVersion < 1 ||
+        sourceSchemaVersion > schemaVersion ||
+        expectedProjectCount < 0 ||
+        expectedProjectCount > 10000) {
+      throw const FormatException('Unsupported backup database version');
+    }
+    final sourceInspection = await _inspectRestoreCandidateExact(
+      databaseFile: databaseFile,
+      expectedSchemaVersion: sourceSchemaVersion,
+      expectedProjectCount: expectedProjectCount,
+    );
+    if (sourceSchemaVersion == schemaVersion) return sourceInspection;
+
+    Database? migrationDatabase;
+    try {
+      migrationDatabase = await _factory.openDatabase(
+        databaseFile.path,
+        options: OpenDatabaseOptions(
+          version: schemaVersion,
+          singleInstance: false,
+          onConfigure: _configureConnection,
+          onUpgrade: (database, oldVersion, newVersion) {
+            return _migrate(
+              database,
+              fromVersion: oldVersion,
+              toVersion: newVersion,
+            );
+          },
+          onDowngrade: (database, oldVersion, newVersion) {
+            throw StateError(
+              'Database downgrade from $oldVersion to $newVersion is unsupported',
+            );
+          },
+        ),
+      );
+    } on Object {
+      throw const FormatException('Backup database migration failed');
+    } finally {
+      await migrationDatabase?.close();
+    }
+
+    final migratedInspection = await _inspectRestoreCandidateExact(
+      databaseFile: databaseFile,
+      expectedSchemaVersion: schemaVersion,
+      expectedProjectCount: expectedProjectCount,
+    );
+    if (migratedInspection.projectIds.length !=
+            sourceInspection.projectIds.length ||
+        !migratedInspection.projectIds.containsAll(
+          sourceInspection.projectIds,
+        )) {
+      throw const FormatException('Backup migration changed project identity');
+    }
+    return migratedInspection;
+  }
+
+  Future<DatabaseRestoreInspection> _inspectRestoreCandidateExact({
+    required File databaseFile,
+    required int expectedSchemaVersion,
+    required int expectedProjectCount,
+  }) async {
     final candidate = await _factory.openDatabase(
       databaseFile.path,
       options: OpenDatabaseOptions(readOnly: true, singleInstance: false),
@@ -201,6 +272,7 @@ final class AppDatabase {
 
       final expectedFingerprint = await _createExpectedSchemaFingerprint(
         databaseFile,
+        expectedSchemaVersion: expectedSchemaVersion,
       );
       final candidateFingerprint = await _schemaFingerprint(candidate);
       if (candidateFingerprint != expectedFingerprint) {
@@ -1487,14 +1559,27 @@ final class AppDatabase {
     }
   }
 
-  Future<String> _createExpectedSchemaFingerprint(File candidateFile) async {
+  Future<String> _createExpectedSchemaFingerprint(
+    File candidateFile, {
+    required int expectedSchemaVersion,
+  }) async {
     final referencePath = '${candidateFile.path}.schema-reference';
-    final reference = AppDatabase(factory: _factory, path: referencePath);
+    Database? reference;
     try {
-      final database = await reference.open();
-      return await _schemaFingerprint(database);
+      reference = await _factory.openDatabase(
+        referencePath,
+        options: OpenDatabaseOptions(
+          version: expectedSchemaVersion,
+          singleInstance: false,
+          onConfigure: _configureConnection,
+          onCreate: (database, version) {
+            return _migrate(database, fromVersion: 0, toVersion: version);
+          },
+        ),
+      );
+      return await _schemaFingerprint(reference);
     } finally {
-      await reference.close();
+      await reference?.close();
       await _factory.deleteDatabase(referencePath);
     }
   }
@@ -1508,6 +1593,11 @@ final class AppDatabase {
       ORDER BY type ASC, name ASC
     ''');
     return sha256.convert(utf8.encode(jsonEncode(rows))).toString();
+  }
+
+  static Future<void> _configureConnection(Database database) async {
+    await database.execute('PRAGMA foreign_keys = ON');
+    await database.execute('PRAGMA secure_delete = ON');
   }
 }
 

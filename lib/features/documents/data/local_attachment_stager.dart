@@ -200,6 +200,12 @@ final class LocalAttachmentStager {
       if (await importedFile.length() != byteSize) {
         throw StateError('Imported attachment size differs from the source');
       }
+      final importedHash = await Isolate.run<String>(
+        () => _sha256File(importedFile.absolute.path),
+      );
+      if (importedHash != fileHash) {
+        throw StateError('Imported attachment differs from the source');
+      }
       try {
         previewStorageKey = await _previewGenerator?.generate(
           projectId: projectId,

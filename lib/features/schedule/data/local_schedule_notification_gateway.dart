@@ -7,6 +7,22 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
+const _scheduleChannelId = 'budowapro_schedule_reminders';
+const _scheduleChannelName = 'Terminy budowy';
+const _scheduleChannelDescription =
+    'Przypomnienia o zadaniach, wizytach, dostawach, odbiorach i platnosciach.';
+
+const scheduleNotificationDetails = NotificationDetails(
+  android: AndroidNotificationDetails(
+    _scheduleChannelId,
+    _scheduleChannelName,
+    channelDescription: _scheduleChannelDescription,
+    importance: Importance.high,
+    priority: Priority.high,
+    visibility: NotificationVisibility.secret,
+  ),
+);
+
 final class LocalScheduleNotificationGateway
     implements ScheduleNotificationGateway {
   LocalScheduleNotificationGateway({
@@ -14,11 +30,6 @@ final class LocalScheduleNotificationGateway
     DateTime Function()? utcNow,
   }) : _plugin = plugin ?? FlutterLocalNotificationsPlugin(),
        _utcNow = utcNow ?? DateTime.now;
-
-  static const _channelId = 'budowapro_schedule_reminders';
-  static const _channelName = 'Terminy budowy';
-  static const _channelDescription =
-      'Przypomnienia o zadaniach, wizytach, dostawach, odbiorach i platnosciach.';
 
   final FlutterLocalNotificationsPlugin _plugin;
   final DateTime Function() _utcNow;
@@ -103,15 +114,7 @@ final class LocalScheduleNotificationGateway
       title: request.title,
       body: request.body,
       scheduledDate: scheduledAt,
-      notificationDetails: const NotificationDetails(
-        android: AndroidNotificationDetails(
-          _channelId,
-          _channelName,
-          channelDescription: _channelDescription,
-          importance: Importance.high,
-          priority: Priority.high,
-        ),
-      ),
+      notificationDetails: scheduleNotificationDetails,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       payload: ScheduleNotificationPayload.encode(
         ScheduleNotificationTarget(

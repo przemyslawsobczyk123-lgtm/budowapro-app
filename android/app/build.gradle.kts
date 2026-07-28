@@ -1,11 +1,42 @@
+import java.io.FileInputStream
 import java.net.URI
 import java.util.Base64
+import java.util.Properties
 
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.isFile) {
+    FileInputStream(keystorePropertiesFile).use(keystoreProperties::load)
+}
+
+val releaseSigningEnvironmentNames = mapOf(
+    "storeFile" to "BUDOWAPRO_UPLOAD_STORE_FILE",
+    "storePassword" to "BUDOWAPRO_UPLOAD_STORE_PASSWORD",
+    "keyAlias" to "BUDOWAPRO_UPLOAD_KEY_ALIAS",
+    "keyPassword" to "BUDOWAPRO_UPLOAD_KEY_PASSWORD",
+)
+val environmentSigningValues = releaseSigningEnvironmentNames.mapValues {
+    (_, environmentName) -> System.getenv(environmentName).orEmpty().trim()
+}
+val useEnvironmentSigning = environmentSigningValues.values.any(String::isNotBlank)
+
+val releaseSigningValues = releaseSigningEnvironmentNames.mapValues {
+    (propertyName, _) ->
+        if (useEnvironmentSigning) {
+            environmentSigningValues.getValue(propertyName)
+        } else {
+            keystoreProperties.getProperty(propertyName).orEmpty().trim()
+        }
+}
+val missingReleaseSigningValues = releaseSigningValues
+    .filterValues(String::isBlank)
+    .keys
 
 android {
     namespace = "pl.budowapro"
@@ -26,6 +57,35 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        if (missingReleaseSigningValues.isEmpty()) {
+            create("release") {
+                storeFile = rootProject.file(
+                    releaseSigningValues.getValue("storeFile"),
+                )
+                storePassword = releaseSigningValues.getValue("storePassword")
+                keyAlias = releaseSigningValues.getValue("keyAlias")
+                keyPassword = releaseSigningValues.getValue("keyPassword")
+            }
+        }
+    }
+
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+            if (missingReleaseSigningValues.isEmpty()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+            ndk {
+                debugSymbolLevel = "SYMBOL_TABLE"
+            }
+        }
+    }
 }
 
 val decodedDartDefines = (project.findProperty("dart-defines") as String?)
@@ -42,10 +102,23 @@ val decodedDartDefines = (project.findProperty("dart-defines") as String?)
     }
     .toMap()
 
-val validateLegalReleaseConfig = tasks.register("validateLegalReleaseConfig") {
+val validateProductionReleaseConfig =
+    tasks.register("validateProductionReleaseConfig") {
     group = "verification"
-    description = "Validates publisher metadata required in release artifacts."
+    description = "Validates signing and publisher metadata for release artifacts."
     doLast {
+        require(missingReleaseSigningValues.isEmpty()) {
+            "Missing release signing values: " +
+                missingReleaseSigningValues.joinToString() +
+                ". Configure all BUDOWAPRO_UPLOAD_* environment variables " +
+                "or all values in android/key.properties."
+        }
+        val uploadStoreFile = rootProject.file(
+            releaseSigningValues.getValue("storeFile"),
+        )
+        require(uploadStoreFile.isFile && uploadStoreFile.canRead()) {
+            "Release upload keystore does not exist or is not readable."
+        }
         val requiredLegalDefines = listOf(
             "BUDOWAPRO_PUBLISHER_NAME",
             "BUDOWAPRO_PRIVACY_CONTACT_EMAIL",
@@ -101,7 +174,11 @@ val validateLegalReleaseConfig = tasks.register("validateLegalReleaseConfig") {
 }
 
 tasks.matching { it.name == "preReleaseBuild" }.configureEach {
-    dependsOn(validateLegalReleaseConfig)
+    dependsOn(validateProductionReleaseConfig)
+}
+
+tasks.matching { it.name == "validateSigningRelease" }.configureEach {
+    dependsOn(validateProductionReleaseConfig)
 }
 
 dependencies {

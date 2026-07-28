@@ -89,10 +89,8 @@ String checklistTemplateTitle(
   ChecklistTemplateKey.preStartDocumentAudit =>
     l10n.checklistPreStartDocumentAudit,
   ChecklistTemplateKey.siteLogisticsPlan => l10n.checklistSiteLogisticsPlan,
-  ChecklistTemplateKey.temporarySiteFence =>
-    l10n.checklistTemporarySiteFence,
-  ChecklistTemplateKey.heavyEquipmentGate =>
-    l10n.checklistHeavyEquipmentGate,
+  ChecklistTemplateKey.temporarySiteFence => l10n.checklistTemporarySiteFence,
+  ChecklistTemplateKey.heavyEquipmentGate => l10n.checklistHeavyEquipmentGate,
   ChecklistTemplateKey.stabilizedSiteEntrance =>
     l10n.checklistStabilizedSiteEntrance,
   ChecklistTemplateKey.toolStorageContainer =>
@@ -169,8 +167,7 @@ String checklistTemplateRisk(
     l10n.checklistAdditionalPermitsAuditRisk,
   ChecklistTemplateKey.preStartDocumentAudit =>
     l10n.checklistPreStartDocumentAuditRisk,
-  ChecklistTemplateKey.siteLogisticsPlan =>
-    l10n.checklistSiteLogisticsPlanRisk,
+  ChecklistTemplateKey.siteLogisticsPlan => l10n.checklistSiteLogisticsPlanRisk,
   ChecklistTemplateKey.temporarySiteFence =>
     l10n.checklistTemporarySiteFenceRisk,
   ChecklistTemplateKey.heavyEquipmentGate =>

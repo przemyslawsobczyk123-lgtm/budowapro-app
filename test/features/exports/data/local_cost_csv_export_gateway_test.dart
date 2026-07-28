@@ -22,6 +22,7 @@ void main() {
   late AppDatabase database;
   late SqliteCostRepository costs;
   late File sharedFile;
+  late List<int> sharedBytes;
   var id = 0;
 
   setUp(() async {
@@ -85,6 +86,7 @@ void main() {
         directoryProvider: () async => temporaryDirectory,
         shareFile: (file) async {
           sharedFile = file;
+          sharedBytes = await file.readAsBytes();
         },
         utcNow: () => DateTime.utc(2026, 7, 20, 8, 30),
       );
@@ -101,7 +103,7 @@ void main() {
         ),
       );
 
-      final bytes = await sharedFile.readAsBytes();
+      final bytes = sharedBytes;
       final csv = String.fromCharCodes(bytes.skip(3));
       expect(bytes.take(3), <int>[0xEF, 0xBB, 0xBF]);
       expect(result.recordCount, 53);
@@ -109,6 +111,7 @@ void main() {
       expect(csv, startsWith('Nazwa;Brutto po korektach;Notatka\r\n'));
       expect(csv, contains("'=2+2;123,00;\"A;\"\"B\"\"\nC\"\r\n"));
       expect(sharedFile.path, endsWith('.csv'));
+      expect(await sharedFile.exists(), isFalse);
     },
   );
 
@@ -129,7 +132,10 @@ void main() {
       final gateway = LocalCostCsvExportGateway(
         repository: costs,
         directoryProvider: () async => temporaryDirectory,
-        shareFile: (file) async => sharedFile = file,
+        shareFile: (file) async {
+          sharedFile = file;
+          sharedBytes = await file.readAsBytes();
+        },
         utcNow: () => DateTime.utc(2026, 7, 20, 8, 30),
       );
 
@@ -144,9 +150,10 @@ void main() {
         ),
       );
 
-      final csv = await sharedFile.readAsString();
+      final csv = String.fromCharCodes(sharedBytes.skip(3));
       expect(csv, contains('Brutto po korektach;Brutto pierwotne\r\n'));
       expect(csv, contains('100,00;123,00\r\n'));
+      expect(await sharedFile.exists(), isFalse);
     },
   );
 }

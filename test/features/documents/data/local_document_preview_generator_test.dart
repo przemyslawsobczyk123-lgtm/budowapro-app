@@ -73,4 +73,23 @@ void main() {
 
     expect(key, isNull);
   });
+
+  test('does not decode a mislabeled image', () async {
+    final original = fileStore.fileFor(
+      projectId: 'project-1',
+      area: ProjectFileArea.originals,
+      fileName: 'document-fake.jpg',
+    );
+    await original.writeAsString('not an image', flush: true);
+
+    final key = await LocalDocumentPreviewGenerator(fileStore: fileStore)
+        .generate(
+          projectId: 'project-1',
+          attachmentId: 'document-fake',
+          originalStorageKey: 'document-fake.jpg',
+          mediaType: 'image/jpeg',
+        );
+
+    expect(key, isNull);
+  });
 }

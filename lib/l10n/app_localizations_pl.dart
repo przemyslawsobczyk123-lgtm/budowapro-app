@@ -3879,6 +3879,21 @@ class AppLocalizationsPl extends AppLocalizations {
   String get openSourceLicensesTitle => 'Licencje open source';
 
   @override
+  String get legalApplicationSection => 'Aplikacja';
+
+  @override
+  String get legalAppVersionLabel => 'Wersja aplikacji';
+
+  @override
+  String get legalAppPackageLabel => 'Identyfikator pakietu';
+
+  @override
+  String get legalAppVersionLoading => 'Odczytywanie wersji';
+
+  @override
+  String get legalAppVersionUnavailable => 'Wersja niedostępna';
+
+  @override
   String get legalPublisherSection => 'Wydawca i kontakt';
 
   @override

@@ -1,6 +1,7 @@
 import 'package:budowapro/core/theme/app_theme.dart';
 import 'package:budowapro/features/legal/data/legal_link_gateway.dart';
 import 'package:budowapro/features/legal/data/legal_providers.dart';
+import 'package:budowapro/features/legal/domain/app_build_info.dart';
 import 'package:budowapro/features/legal/domain/legal_release_config.dart';
 import 'package:budowapro/features/legal/presentation/legal_center_screen.dart';
 import 'package:budowapro/features/legal/presentation/legal_document_screen.dart';
@@ -21,9 +22,22 @@ void main() {
     expect(find.text('Polityka prywatności'), findsOneWidget);
     expect(find.text('Warunki użytkowania'), findsOneWidget);
     expect(find.text('Ustawienia prywatności'), findsOneWidget);
-    await tester.drag(
-      find.byKey(const ValueKey('legalCenterContent')),
-      const Offset(0, -420),
+    final scrollable = find.descendant(
+      of: find.byKey(const ValueKey('legalCenterContent')),
+      matching: find.byType(Scrollable),
+    );
+    await tester.dragUntilVisible(
+      find.text('0.1.0 (1)'),
+      scrollable,
+      const Offset(0, -240),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('0.1.0 (1)'), findsOneWidget);
+    expect(find.text('pl.budowapro'), findsOneWidget);
+    await tester.dragUntilVisible(
+      find.text('privacy@budowapro.pl'),
+      scrollable,
+      const Offset(0, -240),
     );
     await tester.pumpAndSettle();
     expect(find.text('BudowaPRO Sp. z o.o.'), findsOneWidget);
@@ -194,6 +208,7 @@ Widget _testApp(
     overrides: [
       legalReleaseConfigProvider.overrideWithValue(config),
       legalLinkGatewayProvider.overrideWithValue(_FakeLegalLinkGateway()),
+      appBuildInfoProvider.overrideWith((ref) async => _buildInfo),
     ],
     child: MaterialApp(
       theme: AppTheme.light,
@@ -208,6 +223,12 @@ Widget _testApp(
     ),
   );
 }
+
+const _buildInfo = AppBuildInfo(
+  version: '0.1.0',
+  buildNumber: '1',
+  packageName: 'pl.budowapro',
+);
 
 final class _FakeLegalLinkGateway implements LegalLinkGateway {
   @override

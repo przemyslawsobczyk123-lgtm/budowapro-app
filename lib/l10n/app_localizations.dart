@@ -6958,6 +6958,36 @@ abstract class AppLocalizations {
   /// **'Licencje open source'**
   String get openSourceLicensesTitle;
 
+  /// No description provided for @legalApplicationSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Aplikacja'**
+  String get legalApplicationSection;
+
+  /// No description provided for @legalAppVersionLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wersja aplikacji'**
+  String get legalAppVersionLabel;
+
+  /// No description provided for @legalAppPackageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Identyfikator pakietu'**
+  String get legalAppPackageLabel;
+
+  /// No description provided for @legalAppVersionLoading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odczytywanie wersji'**
+  String get legalAppVersionLoading;
+
+  /// No description provided for @legalAppVersionUnavailable.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wersja niedostępna'**
+  String get legalAppVersionUnavailable;
+
   /// No description provided for @legalPublisherSection.
   ///
   /// In pl, this message translates to:

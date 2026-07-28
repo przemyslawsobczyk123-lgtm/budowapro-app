@@ -9,6 +9,7 @@ environment:
 dependencies:
   archive: 4.0.9
   crypto: ^3.0.7
+  cupertino_icons: ^1.0.9
   file_picker: 11.0.2
   flutter:
     sdk: flutter
@@ -22,6 +23,7 @@ dependencies:
   go_router: ^17.3.0
   image: ^4.9.1
   intl: any
+  package_info_plus: ^9.0.1
   path: ^1.9.1
   path_provider: ^2.1.6
   pdfrx: ^2.4.7

@@ -431,6 +431,83 @@ void main() {
     );
   });
 
+  test('migrates a previous-schema backup before restoring it', () async {
+    const previousSchemaVersion = AppDatabase.schemaVersion - 1;
+    final artifact = await service.createBackup();
+    final previousSchemaArchive = await _rewriteAsPreviousSchemaBackup(
+      sourceArchive: artifact.file,
+      outputDirectory: output,
+      schemaVersion: previousSchemaVersion,
+    );
+    final candidate = await service.inspectBackup(previousSchemaArchive);
+    expect(candidate.preview.schemaVersion, previousSchemaVersion);
+
+    final active = await database.open();
+    await active.update(
+      AppDatabase.projectsTable,
+      <String, Object?>{'name': 'Projekt po aktualizacji'},
+      where: 'id = ?',
+      whereArgs: const <Object?>['project-1'],
+    );
+
+    await service.restoreBackup(candidate);
+
+    final restored = await database.open();
+    expect(await restored.getVersion(), AppDatabase.schemaVersion);
+    expect(
+      (await restored.query(
+        AppDatabase.projectsTable,
+        columns: const <String>['name'],
+        where: 'id = ?',
+        whereArgs: const <Object?>['project-1'],
+      )).single['name'],
+      'Dom testowy',
+    );
+    expect(
+      await restored.query(
+        AppDatabase.metadataTable,
+        columns: const <String>['value'],
+        where: 'key = ?',
+        whereArgs: const <Object?>[AppDatabase.schemaVersionKey],
+      ),
+      <Map<String, Object?>>[
+        <String, Object?>{'value': AppDatabase.schemaVersion.toString()},
+      ],
+    );
+    final restoredTables = (await restored.rawQuery(
+      "SELECT name FROM sqlite_master WHERE type = 'table'",
+    )).map((row) => row['name']).toSet();
+    expect(restoredTables, contains(AppDatabase.captureDraftsTable));
+    expect(restoredTables, contains(AppDatabase.captureDraftAttachmentsTable));
+  });
+
+  test('migrates an exact-schema v8 backup through every step', () async {
+    const oldestBackupSchemaVersion = 8;
+    final artifact = await service.createBackup();
+    final oldestSchemaArchive = await _rewriteAsPreviousSchemaBackup(
+      sourceArchive: artifact.file,
+      outputDirectory: output,
+      schemaVersion: oldestBackupSchemaVersion,
+    );
+
+    final candidate = await service.inspectBackup(oldestSchemaArchive);
+    expect(candidate.preview.schemaVersion, oldestBackupSchemaVersion);
+
+    await service.restoreBackup(candidate);
+
+    final restored = await database.open();
+    expect(await restored.getVersion(), AppDatabase.schemaVersion);
+    final restoredTables = (await restored.rawQuery(
+      "SELECT name FROM sqlite_master WHERE type = 'table'",
+    )).map((row) => row['name']).toSet();
+    expect(restoredTables, contains(AppDatabase.receiptImportsTable));
+    expect(restoredTables, contains(AppDatabase.captureDraftsTable));
+    final projectColumns = (await restored.rawQuery(
+      'PRAGMA table_info(${AppDatabase.projectsTable})',
+    )).map((row) => row['name']).toSet();
+    expect(projectColumns, contains('current_stage_key_v2'));
+  });
+
   test(
     'does not change active data when free storage is insufficient',
     () async {
@@ -463,6 +540,109 @@ void main() {
       );
     },
   );
+}
+
+Future<File> _rewriteAsPreviousSchemaBackup({
+  required File sourceArchive,
+  required Directory outputDirectory,
+  required int schemaVersion,
+}) async {
+  final input = InputFileStream(sourceArchive.path);
+  final source = ZipDecoder().decodeStream(input);
+  final sourceManifest = BackupManifest.fromJson(
+    _jsonObject(source.find(backupManifestPath)!.readBytes()!),
+  );
+  final payload = <String, List<int>>{};
+  for (final entry in source) {
+    if (entry.name == backupManifestPath || entry.name == backupChecksumsPath) {
+      continue;
+    }
+    payload[entry.name] = entry.readBytes()!.toList(growable: false);
+  }
+  await input.close();
+
+  final databaseFile = File(p.join(outputDirectory.path, 'previous-schema.db'));
+  await databaseFile.writeAsBytes(payload[backupDatabasePath]!, flush: true);
+  final previousDatabase = await databaseFactoryFfi.openDatabase(
+    databaseFile.path,
+    options: OpenDatabaseOptions(singleInstance: false),
+  );
+  try {
+    if (schemaVersion < 11) {
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.captureDraftAttachmentsTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.captureDraftsTable}',
+      );
+    }
+    if (schemaVersion < 10) {
+      await previousDatabase.execute(
+        'ALTER TABLE ${AppDatabase.projectsTable} '
+        'DROP COLUMN current_stage_key_v2',
+      );
+    }
+    if (schemaVersion < 9) {
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.receiptImportsTable}',
+      );
+    }
+    await previousDatabase.update(
+      AppDatabase.metadataTable,
+      <String, Object?>{'value': schemaVersion.toString()},
+      where: 'key = ?',
+      whereArgs: const <Object?>[AppDatabase.schemaVersionKey],
+    );
+    await previousDatabase.setVersion(schemaVersion);
+  } finally {
+    await previousDatabase.close();
+  }
+  payload[backupDatabasePath] = await databaseFile.readAsBytes();
+  await databaseFile.delete();
+
+  final paths = payload.keys.toList(growable: false)..sort();
+  final checksums = BackupChecksumCatalog(
+    paths.map((path) {
+      final bytes = payload[path]!;
+      return BackupChecksumEntry(
+        path: path,
+        byteSize: bytes.length,
+        sha256: sha256.convert(bytes).toString(),
+      );
+    }),
+  );
+  final manifest = BackupManifest(
+    createdAtUtc: sourceManifest.createdAtUtc,
+    schemaVersion: schemaVersion,
+    projectCount: sourceManifest.projectCount,
+    payloadFileCount: payload.length,
+    payloadBytes: payload.values.fold<int>(
+      0,
+      (total, bytes) => total + bytes.length,
+    ),
+  );
+  final archive = Archive()
+    ..addFile(
+      ArchiveFile.bytes(
+        backupManifestPath,
+        utf8.encode(jsonEncode(manifest.toJson())),
+      ),
+    )
+    ..addFile(
+      ArchiveFile.bytes(
+        backupChecksumsPath,
+        utf8.encode(jsonEncode(checksums.toJson())),
+      ),
+    );
+  for (final path in paths) {
+    archive.addFile(ArchiveFile.bytes(path, payload[path]!));
+  }
+
+  final output = File(
+    p.join(outputDirectory.path, 'previous-schema-backup.zip'),
+  );
+  await output.writeAsBytes(ZipEncoder().encode(archive), flush: true);
+  return output;
 }
 
 Future<File> _sourceFile(

@@ -153,7 +153,7 @@ final class LocalBackupService {
         ),
       );
       final inspection = await inspectBackupArchive(privateArchive);
-      if (inspection.manifest.schemaVersion != AppDatabase.schemaVersion) {
+      if (inspection.manifest.schemaVersion > AppDatabase.schemaVersion) {
         throw const FormatException(
           'Backup was created by a newer app version',
         );
@@ -201,7 +201,7 @@ final class LocalBackupService {
     if (currentInspection.signature != candidate.inspection.signature) {
       throw const FormatException('Backup changed after it was selected');
     }
-    if (currentInspection.manifest.schemaVersion != AppDatabase.schemaVersion) {
+    if (currentInspection.manifest.schemaVersion > AppDatabase.schemaVersion) {
       throw const FormatException('Backup was created by a newer app version');
     }
 
@@ -222,9 +222,9 @@ final class LocalBackupService {
       if (extractedInspection.signature != currentInspection.signature) {
         throw const FormatException('Backup changed during extraction');
       }
-      final databaseInspection = await _database.inspectRestoreCandidate(
+      final databaseInspection = await _database.prepareRestoreCandidate(
         databaseFile: journal.stagedDatabase,
-        expectedSchemaVersion: extractedInspection.manifest.schemaVersion,
+        sourceSchemaVersion: extractedInspection.manifest.schemaVersion,
         expectedProjectCount: extractedInspection.manifest.projectCount,
       );
       await _validateStagedFiles(
@@ -359,7 +359,8 @@ Future<void> _validateStagedFiles({
   required BackupArchiveInspection archive,
   required DatabaseRestoreInspection database,
 }) async {
-  if (database.schemaVersion != archive.manifest.schemaVersion ||
+  if (database.schemaVersion != AppDatabase.schemaVersion ||
+      archive.manifest.schemaVersion > database.schemaVersion ||
       database.projectIds.length != archive.manifest.projectCount ||
       !database.projectIds.containsAll(archive.projectIds)) {
     throw const FormatException(

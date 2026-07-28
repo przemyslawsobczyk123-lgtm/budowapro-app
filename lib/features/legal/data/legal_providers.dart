@@ -1,6 +1,8 @@
 import 'package:budowapro/features/legal/data/legal_link_gateway.dart';
+import 'package:budowapro/features/legal/domain/app_build_info.dart';
 import 'package:budowapro/features/legal/domain/legal_release_config.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 final legalReleaseConfigProvider = Provider<LegalReleaseConfig>(
   (ref) => const LegalReleaseConfig.fromEnvironment(),
@@ -9,3 +11,12 @@ final legalReleaseConfigProvider = Provider<LegalReleaseConfig>(
 final legalLinkGatewayProvider = Provider<LegalLinkGateway>(
   (ref) => const SystemLegalLinkGateway(),
 );
+
+final appBuildInfoProvider = FutureProvider<AppBuildInfo>((ref) async {
+  final packageInfo = await PackageInfo.fromPlatform();
+  return AppBuildInfo(
+    version: packageInfo.version,
+    buildNumber: packageInfo.buildNumber,
+    packageName: packageInfo.packageName,
+  );
+});

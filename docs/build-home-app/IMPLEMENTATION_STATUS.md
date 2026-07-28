@@ -420,6 +420,36 @@ Last updated: 2026-07-28
   actions. Google Play still requires a public policy URL even though the complete policy is also available inside
   the APK.
 
+### Production hardening and Android release
+
+- Release signing is fail-closed. A complete `BUDOWAPRO_UPLOAD_*` environment set takes precedence over ignored
+  `android/key.properties`; mixed sources cannot select a different key. The release helper also compares the
+  configured certificate SHA-256 with the keystore and final AAB. No debug-key fallback is allowed.
+- `tool/release/build_android_release.dart` provides one reproducible Android release path. It requires a clean Git
+  worktree by default, verifies the public HTML policy, runs all quality gates, builds a signed/obfuscated AAB,
+  verifies its signature, enforces an exact permission allowlist and checks AAB configuration, 64-bit ELF LOAD
+  segments, a universal APK and `zipalign -P 16` with a pinned SHA-256-checked bundletool.
+- Each successful release archives the AAB SHA-256, commit, R8 mapping, Dart obfuscation map, split Dart symbols and
+  available native symbol tables under `build/releases/<version>/<UTC timestamp>/`.
+- Release R8 and resource shrinking are explicit. Narrow `-dontwarn` rules cover only the four optional ML Kit text
+  script models that the Latin receipt recognizer does not package; the release helper has regression coverage for
+  this configuration.
+- The local database enables SQLite `secure_delete`. App-owned OCR, preview, export, share, backup and restore
+  temporary directories are atomically detached at startup and recursively removed after the first frame, so a
+  large interrupted restore cannot block app startup. Error logging never includes exception text, private paths or
+  stack traces, and notification content is hidden from the lock screen.
+- OCR images and local document previews now enforce regular-file, size, signature, format and decoded-pixel limits
+  before native decoding. Imported private copies are hash-verified against the selected source.
+- Backup restore accepts supported older schemas by migrating a validated staging database before atomic promotion;
+  current data stays active until every migration and project/file consistency check passes. A synthetic backup
+  with the exact v8 schema is covered through the complete v8 -> v11 migration chain; a historical device fixture
+  remains part of pre-launch migration testing.
+- The Google Play listing icon is generated deterministically at
+  `assets/store/google-play-icon-512.png` and passes the 512 px / 1 MB constraints.
+- A full signed validation build was completed with a disposable key and non-production legal data. The resulting
+  test AAB was 85,637,925 bytes, its signature and manifest passed, and bundletool reported
+  `PAGE_ALIGNMENT_16K`. It is evidence of the pipeline only and must not be uploaded to Play.
+
 ## Verified baseline
 
 ```text
@@ -442,13 +472,15 @@ image 4.9.1
 crypto 3.0.7
 archive 4.0.9
 share_plus 12.0.2
+package_info_plus 9.0.1
+cupertino_icons 1.0.9
 ```
 
 The Android build passes with the known Flutter forward-compatibility warning
 for plugins that still apply the classic Kotlin Gradle plugin (`file_picker`,
 `flutter_timezone`, `google_mlkit_commons`, `google_mlkit_document_scanner`,
-`google_mlkit_text_recognition` and `share_plus`). Re-evaluate this when a
-package or Flutter is upgraded.
+`google_mlkit_text_recognition`, `package_info_plus` and `share_plus`).
+Re-evaluate this when a package or Flutter is upgraded.
 
 Quality gate:
 
@@ -459,7 +491,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-28. The full suite contains 431 passing tests. Debug APK:
+All commands passed on 2026-07-28. The full suite contains 468 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk

@@ -36,6 +36,8 @@ void main() {
     expect(await database.getVersion(), AppDatabase.schemaVersion);
     final foreignKeys = await database.rawQuery('PRAGMA foreign_keys');
     expect(foreignKeys.single.values.single, 1);
+    final secureDelete = await database.rawQuery('PRAGMA secure_delete');
+    expect(secureDelete.single.values.single, 1);
     expect(
       await appDatabase!.readMetadata(AppDatabase.schemaVersionKey),
       AppDatabase.schemaVersion.toString(),

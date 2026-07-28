@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
 
+import 'package:budowapro/core/files/local_file_preflight.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_scan.dart';
 import 'package:image/image.dart' as image;
 import 'package:pdfrx/pdfrx.dart';
@@ -60,12 +61,31 @@ final class LocalReceiptOcrImagePreparer implements ReceiptOcrImagePreparer {
       throw const ReceiptScanException(ReceiptScanFailureKind.unsupportedInput);
     }
     if (mediaType.startsWith('image/')) {
+      try {
+        await LocalFilePreflight.inspectImage(
+          original,
+          maximumBytes: LocalFilePreflight.maximumOcrInputBytes,
+          maximumPixels: LocalFilePreflight.maximumDecodedImagePixels,
+        );
+      } on FormatException {
+        throw const ReceiptScanException(
+          ReceiptScanFailureKind.unsupportedInput,
+        );
+      }
       return PreparedReceiptImage(
         imageUri: originalUri,
         disposeImage: () async {},
       );
     }
     if (mediaType != 'application/pdf') {
+      throw const ReceiptScanException(ReceiptScanFailureKind.unsupportedInput);
+    }
+    try {
+      await LocalFilePreflight.requirePdf(
+        original,
+        maximumBytes: LocalFilePreflight.maximumOcrInputBytes,
+      );
+    } on FormatException {
       throw const ReceiptScanException(ReceiptScanFailureKind.unsupportedInput);
     }
 

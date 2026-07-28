@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:budowapro/features/receipt_scan/data/receipt_ocr_image_preparer.dart';
+import 'package:budowapro/features/receipt_scan/domain/receipt_scan.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image/image.dart' as image;
 import 'package:path/path.dart' as p;
 
 void main() {
@@ -21,7 +23,10 @@ void main() {
 
   test('uses a private image original without creating a derivative', () async {
     final original = File(p.join(temporaryDirectory.path, 'receipt.jpg'));
-    await original.writeAsBytes(<int>[1], flush: true);
+    await original.writeAsBytes(
+      image.encodeJpg(image.Image(width: 120, height: 80)),
+      flush: true,
+    );
     final preparer = LocalReceiptOcrImagePreparer();
 
     final prepared = await preparer.prepare(
@@ -38,7 +43,7 @@ void main() {
     'renders a PDF first page and deletes the temporary derivative',
     () async {
       final original = File(p.join(temporaryDirectory.path, 'receipt.pdf'));
-      await original.writeAsBytes(<int>[1], flush: true);
+      await original.writeAsString('%PDF-1.7\nfixture', flush: true);
       final preparer = LocalReceiptOcrImagePreparer(
         renderPdfFirstPage: (source, target) async {
           expect(source.uri, original.uri);
@@ -58,4 +63,23 @@ void main() {
       expect(await original.exists(), isTrue);
     },
   );
+
+  test('rejects a mislabeled image before OCR', () async {
+    final original = File(p.join(temporaryDirectory.path, 'fake.jpg'));
+    await original.writeAsString('not an image', flush: true);
+
+    await expectLater(
+      LocalReceiptOcrImagePreparer().prepare(
+        originalUri: original.uri,
+        mediaType: 'image/jpeg',
+      ),
+      throwsA(
+        isA<ReceiptScanException>().having(
+          (error) => error.kind,
+          'kind',
+          ReceiptScanFailureKind.unsupportedInput,
+        ),
+      ),
+    );
+  });
 }

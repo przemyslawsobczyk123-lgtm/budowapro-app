@@ -12,6 +12,7 @@ class LegalCenterScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final config = ref.watch(legalReleaseConfigProvider);
+    final buildInfo = ref.watch(appBuildInfoProvider);
     return Scaffold(
       appBar: AppBar(title: Text(l10n.legalCenterTitle)),
       body: ListView(
@@ -59,6 +60,33 @@ class LegalCenterScreen extends ConsumerWidget {
             onTap: () => showLicensePage(
               context: context,
               applicationName: l10n.appTitle,
+            ),
+          ),
+          _SectionTitle(text: l10n.legalApplicationSection),
+          buildInfo.when(
+            data: (value) => Column(
+              children: [
+                _ValueTile(
+                  icon: Icons.info_outline_rounded,
+                  label: l10n.legalAppVersionLabel,
+                  value: value.displayVersion,
+                ),
+                _ValueTile(
+                  icon: Icons.android_rounded,
+                  label: l10n.legalAppPackageLabel,
+                  value: value.packageName,
+                ),
+              ],
+            ),
+            loading: () => _ValueTile(
+              icon: Icons.info_outline_rounded,
+              label: l10n.legalAppVersionLabel,
+              value: l10n.legalAppVersionLoading,
+            ),
+            error: (error, stackTrace) => _ValueTile(
+              icon: Icons.info_outline_rounded,
+              label: l10n.legalAppVersionLabel,
+              value: l10n.legalAppVersionUnavailable,
             ),
           ),
           _SectionTitle(text: l10n.legalPublisherSection),

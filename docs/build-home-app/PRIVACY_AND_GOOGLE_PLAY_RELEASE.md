@@ -1,32 +1,39 @@
-# BudowaPRO - prywatnosc i gotowosc Google Play
+# BudowaPRO - prywatnosc i wydanie Google Play
 
-Stan audytu: 2026-07-28.
+Stan audytu kodu: 2026-07-28.
 
-Ten dokument opisuje stan kodu i wymagane czynnosci publikacyjne. Nie zastepuje
-indywidualnej opinii prawnej wydawcy.
+Dokument opisuje wdrozone zabezpieczenia oraz czynnosci nalezace do wydawcy.
+Nie zastepuje indywidualnej opinii prawnej ani konfiguracji Play Console.
 
-## 1. Stan wdrozenia w aplikacji
+## 1. Stan wdrozenia
 
-- `Wiecej -> Prywatnosc i prawo` otwiera centrum prawne.
-- Polityka prywatnosci, warunki uzytkowania i ustawienia prywatnosci sa dostepne
-  bez konta, sieci i opuszczania aplikacji.
-- Dokumenty opisuja lokalne dane, retencje, usuwanie, eksport, OCR, Google ML Kit,
-  prawa uzytkownika, ograniczenia porad budowlanych i prawa konsumenta.
-- Polityka ujawnia, ze tresc obrazu, tekst wejsciowy i wynik OCR sa przetwarzane
-  na urzadzeniu, ale ML Kit moze wysylac Google techniczne metryki diagnostyczne
-  i wykorzystania.
-- Aplikacja nie zawiera reklam, Firebase Analytics, Firebase Crashlytics, konta
-  ani wlasnego backendu.
-- Automatyczna kopia Androida jest wylaczona. Reguly Android 11 i Android 12+
-  wykluczaja prywatne katalogi z kopii chmurowej i transferu urzadzenie-urzadzenie.
-- `compileSdk` i `targetSdk` sa ustawione na API 36.
-- Zadanie `preReleaseBuild` zalezy od walidacji danych prawnych, wiec build
-  release nie moze ominac kontroli przez uzycie innego zadania Gradle.
+- `Wiecej -> Prywatnosc i prawo` otwiera dostepne offline centrum prawne.
+- Polityka prywatnosci, warunki uzytkowania, licencje i ustawienia prywatnosci
+  sa dostepne bez konta i bez opuszczania aplikacji.
+- Dokumenty opisuja dane lokalne, retencje, usuwanie, eksport, OCR, Google
+  ML Kit, prawa uzytkownika i granice porad budowlanych.
+- Aplikacja nie ma reklam, konta, backendu, synchronizacji, Firebase Analytics
+  ani Firebase Crashlytics.
+- Automatyczna kopia Androida jest wylaczona. Reguly Android 11 i 12+
+  wykluczaja prywatne pliki z backupu i transferu urzadzenie-urzadzenie.
+- Prywatna baza uzywa `secure_delete`; katalogi tymczasowe OCR, eksportu,
+  udostepniania, kopii i odtwarzania sa szybko odpinane przy starcie, a ich
+  rekursywne kasowanie odbywa sie po pokazaniu pierwszej klatki aplikacji.
+- Obrazy i PDF-y kierowane do OCR lub generatora podgladu przechodza kontrole
+  typu, sygnatury, rozmiaru i limitu pikseli przed dekodowaniem. Oryginal
+  ogolnego zalacznika jest sprawdzany jako zwykly plik, ograniczany rozmiarem
+  i kopiowany z kontrola SHA-256, ale moze pozostac zapisany bez podgladu.
+  Kopie ZIP sa sprawdzane przed atomowym odtworzeniem, a starszy obslugiwany
+  schemat jest migrowany w pliku roboczym.
+- Android blokuje cleartext HTTP, szeroki backup i niepotrzebne uprawnienia.
+  `compileSdk` i `targetSdk` sa ustawione na API 36.
+- Release uzywa R8, kurczenia zasobow, obfuskacji Dart i symboli debugowania.
+  Reguly R8 dotycza wylacznie opcjonalnych modeli pisma ML Kit, ktorych
+  BudowaPRO nie pakuje.
 
-## 2. Wymagane dane wydawcy
+## 2. Dane wydawcy
 
-Przed pierwszym buildem release wlasciciel produktu musi podac trzy prawdziwe
-wartosci:
+Przed wydaniem trzeba podac prawdziwe wartosci:
 
 ```text
 BUDOWAPRO_PUBLISHER_NAME
@@ -34,112 +41,178 @@ BUDOWAPRO_PRIVACY_CONTACT_EMAIL
 BUDOWAPRO_PRIVACY_POLICY_URL
 ```
 
-Przyklad polecenia:
+Adres polityki musi:
 
-```powershell
-flutter build appbundle --release `
-  --dart-define="BUDOWAPRO_PUBLISHER_NAME=PELNA NAZWA WYDAWCY" `
-  --dart-define="BUDOWAPRO_PRIVACY_CONTACT_EMAIL=privacy@example.pl" `
-  --dart-define="BUDOWAPRO_PRIVACY_POLICY_URL=https://example.pl/budowapro/privacy"
+- uzywac HTTPS;
+- zwracac publiczny dokument HTML bez logowania;
+- nie prowadzic do PDF;
+- odpowiadac tresci polityki dostepnej w aplikacji.
+
+Google Play wymaga publicznego URL nawet wtedy, gdy aplikacja przechowuje dane
+projektu tylko lokalnie. Sama zakladka w APK nie wypelnia tego wymagania.
+Skrypt release sprawdza skladnie, odpowiedz HTTPS i typ `text/html`, ale nie
+moze potwierdzic tozsamosci wydawcy ani prawdziwosci wpisanych danych.
+
+## 3. Klucz upload i podpis
+
+Prawdziwego klucza ani hasel nie wolno dodawac do Git. Repozytorium ignoruje
+`android/key.properties`, `*.jks` i `*.keystore`. Szablon konfiguracji znajduje
+sie w `android/key.properties.example`.
+
+Zalecany wariant CI korzysta ze zmiennych:
+
+```text
+BUDOWAPRO_UPLOAD_STORE_FILE
+BUDOWAPRO_UPLOAD_STORE_PASSWORD
+BUDOWAPRO_UPLOAD_KEY_ALIAS
+BUDOWAPRO_UPLOAD_KEY_PASSWORD
+BUDOWAPRO_UPLOAD_CERT_SHA256
 ```
 
-Adres polityki musi uzywac HTTPS, byc publicznie dostepny bez logowania i nie
-moze prowadzic do PDF. Publiczna kopia musi odpowiadac wersji w aplikacji.
+Klucz upload nalezy utworzyc raz, przechowywac w menedzerze sekretow i wykonac
+jego bezpieczna kopie. Odcisk SHA-256 nalezy odczytac przez `keytool -list -v`
+i zapisac jako `BUDOWAPRO_UPLOAD_CERT_SHA256`. W Play Console trzeba wlaczyc
+Play App Signing.
 
-Google Play wymaga publicznego URL polityki nawet wtedy, gdy aplikacja nie
-zbiera danych uzytkownika. Sama zakladka w APK nie spelnia pola URL w Play
-Console. Kod nie tworzy strony internetowej, zgodnie z decyzja produktowa.
+## 4. Kontrolowany build AAB
 
-Skladnia adresu jest sprawdzana w Gradle i aplikacji. Dostepnosc, odpowiedz
-HTTPS oraz typ HTML trzeba sprawdzic w CI przed publikacja:
+Po ustawieniu wszystkich osmiu zmiennych uruchom:
 
 ```powershell
-dart run tool/check_privacy_policy_url.dart `
-  "https://example.pl/budowapro/privacy"
+dart run tool/release/build_android_release.dart
 ```
 
-## 3. Wstepna deklaracja Data safety
+Domyslnie proces odrzuca brudne drzewo Git. `--allow-dirty` jest przeznaczone
+wylacznie do lokalnej walidacji zmian, nie do artefaktu publikacyjnego.
+`--validation` jawnie dopuszcza zarezerwowane dane testowe i oznacza wynik
+jako testowy. Artefaktu z `validationOnly: true` nie wolno wysylac do Play.
 
-Deklaracje trzeba potwierdzic ponownie dla dokladnych wersji SDK w artefakcie
-wysylanym do Google Play.
+Proces wykonuje:
+
+1. sprawdzenie klucza, oczekiwanego odcisku certyfikatu upload, danych wydawcy
+   i publicznego HTML polityki;
+2. `flutter pub get`, generowanie lokalizacji, format, analize i wszystkie testy;
+3. podpisany AAB release z obfuskacja i osobnymi symbolami Dart;
+4. weryfikacje podpisu przez `jarsigner` i porownanie certyfikatu AAB;
+5. kontrole `PAGE_ALIGNMENT_16K`, segmentow `LOAD` bibliotek 64-bit,
+   uniwersalnego APK i `zipalign -P 16` przez przypiety `bundletool 1.18.3`;
+6. odczyt scalonego manifestu i porownanie uprawnien ze scisla allowlista;
+7. archiwizacje AAB, mapy R8, symboli Dart/native i metadanych z SHA-256.
+
+Wynik trafia do:
+
+```text
+build/releases/<wersja>/<czas-UTC>/
+```
+
+Plik `release-metadata.json` jest dowodem wykonanych kontroli. Symbole i mapy
+musza byc przechowywane razem z konkretnym AAB, aby mozna bylo analizowac bledy
+tej wersji.
+
+## 5. Data safety
+
+Deklaracje trzeba potwierdzic dla dokladnych wersji SDK w wysylanym AAB.
 
 ### Dane projektu
 
 - Projekty, koszty, kontakty, dokumenty, zdjecia, skany i tekst OCR sa lokalne.
 - Wydawca nie ma backendu i nie otrzymuje tych tresci.
-- Eksport do pliku lub innej aplikacji jest transferem zainicjowanym przez
-  uzytkownika do wybranego dostawcy.
+- Eksport jest transferem uruchomionym przez uzytkownika do wybranego odbiorcy.
+- Reczna kopia ZIP nie jest szyfrowana i musi byc przechowywana w zaufanym
+  miejscu.
 
 ### Google ML Kit
 
-Wedlug dokumentacji Google dla aktualnych SDK nalezy przeanalizowac w formularzu:
+Formularz powinien uwzgledniac ujawnione przez Google techniczne dane SDK:
 
-- `Device or other IDs` - identyfikator instalacji, a dla niektorych wariantow
-  rowniez identyfikator urzadzenia;
-- `App info and performance` - dane urzadzenia i aplikacji, wydajnosc,
-  konfiguracja funkcji i kody bledow;
-- `App activity` - zdarzenia inicjalizacji, pobrania modelu, wykrycia i
-  zwolnienia zasobow;
-- cel: diagnostyka i analityka wykorzystania ML Kit;
-- szyfrowanie w tranzycie: tak, HTTPS;
-- udostepnianie stronom trzecim wedlug deklaracji Google dla tych danych: nie.
+- `Device or other IDs`;
+- `App info and performance`;
+- `App activity`;
+- cele diagnostyczne i analityka wykorzystania ML Kit;
+- szyfrowanie w tranzycie przez HTTPS.
 
-Nie deklarowac, ze BudowaPRO nie zbiera absolutnie zadnych danych, dopoki w
-artefakcie pozostaje ML Kit i formularz Data safety nie uwzglednia jego metryk.
-Nie deklarowac wysylania obrazu, tekstu dokumentu ani wyniku OCR do Google,
-poniewaz dokumentacja ML Kit wskazuje przetwarzanie tych tresci na urzadzeniu.
+Nie nalezy deklarowac, ze aplikacja nie zbiera absolutnie zadnych danych,
+dopoki w AAB pozostaje ML Kit. Nie nalezy tez deklarowac wysylania obrazu,
+tekstu dokumentu ani wyniku OCR do Google, poniewaz te tresci sa przetwarzane
+na urzadzeniu.
 
-## 4. Uprawnienia i dane wrazliwe
+## 6. Uprawnienia
 
-Manifest zrodlowy BudowaPRO deklaruje bezposrednio:
+BudowaPRO deklaruje bezposrednio:
 
-- `POST_NOTIFICATIONS` - lokalne przypomnienia;
-- `RECEIVE_BOOT_COMPLETED` - odtworzenie lokalnie zaplanowanych przypomnien po
-  ponownym uruchomieniu telefonu.
+- `POST_NOTIFICATIONS` dla lokalnych przypomnien;
+- `RECEIVE_BOOT_COMPLETED` dla ich odtworzenia po restarcie telefonu.
 
-Scalony artefakt zawiera rowniez uprawnienia dostarczone przez biblioteki:
-`INTERNET`, `ACCESS_NETWORK_STATE` i `VIBRATE`. Siec jest wykorzystywana przez
-transport technicznych metryk i aktualizacji ML Kit opisany w polityce.
-`VIBRATE` obsluguje lokalne powiadomienia.
+Scalony AAB zawiera tez uprawnienia bibliotek: `INTERNET`,
+`ACCESS_NETWORK_STATE` i `VIBRATE`. Manifest nie zawiera szerokiego odczytu
+kontaktow, pamieci, zdjec, mikrofonu, lokalizacji ani uprawnienia `CAMERA`.
+Pojedynczy kontakt i pliki wybiera systemowy selektor.
 
-Scalony manifest nie zawiera szerokiego odczytu kontaktow, pamieci, zdjec,
-mikrofonu ani uprawnienia `CAMERA`. Pojedynczy kontakt i pliki sa wybierane
-przez systemowe selektory. Skaner jest otwierany dopiero po jawnej akcji.
-Przed kazdym wydaniem nalezy ponownie sprawdzic scalony manifest release,
-poniewaz aktualizacja SDK moze dodac uprawnienia.
+Skrypt release wymaga dokladnie tego zestawu pieciu uprawnien Androida oraz
+technicznego, lokalnego uprawnienia pakietu
+`pl.budowapro.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`. Aktualizacja SDK,
+ktora doda lub usunie wpis `<uses-permission>`, zatrzyma wydanie do czasu
+jawnego audytu i aktualizacji allowlisty.
 
-## 5. Play Console przed wyslaniem
+## 7. Play Console przed publikacja
 
-1. Zweryfikowac prawna nazwe i dane konta dewelopera.
-2. Wpisac publiczny URL polityki prywatnosci.
-3. Wypelnic Data safety z uwzglednieniem dokladnych wersji ML Kit.
-4. Ustawic deklaracje reklam na `Nie`.
-5. Wypelnic grupe docelowa, klasyfikacje tresci i opis funkcji.
-6. Podac publiczny e-mail wsparcia zgodny z dokumentami w aplikacji.
-7. W sekcji dostepu dla recenzenta wskazac, ze aplikacja nie ma logowania.
-8. Zweryfikowac wymagania testu zamknietego zalezne od typu i wieku konta.
-9. Skonfigurowac prawdziwy klucz podpisu release poza repozytorium.
-10. Zbudowac i przetestowac podpisany AAB na torze wewnetrznym.
-11. Uruchomic sieciowy test publicznego URL polityki i potwierdzic odpowiedz HTML.
+1. Potwierdz prawna nazwe, adres i dane konta dewelopera.
+2. Wlacz Play App Signing i zarejestruj certyfikat klucza upload.
+3. Wpisz publiczny URL polityki oraz zgodny e-mail wsparcia.
+4. Wypelnij Data safety dla dokladnego AAB i wersji ML Kit.
+5. Ustaw deklaracje reklam na `Nie`.
+6. Wypelnij grupe docelowa, klasyfikacje tresci i dostep dla recenzenta.
+7. Dodaj opis, zrzuty ekranu i grafike funkcji. Gotowa ikona 512 px znajduje
+   sie w `assets/store/google-play-icon-512.png`.
+8. Wyslij AAB na tor wewnetrzny, wykonaj test instalacji i migracji danych.
+9. Uruchom raport przedpremierowy na roznych wersjach Androida.
+10. Przejdz wymagany test zamkniety, jesli dotyczy typu konta.
+11. Opublikuj etapowo i zachowaj AAB, `release-metadata.json` oraz symbole.
 
-Brak konta uzytkownika oznacza, ze URL usuwania konta nie jest wymagany. Lokalne
-dane usuwa sie w aplikacji, przez wyczyszczenie danych Androida lub odinstalowanie.
+Brak konta uzytkownika oznacza, ze URL usuwania konta nie jest wymagany.
+Lokalne dane usuwa sie w aplikacji, ustawieniach Androida lub przez
+odinstalowanie. Reczne kopie i eksporty trzeba usunac osobno.
 
-## 6. Oficjalne zrodla
+## 8. Znane granice
 
+- Prawdziwe dane wydawcy, publiczny URL, klucz upload i Play Console pozostaja
+  czynnosciami wlasciciela produktu.
+- Kopie ZIP sa swiadomie nieszyfrowane; aplikacja pokazuje to przed eksportem.
+- Android moze udostepnic odbiorcy tymczasowa kopie ZIP/CSV. BudowaPRO planuje
+  jej usuniecie po zakonczeniu wyboru aplikacji i ponawia sprzatanie przy
+  kolejnym starcie; plik musi istniec wystarczajaco dlugo, aby odbiorca mogl
+  go odczytac.
+- Wtyczki Fluttera nadal emituja przyszlosciowe ostrzezenie o migracji do
+  Built-in Kotlin. Biezacy release dziala, ale trzeba sprawdzic je przy kazdej
+  aktualizacji Fluttera.
+- Zaleznosci natywne powinny byc aktualizowane pojedynczo, z ponownym testem
+  skanera, powiadomien, selektorow i podpisanego AAB.
+
+## 9. Oficjalne zrodla
+
+- Flutter Android release:
+  https://docs.flutter.dev/deployment/android
+- Flutter obfuscation:
+  https://docs.flutter.dev/deployment/obfuscate
+- Android app signing:
+  https://developer.android.com/studio/publish/app-signing
+- Android App Bundle:
+  https://developer.android.com/studio/publish/upload-bundle
+- Native debug symbols:
+  https://developer.android.com/build/include-native-symbols
+- Android 16 KB page sizes:
+  https://developer.android.com/guide/practices/page-sizes
 - Google Play User Data:
   https://support.google.com/googleplay/android-developer/answer/17105854
 - Google Play Data safety:
   https://support.google.com/googleplay/android-developer/answer/10787469
-- Google ML Kit Terms and Privacy:
-  https://developers.google.com/ml-kit/terms
+- Google Play pre-launch report:
+  https://support.google.com/googleplay/android-developer/answer/9842757
 - Google ML Kit data disclosure:
   https://developers.google.com/ml-kit/android-data-disclosure
-- Target API level:
-  https://developer.android.com/google/play/requirements/target-sdk
 - Android Auto Backup:
   https://developer.android.com/identity/data/autobackup
 - RODO:
   https://eur-lex.europa.eu/eli/reg/2016/679/oj
-- UODO - skarga:
+- UODO:
   https://uodo.gov.pl/pl/138/155

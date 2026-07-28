@@ -3,6 +3,7 @@ import 'package:budowapro/features/schedule/data/schedule_notification_payload.d
 import 'package:budowapro/features/schedule/data/schedule_reminder_time.dart';
 import 'package:budowapro/features/schedule/domain/schedule_event.dart';
 import 'package:budowapro/features/schedule/domain/schedule_notification_gateway.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
@@ -72,6 +73,13 @@ void main() {
     expect(
       scheduleNotificationId('project', 'event'),
       isNot(scheduleNotificationId('project', 'other')),
+    );
+  });
+
+  test('notification content stays hidden on a secure lock screen', () {
+    expect(
+      scheduleNotificationDetails.android?.visibility,
+      NotificationVisibility.secret,
     );
   });
 }

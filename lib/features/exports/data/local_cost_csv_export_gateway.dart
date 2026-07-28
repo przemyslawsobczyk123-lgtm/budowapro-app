@@ -7,6 +7,7 @@ import 'package:budowapro/features/costs/domain/cost_export_record.dart';
 import 'package:budowapro/features/costs/domain/cost_repository.dart';
 import 'package:budowapro/features/exports/domain/cost_csv_export.dart';
 import 'package:budowapro/shared/models/page.dart';
+import 'package:budowapro/shared/services/local_private_cache_cleaner.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -98,6 +99,7 @@ final class LocalCostCsvExportGateway implements CostCsvExportGateway {
       await sink.close();
       completed = true;
       await _shareFile(file);
+      await _deleteIfPresent(file);
       return CostCsvExportResult(recordCount: recordCount);
     } on Object catch (error, stackTrace) {
       if (!completed) {
@@ -156,12 +158,16 @@ final class LocalCostCsvExportGateway implements CostCsvExportGateway {
 }
 
 Future<void> _shareCsvFile(File file) async {
-  await SharePlus.instance.share(
-    ShareParams(
-      files: <XFile>[XFile(file.path, mimeType: 'text/csv')],
-      title: 'BudowaPRO - eksport kosztów',
-    ),
-  );
+  try {
+    await SharePlus.instance.share(
+      ShareParams(
+        files: <XFile>[XFile(file.path, mimeType: 'text/csv')],
+        title: 'BudowaPRO - eksport kosztów',
+      ),
+    );
+  } finally {
+    LocalPrivateCacheCleaner.forDevice().scheduleShareCacheCleanup();
+  }
 }
 
 String _encodeRows(List<List<String>> rows, List<bool> untrustedColumns) {

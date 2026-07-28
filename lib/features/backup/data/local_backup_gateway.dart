@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:budowapro/features/backup/domain/backup_gateway.dart';
 import 'package:budowapro/features/backup/domain/backup_models.dart';
+import 'package:budowapro/shared/services/local_private_cache_cleaner.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -38,8 +39,12 @@ final class LocalBackupGateway implements BackupGateway {
   @override
   Future<BackupPreview> createAndShare({required String shareTitle}) async {
     final artifact = await _service.createBackup();
-    await _shareArchive(artifact.file, shareTitle);
-    return artifact.preview;
+    try {
+      await _shareArchive(artifact.file, shareTitle);
+      return artifact.preview;
+    } finally {
+      await _deletePrivateFile(artifact.file);
+    }
   }
 
   @override
@@ -89,10 +94,22 @@ Future<File?> _pickBackupArchive() async {
 }
 
 Future<void> _shareBackupArchive(File file, String shareTitle) async {
-  await SharePlus.instance.share(
-    ShareParams(
-      files: <XFile>[XFile(file.path, mimeType: 'application/zip')],
-      title: shareTitle,
-    ),
-  );
+  try {
+    await SharePlus.instance.share(
+      ShareParams(
+        files: <XFile>[XFile(file.path, mimeType: 'application/zip')],
+        title: shareTitle,
+      ),
+    );
+  } finally {
+    LocalPrivateCacheCleaner.forDevice().scheduleShareCacheCleanup();
+  }
+}
+
+Future<void> _deletePrivateFile(File file) async {
+  try {
+    if (await file.exists()) await file.delete();
+  } on FileSystemException {
+    // Startup maintenance retries cleanup of app-owned temporary files.
+  }
 }

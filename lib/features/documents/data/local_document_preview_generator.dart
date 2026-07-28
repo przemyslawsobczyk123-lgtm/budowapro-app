@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
 
+import 'package:budowapro/core/files/local_file_preflight.dart';
 import 'package:budowapro/core/files/project_file_store.dart';
 import 'package:image/image.dart' as image;
 import 'package:pdfrx/pdfrx.dart';
@@ -40,6 +41,22 @@ final class LocalDocumentPreviewGenerator
     );
     if (!await original.exists()) {
       throw const FileSystemException('Document original is missing');
+    }
+    try {
+      if (mediaType == 'application/pdf') {
+        await LocalFilePreflight.requirePdf(
+          original,
+          maximumBytes: LocalFilePreflight.maximumPreviewInputBytes,
+        );
+      } else {
+        await LocalFilePreflight.inspectImage(
+          original,
+          maximumBytes: LocalFilePreflight.maximumPreviewInputBytes,
+          maximumPixels: LocalFilePreflight.maximumDecodedImagePixels,
+        );
+      }
+    } on FormatException {
+      return null;
     }
     final temporaryDirectory = await Directory.systemTemp.createTemp(
       'budowapro_preview_',
