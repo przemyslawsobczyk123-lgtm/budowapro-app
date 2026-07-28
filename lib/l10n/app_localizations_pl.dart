@@ -3253,7 +3253,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get backupLocalOnlyDescription =>
-      'Dane pozostają lokalne. Po utworzeniu kopii wybierzesz miejsce zapisu w systemowym panelu telefonu.';
+      'Dane pozostają lokalne do chwili eksportu. Kopia ZIP nie jest szyfrowana i może zawierać dokumenty, kontakty oraz zdjęcia, dlatego zapisz ją w zaufanym miejscu.';
 
   @override
   String get backupCreateHeading => 'Utwórz kopię';
@@ -3844,4 +3844,326 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get captureApprovedMessage => 'Zapis został uporządkowany.';
+
+  @override
+  String get legalCenterTitle => 'Prywatność i prawo';
+
+  @override
+  String get legalCenterTileSubtitle => 'Polityka, warunki i kontrola danych';
+
+  @override
+  String get legalDocumentsSection => 'Dokumenty i ustawienia';
+
+  @override
+  String get privacyPolicyTitle => 'Polityka prywatności';
+
+  @override
+  String get privacyPolicyTileSubtitle =>
+      'Jak aplikacja przechowuje i przetwarza dane';
+
+  @override
+  String get termsOfUseTitle => 'Warunki użytkowania';
+
+  @override
+  String get termsOfUseTileSubtitle =>
+      'Zasady korzystania i granice porad budowlanych';
+
+  @override
+  String get privacySettingsTitle => 'Ustawienia prywatności';
+
+  @override
+  String get privacySettingsTileSubtitle =>
+      'Status usług, uprawnień i kopii danych';
+
+  @override
+  String get openSourceLicensesTitle => 'Licencje open source';
+
+  @override
+  String get legalPublisherSection => 'Wydawca i kontakt';
+
+  @override
+  String get legalPublisherLabel => 'Wydawca aplikacji';
+
+  @override
+  String get legalContactLabel => 'Kontakt w sprawach prywatności';
+
+  @override
+  String get legalNotConfiguredValue => 'Nie skonfigurowano do wydania';
+
+  @override
+  String get legalEmailSubject => 'BudowaPRO — prywatność';
+
+  @override
+  String get legalPublicPolicyLabel => 'Publiczna kopia polityki';
+
+  @override
+  String get legalDocumentVersion => 'Wersja 1.0 · obowiązuje od 28.07.2026';
+
+  @override
+  String get legalIntroTitle => 'Prywatność dostępna w aplikacji';
+
+  @override
+  String get legalIntroMessage =>
+      'W jednym miejscu sprawdzisz zasady, faktyczne przepływy danych i sposoby zarządzania lokalną zawartością.';
+
+  @override
+  String get legalReleaseConfigMissingTitle => 'Wydanie wymaga uzupełnienia';
+
+  @override
+  String legalReleaseConfigMissingMessage(String fields) {
+    return 'Brakuje: $fields. Kompilacja release pozostaje zablokowana, aby nie opublikować niepełnych danych prawnych.';
+  }
+
+  @override
+  String get legalMissingPublisherRequirement => 'nazwa wydawcy';
+
+  @override
+  String get legalMissingEmailRequirement => 'prawidłowy e-mail';
+
+  @override
+  String get legalMissingPublicUrlRequirement =>
+      'publiczny adres HTTPS polityki';
+
+  @override
+  String get legalOpenLinkError => 'Nie udało się otworzyć odnośnika.';
+
+  @override
+  String get privacyPolicyIntro =>
+      'Poniższe sekcje opisują rzeczywiste działanie BudowaPRO. Rozwiń temat, aby przeczytać szczegóły.';
+
+  @override
+  String get termsOfUseIntro =>
+      'BudowaPRO pomaga organizować budowę lub remont, ale nie zastępuje projektu, kierownika budowy ani uprawnionego specjalisty.';
+
+  @override
+  String get legalOfficialSourcesTitle => 'Oficjalne źródła';
+
+  @override
+  String get legalSourceMlKitTerms => 'Google ML Kit — warunki i prywatność';
+
+  @override
+  String get legalSourceMlKitDisclosure =>
+      'Google ML Kit — ujawnianie danych w Google Play';
+
+  @override
+  String get legalSourceGooglePrivacy => 'Google — polityka prywatności';
+
+  @override
+  String get legalSourceGdpr => 'RODO — rozporządzenie (UE) 2016/679';
+
+  @override
+  String get legalSourceUodo => 'UODO — prawo do złożenia skargi';
+
+  @override
+  String get privacySectionPublisherTitle => '1. Wydawca i zakres polityki';
+
+  @override
+  String privacySectionPublisherBody(String publisher, String contact) {
+    return 'Podmiot wskazany jako wydawca BudowaPRO: $publisher. Kontakt w sprawach prywatności: $contact. Aplikacja nie wymaga konta i nie ma serwera BudowaPRO. Wydawca nie ma zdalnego dostępu do treści zapisanych wyłącznie w prywatnej pamięci aplikacji.';
+  }
+
+  @override
+  String get privacySectionLocalDataTitle => '2. Dane przechowywane lokalnie';
+
+  @override
+  String get privacySectionLocalDataBody =>
+      'Na urządzeniu mogą być zapisane dane projektów, budżetów, kosztów, wykonawców i kontaktów, terminów, notatek, decyzji, usterek, dokumentów, zdjęć, skanów, wyników OCR oraz ręcznych kopii zapasowych. BudowaPRO zapisuje je w prywatnej pamięci aplikacji. Nie przesyła tych treści do własnego backendu, ponieważ taki backend nie istnieje.';
+
+  @override
+  String get privacySectionPurposeTitle => '3. Cel i sposób przetwarzania';
+
+  @override
+  String get privacySectionPurposeBody =>
+      'Lokalne operacje uruchamiasz samodzielnie, aby prowadzić projekt, liczyć koszty, planować prace, przechowywać dokumentację i tworzyć kopie. BudowaPRO nie używa danych do reklam, profilowania, sprzedaży danych ani marketingu. Nie ma automatycznych decyzji wywołujących skutki prawne.';
+
+  @override
+  String get privacySectionOcrTitle => '4. Skaner i Google ML Kit';
+
+  @override
+  String get privacySectionOcrBody =>
+      'Rozpoznawanie obrazu i tekstu odbywa się na urządzeniu. Zgodnie z dokumentacją Google obrazy, tekst wejściowy i wynik OCR nie są wysyłane do serwerów Google. Biblioteki ML Kit mogą jednak kontaktować się z Google po aktualizacje i wysyłać zaszyfrowane metryki techniczne: informacje o urządzeniu i aplikacji, identyfikator instalacji, parametry i wydajność funkcji, typy zdarzeń oraz kody błędów. Google używa ich do diagnostyki i analityki wykorzystania ML Kit.';
+
+  @override
+  String get privacySectionSharingTitle => '5. Odbiorcy i udostępnianie';
+
+  @override
+  String get privacySectionSharingBody =>
+      'Poza technicznymi metrykami ML Kit BudowaPRO nie udostępnia danych automatycznie. Eksport CSV, kopia ZIP, telefon, e-mail albo systemowe udostępnianie uruchamiają się dopiero po Twojej akcji i przekazują wybraną zawartość do wskazanej przez Ciebie aplikacji lub dostawcy. Ręczna kopia ZIP nie jest szyfrowana i może zawierać dokumenty, kontakty oraz zdjęcia. Dalsze przetwarzanie podlega zasadom wybranego odbiorcy.';
+
+  @override
+  String get privacySectionRetentionTitle =>
+      '6. Okres przechowywania i usuwanie';
+
+  @override
+  String get privacySectionRetentionBody =>
+      'Dane pozostają w aplikacji do czasu usunięcia rekordu lub projektu, wyczyszczenia danych BudowaPRO w ustawieniach Androida albo odinstalowania aplikacji. Ręcznie wyeksportowane pliki pozostają w wybranej lokalizacji do czasu, aż usuniesz je osobno. Automatyczny backup danych aplikacji jest wyłączony i wykluczony w regułach Androida.';
+
+  @override
+  String get privacySectionRightsTitle => '7. Kontrola danych i prawa';
+
+  @override
+  String privacySectionRightsBody(String contact) {
+    return 'Dane lokalne możesz przeglądać, poprawiać, eksportować i usuwać w aplikacji. Ponieważ wydawca nie posiada ich zdalnej kopii, nie może zwrócić ani usunąć jej za Ciebie. Pytania dotyczące działania aplikacji kieruj na: $contact. W zakresie objętym RODO możesz realizować prawa wobec właściwego administratora danych i złożyć skargę do Prezesa UODO.';
+  }
+
+  @override
+  String get privacySectionSecurityTitle => '8. Bezpieczeństwo';
+
+  @override
+  String get privacySectionSecurityBody =>
+      'BudowaPRO używa prywatnych katalogów aplikacji, weryfikuje kopie i ogranicza uprawnienia systemowe. Chroń telefon blokadą ekranu i przechowuj ręczne kopie w zaufanym miejscu. Żadne zabezpieczenie nie usuwa ryzyka utraty danych po uszkodzeniu urządzenia, złośliwym oprogramowaniu lub udostępnieniu odblokowanego telefonu.';
+
+  @override
+  String get privacySectionChangesTitle => '9. Zmiany polityki';
+
+  @override
+  String get privacySectionChangesBody =>
+      'Istotna zmiana funkcji, dostawcy SDK lub przepływu danych wymaga aktualizacji tej polityki i sekcji Bezpieczeństwo danych w Google Play. Aktualna wersja pozostaje dostępna w aplikacji oraz pod publicznym adresem wskazanym w Google Play.';
+
+  @override
+  String get termsSectionProviderTitle => '1. Usługodawca';
+
+  @override
+  String termsSectionProviderBody(String publisher, String contact) {
+    return 'BudowaPRO udostępnia: $publisher. Kontakt: $contact. Korzystanie z aplikacji nie wymaga utworzenia konta ani zawarcia odpłatnej subskrypcji w tej wersji.';
+  }
+
+  @override
+  String get termsSectionPurposeTitle => '2. Przeznaczenie aplikacji';
+
+  @override
+  String get termsSectionPurposeBody =>
+      'Aplikacja służy do prywatnego organizowania budowy lub remontu: kosztów, etapów, kontaktów, dokumentów, terminów, zdjęć i notatek. Użytkownik może korzystać z niej wyłącznie zgodnie z prawem i prawami osób trzecich.';
+
+  @override
+  String get termsSectionSafetyTitle =>
+      '3. Informacje budowlane i bezpieczeństwo';
+
+  @override
+  String get termsSectionSafetyBody =>
+      'Checklisty i wskazówki mają charakter organizacyjny i informacyjny. Nie są projektem budowlanym, opinią techniczną ani indywidualnym doborem rozwiązania. Przed wykonaniem robót zweryfikuj aktualne przepisy, projekt, warunki gruntowe, instrukcje producenta i ustalenia z projektantem, kierownikiem budowy lub osobą z wymaganymi uprawnieniami.';
+
+  @override
+  String get termsSectionUserDataTitle => '4. Dane użytkownika i kopie';
+
+  @override
+  String get termsSectionUserDataBody =>
+      'Odpowiadasz za legalność wprowadzanych kontaktów, zdjęć i dokumentów oraz za posiadanie prawa do ich użycia. Dane są lokalne. Regularnie twórz ręczną kopię i sprawdzaj możliwość jej odtworzenia. Usunięcie projektu, wyczyszczenie pamięci lub utrata telefonu może być nieodwracalne bez poprawnej kopii.';
+
+  @override
+  String get termsSectionOcrTitle => '5. OCR i obliczenia';
+
+  @override
+  String get termsSectionOcrBody =>
+      'OCR może błędnie odczytać nazwę, datę, pozycję, VAT lub kwotę. Każdy wynik trzeba sprawdzić przed zapisem i zatwierdzeniem kosztu. Podsumowania zależą od poprawności danych wprowadzonych lub zaakceptowanych przez użytkownika.';
+
+  @override
+  String get termsSectionAvailabilityTitle => '6. Dostępność i aktualizacje';
+
+  @override
+  String get termsSectionAvailabilityBody =>
+      'Nie gwarantuje się nieprzerwanego działania na każdym urządzeniu ani zgodności ze wszystkimi formatami dokumentów. Aktualizacje mogą poprawiać bezpieczeństwo, zgodność z Androidem i zakres funkcji, z zachowaniem lokalnych danych w ramach obsługiwanych migracji.';
+
+  @override
+  String get termsSectionLiabilityTitle => '7. Odpowiedzialność';
+
+  @override
+  String get termsSectionLiabilityBody =>
+      'Wydawca odpowiada w granicach bezwzględnie obowiązującego prawa. Warunki nie wyłączają ani nie ograniczają ustawowych praw konsumenta. Użytkownik odpowiada za decyzje budowlane podjęte bez wymaganej weryfikacji specjalisty oraz za skutki podania nieprawidłowych danych.';
+
+  @override
+  String get termsSectionLawTitle => '8. Prawo i spory';
+
+  @override
+  String get termsSectionLawBody =>
+      'Stosuje się prawo polskie, bez uszczerbku dla bezwzględnie obowiązujących praw konsumenta wynikających z prawa miejsca jego zamieszkania. Spór można najpierw zgłosić wydawcy na podany adres kontaktowy.';
+
+  @override
+  String get termsSectionChangesTitle => '9. Zmiany warunków';
+
+  @override
+  String get termsSectionChangesBody =>
+      'Nowa wersja warunków powinna otrzymać nową datę i być dostępna przed publikacją aktualizacji, jeżeli zmiana wpływa na prawa użytkownika lub sposób działania aplikacji.';
+
+  @override
+  String get privacySettingsIntro =>
+      'BudowaPRO nie ma konta, reklam ani własnej analityki. Ten ekran pokazuje realne ustawienia i wyjątek techniczny związany z Google ML Kit.';
+
+  @override
+  String get privacyStatusSection => 'Bieżący status';
+
+  @override
+  String get privacyStatusLocalTitle => 'Treści projektu pozostają lokalnie';
+
+  @override
+  String get privacyStatusLocalSubtitle =>
+      'Baza, zdjęcia, dokumenty i OCR są zapisywane w prywatnej pamięci aplikacji.';
+
+  @override
+  String get privacyStatusAccountTitle => 'Brak konta i synchronizacji';
+
+  @override
+  String get privacyStatusAccountSubtitle =>
+      'BudowaPRO nie ma logowania, profilu użytkownika ani własnego backendu.';
+
+  @override
+  String get privacyStatusTrackingTitle =>
+      'Brak reklam i śledzenia marketingowego';
+
+  @override
+  String get privacyStatusTrackingSubtitle =>
+      'Aplikacja nie używa reklam, Firebase Analytics ani Crashlytics. Metryki techniczne ML Kit opisano osobno.';
+
+  @override
+  String get privacyStatusMlKitTitle => 'Techniczne metryki Google ML Kit';
+
+  @override
+  String get privacyStatusMlKitSubtitle =>
+      'Po użyciu skanera lub OCR Google może otrzymać metryki urządzenia, aplikacji, wydajności i błędów — bez obrazu, tekstu dokumentu i wyniku OCR.';
+
+  @override
+  String get privacyPermissionsSection => 'Uprawnienia i usługi Androida';
+
+  @override
+  String get privacyPermissionNotificationsTitle => 'Powiadomienia';
+
+  @override
+  String get privacyPermissionNotificationsSubtitle =>
+      'Służą wyłącznie lokalnym przypomnieniom i są uruchamiane po decyzji użytkownika.';
+
+  @override
+  String get privacyPermissionContactsTitle => 'Kontakty';
+
+  @override
+  String get privacyPermissionContactsSubtitle =>
+      'Wybierasz pojedynczy kontakt przez systemowy selektor. Aplikacja nie żąda szerokiego odczytu książki kontaktów.';
+
+  @override
+  String get privacyPermissionFilesTitle => 'Zdjęcia, pliki i aparat';
+
+  @override
+  String get privacyPermissionFilesSubtitle =>
+      'Systemowy selektor lub skaner otwiera się dopiero po Twojej akcji. Manifest nie żąda szerokiego dostępu do pamięci ani kontaktów.';
+
+  @override
+  String get privacyAutomaticBackupTitle =>
+      'Automatyczny backup Androida wyłączony';
+
+  @override
+  String get privacyAutomaticBackupSubtitle =>
+      'BudowaPRO deklaruje wykluczenie prywatnych plików z kopii chmurowej i przenoszenia urządzenie–urządzenie. Ręczna kopia ZIP nie jest szyfrowana.';
+
+  @override
+  String get privacyDataControlSection => 'Kontrola danych';
+
+  @override
+  String get privacyCreateBackupTitle => 'Utwórz lub odtwórz kopię';
+
+  @override
+  String get privacyCreateBackupSubtitle =>
+      'Sam wybierasz lokalizację. Plik ZIP nie jest szyfrowany, dlatego przechowuj go w zaufanym miejscu.';
+
+  @override
+  String get privacyDeleteDataHelp =>
+      'Pojedynczy projekt usuń z jego ustawień. Wszystkie dane prywatne usuniesz przez „Wyczyść dane” w ustawieniach Androida albo odinstalowanie aplikacji. Ręczne kopie i eksporty trzeba usunąć osobno.';
 }

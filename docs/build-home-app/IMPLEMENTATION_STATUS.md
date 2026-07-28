@@ -1,6 +1,6 @@
 # BudowaPRO - implementation status
 
-Last updated: 2026-07-26
+Last updated: 2026-07-28
 
 ## Current release
 
@@ -400,6 +400,26 @@ Last updated: 2026-07-26
 - The inbox, composer, editor and merge picker are localized, scrollable and covered at a 320 px viewport and 200%
   text scaling.
 
+### Production privacy and legal readiness
+
+- The More branch now exposes an offline `Privacy and law` center with an in-app privacy policy, terms of use,
+  privacy status/controls and open-source licenses. Legal documents are split into expandable sections and remain
+  usable at 320 px with 200% text scaling.
+- The privacy policy describes actual local project data, user-initiated export, retention/deletion, the lack of an
+  account/backend/ads/first-party analytics, and the ML Kit metrics exception. It does not claim that OCR text or
+  document images are uploaded to Google.
+- The terms include a construction-safety boundary, mandatory professional verification, OCR review, backup
+  responsibility and a clause preserving mandatory consumer rights.
+- Publisher name, privacy contact and public privacy-policy URL are build-time values. Android `preReleaseBuild`
+  depends on a validation task and fails when metadata is missing, malformed, local-only or points to a PDF; no legal
+  identity is invented in source. A separate CI utility verifies that the configured public URL responds with HTML.
+- Android API 36 is the explicit compile/target level. Automatic cloud backup is disabled and both legacy and Android
+  12+ extraction rules exclude private app files from cloud and device-transfer backups.
+- `PRIVACY_AND_GOOGLE_PLAY_RELEASE.md` records the provisional ML Kit Data safety mapping, permission inventory,
+  merged-manifest distinction, unencrypted manual ZIP warning, release command and remaining Play Console/signing
+  actions. Google Play still requires a public policy URL even though the complete policy is also available inside
+  the APK.
+
 ## Verified baseline
 
 ```text
@@ -439,7 +459,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-28. The full suite contains 419 passing tests. Debug APK:
+All commands passed on 2026-07-28. The full suite contains 431 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk

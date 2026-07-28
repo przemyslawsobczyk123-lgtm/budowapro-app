@@ -85,6 +85,63 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('opens privacy policy from the More tools branch', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_testApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Więcej'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const ValueKey('moreLegalTile')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('moreLegalTile')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('privacyPolicyTile')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Polityka prywatności'), findsOneWidget);
+    expect(find.textContaining('rzeczywiste działanie'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('opens terms, privacy settings and backup from legal center', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_testApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Więcej'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const ValueKey('moreLegalTile')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('moreLegalTile')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('termsOfUseTile')));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('nie zastępuje projektu'), findsOneWidget);
+
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('privacySettingsTile')));
+    await tester.pumpAndSettle();
+    expect(find.text('Bieżący status'), findsOneWidget);
+
+    await tester.dragUntilVisible(
+      find.byKey(const ValueKey('privacyBackupTile')),
+      find.descendant(
+        of: find.byKey(const ValueKey('privacySettingsContent')),
+        matching: find.byType(Scrollable),
+      ),
+      const Offset(0, -220),
+    );
+    await tester.tap(find.byKey(const ValueKey('privacyBackupTile')));
+    await tester.pumpAndSettle();
+    expect(find.text('Kopia zapasowa i dane'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('opens the budget report from the More tools branch', (
     tester,
   ) async {

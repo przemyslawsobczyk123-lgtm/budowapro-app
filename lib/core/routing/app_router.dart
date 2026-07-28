@@ -13,6 +13,9 @@ import 'package:budowapro/features/documents/presentation/document_details_scree
 import 'package:budowapro/features/documents/presentation/document_form_screen.dart';
 import 'package:budowapro/features/documents/presentation/document_viewer_screen.dart';
 import 'package:budowapro/features/documents/presentation/documents_screen.dart';
+import 'package:budowapro/features/legal/presentation/legal_center_screen.dart';
+import 'package:budowapro/features/legal/presentation/legal_document_screen.dart';
+import 'package:budowapro/features/legal/presentation/privacy_settings_screen.dart';
 import 'package:budowapro/features/projects/presentation/project_form_screen.dart';
 import 'package:budowapro/features/quotes/presentation/quote_comparison_screen.dart';
 import 'package:budowapro/features/quotes/presentation/quote_details_screen.dart';
@@ -128,6 +131,24 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/captures',
         builder: (context, state) => const CapturesScreen(),
+      ),
+      GoRoute(
+        path: '/legal',
+        builder: (context, state) => const LegalCenterScreen(),
+      ),
+      GoRoute(
+        path: '/legal/privacy-policy',
+        builder: (context, state) =>
+            const LegalDocumentScreen(kind: LegalDocumentKind.privacyPolicy),
+      ),
+      GoRoute(
+        path: '/legal/terms',
+        builder: (context, state) =>
+            const LegalDocumentScreen(kind: LegalDocumentKind.termsOfUse),
+      ),
+      GoRoute(
+        path: '/legal/privacy-settings',
+        builder: (context, state) => const PrivacySettingsScreen(),
       ),
       GoRoute(
         path: '/projects/:projectId/quotes/new',

@@ -18,6 +18,10 @@ void main() {
       await tester.pumpWidget(_app(gateway));
       await tester.pumpAndSettle();
 
+      await tester.ensureVisible(
+        find.byKey(const ValueKey('createBackupButton')),
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('createBackupButton')));
       await tester.pumpAndSettle();
 

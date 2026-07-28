@@ -70,6 +70,15 @@ class MoreToolsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () => context.push('/backup'),
           ),
+          ListTile(
+            key: const ValueKey('moreLegalTile'),
+            minTileHeight: 64,
+            leading: const Icon(Icons.privacy_tip_outlined),
+            title: Text(l10n.legalCenterTitle),
+            subtitle: Text(l10n.legalCenterTileSubtitle),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => context.push('/legal'),
+          ),
         ],
       ),
     );

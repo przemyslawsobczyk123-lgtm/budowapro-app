@@ -5827,7 +5827,7 @@ abstract class AppLocalizations {
   /// No description provided for @backupLocalOnlyDescription.
   ///
   /// In pl, this message translates to:
-  /// **'Dane pozostają lokalne. Po utworzeniu kopii wybierzesz miejsce zapisu w systemowym panelu telefonu.'**
+  /// **'Dane pozostają lokalne do chwili eksportu. Kopia ZIP nie jest szyfrowana i może zawierać dokumenty, kontakty oraz zdjęcia, dlatego zapisz ją w zaufanym miejscu.'**
   String get backupLocalOnlyDescription;
 
   /// No description provided for @backupCreateHeading.
@@ -6897,6 +6897,558 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Zapis został uporządkowany.'**
   String get captureApprovedMessage;
+
+  /// No description provided for @legalCenterTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Prywatność i prawo'**
+  String get legalCenterTitle;
+
+  /// No description provided for @legalCenterTileSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Polityka, warunki i kontrola danych'**
+  String get legalCenterTileSubtitle;
+
+  /// No description provided for @legalDocumentsSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokumenty i ustawienia'**
+  String get legalDocumentsSection;
+
+  /// No description provided for @privacyPolicyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Polityka prywatności'**
+  String get privacyPolicyTitle;
+
+  /// No description provided for @privacyPolicyTileSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jak aplikacja przechowuje i przetwarza dane'**
+  String get privacyPolicyTileSubtitle;
+
+  /// No description provided for @termsOfUseTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Warunki użytkowania'**
+  String get termsOfUseTitle;
+
+  /// No description provided for @termsOfUseTileSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zasady korzystania i granice porad budowlanych'**
+  String get termsOfUseTileSubtitle;
+
+  /// No description provided for @privacySettingsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustawienia prywatności'**
+  String get privacySettingsTitle;
+
+  /// No description provided for @privacySettingsTileSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Status usług, uprawnień i kopii danych'**
+  String get privacySettingsTileSubtitle;
+
+  /// No description provided for @openSourceLicensesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Licencje open source'**
+  String get openSourceLicensesTitle;
+
+  /// No description provided for @legalPublisherSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wydawca i kontakt'**
+  String get legalPublisherSection;
+
+  /// No description provided for @legalPublisherLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wydawca aplikacji'**
+  String get legalPublisherLabel;
+
+  /// No description provided for @legalContactLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontakt w sprawach prywatności'**
+  String get legalContactLabel;
+
+  /// No description provided for @legalNotConfiguredValue.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie skonfigurowano do wydania'**
+  String get legalNotConfiguredValue;
+
+  /// No description provided for @legalEmailSubject.
+  ///
+  /// In pl, this message translates to:
+  /// **'BudowaPRO — prywatność'**
+  String get legalEmailSubject;
+
+  /// No description provided for @legalPublicPolicyLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Publiczna kopia polityki'**
+  String get legalPublicPolicyLabel;
+
+  /// No description provided for @legalDocumentVersion.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wersja 1.0 · obowiązuje od 28.07.2026'**
+  String get legalDocumentVersion;
+
+  /// No description provided for @legalIntroTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Prywatność dostępna w aplikacji'**
+  String get legalIntroTitle;
+
+  /// No description provided for @legalIntroMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'W jednym miejscu sprawdzisz zasady, faktyczne przepływy danych i sposoby zarządzania lokalną zawartością.'**
+  String get legalIntroMessage;
+
+  /// No description provided for @legalReleaseConfigMissingTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wydanie wymaga uzupełnienia'**
+  String get legalReleaseConfigMissingTitle;
+
+  /// No description provided for @legalReleaseConfigMissingMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brakuje: {fields}. Kompilacja release pozostaje zablokowana, aby nie opublikować niepełnych danych prawnych.'**
+  String legalReleaseConfigMissingMessage(String fields);
+
+  /// No description provided for @legalMissingPublisherRequirement.
+  ///
+  /// In pl, this message translates to:
+  /// **'nazwa wydawcy'**
+  String get legalMissingPublisherRequirement;
+
+  /// No description provided for @legalMissingEmailRequirement.
+  ///
+  /// In pl, this message translates to:
+  /// **'prawidłowy e-mail'**
+  String get legalMissingEmailRequirement;
+
+  /// No description provided for @legalMissingPublicUrlRequirement.
+  ///
+  /// In pl, this message translates to:
+  /// **'publiczny adres HTTPS polityki'**
+  String get legalMissingPublicUrlRequirement;
+
+  /// No description provided for @legalOpenLinkError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się otworzyć odnośnika.'**
+  String get legalOpenLinkError;
+
+  /// No description provided for @privacyPolicyIntro.
+  ///
+  /// In pl, this message translates to:
+  /// **'Poniższe sekcje opisują rzeczywiste działanie BudowaPRO. Rozwiń temat, aby przeczytać szczegóły.'**
+  String get privacyPolicyIntro;
+
+  /// No description provided for @termsOfUseIntro.
+  ///
+  /// In pl, this message translates to:
+  /// **'BudowaPRO pomaga organizować budowę lub remont, ale nie zastępuje projektu, kierownika budowy ani uprawnionego specjalisty.'**
+  String get termsOfUseIntro;
+
+  /// No description provided for @legalOfficialSourcesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oficjalne źródła'**
+  String get legalOfficialSourcesTitle;
+
+  /// No description provided for @legalSourceMlKitTerms.
+  ///
+  /// In pl, this message translates to:
+  /// **'Google ML Kit — warunki i prywatność'**
+  String get legalSourceMlKitTerms;
+
+  /// No description provided for @legalSourceMlKitDisclosure.
+  ///
+  /// In pl, this message translates to:
+  /// **'Google ML Kit — ujawnianie danych w Google Play'**
+  String get legalSourceMlKitDisclosure;
+
+  /// No description provided for @legalSourceGooglePrivacy.
+  ///
+  /// In pl, this message translates to:
+  /// **'Google — polityka prywatności'**
+  String get legalSourceGooglePrivacy;
+
+  /// No description provided for @legalSourceGdpr.
+  ///
+  /// In pl, this message translates to:
+  /// **'RODO — rozporządzenie (UE) 2016/679'**
+  String get legalSourceGdpr;
+
+  /// No description provided for @legalSourceUodo.
+  ///
+  /// In pl, this message translates to:
+  /// **'UODO — prawo do złożenia skargi'**
+  String get legalSourceUodo;
+
+  /// No description provided for @privacySectionPublisherTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'1. Wydawca i zakres polityki'**
+  String get privacySectionPublisherTitle;
+
+  /// No description provided for @privacySectionPublisherBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podmiot wskazany jako wydawca BudowaPRO: {publisher}. Kontakt w sprawach prywatności: {contact}. Aplikacja nie wymaga konta i nie ma serwera BudowaPRO. Wydawca nie ma zdalnego dostępu do treści zapisanych wyłącznie w prywatnej pamięci aplikacji.'**
+  String privacySectionPublisherBody(String publisher, String contact);
+
+  /// No description provided for @privacySectionLocalDataTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'2. Dane przechowywane lokalnie'**
+  String get privacySectionLocalDataTitle;
+
+  /// No description provided for @privacySectionLocalDataBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Na urządzeniu mogą być zapisane dane projektów, budżetów, kosztów, wykonawców i kontaktów, terminów, notatek, decyzji, usterek, dokumentów, zdjęć, skanów, wyników OCR oraz ręcznych kopii zapasowych. BudowaPRO zapisuje je w prywatnej pamięci aplikacji. Nie przesyła tych treści do własnego backendu, ponieważ taki backend nie istnieje.'**
+  String get privacySectionLocalDataBody;
+
+  /// No description provided for @privacySectionPurposeTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'3. Cel i sposób przetwarzania'**
+  String get privacySectionPurposeTitle;
+
+  /// No description provided for @privacySectionPurposeBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Lokalne operacje uruchamiasz samodzielnie, aby prowadzić projekt, liczyć koszty, planować prace, przechowywać dokumentację i tworzyć kopie. BudowaPRO nie używa danych do reklam, profilowania, sprzedaży danych ani marketingu. Nie ma automatycznych decyzji wywołujących skutki prawne.'**
+  String get privacySectionPurposeBody;
+
+  /// No description provided for @privacySectionOcrTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'4. Skaner i Google ML Kit'**
+  String get privacySectionOcrTitle;
+
+  /// No description provided for @privacySectionOcrBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozpoznawanie obrazu i tekstu odbywa się na urządzeniu. Zgodnie z dokumentacją Google obrazy, tekst wejściowy i wynik OCR nie są wysyłane do serwerów Google. Biblioteki ML Kit mogą jednak kontaktować się z Google po aktualizacje i wysyłać zaszyfrowane metryki techniczne: informacje o urządzeniu i aplikacji, identyfikator instalacji, parametry i wydajność funkcji, typy zdarzeń oraz kody błędów. Google używa ich do diagnostyki i analityki wykorzystania ML Kit.'**
+  String get privacySectionOcrBody;
+
+  /// No description provided for @privacySectionSharingTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'5. Odbiorcy i udostępnianie'**
+  String get privacySectionSharingTitle;
+
+  /// No description provided for @privacySectionSharingBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Poza technicznymi metrykami ML Kit BudowaPRO nie udostępnia danych automatycznie. Eksport CSV, kopia ZIP, telefon, e-mail albo systemowe udostępnianie uruchamiają się dopiero po Twojej akcji i przekazują wybraną zawartość do wskazanej przez Ciebie aplikacji lub dostawcy. Ręczna kopia ZIP nie jest szyfrowana i może zawierać dokumenty, kontakty oraz zdjęcia. Dalsze przetwarzanie podlega zasadom wybranego odbiorcy.'**
+  String get privacySectionSharingBody;
+
+  /// No description provided for @privacySectionRetentionTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'6. Okres przechowywania i usuwanie'**
+  String get privacySectionRetentionTitle;
+
+  /// No description provided for @privacySectionRetentionBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dane pozostają w aplikacji do czasu usunięcia rekordu lub projektu, wyczyszczenia danych BudowaPRO w ustawieniach Androida albo odinstalowania aplikacji. Ręcznie wyeksportowane pliki pozostają w wybranej lokalizacji do czasu, aż usuniesz je osobno. Automatyczny backup danych aplikacji jest wyłączony i wykluczony w regułach Androida.'**
+  String get privacySectionRetentionBody;
+
+  /// No description provided for @privacySectionRightsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'7. Kontrola danych i prawa'**
+  String get privacySectionRightsTitle;
+
+  /// No description provided for @privacySectionRightsBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dane lokalne możesz przeglądać, poprawiać, eksportować i usuwać w aplikacji. Ponieważ wydawca nie posiada ich zdalnej kopii, nie może zwrócić ani usunąć jej za Ciebie. Pytania dotyczące działania aplikacji kieruj na: {contact}. W zakresie objętym RODO możesz realizować prawa wobec właściwego administratora danych i złożyć skargę do Prezesa UODO.'**
+  String privacySectionRightsBody(String contact);
+
+  /// No description provided for @privacySectionSecurityTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'8. Bezpieczeństwo'**
+  String get privacySectionSecurityTitle;
+
+  /// No description provided for @privacySectionSecurityBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'BudowaPRO używa prywatnych katalogów aplikacji, weryfikuje kopie i ogranicza uprawnienia systemowe. Chroń telefon blokadą ekranu i przechowuj ręczne kopie w zaufanym miejscu. Żadne zabezpieczenie nie usuwa ryzyka utraty danych po uszkodzeniu urządzenia, złośliwym oprogramowaniu lub udostępnieniu odblokowanego telefonu.'**
+  String get privacySectionSecurityBody;
+
+  /// No description provided for @privacySectionChangesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'9. Zmiany polityki'**
+  String get privacySectionChangesTitle;
+
+  /// No description provided for @privacySectionChangesBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Istotna zmiana funkcji, dostawcy SDK lub przepływu danych wymaga aktualizacji tej polityki i sekcji Bezpieczeństwo danych w Google Play. Aktualna wersja pozostaje dostępna w aplikacji oraz pod publicznym adresem wskazanym w Google Play.'**
+  String get privacySectionChangesBody;
+
+  /// No description provided for @termsSectionProviderTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'1. Usługodawca'**
+  String get termsSectionProviderTitle;
+
+  /// No description provided for @termsSectionProviderBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'BudowaPRO udostępnia: {publisher}. Kontakt: {contact}. Korzystanie z aplikacji nie wymaga utworzenia konta ani zawarcia odpłatnej subskrypcji w tej wersji.'**
+  String termsSectionProviderBody(String publisher, String contact);
+
+  /// No description provided for @termsSectionPurposeTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'2. Przeznaczenie aplikacji'**
+  String get termsSectionPurposeTitle;
+
+  /// No description provided for @termsSectionPurposeBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Aplikacja służy do prywatnego organizowania budowy lub remontu: kosztów, etapów, kontaktów, dokumentów, terminów, zdjęć i notatek. Użytkownik może korzystać z niej wyłącznie zgodnie z prawem i prawami osób trzecich.'**
+  String get termsSectionPurposeBody;
+
+  /// No description provided for @termsSectionSafetyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'3. Informacje budowlane i bezpieczeństwo'**
+  String get termsSectionSafetyTitle;
+
+  /// No description provided for @termsSectionSafetyBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Checklisty i wskazówki mają charakter organizacyjny i informacyjny. Nie są projektem budowlanym, opinią techniczną ani indywidualnym doborem rozwiązania. Przed wykonaniem robót zweryfikuj aktualne przepisy, projekt, warunki gruntowe, instrukcje producenta i ustalenia z projektantem, kierownikiem budowy lub osobą z wymaganymi uprawnieniami.'**
+  String get termsSectionSafetyBody;
+
+  /// No description provided for @termsSectionUserDataTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'4. Dane użytkownika i kopie'**
+  String get termsSectionUserDataTitle;
+
+  /// No description provided for @termsSectionUserDataBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odpowiadasz za legalność wprowadzanych kontaktów, zdjęć i dokumentów oraz za posiadanie prawa do ich użycia. Dane są lokalne. Regularnie twórz ręczną kopię i sprawdzaj możliwość jej odtworzenia. Usunięcie projektu, wyczyszczenie pamięci lub utrata telefonu może być nieodwracalne bez poprawnej kopii.'**
+  String get termsSectionUserDataBody;
+
+  /// No description provided for @termsSectionOcrTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'5. OCR i obliczenia'**
+  String get termsSectionOcrTitle;
+
+  /// No description provided for @termsSectionOcrBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'OCR może błędnie odczytać nazwę, datę, pozycję, VAT lub kwotę. Każdy wynik trzeba sprawdzić przed zapisem i zatwierdzeniem kosztu. Podsumowania zależą od poprawności danych wprowadzonych lub zaakceptowanych przez użytkownika.'**
+  String get termsSectionOcrBody;
+
+  /// No description provided for @termsSectionAvailabilityTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'6. Dostępność i aktualizacje'**
+  String get termsSectionAvailabilityTitle;
+
+  /// No description provided for @termsSectionAvailabilityBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie gwarantuje się nieprzerwanego działania na każdym urządzeniu ani zgodności ze wszystkimi formatami dokumentów. Aktualizacje mogą poprawiać bezpieczeństwo, zgodność z Androidem i zakres funkcji, z zachowaniem lokalnych danych w ramach obsługiwanych migracji.'**
+  String get termsSectionAvailabilityBody;
+
+  /// No description provided for @termsSectionLiabilityTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'7. Odpowiedzialność'**
+  String get termsSectionLiabilityTitle;
+
+  /// No description provided for @termsSectionLiabilityBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wydawca odpowiada w granicach bezwzględnie obowiązującego prawa. Warunki nie wyłączają ani nie ograniczają ustawowych praw konsumenta. Użytkownik odpowiada za decyzje budowlane podjęte bez wymaganej weryfikacji specjalisty oraz za skutki podania nieprawidłowych danych.'**
+  String get termsSectionLiabilityBody;
+
+  /// No description provided for @termsSectionLawTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'8. Prawo i spory'**
+  String get termsSectionLawTitle;
+
+  /// No description provided for @termsSectionLawBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Stosuje się prawo polskie, bez uszczerbku dla bezwzględnie obowiązujących praw konsumenta wynikających z prawa miejsca jego zamieszkania. Spór można najpierw zgłosić wydawcy na podany adres kontaktowy.'**
+  String get termsSectionLawBody;
+
+  /// No description provided for @termsSectionChangesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'9. Zmiany warunków'**
+  String get termsSectionChangesTitle;
+
+  /// No description provided for @termsSectionChangesBody.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowa wersja warunków powinna otrzymać nową datę i być dostępna przed publikacją aktualizacji, jeżeli zmiana wpływa na prawa użytkownika lub sposób działania aplikacji.'**
+  String get termsSectionChangesBody;
+
+  /// No description provided for @privacySettingsIntro.
+  ///
+  /// In pl, this message translates to:
+  /// **'BudowaPRO nie ma konta, reklam ani własnej analityki. Ten ekran pokazuje realne ustawienia i wyjątek techniczny związany z Google ML Kit.'**
+  String get privacySettingsIntro;
+
+  /// No description provided for @privacyStatusSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bieżący status'**
+  String get privacyStatusSection;
+
+  /// No description provided for @privacyStatusLocalTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Treści projektu pozostają lokalnie'**
+  String get privacyStatusLocalTitle;
+
+  /// No description provided for @privacyStatusLocalSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Baza, zdjęcia, dokumenty i OCR są zapisywane w prywatnej pamięci aplikacji.'**
+  String get privacyStatusLocalSubtitle;
+
+  /// No description provided for @privacyStatusAccountTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak konta i synchronizacji'**
+  String get privacyStatusAccountTitle;
+
+  /// No description provided for @privacyStatusAccountSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'BudowaPRO nie ma logowania, profilu użytkownika ani własnego backendu.'**
+  String get privacyStatusAccountSubtitle;
+
+  /// No description provided for @privacyStatusTrackingTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak reklam i śledzenia marketingowego'**
+  String get privacyStatusTrackingTitle;
+
+  /// No description provided for @privacyStatusTrackingSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Aplikacja nie używa reklam, Firebase Analytics ani Crashlytics. Metryki techniczne ML Kit opisano osobno.'**
+  String get privacyStatusTrackingSubtitle;
+
+  /// No description provided for @privacyStatusMlKitTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Techniczne metryki Google ML Kit'**
+  String get privacyStatusMlKitTitle;
+
+  /// No description provided for @privacyStatusMlKitSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po użyciu skanera lub OCR Google może otrzymać metryki urządzenia, aplikacji, wydajności i błędów — bez obrazu, tekstu dokumentu i wyniku OCR.'**
+  String get privacyStatusMlKitSubtitle;
+
+  /// No description provided for @privacyPermissionsSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uprawnienia i usługi Androida'**
+  String get privacyPermissionsSection;
+
+  /// No description provided for @privacyPermissionNotificationsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiadomienia'**
+  String get privacyPermissionNotificationsTitle;
+
+  /// No description provided for @privacyPermissionNotificationsSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Służą wyłącznie lokalnym przypomnieniom i są uruchamiane po decyzji użytkownika.'**
+  String get privacyPermissionNotificationsSubtitle;
+
+  /// No description provided for @privacyPermissionContactsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontakty'**
+  String get privacyPermissionContactsTitle;
+
+  /// No description provided for @privacyPermissionContactsSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierasz pojedynczy kontakt przez systemowy selektor. Aplikacja nie żąda szerokiego odczytu książki kontaktów.'**
+  String get privacyPermissionContactsSubtitle;
+
+  /// No description provided for @privacyPermissionFilesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcia, pliki i aparat'**
+  String get privacyPermissionFilesTitle;
+
+  /// No description provided for @privacyPermissionFilesSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Systemowy selektor lub skaner otwiera się dopiero po Twojej akcji. Manifest nie żąda szerokiego dostępu do pamięci ani kontaktów.'**
+  String get privacyPermissionFilesSubtitle;
+
+  /// No description provided for @privacyAutomaticBackupTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Automatyczny backup Androida wyłączony'**
+  String get privacyAutomaticBackupTitle;
+
+  /// No description provided for @privacyAutomaticBackupSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'BudowaPRO deklaruje wykluczenie prywatnych plików z kopii chmurowej i przenoszenia urządzenie–urządzenie. Ręczna kopia ZIP nie jest szyfrowana.'**
+  String get privacyAutomaticBackupSubtitle;
+
+  /// No description provided for @privacyDataControlSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontrola danych'**
+  String get privacyDataControlSection;
+
+  /// No description provided for @privacyCreateBackupTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utwórz lub odtwórz kopię'**
+  String get privacyCreateBackupTitle;
+
+  /// No description provided for @privacyCreateBackupSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sam wybierasz lokalizację. Plik ZIP nie jest szyfrowany, dlatego przechowuj go w zaufanym miejscu.'**
+  String get privacyCreateBackupSubtitle;
+
+  /// No description provided for @privacyDeleteDataHelp.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pojedynczy projekt usuń z jego ustawień. Wszystkie dane prywatne usuniesz przez „Wyczyść dane” w ustawieniach Androida albo odinstalowanie aplikacji. Ręczne kopie i eksporty trzeba usunąć osobno.'**
+  String get privacyDeleteDataHelp;
 }
 
 class _AppLocalizationsDelegate

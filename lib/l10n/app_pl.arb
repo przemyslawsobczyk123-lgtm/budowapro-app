@@ -1332,7 +1332,7 @@
   "backupTitle": "Kopia zapasowa i dane",
   "backupScopeHeading": "Wszystkie dane w jednym pliku",
   "backupScopeDescription": "Kopia obejmuje projekty, koszty, etapy, harmonogram, kontakty, dokumenty, zdjęcia i pozostałe pliki.",
-  "backupLocalOnlyDescription": "Dane pozostają lokalne. Po utworzeniu kopii wybierzesz miejsce zapisu w systemowym panelu telefonu.",
+  "backupLocalOnlyDescription": "Dane pozostają lokalne do chwili eksportu. Kopia ZIP nie jest szyfrowana i może zawierać dokumenty, kontakty oraz zdjęcia, dlatego zapisz ją w zaufanym miejscu.",
   "backupCreateHeading": "Utwórz kopię",
   "backupCreateDescription": "Zapisz aktualny stan aplikacji przed ważną zmianą, remontem urządzenia lub odtworzeniem starszej kopii.",
   "backupCreateAction": "Utwórz i zapisz kopię",
@@ -1531,5 +1531,131 @@
   "captureVoiceNotice": "Nagranie zostanie zachowane lokalnie. Transkrypcja nie jest wymagana.",
   "captureFileNotice": "Plik jest kopiowany do prywatnej pamięci projektu.",
   "captureSavedMessage": "Zapis dodano do skrzynki.",
-  "captureApprovedMessage": "Zapis został uporządkowany."
+  "captureApprovedMessage": "Zapis został uporządkowany.",
+  "legalCenterTitle": "Prywatność i prawo",
+  "legalCenterTileSubtitle": "Polityka, warunki i kontrola danych",
+  "legalDocumentsSection": "Dokumenty i ustawienia",
+  "privacyPolicyTitle": "Polityka prywatności",
+  "privacyPolicyTileSubtitle": "Jak aplikacja przechowuje i przetwarza dane",
+  "termsOfUseTitle": "Warunki użytkowania",
+  "termsOfUseTileSubtitle": "Zasady korzystania i granice porad budowlanych",
+  "privacySettingsTitle": "Ustawienia prywatności",
+  "privacySettingsTileSubtitle": "Status usług, uprawnień i kopii danych",
+  "openSourceLicensesTitle": "Licencje open source",
+  "legalPublisherSection": "Wydawca i kontakt",
+  "legalPublisherLabel": "Wydawca aplikacji",
+  "legalContactLabel": "Kontakt w sprawach prywatności",
+  "legalNotConfiguredValue": "Nie skonfigurowano do wydania",
+  "legalEmailSubject": "BudowaPRO — prywatność",
+  "legalPublicPolicyLabel": "Publiczna kopia polityki",
+  "legalDocumentVersion": "Wersja 1.0 · obowiązuje od 28.07.2026",
+  "legalIntroTitle": "Prywatność dostępna w aplikacji",
+  "legalIntroMessage": "W jednym miejscu sprawdzisz zasady, faktyczne przepływy danych i sposoby zarządzania lokalną zawartością.",
+  "legalReleaseConfigMissingTitle": "Wydanie wymaga uzupełnienia",
+  "legalReleaseConfigMissingMessage": "Brakuje: {fields}. Kompilacja release pozostaje zablokowana, aby nie opublikować niepełnych danych prawnych.",
+  "@legalReleaseConfigMissingMessage": {
+    "placeholders": {
+      "fields": {
+        "type": "String"
+      }
+    }
+  },
+  "legalMissingPublisherRequirement": "nazwa wydawcy",
+  "legalMissingEmailRequirement": "prawidłowy e-mail",
+  "legalMissingPublicUrlRequirement": "publiczny adres HTTPS polityki",
+  "legalOpenLinkError": "Nie udało się otworzyć odnośnika.",
+  "privacyPolicyIntro": "Poniższe sekcje opisują rzeczywiste działanie BudowaPRO. Rozwiń temat, aby przeczytać szczegóły.",
+  "termsOfUseIntro": "BudowaPRO pomaga organizować budowę lub remont, ale nie zastępuje projektu, kierownika budowy ani uprawnionego specjalisty.",
+  "legalOfficialSourcesTitle": "Oficjalne źródła",
+  "legalSourceMlKitTerms": "Google ML Kit — warunki i prywatność",
+  "legalSourceMlKitDisclosure": "Google ML Kit — ujawnianie danych w Google Play",
+  "legalSourceGooglePrivacy": "Google — polityka prywatności",
+  "legalSourceGdpr": "RODO — rozporządzenie (UE) 2016/679",
+  "legalSourceUodo": "UODO — prawo do złożenia skargi",
+  "privacySectionPublisherTitle": "1. Wydawca i zakres polityki",
+  "privacySectionPublisherBody": "Podmiot wskazany jako wydawca BudowaPRO: {publisher}. Kontakt w sprawach prywatności: {contact}. Aplikacja nie wymaga konta i nie ma serwera BudowaPRO. Wydawca nie ma zdalnego dostępu do treści zapisanych wyłącznie w prywatnej pamięci aplikacji.",
+  "@privacySectionPublisherBody": {
+    "placeholders": {
+      "publisher": {
+        "type": "String"
+      },
+      "contact": {
+        "type": "String"
+      }
+    }
+  },
+  "privacySectionLocalDataTitle": "2. Dane przechowywane lokalnie",
+  "privacySectionLocalDataBody": "Na urządzeniu mogą być zapisane dane projektów, budżetów, kosztów, wykonawców i kontaktów, terminów, notatek, decyzji, usterek, dokumentów, zdjęć, skanów, wyników OCR oraz ręcznych kopii zapasowych. BudowaPRO zapisuje je w prywatnej pamięci aplikacji. Nie przesyła tych treści do własnego backendu, ponieważ taki backend nie istnieje.",
+  "privacySectionPurposeTitle": "3. Cel i sposób przetwarzania",
+  "privacySectionPurposeBody": "Lokalne operacje uruchamiasz samodzielnie, aby prowadzić projekt, liczyć koszty, planować prace, przechowywać dokumentację i tworzyć kopie. BudowaPRO nie używa danych do reklam, profilowania, sprzedaży danych ani marketingu. Nie ma automatycznych decyzji wywołujących skutki prawne.",
+  "privacySectionOcrTitle": "4. Skaner i Google ML Kit",
+  "privacySectionOcrBody": "Rozpoznawanie obrazu i tekstu odbywa się na urządzeniu. Zgodnie z dokumentacją Google obrazy, tekst wejściowy i wynik OCR nie są wysyłane do serwerów Google. Biblioteki ML Kit mogą jednak kontaktować się z Google po aktualizacje i wysyłać zaszyfrowane metryki techniczne: informacje o urządzeniu i aplikacji, identyfikator instalacji, parametry i wydajność funkcji, typy zdarzeń oraz kody błędów. Google używa ich do diagnostyki i analityki wykorzystania ML Kit.",
+  "privacySectionSharingTitle": "5. Odbiorcy i udostępnianie",
+  "privacySectionSharingBody": "Poza technicznymi metrykami ML Kit BudowaPRO nie udostępnia danych automatycznie. Eksport CSV, kopia ZIP, telefon, e-mail albo systemowe udostępnianie uruchamiają się dopiero po Twojej akcji i przekazują wybraną zawartość do wskazanej przez Ciebie aplikacji lub dostawcy. Ręczna kopia ZIP nie jest szyfrowana i może zawierać dokumenty, kontakty oraz zdjęcia. Dalsze przetwarzanie podlega zasadom wybranego odbiorcy.",
+  "privacySectionRetentionTitle": "6. Okres przechowywania i usuwanie",
+  "privacySectionRetentionBody": "Dane pozostają w aplikacji do czasu usunięcia rekordu lub projektu, wyczyszczenia danych BudowaPRO w ustawieniach Androida albo odinstalowania aplikacji. Ręcznie wyeksportowane pliki pozostają w wybranej lokalizacji do czasu, aż usuniesz je osobno. Automatyczny backup danych aplikacji jest wyłączony i wykluczony w regułach Androida.",
+  "privacySectionRightsTitle": "7. Kontrola danych i prawa",
+  "privacySectionRightsBody": "Dane lokalne możesz przeglądać, poprawiać, eksportować i usuwać w aplikacji. Ponieważ wydawca nie posiada ich zdalnej kopii, nie może zwrócić ani usunąć jej za Ciebie. Pytania dotyczące działania aplikacji kieruj na: {contact}. W zakresie objętym RODO możesz realizować prawa wobec właściwego administratora danych i złożyć skargę do Prezesa UODO.",
+  "@privacySectionRightsBody": {
+    "placeholders": {
+      "contact": {
+        "type": "String"
+      }
+    }
+  },
+  "privacySectionSecurityTitle": "8. Bezpieczeństwo",
+  "privacySectionSecurityBody": "BudowaPRO używa prywatnych katalogów aplikacji, weryfikuje kopie i ogranicza uprawnienia systemowe. Chroń telefon blokadą ekranu i przechowuj ręczne kopie w zaufanym miejscu. Żadne zabezpieczenie nie usuwa ryzyka utraty danych po uszkodzeniu urządzenia, złośliwym oprogramowaniu lub udostępnieniu odblokowanego telefonu.",
+  "privacySectionChangesTitle": "9. Zmiany polityki",
+  "privacySectionChangesBody": "Istotna zmiana funkcji, dostawcy SDK lub przepływu danych wymaga aktualizacji tej polityki i sekcji Bezpieczeństwo danych w Google Play. Aktualna wersja pozostaje dostępna w aplikacji oraz pod publicznym adresem wskazanym w Google Play.",
+  "termsSectionProviderTitle": "1. Usługodawca",
+  "termsSectionProviderBody": "BudowaPRO udostępnia: {publisher}. Kontakt: {contact}. Korzystanie z aplikacji nie wymaga utworzenia konta ani zawarcia odpłatnej subskrypcji w tej wersji.",
+  "@termsSectionProviderBody": {
+    "placeholders": {
+      "publisher": {
+        "type": "String"
+      },
+      "contact": {
+        "type": "String"
+      }
+    }
+  },
+  "termsSectionPurposeTitle": "2. Przeznaczenie aplikacji",
+  "termsSectionPurposeBody": "Aplikacja służy do prywatnego organizowania budowy lub remontu: kosztów, etapów, kontaktów, dokumentów, terminów, zdjęć i notatek. Użytkownik może korzystać z niej wyłącznie zgodnie z prawem i prawami osób trzecich.",
+  "termsSectionSafetyTitle": "3. Informacje budowlane i bezpieczeństwo",
+  "termsSectionSafetyBody": "Checklisty i wskazówki mają charakter organizacyjny i informacyjny. Nie są projektem budowlanym, opinią techniczną ani indywidualnym doborem rozwiązania. Przed wykonaniem robót zweryfikuj aktualne przepisy, projekt, warunki gruntowe, instrukcje producenta i ustalenia z projektantem, kierownikiem budowy lub osobą z wymaganymi uprawnieniami.",
+  "termsSectionUserDataTitle": "4. Dane użytkownika i kopie",
+  "termsSectionUserDataBody": "Odpowiadasz za legalność wprowadzanych kontaktów, zdjęć i dokumentów oraz za posiadanie prawa do ich użycia. Dane są lokalne. Regularnie twórz ręczną kopię i sprawdzaj możliwość jej odtworzenia. Usunięcie projektu, wyczyszczenie pamięci lub utrata telefonu może być nieodwracalne bez poprawnej kopii.",
+  "termsSectionOcrTitle": "5. OCR i obliczenia",
+  "termsSectionOcrBody": "OCR może błędnie odczytać nazwę, datę, pozycję, VAT lub kwotę. Każdy wynik trzeba sprawdzić przed zapisem i zatwierdzeniem kosztu. Podsumowania zależą od poprawności danych wprowadzonych lub zaakceptowanych przez użytkownika.",
+  "termsSectionAvailabilityTitle": "6. Dostępność i aktualizacje",
+  "termsSectionAvailabilityBody": "Nie gwarantuje się nieprzerwanego działania na każdym urządzeniu ani zgodności ze wszystkimi formatami dokumentów. Aktualizacje mogą poprawiać bezpieczeństwo, zgodność z Androidem i zakres funkcji, z zachowaniem lokalnych danych w ramach obsługiwanych migracji.",
+  "termsSectionLiabilityTitle": "7. Odpowiedzialność",
+  "termsSectionLiabilityBody": "Wydawca odpowiada w granicach bezwzględnie obowiązującego prawa. Warunki nie wyłączają ani nie ograniczają ustawowych praw konsumenta. Użytkownik odpowiada za decyzje budowlane podjęte bez wymaganej weryfikacji specjalisty oraz za skutki podania nieprawidłowych danych.",
+  "termsSectionLawTitle": "8. Prawo i spory",
+  "termsSectionLawBody": "Stosuje się prawo polskie, bez uszczerbku dla bezwzględnie obowiązujących praw konsumenta wynikających z prawa miejsca jego zamieszkania. Spór można najpierw zgłosić wydawcy na podany adres kontaktowy.",
+  "termsSectionChangesTitle": "9. Zmiany warunków",
+  "termsSectionChangesBody": "Nowa wersja warunków powinna otrzymać nową datę i być dostępna przed publikacją aktualizacji, jeżeli zmiana wpływa na prawa użytkownika lub sposób działania aplikacji.",
+  "privacySettingsIntro": "BudowaPRO nie ma konta, reklam ani własnej analityki. Ten ekran pokazuje realne ustawienia i wyjątek techniczny związany z Google ML Kit.",
+  "privacyStatusSection": "Bieżący status",
+  "privacyStatusLocalTitle": "Treści projektu pozostają lokalnie",
+  "privacyStatusLocalSubtitle": "Baza, zdjęcia, dokumenty i OCR są zapisywane w prywatnej pamięci aplikacji.",
+  "privacyStatusAccountTitle": "Brak konta i synchronizacji",
+  "privacyStatusAccountSubtitle": "BudowaPRO nie ma logowania, profilu użytkownika ani własnego backendu.",
+  "privacyStatusTrackingTitle": "Brak reklam i śledzenia marketingowego",
+  "privacyStatusTrackingSubtitle": "Aplikacja nie używa reklam, Firebase Analytics ani Crashlytics. Metryki techniczne ML Kit opisano osobno.",
+  "privacyStatusMlKitTitle": "Techniczne metryki Google ML Kit",
+  "privacyStatusMlKitSubtitle": "Po użyciu skanera lub OCR Google może otrzymać metryki urządzenia, aplikacji, wydajności i błędów — bez obrazu, tekstu dokumentu i wyniku OCR.",
+  "privacyPermissionsSection": "Uprawnienia i usługi Androida",
+  "privacyPermissionNotificationsTitle": "Powiadomienia",
+  "privacyPermissionNotificationsSubtitle": "Służą wyłącznie lokalnym przypomnieniom i są uruchamiane po decyzji użytkownika.",
+  "privacyPermissionContactsTitle": "Kontakty",
+  "privacyPermissionContactsSubtitle": "Wybierasz pojedynczy kontakt przez systemowy selektor. Aplikacja nie żąda szerokiego odczytu książki kontaktów.",
+  "privacyPermissionFilesTitle": "Zdjęcia, pliki i aparat",
+  "privacyPermissionFilesSubtitle": "Systemowy selektor lub skaner otwiera się dopiero po Twojej akcji. Manifest nie żąda szerokiego dostępu do pamięci ani kontaktów.",
+  "privacyAutomaticBackupTitle": "Automatyczny backup Androida wyłączony",
+  "privacyAutomaticBackupSubtitle": "BudowaPRO deklaruje wykluczenie prywatnych plików z kopii chmurowej i przenoszenia urządzenie–urządzenie. Ręczna kopia ZIP nie jest szyfrowana.",
+  "privacyDataControlSection": "Kontrola danych",
+  "privacyCreateBackupTitle": "Utwórz lub odtwórz kopię",
+  "privacyCreateBackupSubtitle": "Sam wybierasz lokalizację. Plik ZIP nie jest szyfrowany, dlatego przechowuj go w zaufanym miejscu.",
+  "privacyDeleteDataHelp": "Pojedynczy projekt usuń z jego ustawień. Wszystkie dane prywatne usuniesz przez „Wyczyść dane” w ustawieniach Androida albo odinstalowanie aplikacji. Ręczne kopie i eksporty trzeba usunąć osobno."
 }
