@@ -2,12 +2,15 @@ import 'dart:io';
 
 import 'package:budowapro/core/database/app_database.dart';
 import 'package:budowapro/core/files/project_file_store.dart';
+import 'package:budowapro/features/captures/data/sqlite_capture_repository.dart';
+import 'package:budowapro/features/captures/domain/capture_draft.dart';
 import 'package:budowapro/features/costs/data/sqlite_cost_repository.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
 import 'package:budowapro/features/costs/domain/money.dart';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 import 'package:budowapro/features/dashboard/data/repository_dashboard_reader.dart';
 import 'package:budowapro/features/dashboard/domain/dashboard_reader.dart';
+import 'package:budowapro/features/documents/data/sqlite_document_repository.dart';
 import 'package:budowapro/features/projects/data/sqlite_project_repository.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
 import 'package:budowapro/features/schedule/data/sqlite_schedule_repository.dart';
@@ -27,6 +30,7 @@ void main() {
   late SqliteCostRepository costs;
   late SqliteStageRepository stages;
   late SqliteScheduleRepository schedule;
+  late SqliteCaptureRepository captures;
   late RepositoryDashboardReader reader;
   var id = 0;
 
@@ -67,7 +71,19 @@ void main() {
       idGenerator: () => 'event-${++id}',
       utcNow: () => DateTime.utc(2026, 7, 20, 10),
     );
+    captures = SqliteCaptureRepository(
+      database: database,
+      costRepository: costs,
+      documentRepository: SqliteDocumentRepository(
+        database: database,
+        utcNow: () => DateTime.utc(2026, 7, 20, 10),
+      ),
+      scheduleRepository: schedule,
+      idGenerator: () => 'capture-${++id}',
+      utcNow: () => DateTime.utc(2026, 7, 20, 10),
+    );
     reader = RepositoryDashboardReader(
+      captureRepository: captures,
       costRepository: costs,
       stageRepository: stages,
       scheduleRepository: schedule,
@@ -182,6 +198,7 @@ void main() {
     expect(snapshot.unpaidCount, 1);
     expect(snapshot.costRecordCount, 4);
     expect(snapshot.openScheduleCount, 2);
+    expect(snapshot.openCaptureCount, 0);
     expect(snapshot.todayAgenda.map((event) => event.id), [today.id]);
     expect(snapshot.upcomingVisits.map((event) => event.id), [
       upcomingVisit.id,
@@ -207,6 +224,32 @@ void main() {
     expect(snapshot.stages, isNotEmpty);
     expect(snapshot.checklistItems, hasLength(43));
   });
+
+  test(
+    'an open capture makes the project active without changing costs',
+    () async {
+      await captures.create(
+        CaptureDraftInput(
+          projectId: project.id,
+          type: CaptureDraftType.note,
+          title: 'Ustalenie z elektrykiem',
+        ),
+      );
+
+      final snapshot = await reader.load(
+        project: project,
+        window: DashboardWindow(
+          todayStart: DateTime.utc(2026, 7, 21),
+          todayEndExclusive: DateTime.utc(2026, 7, 22),
+          forecastEndExclusive: DateTime.utc(2026, 8, 20),
+        ),
+      );
+
+      expect(snapshot.openCaptureCount, 1);
+      expect(snapshot.isEmptyProject, isFalse);
+      expect(snapshot.spent.minorUnits, 0);
+    },
+  );
 }
 
 CostEntryInput _cost({

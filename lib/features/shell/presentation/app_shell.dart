@@ -1,5 +1,7 @@
 import 'package:budowapro/features/costs/presentation/cost_budget_screen.dart';
+import 'package:budowapro/features/captures/presentation/captures_screen.dart';
 import 'package:budowapro/features/dashboard/presentation/dashboard_controller.dart';
+import 'package:budowapro/features/projects/presentation/projects_controller.dart';
 import 'package:budowapro/features/projects/presentation/project_selector.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:budowapro/shared/widgets/app_content_states.dart';
@@ -15,6 +17,10 @@ class AppShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context);
+    final selectedProject = ref
+        .watch(projectsControllerProvider)
+        .value
+        ?.selectedProject;
 
     return Scaffold(
       body: Column(
@@ -30,9 +36,20 @@ class AppShell extends ConsumerWidget {
                   ),
                 ),
               ),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                child: ProjectSelector(),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 6, 8, 6),
+                child: Row(
+                  children: [
+                    const Expanded(child: ProjectSelector()),
+                    if (selectedProject != null)
+                      IconButton(
+                        key: const ValueKey('globalCaptureButton'),
+                        tooltip: localizations.captureAddTooltip,
+                        onPressed: () => showCaptureComposer(context, ref),
+                        icon: const Icon(Icons.add_box_outlined),
+                      ),
+                  ],
+                ),
               ),
             ),
           ),

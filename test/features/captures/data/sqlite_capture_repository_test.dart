@@ -168,6 +168,45 @@ void main() {
     );
   });
 
+  test('refuses to merge costs because one amount would be lost', () async {
+    final retained = await captures.create(
+      CaptureDraftInput(
+        projectId: 'project-1',
+        type: CaptureDraftType.cost,
+        title: 'Beton',
+        grossAmountMinorUnits: 10000,
+        vatRateBasisPoints: 2300,
+      ),
+    );
+    final merged = await captures.create(
+      CaptureDraftInput(
+        projectId: 'project-1',
+        type: CaptureDraftType.cost,
+        title: 'Stal',
+        grossAmountMinorUnits: 20000,
+        vatRateBasisPoints: 2300,
+      ),
+    );
+
+    await expectLater(
+      captures.merge(
+        projectId: 'project-1',
+        retainedCaptureId: retained.id,
+        mergedCaptureId: merged.id,
+      ),
+      throwsA(isA<CaptureDraftMergeException>()),
+    );
+
+    expect(
+      await captures.findById(projectId: 'project-1', captureId: retained.id),
+      isNotNull,
+    );
+    expect(
+      await captures.findById(projectId: 'project-1', captureId: merged.id),
+      isNotNull,
+    );
+  });
+
   test('classifies an attachment as a document in one transaction', () async {
     await _insertAttachment(
       database,
@@ -233,6 +272,45 @@ void main() {
     expect(cost?.input.amount.gross.minorUnits, 12345);
     expect(summary.actual.minorUnits, 0);
     expect(summary.planned.minorUnits, 0);
+  });
+
+  test('rolls back a target cost when capture classification fails', () async {
+    final capture = await captures.create(
+      CaptureDraftInput(
+        projectId: 'project-1',
+        type: CaptureDraftType.cost,
+        title: 'Beton',
+        grossAmountMinorUnits: 12345,
+        vatRateBasisPoints: 2300,
+      ),
+    );
+    final handle = await database.open();
+    await handle.execute('''
+      CREATE TRIGGER fail_capture_classification
+      BEFORE UPDATE OF status ON ${AppDatabase.captureDraftsTable}
+      WHEN NEW.status = 'classified'
+      BEGIN
+        SELECT RAISE(ABORT, 'simulated classification failure');
+      END
+    ''');
+
+    await expectLater(
+      captures.classify(
+        projectId: 'project-1',
+        captureId: capture.id,
+        currencyCode: 'PLN',
+      ),
+      throwsA(anything),
+    );
+
+    expect(await handle.query(AppDatabase.costEntriesTable), isEmpty);
+    expect(
+      (await captures.findById(
+        projectId: 'project-1',
+        captureId: capture.id,
+      ))?.status,
+      CaptureDraftStatus.ready,
+    );
   });
 
   test('classifies a task capture as a local schedule event', () async {

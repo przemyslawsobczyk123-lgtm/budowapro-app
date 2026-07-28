@@ -3621,4 +3621,227 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get receiptSplitApplyAction => 'Podziel';
+
+  @override
+  String get captureInboxTitle => 'Skrzynka szybkich zapisów';
+
+  @override
+  String captureInboxOpenTab(int count) {
+    return 'Otwarte ($count)';
+  }
+
+  @override
+  String captureInboxHistoryTab(int count) {
+    return 'Historia ($count)';
+  }
+
+  @override
+  String get captureInboxNoProjectTitle => 'Wybierz projekt';
+
+  @override
+  String get captureInboxNoProjectMessage =>
+      'Szybkie zapisy są zawsze przypisane do konkretnej budowy lub remontu.';
+
+  @override
+  String get captureInboxEmptyTitle => 'Skrzynka jest pusta';
+
+  @override
+  String get captureInboxEmptyMessage =>
+      'Dodaj zdjęcie, dokument, notatkę, koszt lub zadanie przyciskiem plus.';
+
+  @override
+  String get captureInboxHistoryEmptyTitle => 'Brak uporządkowanych zapisów';
+
+  @override
+  String get captureInboxHistoryEmptyMessage =>
+      'Tutaj pojawią się pozycje po zatwierdzeniu.';
+
+  @override
+  String get captureInboxLoadError => 'Nie udało się wczytać skrzynki.';
+
+  @override
+  String get captureAddTooltip => 'Dodaj szybki zapis';
+
+  @override
+  String get captureAddTitle => 'Co chcesz zapisać?';
+
+  @override
+  String get captureLoadMoreAction => 'Wczytaj kolejne';
+
+  @override
+  String get captureLoadingMore => 'Wczytywanie…';
+
+  @override
+  String get captureTypeReceiptInvoice => 'Paragon lub faktura';
+
+  @override
+  String get captureTypeAll => 'Wszystkie';
+
+  @override
+  String get captureTypePhoto => 'Zdjęcie';
+
+  @override
+  String get captureTypeDocument => 'Dokument';
+
+  @override
+  String get captureTypeNote => 'Notatka';
+
+  @override
+  String get captureTypeVoice => 'Nagranie';
+
+  @override
+  String get captureTypeCost => 'Koszt';
+
+  @override
+  String get captureTypeTask => 'Zadanie';
+
+  @override
+  String get captureTypeDecision => 'Decyzja';
+
+  @override
+  String get captureTypeDefect => 'Usterka';
+
+  @override
+  String get captureStatusReady => 'Gotowe do zatwierdzenia';
+
+  @override
+  String get captureStatusNeedsReview => 'Wymaga uzupełnienia';
+
+  @override
+  String get captureStatusClassified => 'Uporządkowane';
+
+  @override
+  String captureMissingFields(String fields) {
+    return 'Uzupełnij: $fields';
+  }
+
+  @override
+  String get captureMissingTitle => 'tytuł';
+
+  @override
+  String get captureMissingContent => 'opis';
+
+  @override
+  String get captureMissingAttachment => 'plik';
+
+  @override
+  String get captureMissingGrossAmount => 'kwotę brutto';
+
+  @override
+  String get captureMissingVatRate => 'stawkę VAT';
+
+  @override
+  String get captureMissingScheduledAt => 'termin';
+
+  @override
+  String get captureEditTooltip => 'Uzupełnij lub popraw';
+
+  @override
+  String get captureApproveTooltip => 'Zatwierdź i przypisz';
+
+  @override
+  String get captureMergeTooltip => 'Połącz podobne zapisy';
+
+  @override
+  String get captureRejectTooltip => 'Odrzuć zapis';
+
+  @override
+  String get captureRejectTitle => 'Odrzucić szybki zapis?';
+
+  @override
+  String get captureRejectMessage =>
+      'Niepowiązany plik lokalny także zostanie usunięty. Tej operacji nie można cofnąć.';
+
+  @override
+  String get captureMergeTitle => 'Połącz z podobnym zapisem';
+
+  @override
+  String get captureMergeEmpty => 'Brak innego otwartego zapisu tego typu.';
+
+  @override
+  String get captureEditorNewTitle => 'Nowy szybki zapis';
+
+  @override
+  String get captureEditorEditTitle => 'Uzupełnij zapis';
+
+  @override
+  String get captureTitleLabel => 'Tytuł';
+
+  @override
+  String get captureContentLabel => 'Opis lub ustalenia';
+
+  @override
+  String captureGrossAmountLabel(String currencyCode) {
+    return 'Kwota brutto ($currencyCode)';
+  }
+
+  @override
+  String get captureVatRateLabel => 'VAT';
+
+  @override
+  String get captureDateLabel => 'Data';
+
+  @override
+  String get captureTimeLabel => 'Godzina';
+
+  @override
+  String get captureChooseDateAction => 'Wybierz datę';
+
+  @override
+  String get captureChooseTimeAction => 'Wybierz godzinę';
+
+  @override
+  String get captureSaveDraftAction => 'Zapisz w skrzynce';
+
+  @override
+  String get captureUpdateAction => 'Zapisz zmiany';
+
+  @override
+  String get captureValidationTitle => 'Uzupełnij wymagane pola';
+
+  @override
+  String get captureValidationMessage =>
+      'Zapis może pozostać niekompletny, ale tytuł ułatwi jego późniejsze odnalezienie.';
+
+  @override
+  String get captureActionError => 'Nie udało się wykonać operacji.';
+
+  @override
+  String get capturePickCancelled => 'Nie wybrano pliku.';
+
+  @override
+  String get captureClassifiedDocument => 'Dokumentacja';
+
+  @override
+  String get captureClassifiedCost => 'Szkic kosztu';
+
+  @override
+  String get captureClassifiedTask => 'Harmonogram';
+
+  @override
+  String get captureClassifiedNote => 'Notatka';
+
+  @override
+  String get captureClassifiedDecision => 'Decyzja';
+
+  @override
+  String get captureClassifiedDefect => 'Usterka';
+
+  @override
+  String get captureCostDraftNotice =>
+      'Po zatwierdzeniu powstanie szkic kosztu. Suma budowy zmieni się dopiero po jego potwierdzeniu.';
+
+  @override
+  String get captureVoiceNotice =>
+      'Nagranie zostanie zachowane lokalnie. Transkrypcja nie jest wymagana.';
+
+  @override
+  String get captureFileNotice =>
+      'Plik jest kopiowany do prywatnej pamięci projektu.';
+
+  @override
+  String get captureSavedMessage => 'Zapis dodano do skrzynki.';
+
+  @override
+  String get captureApprovedMessage => 'Zapis został uporządkowany.';
 }

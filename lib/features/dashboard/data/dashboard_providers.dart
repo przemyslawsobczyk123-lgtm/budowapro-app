@@ -1,3 +1,4 @@
+import 'package:budowapro/features/captures/data/capture_providers.dart';
 import 'package:budowapro/features/costs/data/cost_providers.dart';
 import 'package:budowapro/features/dashboard/domain/dashboard_reader.dart';
 import 'package:budowapro/features/schedule/data/schedule_providers.dart';
@@ -8,6 +9,7 @@ import 'repository_dashboard_reader.dart';
 
 final dashboardReaderProvider = FutureProvider<DashboardReader>((ref) async {
   return RepositoryDashboardReader(
+    captureRepository: await ref.watch(captureRepositoryProvider.future),
     costRepository: await ref.watch(costRepositoryProvider.future),
     stageRepository: await ref.watch(stageRepositoryProvider.future),
     scheduleRepository: await ref.watch(scheduleRepositoryProvider.future),

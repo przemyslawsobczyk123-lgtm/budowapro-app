@@ -25,6 +25,7 @@ final class DashboardSnapshot {
     required int unpaidCount,
     required int costRecordCount,
     required int openScheduleCount,
+    int openCaptureCount = 0,
   }) {
     final stageList = stages.toList(growable: false)
       ..sort((left, right) => left.sortOrder.compareTo(right.sortOrder));
@@ -43,7 +44,10 @@ final class DashboardSnapshot {
     _requireCurrency(project, spent);
     _requireCurrency(project, plannedNext30Days);
     _requireCurrency(project, unpaid);
-    if (unpaidCount < 0 || costRecordCount < 0 || openScheduleCount < 0) {
+    if (unpaidCount < 0 ||
+        costRecordCount < 0 ||
+        openScheduleCount < 0 ||
+        openCaptureCount < 0) {
       throw ArgumentError('dashboard counts must not be negative');
     }
     for (final stage in stageList) {
@@ -90,6 +94,7 @@ final class DashboardSnapshot {
       unpaidCount: unpaidCount,
       costRecordCount: costRecordCount,
       openScheduleCount: openScheduleCount,
+      openCaptureCount: openCaptureCount,
     );
   }
 
@@ -106,6 +111,7 @@ final class DashboardSnapshot {
     required this.unpaidCount,
     required this.costRecordCount,
     required this.openScheduleCount,
+    required this.openCaptureCount,
   });
 
   final Project project;
@@ -120,6 +126,7 @@ final class DashboardSnapshot {
   final int unpaidCount;
   final int costRecordCount;
   final int openScheduleCount;
+  final int openCaptureCount;
 
   ProjectStage? get currentStage {
     for (final stage in stages) {
@@ -157,6 +164,7 @@ final class DashboardSnapshot {
   bool get isEmptyProject {
     return costRecordCount == 0 &&
         openScheduleCount == 0 &&
+        openCaptureCount == 0 &&
         stages.every((stage) => stage.status == StageStatus.planned) &&
         checklistItems.every(
           (record) => record.item.status == ChecklistStatus.todo,

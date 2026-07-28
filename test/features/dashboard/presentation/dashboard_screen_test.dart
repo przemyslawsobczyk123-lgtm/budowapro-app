@@ -86,6 +86,12 @@ void main() {
     expect(find.text('86 420,00 zł'), findsWidgets);
     expect(find.text('Plan 30 dni'), findsOneWidget);
     await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('dashboardCaptureInbox')),
+      120,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Otwarte (2)'), findsOneWidget);
+    await tester.scrollUntilVisible(
       find.text('Bednarka fundamentowa'),
       180,
       scrollable: find.byType(Scrollable).first,
@@ -256,6 +262,7 @@ DashboardSnapshot _populatedSnapshot(Project project) {
     unpaidCount: 3,
     costRecordCount: 4,
     openScheduleCount: 1,
+    openCaptureCount: 2,
   );
 }
 

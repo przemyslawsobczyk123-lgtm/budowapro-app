@@ -1,3 +1,4 @@
+import 'package:budowapro/features/captures/domain/capture_repository.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
 import 'package:budowapro/features/costs/domain/cost_repository.dart';
 import 'package:budowapro/features/costs/domain/cost_summary.dart';
@@ -12,11 +13,13 @@ import 'package:budowapro/shared/models/page.dart';
 
 final class RepositoryDashboardReader implements DashboardReader {
   factory RepositoryDashboardReader({
+    required CaptureRepository captureRepository,
     required CostRepository costRepository,
     required StageRepository stageRepository,
     required ScheduleRepository scheduleRepository,
   }) {
     return RepositoryDashboardReader._(
+      captureRepository,
       costRepository,
       stageRepository,
       scheduleRepository,
@@ -24,11 +27,13 @@ final class RepositoryDashboardReader implements DashboardReader {
   }
 
   const RepositoryDashboardReader._(
+    this._captureRepository,
     this._costRepository,
     this._stageRepository,
     this._scheduleRepository,
   );
 
+  final CaptureRepository _captureRepository;
   final CostRepository _costRepository;
   final StageRepository _stageRepository;
   final ScheduleRepository _scheduleRepository;
@@ -80,6 +85,7 @@ final class RepositoryDashboardReader implements DashboardReader {
         ),
       ),
       _scheduleRepository.listOpen(projectId: project.id),
+      _captureRepository.countOpen(projectId: project.id),
     ]);
 
     final checklistItems = results[0] as List<ChecklistItem>;
@@ -90,6 +96,7 @@ final class RepositoryDashboardReader implements DashboardReader {
     final allCostsPage = results[5] as Page<CostEntry>;
     final todayAgenda = results[6] as List<ScheduleEvent>;
     final openEvents = results[7] as List<ScheduleEvent>;
+    final openCaptureCount = results[8] as int;
     final upcomingVisits = openEvents
         .where(
           (event) =>
@@ -124,6 +131,7 @@ final class RepositoryDashboardReader implements DashboardReader {
       unpaidCount: unpaidPage.totalCount,
       costRecordCount: allCostsPage.totalCount,
       openScheduleCount: openEvents.length,
+      openCaptureCount: openCaptureCount,
     );
   }
 }

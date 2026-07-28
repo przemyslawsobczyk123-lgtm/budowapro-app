@@ -69,6 +69,22 @@ void main() {
     expect(find.text('Wybierz projekt'), findsOneWidget);
   });
 
+  testWidgets('opens the capture inbox from the More tools branch', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_testApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Więcej'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('moreCapturesTile')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Skrzynka szybkich zapisów'), findsOneWidget);
+    expect(find.text('Wybierz projekt'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('opens the budget report from the More tools branch', (
     tester,
   ) async {

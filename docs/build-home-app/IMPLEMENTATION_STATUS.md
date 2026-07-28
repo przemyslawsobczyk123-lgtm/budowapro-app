@@ -380,6 +380,26 @@ Last updated: 2026-07-26
 - Financial VAT storage currently supports only `0%`, `8%` and `23%`. Adding Polish `5%`, exempt and not-applicable
   rates requires a separate schema migration; OCR must not silently map those rates to `23%`.
 
+### Task 6.3 - project capture inbox
+
+- The local capture inbox accepts project-scoped photos, documents, voice files, notes, costs, tasks, decisions and
+  defects. The global quick action waits for the selected project before opening the composer and also links directly
+  to the existing receipt/invoice OCR flow.
+- Attachments selected through the system picker are copied into private project storage before a capture row is
+  created. Cancellation creates nothing; failed persistence compensates the staged file.
+- Open and classified captures are paged independently, filterable by type and visible from Start and More with a
+  derived open-count badge. Loading another page never materializes the complete inbox.
+- Classification is transactional. Photos/documents become documentation records, costs become excluded cost drafts
+  and tasks become local schedule events. Dashboard and destination providers are invalidated only after success.
+- Notes, decisions and defects remain durable classified capture records until the dedicated diary and decision
+  modules are implemented in Phase 7. They do not affect financial or schedule summaries.
+- Merge is available only where all source data can be retained. Cost and task merge is rejected in both UI and the
+  repository so a second amount or schedule cannot be lost.
+- Reject removes the capture and then discards only attachments that are no longer linked. Rollback coverage proves
+  that a failed status update cannot leave a target cost behind.
+- The inbox, composer, editor and merge picker are localized, scrollable and covered at a 320 px viewport and 200%
+  text scaling.
+
 ## Verified baseline
 
 ```text
@@ -419,7 +439,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-26. The full suite contains 395 passing tests. Debug APK:
+All commands passed on 2026-07-28. The full suite contains 419 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -427,7 +447,6 @@ build/app/outputs/flutter-apk/app-debug.apk
 
 ## Next task
 
-Task 6.3 from `IMPLEMENTATION_PLAN.md`: implement the project-scoped draft inbox
-for quick photo, document, note, voice, cost, decision and defect capture. Every
-capture remains offline and outside summaries until explicit classification and
-approval.
+Task 7.1 from `IMPLEMENTATION_PLAN.md`: implement the local daily site diary and
+allow classified notes, decisions and defects to become chronological entries
+without exposing their content to logs.

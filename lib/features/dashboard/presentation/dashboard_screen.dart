@@ -145,6 +145,8 @@ class _DashboardContent extends ConsumerWidget {
                 _MetricStrip(snapshot: snapshot),
                 const SizedBox(height: 22),
                 _QuickActions(project: snapshot.project),
+                const SizedBox(height: 18),
+                _CaptureInboxRow(snapshot: snapshot),
                 const SizedBox(height: 24),
                 _CriticalSection(snapshot: snapshot),
                 const SizedBox(height: 24),
@@ -381,6 +383,56 @@ class _MetricStrip extends StatelessWidget {
                 detail: l10n.dashboardUnpaidItems(snapshot.unpaidCount),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CaptureInboxRow extends StatelessWidget {
+  const _CaptureInboxRow({required this.snapshot});
+
+  final DashboardSnapshot snapshot;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final colors = Theme.of(context).colorScheme;
+    return InkWell(
+      key: const ValueKey('dashboardCaptureInbox'),
+      onTap: () => context.push('/captures'),
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 64),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          border: Border.all(color: colors.outlineVariant),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            Badge(
+              isLabelVisible: snapshot.openCaptureCount > 0,
+              label: Text('${snapshot.openCaptureCount}'),
+              child: const Icon(Icons.inbox_outlined),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.captureInboxTitle,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(l10n.captureInboxOpenTab(snapshot.openCaptureCount)),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right_rounded),
           ],
         ),
       ),

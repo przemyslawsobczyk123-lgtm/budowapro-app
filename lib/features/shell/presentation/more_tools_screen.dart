@@ -1,18 +1,35 @@
+import 'package:budowapro/features/captures/presentation/captures_controller.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class MoreToolsScreen extends StatelessWidget {
+class MoreToolsScreen extends ConsumerWidget {
   const MoreToolsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
+    final captureCount =
+        ref.watch(capturesControllerProvider).value?.openTotal ?? 0;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.moreTitle)),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
+          ListTile(
+            key: const ValueKey('moreCapturesTile'),
+            minTileHeight: 64,
+            leading: Badge(
+              isLabelVisible: captureCount > 0,
+              label: Text('$captureCount'),
+              child: const Icon(Icons.inbox_outlined),
+            ),
+            title: Text(l10n.captureInboxTitle),
+            subtitle: Text(l10n.captureInboxOpenTab(captureCount)),
+            trailing: const Icon(Icons.chevron_right_rounded),
+            onTap: () => context.push('/captures'),
+          ),
           ListTile(
             key: const ValueKey('moreContactsTile'),
             minTileHeight: 64,

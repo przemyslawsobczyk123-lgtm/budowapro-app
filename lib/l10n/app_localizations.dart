@@ -6483,6 +6483,420 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Podziel'**
   String get receiptSplitApplyAction;
+
+  /// No description provided for @captureInboxTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Skrzynka szybkich zapisów'**
+  String get captureInboxTitle;
+
+  /// No description provided for @captureInboxOpenTab.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwarte ({count})'**
+  String captureInboxOpenTab(int count);
+
+  /// No description provided for @captureInboxHistoryTab.
+  ///
+  /// In pl, this message translates to:
+  /// **'Historia ({count})'**
+  String captureInboxHistoryTab(int count);
+
+  /// No description provided for @captureInboxNoProjectTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz projekt'**
+  String get captureInboxNoProjectTitle;
+
+  /// No description provided for @captureInboxNoProjectMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szybkie zapisy są zawsze przypisane do konkretnej budowy lub remontu.'**
+  String get captureInboxNoProjectMessage;
+
+  /// No description provided for @captureInboxEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Skrzynka jest pusta'**
+  String get captureInboxEmptyTitle;
+
+  /// No description provided for @captureInboxEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj zdjęcie, dokument, notatkę, koszt lub zadanie przyciskiem plus.'**
+  String get captureInboxEmptyMessage;
+
+  /// No description provided for @captureInboxHistoryEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak uporządkowanych zapisów'**
+  String get captureInboxHistoryEmptyTitle;
+
+  /// No description provided for @captureInboxHistoryEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tutaj pojawią się pozycje po zatwierdzeniu.'**
+  String get captureInboxHistoryEmptyMessage;
+
+  /// No description provided for @captureInboxLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać skrzynki.'**
+  String get captureInboxLoadError;
+
+  /// No description provided for @captureAddTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj szybki zapis'**
+  String get captureAddTooltip;
+
+  /// No description provided for @captureAddTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Co chcesz zapisać?'**
+  String get captureAddTitle;
+
+  /// No description provided for @captureLoadMoreAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytaj kolejne'**
+  String get captureLoadMoreAction;
+
+  /// No description provided for @captureLoadingMore.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytywanie…'**
+  String get captureLoadingMore;
+
+  /// No description provided for @captureTypeReceiptInvoice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Paragon lub faktura'**
+  String get captureTypeReceiptInvoice;
+
+  /// No description provided for @captureTypeAll.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie'**
+  String get captureTypeAll;
+
+  /// No description provided for @captureTypePhoto.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcie'**
+  String get captureTypePhoto;
+
+  /// No description provided for @captureTypeDocument.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokument'**
+  String get captureTypeDocument;
+
+  /// No description provided for @captureTypeNote.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatka'**
+  String get captureTypeNote;
+
+  /// No description provided for @captureTypeVoice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nagranie'**
+  String get captureTypeVoice;
+
+  /// No description provided for @captureTypeCost.
+  ///
+  /// In pl, this message translates to:
+  /// **'Koszt'**
+  String get captureTypeCost;
+
+  /// No description provided for @captureTypeTask.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zadanie'**
+  String get captureTypeTask;
+
+  /// No description provided for @captureTypeDecision.
+  ///
+  /// In pl, this message translates to:
+  /// **'Decyzja'**
+  String get captureTypeDecision;
+
+  /// No description provided for @captureTypeDefect.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterka'**
+  String get captureTypeDefect;
+
+  /// No description provided for @captureStatusReady.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gotowe do zatwierdzenia'**
+  String get captureStatusReady;
+
+  /// No description provided for @captureStatusNeedsReview.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wymaga uzupełnienia'**
+  String get captureStatusNeedsReview;
+
+  /// No description provided for @captureStatusClassified.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uporządkowane'**
+  String get captureStatusClassified;
+
+  /// No description provided for @captureMissingFields.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzupełnij: {fields}'**
+  String captureMissingFields(String fields);
+
+  /// No description provided for @captureMissingTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'tytuł'**
+  String get captureMissingTitle;
+
+  /// No description provided for @captureMissingContent.
+  ///
+  /// In pl, this message translates to:
+  /// **'opis'**
+  String get captureMissingContent;
+
+  /// No description provided for @captureMissingAttachment.
+  ///
+  /// In pl, this message translates to:
+  /// **'plik'**
+  String get captureMissingAttachment;
+
+  /// No description provided for @captureMissingGrossAmount.
+  ///
+  /// In pl, this message translates to:
+  /// **'kwotę brutto'**
+  String get captureMissingGrossAmount;
+
+  /// No description provided for @captureMissingVatRate.
+  ///
+  /// In pl, this message translates to:
+  /// **'stawkę VAT'**
+  String get captureMissingVatRate;
+
+  /// No description provided for @captureMissingScheduledAt.
+  ///
+  /// In pl, this message translates to:
+  /// **'termin'**
+  String get captureMissingScheduledAt;
+
+  /// No description provided for @captureEditTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzupełnij lub popraw'**
+  String get captureEditTooltip;
+
+  /// No description provided for @captureApproveTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatwierdź i przypisz'**
+  String get captureApproveTooltip;
+
+  /// No description provided for @captureMergeTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Połącz podobne zapisy'**
+  String get captureMergeTooltip;
+
+  /// No description provided for @captureRejectTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odrzuć zapis'**
+  String get captureRejectTooltip;
+
+  /// No description provided for @captureRejectTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odrzucić szybki zapis?'**
+  String get captureRejectTitle;
+
+  /// No description provided for @captureRejectMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Niepowiązany plik lokalny także zostanie usunięty. Tej operacji nie można cofnąć.'**
+  String get captureRejectMessage;
+
+  /// No description provided for @captureMergeTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Połącz z podobnym zapisem'**
+  String get captureMergeTitle;
+
+  /// No description provided for @captureMergeEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak innego otwartego zapisu tego typu.'**
+  String get captureMergeEmpty;
+
+  /// No description provided for @captureEditorNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowy szybki zapis'**
+  String get captureEditorNewTitle;
+
+  /// No description provided for @captureEditorEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzupełnij zapis'**
+  String get captureEditorEditTitle;
+
+  /// No description provided for @captureTitleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tytuł'**
+  String get captureTitleLabel;
+
+  /// No description provided for @captureContentLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Opis lub ustalenia'**
+  String get captureContentLabel;
+
+  /// No description provided for @captureGrossAmountLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kwota brutto ({currencyCode})'**
+  String captureGrossAmountLabel(String currencyCode);
+
+  /// No description provided for @captureVatRateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'VAT'**
+  String get captureVatRateLabel;
+
+  /// No description provided for @captureDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data'**
+  String get captureDateLabel;
+
+  /// No description provided for @captureTimeLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Godzina'**
+  String get captureTimeLabel;
+
+  /// No description provided for @captureChooseDateAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz datę'**
+  String get captureChooseDateAction;
+
+  /// No description provided for @captureChooseTimeAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz godzinę'**
+  String get captureChooseTimeAction;
+
+  /// No description provided for @captureSaveDraftAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz w skrzynce'**
+  String get captureSaveDraftAction;
+
+  /// No description provided for @captureUpdateAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz zmiany'**
+  String get captureUpdateAction;
+
+  /// No description provided for @captureValidationTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzupełnij wymagane pola'**
+  String get captureValidationTitle;
+
+  /// No description provided for @captureValidationMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapis może pozostać niekompletny, ale tytuł ułatwi jego późniejsze odnalezienie.'**
+  String get captureValidationMessage;
+
+  /// No description provided for @captureActionError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wykonać operacji.'**
+  String get captureActionError;
+
+  /// No description provided for @capturePickCancelled.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie wybrano pliku.'**
+  String get capturePickCancelled;
+
+  /// No description provided for @captureClassifiedDocument.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokumentacja'**
+  String get captureClassifiedDocument;
+
+  /// No description provided for @captureClassifiedCost.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szkic kosztu'**
+  String get captureClassifiedCost;
+
+  /// No description provided for @captureClassifiedTask.
+  ///
+  /// In pl, this message translates to:
+  /// **'Harmonogram'**
+  String get captureClassifiedTask;
+
+  /// No description provided for @captureClassifiedNote.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatka'**
+  String get captureClassifiedNote;
+
+  /// No description provided for @captureClassifiedDecision.
+  ///
+  /// In pl, this message translates to:
+  /// **'Decyzja'**
+  String get captureClassifiedDecision;
+
+  /// No description provided for @captureClassifiedDefect.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterka'**
+  String get captureClassifiedDefect;
+
+  /// No description provided for @captureCostDraftNotice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po zatwierdzeniu powstanie szkic kosztu. Suma budowy zmieni się dopiero po jego potwierdzeniu.'**
+  String get captureCostDraftNotice;
+
+  /// No description provided for @captureVoiceNotice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nagranie zostanie zachowane lokalnie. Transkrypcja nie jest wymagana.'**
+  String get captureVoiceNotice;
+
+  /// No description provided for @captureFileNotice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plik jest kopiowany do prywatnej pamięci projektu.'**
+  String get captureFileNotice;
+
+  /// No description provided for @captureSavedMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapis dodano do skrzynki.'**
+  String get captureSavedMessage;
+
+  /// No description provided for @captureApprovedMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapis został uporządkowany.'**
+  String get captureApprovedMessage;
 }
 
 class _AppLocalizationsDelegate

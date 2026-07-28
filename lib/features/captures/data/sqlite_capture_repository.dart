@@ -218,6 +218,10 @@ final class SqliteCaptureRepository implements CaptureRepository {
       if (retained.type != merged.type) {
         throw const CaptureDraftMergeException();
       }
+      if (retained.type == CaptureDraftType.cost ||
+          retained.type == CaptureDraftType.task) {
+        throw const CaptureDraftMergeException();
+      }
 
       final input = CaptureDraftInput(
         projectId: retained.projectId,
