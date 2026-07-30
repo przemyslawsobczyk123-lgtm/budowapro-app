@@ -48,7 +48,7 @@ jobs:
         run: |
           while IFS= read -r line; do
             echo "::error file=test-output.log::$line"
-          done < <(grep -E -- ' -[0-9]+:|Some tests failed' test-output.log | tail -n 20)
+          done < <(grep -m 1 -E -- ' -1:|Some tests failed' test-output.log)
 
       - name: Upload test report
         if: always()
