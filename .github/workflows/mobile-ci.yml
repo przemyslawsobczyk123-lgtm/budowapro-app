@@ -1,0 +1,103 @@
+name: BudowaPRO mobile CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  FLUTTER_VERSION: 3.44.4
+
+jobs:
+  quality:
+    name: Dart analyze and tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test
+
+  android:
+    name: Android debug APK
+    needs: quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build debug APK
+        run: flutter build apk --debug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: budowapro-android-debug
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
+
+  ios:
+    name: iOS unsigned compile
+    needs: quality
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Install iOS dependencies
+        working-directory: ios
+        run: pod install
+
+      - name: Compile iOS without signing
+        run: flutter build ios --debug --no-codesign
+
+      - name: Upload unsigned iOS app
+        uses: actions/upload-artifact@v4
+        with:
+          name: budowapro-ios-debug-unsigned
+          path: build/ios/iphoneos/Runner.app
+          if-no-files-found: error

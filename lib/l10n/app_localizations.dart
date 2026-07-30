@@ -1351,8 +1351,14 @@ abstract class AppLocalizations {
   /// No description provided for @costFinancialFieldsLocked.
   ///
   /// In pl, this message translates to:
-  /// **'Zatwierdzone dane finansowe są zablokowane.'**
+  /// **'Rodzaj i status zatwierdzonego wpisu są zablokowane.'**
   String get costFinancialFieldsLocked;
+
+  /// No description provided for @costAmountCorrectionHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmiana kwoty zapisze korektę i zachowa pierwotną wartość w historii.'**
+  String get costAmountCorrectionHint;
 
   /// No description provided for @costDetailsEditAction.
   ///
@@ -7474,11 +7480,71 @@ abstract class AppLocalizations {
   /// **'Sam wybierasz lokalizację. Plik ZIP nie jest szyfrowany, dlatego przechowuj go w zaufanym miejscu.'**
   String get privacyCreateBackupSubtitle;
 
+  /// No description provided for @privacyDeleteDataSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Trwałe usuwanie'**
+  String get privacyDeleteDataSection;
+
   /// No description provided for @privacyDeleteDataHelp.
   ///
   /// In pl, this message translates to:
-  /// **'Pojedynczy projekt usuń z jego ustawień. Wszystkie dane prywatne usuniesz przez „Wyczyść dane” w ustawieniach Androida albo odinstalowanie aplikacji. Ręczne kopie i eksporty trzeba usunąć osobno.'**
+  /// **'Możesz usunąć wszystkie dane zapisane przez BudowaPRO bezpośrednio tutaj. Eksporty i ręczne kopie zapisane poza aplikacją trzeba usunąć osobno.'**
   String get privacyDeleteDataHelp;
+
+  /// No description provided for @privacyDeleteAllTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń wszystkie dane BudowaPRO'**
+  String get privacyDeleteAllTitle;
+
+  /// No description provided for @privacyDeleteAllSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Projekty, koszty, kontakty, dokumenty, zdjęcia, OCR i szkice zostaną trwale usunięte.'**
+  String get privacyDeleteAllSubtitle;
+
+  /// No description provided for @privacyDeleteAllWarning.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tej operacji nie można cofnąć. Przed usunięciem utwórz kopię, jeśli chcesz zachować dane.'**
+  String get privacyDeleteAllWarning;
+
+  /// No description provided for @privacyDeleteAllConfirmTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunąć wszystkie dane?'**
+  String get privacyDeleteAllConfirmTitle;
+
+  /// No description provided for @privacyDeleteAllConfirmMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zostanie usunięta baza BudowaPRO oraz wszystkie lokalne pliki projektów. Aby potwierdzić, wpisz dokładnie poniższą frazę.'**
+  String get privacyDeleteAllConfirmMessage;
+
+  /// No description provided for @privacyDeleteAllPhraseLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Fraza potwierdzająca'**
+  String get privacyDeleteAllPhraseLabel;
+
+  /// No description provided for @privacyDeleteAllConfirmationPhrase.
+  ///
+  /// In pl, this message translates to:
+  /// **'USUŃ DANE'**
+  String get privacyDeleteAllConfirmationPhrase;
+
+  /// No description provided for @privacyDeleteAllConfirmAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń bezpowrotnie'**
+  String get privacyDeleteAllConfirmAction;
+
+  /// No description provided for @privacyDeleteAllError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się dokończyć usuwania danych. Spróbuj ponownie.'**
+  String get privacyDeleteAllError;
 }
 
 class _AppLocalizationsDelegate

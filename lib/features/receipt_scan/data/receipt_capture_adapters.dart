@@ -74,6 +74,13 @@ final class MlKitReceiptDocumentScanner implements ReceiptSourcePicker {
   }
 
   static Future<Uri?> _scanSingleDocument() async {
+    if (Platform.isIOS) {
+      final path = await const MethodChannel(
+        'pl.budowapro/receipt_scanner',
+      ).invokeMethod<String>('scan');
+      if (path == null || path.trim().isEmpty) return null;
+      return Uri.file(path);
+    }
     final scanner = DocumentScanner(
       options: DocumentScannerOptions(
         documentFormats: const <DocumentFormat>{DocumentFormat.jpeg},

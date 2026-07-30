@@ -527,7 +527,8 @@
   "costQuantityInvalidError": "Wpisz dodatnią ilość.",
   "costNoteTooLongError": "Notatka może mieć maksymalnie 2000 znaków.",
   "costStatusInvalidError": "Ten status nie pasuje do rodzaju wpisu.",
-  "costFinancialFieldsLocked": "Zatwierdzone dane finansowe są zablokowane.",
+  "costFinancialFieldsLocked": "Rodzaj i status zatwierdzonego wpisu są zablokowane.",
+  "costAmountCorrectionHint": "Zmiana kwoty zapisze korektę i zachowa pierwotną wartość w historii.",
   "costDetailsEditAction": "Edytuj",
   "costDetailsCopyDraftAction": "Kopiuj do szkicu",
   "costDetailsMarkPaidAction": "Oznacz jako opłacony",
@@ -1662,5 +1663,15 @@
   "privacyDataControlSection": "Kontrola danych",
   "privacyCreateBackupTitle": "Utwórz lub odtwórz kopię",
   "privacyCreateBackupSubtitle": "Sam wybierasz lokalizację. Plik ZIP nie jest szyfrowany, dlatego przechowuj go w zaufanym miejscu.",
-  "privacyDeleteDataHelp": "Pojedynczy projekt usuń z jego ustawień. Wszystkie dane prywatne usuniesz przez „Wyczyść dane” w ustawieniach Androida albo odinstalowanie aplikacji. Ręczne kopie i eksporty trzeba usunąć osobno."
+  "privacyDeleteDataSection": "Trwałe usuwanie",
+  "privacyDeleteDataHelp": "Możesz usunąć wszystkie dane zapisane przez BudowaPRO bezpośrednio tutaj. Eksporty i ręczne kopie zapisane poza aplikacją trzeba usunąć osobno.",
+  "privacyDeleteAllTitle": "Usuń wszystkie dane BudowaPRO",
+  "privacyDeleteAllSubtitle": "Projekty, koszty, kontakty, dokumenty, zdjęcia, OCR i szkice zostaną trwale usunięte.",
+  "privacyDeleteAllWarning": "Tej operacji nie można cofnąć. Przed usunięciem utwórz kopię, jeśli chcesz zachować dane.",
+  "privacyDeleteAllConfirmTitle": "Usunąć wszystkie dane?",
+  "privacyDeleteAllConfirmMessage": "Zostanie usunięta baza BudowaPRO oraz wszystkie lokalne pliki projektów. Aby potwierdzić, wpisz dokładnie poniższą frazę.",
+  "privacyDeleteAllPhraseLabel": "Fraza potwierdzająca",
+  "privacyDeleteAllConfirmationPhrase": "USUŃ DANE",
+  "privacyDeleteAllConfirmAction": "Usuń bezpowrotnie",
+  "privacyDeleteAllError": "Nie udało się dokończyć usuwania danych. Spróbuj ponownie."
 }

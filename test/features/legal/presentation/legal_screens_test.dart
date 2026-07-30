@@ -1,6 +1,7 @@
 import 'package:budowapro/core/theme/app_theme.dart';
 import 'package:budowapro/features/legal/data/legal_link_gateway.dart';
 import 'package:budowapro/features/legal/data/legal_providers.dart';
+import 'package:budowapro/features/legal/data/local_data_deletion_service.dart';
 import 'package:budowapro/features/legal/domain/app_build_info.dart';
 import 'package:budowapro/features/legal/domain/legal_release_config.dart';
 import 'package:budowapro/features/legal/presentation/legal_center_screen.dart';
@@ -184,6 +185,57 @@ void main() {
     expect(find.text('Automatyczny backup Androida wyłączony'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('requires an exact phrase before deleting all local data', (
+    tester,
+  ) async {
+    _compactView(tester);
+    final deletion = _FakeLocalDataDeletion();
+    await tester.pumpWidget(
+      _testApp(
+        const PrivacySettingsScreen(),
+        config: _configuredRelease,
+        deletion: deletion,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final scrollable = find.descendant(
+      of: find.byKey(const ValueKey('privacySettingsContent')),
+      matching: find.byType(Scrollable),
+    );
+    await tester.dragUntilVisible(
+      find.byKey(const ValueKey('privacyDeleteAllDataTile')),
+      scrollable,
+      const Offset(0, -240),
+    );
+    await tester.ensureVisible(
+      find.byKey(const ValueKey('privacyDeleteAllDataTile')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('privacyDeleteAllDataTile')));
+    await tester.pumpAndSettle();
+
+    final confirmButton = find.byKey(
+      const ValueKey('privacyDeleteAllConfirmButton'),
+    );
+    expect(tester.widget<FilledButton>(confirmButton).onPressed, isNull);
+    final phraseField = find.byKey(
+      const ValueKey('privacyDeleteAllPhraseField'),
+    );
+    final phrase = AppLocalizations.of(
+      tester.element(phraseField),
+    ).privacyDeleteAllConfirmationPhrase;
+    await tester.enterText(phraseField, phrase);
+    await tester.pump();
+    expect(tester.widget<TextField>(phraseField).controller!.text, phrase);
+    expect(tester.widget<FilledButton>(confirmButton).onPressed, isNotNull);
+    await tester.tap(confirmButton);
+    await tester.pumpAndSettle();
+
+    expect(deletion.calls, 1);
+    expect(tester.takeException(), isNull);
+  });
 }
 
 const _configuredRelease = LegalReleaseConfig(
@@ -203,11 +255,15 @@ Widget _testApp(
   Widget home, {
   required LegalReleaseConfig config,
   TextScaler textScaler = TextScaler.noScaling,
+  LocalDataDeletion? deletion,
 }) {
   return ProviderScope(
     overrides: [
       legalReleaseConfigProvider.overrideWithValue(config),
       legalLinkGatewayProvider.overrideWithValue(_FakeLegalLinkGateway()),
+      localDataDeletionProvider.overrideWith(
+        (ref) async => deletion ?? _FakeLocalDataDeletion(),
+      ),
       appBuildInfoProvider.overrideWith((ref) async => _buildInfo),
     ],
     child: MaterialApp(
@@ -233,4 +289,13 @@ const _buildInfo = AppBuildInfo(
 final class _FakeLegalLinkGateway implements LegalLinkGateway {
   @override
   Future<bool> openExternal(Uri uri) async => true;
+}
+
+final class _FakeLocalDataDeletion implements LocalDataDeletion {
+  var calls = 0;
+
+  @override
+  Future<void> deleteAll() async {
+    calls += 1;
+  }
 }

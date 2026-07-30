@@ -6,6 +6,7 @@ import 'package:budowapro/features/costs/data/cost_attachment_picker.dart';
 import 'package:budowapro/features/costs/data/cost_attachment_stager.dart';
 import 'package:budowapro/features/costs/data/sqlite_cost_repository.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
+import 'package:budowapro/features/costs/domain/cost_repository.dart';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 import 'package:budowapro/features/costs/presentation/cost_editor_gateway.dart';
 import 'package:budowapro/features/costs/presentation/cost_form_model.dart';
@@ -15,11 +16,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+import 'package:budowapro/shared/models/page.dart';
+
 void main() {
   sqfliteFfiInit();
 
   late Directory temporaryDirectory;
   late AppDatabase database;
+  late SqliteCostRepository costRepository;
   late LocalCostEditorGateway gateway;
   var nextId = 0;
 
@@ -53,7 +57,7 @@ void main() {
       idGenerator: () => 'attachment-${++nextId}',
       utcNow: () => DateTime.utc(2026, 7, 15, 9),
     );
-    final costRepository = SqliteCostRepository(
+    costRepository = SqliteCostRepository(
       database: database,
       idGenerator: () => 'record-${++nextId}',
       utcNow: () => DateTime.utc(2026, 7, 15, 10, nextId),
@@ -125,32 +129,43 @@ void main() {
     );
   });
 
-  test('confirmed edit cannot replace its amount', () async {
-    final initial = await gateway.load(projectId: 'project-1');
-    final saved = await gateway.save(
-      initialData: initial,
-      submission: _submission(status: CostStatus.paid),
-      asDraft: false,
-    );
-    final editData = await gateway.load(
-      projectId: 'project-1',
-      costEntryId: saved.id,
-    );
+  test(
+    'confirmed edit records a price correction without losing history',
+    () async {
+      final initial = await gateway.load(projectId: 'project-1');
+      final saved = await gateway.save(
+        initialData: initial,
+        submission: _submission(status: CostStatus.paid),
+        asDraft: false,
+      );
+      final editData = await gateway.load(
+        projectId: 'project-1',
+        costEntryId: saved.id,
+      );
 
-    await expectLater(
-      gateway.save(
+      final edited = await gateway.save(
         initialData: editData,
         submission: _submission(status: CostStatus.paid, grossAmount: '999,00'),
         asDraft: false,
-      ),
-      throwsStateError,
-    );
-    final unchanged = await gateway.load(
-      projectId: 'project-1',
-      costEntryId: saved.id,
-    );
-    expect(unchanged.entry!.amount.gross, saved.amount.gross);
-  });
+      );
+      final unchanged = await gateway.load(
+        projectId: 'project-1',
+        costEntryId: saved.id,
+      );
+      expect(unchanged.entry!.amount.gross, saved.amount.gross);
+      expect(edited.revision, saved.revision + 2);
+
+      final summary = await costRepository.summarize(
+        CostSummaryQuery(projectId: 'project-1'),
+      );
+      expect(summary.actual.minorUnits, 99900);
+      final exported = await costRepository.exportRows(
+        CostQuery(projectId: 'project-1'),
+        PageRequest(limit: 10),
+      );
+      expect(exported.items.single.effectiveGross.minorUnits, 99900);
+    },
+  );
 
   test('updates and confirms an existing draft in one operation', () async {
     final initial = await gateway.load(projectId: 'project-1');

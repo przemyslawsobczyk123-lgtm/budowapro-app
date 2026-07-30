@@ -4,9 +4,10 @@ Status: Tasks `6.1` and `6.2` implemented and verified on `2026-07-25`.
 
 ## Objective
 
-BudowaPRO captures one receipt page with the Android document scanner or
-imports one local image/PDF, copies the original into project-private storage,
-creates a bounded preview and runs Latin text recognition on the device.
+BudowaPRO captures one receipt page with the Android document scanner or the
+iOS VisionKit document camera, or imports one local image/PDF. It copies the
+original into project-private storage, creates a bounded preview and runs Latin
+text recognition on the device.
 
 The result is an untrusted proposal. It can become cost drafts only after the
 Task `6.2` correction, confidence review, financial validation and explicit
@@ -16,6 +17,9 @@ save flow. It never posts a paid cost or updates a budget total directly.
 
 - `google_mlkit_document_scanner 0.5.0`: Android scanner UI, edge detection,
   crop, rotation, filters and gallery import.
+- Apple VisionKit `VNDocumentCameraViewController`: iOS scanner UI and page
+  capture fallback because the locked ML Kit document-scanner wrapper is
+  Android-only in this version.
 - `google_mlkit_text_recognition 0.16.0`: bundled Latin OCR model.
 - existing `pdfrx 2.4.7`: local rendering of the first imported PDF page to an
   OCR image.
@@ -62,8 +66,10 @@ The presentation layer renders state and requests `scan`, `import`, `retry`,
 9. An explicit discard or screen exit removes the private original and preview.
 10. Startup recovery removes a session left unlinked after process death.
 
-The attachment source records `scanner` or `file_picker`; no camera permission
-is added because the Google scanner uses the Google Play services flow.
+The attachment source records `scanner` or `file_picker`. Android does not need
+camera permission because the Google scanner uses the Google Play services
+flow. iOS declares its camera purpose string because VisionKit uses the device
+camera.
 
 ## OCR Boundary
 
@@ -109,8 +115,8 @@ Every resulting cost remains lifecycle `draft`, source `receiptOcr` and status
 
 Google Document Scanner requires Google Play services, Android API 21+ and at
 least 1.7 GB RAM. Its scanner component may need a first-use download. BudowaPRO
-targets Android API 28+, and local file import remains available when the
-scanner cannot start.
+targets Android API 28+. VisionKit is used on iOS 15.5+ and local file import
+remains available on both platforms when a scanner cannot start.
 
 ## Verification
 
@@ -132,6 +138,8 @@ scanner cannot start.
   <https://developers.google.com/ml-kit/vision/doc-scanner/android>
 - Google ML Kit text recognition:
   <https://developers.google.com/ml-kit/vision/text-recognition/v2/android>
+- Apple VisionKit document camera:
+  <https://developer.apple.com/documentation/visionkit/vndocumentcameraviewcontroller>
 - Flutter document scanner wrapper:
   <https://pub.dev/packages/google_mlkit_document_scanner>
 - Flutter text recognition wrapper:

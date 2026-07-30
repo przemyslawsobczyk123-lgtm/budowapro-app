@@ -21,6 +21,12 @@ const scheduleNotificationDetails = NotificationDetails(
     priority: Priority.high,
     visibility: NotificationVisibility.secret,
   ),
+  iOS: DarwinNotificationDetails(
+    presentAlert: true,
+    presentBanner: true,
+    presentList: true,
+    presentSound: true,
+  ),
 );
 
 final class LocalScheduleNotificationGateway
@@ -48,6 +54,11 @@ final class LocalScheduleNotificationGateway
     await _plugin.initialize(
       settings: const InitializationSettings(
         android: AndroidInitializationSettings('ic_launcher'),
+        iOS: DarwinInitializationSettings(
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false,
+        ),
       ),
       onDidReceiveNotificationResponse: (response) {
         _openPayload(response.payload);
@@ -67,11 +78,23 @@ final class LocalScheduleNotificationGateway
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >();
-    if (android == null) return NotificationPermissionState.unavailable;
-    final enabled = await android.areNotificationsEnabled();
-    return enabled == true
-        ? NotificationPermissionState.granted
-        : NotificationPermissionState.denied;
+    if (android != null) {
+      final enabled = await android.areNotificationsEnabled();
+      return enabled == true
+          ? NotificationPermissionState.granted
+          : NotificationPermissionState.denied;
+    }
+    final ios = _plugin
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
+    if (ios != null) {
+      final permissions = await ios.checkPermissions();
+      return permissions?.isEnabled == true
+          ? NotificationPermissionState.granted
+          : NotificationPermissionState.denied;
+    }
+    return NotificationPermissionState.unavailable;
   }
 
   @override
@@ -81,11 +104,27 @@ final class LocalScheduleNotificationGateway
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >();
-    if (android == null) return NotificationPermissionState.unavailable;
-    final granted = await android.requestNotificationsPermission();
-    return granted == true
-        ? NotificationPermissionState.granted
-        : NotificationPermissionState.denied;
+    if (android != null) {
+      final granted = await android.requestNotificationsPermission();
+      return granted == true
+          ? NotificationPermissionState.granted
+          : NotificationPermissionState.denied;
+    }
+    final ios = _plugin
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
+    if (ios != null) {
+      final granted = await ios.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      return granted == true
+          ? NotificationPermissionState.granted
+          : NotificationPermissionState.denied;
+    }
+    return NotificationPermissionState.unavailable;
   }
 
   @override

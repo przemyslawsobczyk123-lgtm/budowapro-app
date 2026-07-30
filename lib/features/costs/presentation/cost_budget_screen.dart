@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:budowapro/features/costs/data/cost_providers.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
+import 'package:budowapro/features/costs/domain/cost_export_record.dart';
 import 'package:budowapro/features/costs/domain/cost_repository.dart';
 import 'package:budowapro/features/costs/domain/cost_summary.dart';
 import 'package:budowapro/features/costs/domain/money.dart';
@@ -171,6 +172,7 @@ class _CostRegisterState extends State<_CostRegister> {
   final _searchController = TextEditingController();
   Timer? _searchDebounce;
   List<CostEntry> _entries = const <CostEntry>[];
+  Map<String, Money> _effectiveGrossByEntryId = const <String, Money>{};
   CostSummary? _summary;
   CostFilterOptions _options = CostFilterOptions();
   PageRequest? _nextRequest;
@@ -266,11 +268,17 @@ class _CostRegisterState extends State<_CostRegister> {
         widget.repository.list(query, PageRequest(limit: _pageSize)),
         widget.repository.summarize(CostSummaryQuery.fromCostQuery(query)),
         widget.repository.filterOptions(projectId: widget.project.id),
+        widget.repository.exportRows(query, PageRequest(limit: _pageSize)),
       ]);
       if (!mounted || generation != _generation) return;
       final page = results[0] as Page<CostEntry>;
+      final exportPage = results[3] as Page<CostExportRecord>;
       setState(() {
         _entries = page.items;
+        _effectiveGrossByEntryId = <String, Money>{
+          for (final record in exportPage.items)
+            record.entry.id: record.effectiveGross,
+        };
         _summary = results[1] as CostSummary;
         _options = results[2] as CostFilterOptions;
         _totalCount = page.totalCount;
@@ -295,10 +303,20 @@ class _CostRegisterState extends State<_CostRegister> {
       _loadMoreError = null;
     });
     try {
-      final page = await widget.repository.list(_query(), request);
+      final results = await Future.wait<Object>([
+        widget.repository.list(_query(), request),
+        widget.repository.exportRows(_query(), request),
+      ]);
       if (!mounted || generation != _generation) return;
+      final page = results[0] as Page<CostEntry>;
+      final exportPage = results[1] as Page<CostExportRecord>;
       setState(() {
         _entries = <CostEntry>[..._entries, ...page.items];
+        _effectiveGrossByEntryId = <String, Money>{
+          ..._effectiveGrossByEntryId,
+          for (final record in exportPage.items)
+            record.entry.id: record.effectiveGross,
+        };
         _totalCount = page.totalCount;
         _nextRequest = page.nextRequest;
         _isLoadingMore = false;
@@ -517,6 +535,8 @@ class _CostRegisterState extends State<_CostRegister> {
                     project: widget.project,
                     stages: widget.stages,
                     entry: _entries[index],
+                    effectiveGross:
+                        _effectiveGrossByEntryId[_entries[index].id],
                     onTap: () => _openDetails(_entries[index]),
                   ),
                 ),
@@ -914,12 +934,14 @@ class _CostEntryRow extends StatelessWidget {
   const _CostEntryRow({
     required this.project,
     required this.entry,
+    required this.effectiveGross,
     required this.stages,
     required this.onTap,
   });
 
   final Project project;
   final CostEntry entry;
+  final Money? effectiveGross;
   final List<ProjectStage> stages;
   final VoidCallback onTap;
 
@@ -979,7 +1001,10 @@ class _CostEntryRow extends StatelessWidget {
                             fit: BoxFit.scaleDown,
                             alignment: Alignment.centerRight,
                             child: Text(
-                              _money(entry.amount.gross, project.currencyCode),
+                              _money(
+                                effectiveGross ?? entry.amount.gross,
+                                project.currencyCode,
+                              ),
                               style: Theme.of(context).textTheme.titleSmall,
                             ),
                           ),

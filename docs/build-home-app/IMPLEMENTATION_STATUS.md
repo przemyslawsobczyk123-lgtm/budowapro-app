@@ -1,10 +1,10 @@
 # BudowaPRO - implementation status
 
-Last updated: 2026-07-28
+Last updated: 2026-07-30
 
 ## Current release
 
-`R1 MVP Core - in progress`
+`R1 MVP Core - production candidate`
 
 ## Completed
 
@@ -24,8 +24,14 @@ Last updated: 2026-07-28
 
 ### Task 1.1 - Flutter application shell
 
-- Flutter Android project created with application ID `pl.budowapro`.
+- Flutter Android/iOS project created with application ID/bundle identifier
+  `pl.budowapro`.
 - Minimum Android version set to API 28 (Android 9).
+- Minimum iOS version set to 15.5 for the locked ML Kit iOS pods.
+- BudowaPRO app icon is installed in Android launcher resources and the iOS
+    `AppIcon.appiconset`.
+- iOS `PrivacyInfo.xcprivacy` is bundled with declarations for local disk-space
+    and file-metadata checks; the app declares no tracking or collected data.
 - Polish localization generated from ARB resources.
 - Five primary destinations implemented with `StatefulShellRoute.indexedStack`.
 - Riverpod owns router composition and disposal.
@@ -42,6 +48,20 @@ Last updated: 2026-07-28
 - Project files use local `originals`, `previews` and `exports` directories.
 - Imports reject path traversal and symbolic-link escapes, serialize duplicate targets,
   recover stale partial files and never overwrite completed files.
+
+### Cross-platform compatibility
+
+- Android keeps its Kotlin system integrations for contacts, storage capacity
+  and Google ML Kit document scanning.
+- iOS uses `CNContactPickerViewController` for one explicitly selected phone
+  contact, `FileManager` for free-space checks and VisionKit for receipt scans.
+- OCR uses the locked ML Kit text-recognition adapter on both mobile platforms.
+- Local reminders use the Android notification channel on Android and the
+  Darwin notification implementation on iOS.
+- File picker, SQLite, local project storage, PDF viewing, sharing and legal
+  screens stay in the shared Flutter layer.
+- iOS source/build verification is pending on a Mac with Xcode; Windows cannot
+  compile or sign an iOS target.
 
 ### Task 1.3 - projects and templates
 
@@ -79,7 +99,8 @@ Last updated: 2026-07-28
   through valid payment statuses. Any entry can be deleted after explicit confirmation.
 - Drafts preserve their selected target status across database reopening while remaining excluded
   from every financial summary.
-- Confirmed financial values are immutable; detail and status changes are recorded in local history.
+- The original confirmed financial value remains immutable in history. Editing a confirmed gross amount
+  now adds an append-only price correction, while the budget register, summaries and exports use the effective total.
 - Project currency becomes immutable after the first cost entry, and project deletion impact counts
   linked cost records before the destructive confirmation.
 - Stage selection comes from persisted project stages, including custom stages. Category and supplier fields suggest values
@@ -415,6 +436,8 @@ Last updated: 2026-07-28
   identity is invented in source. A separate CI utility verifies that the configured public URL responds with HTML.
 - Android API 36 is the explicit compile/target level. Automatic cloud backup is disabled and both legacy and Android
   12+ extraction rules exclude private app files from cloud and device-transfer backups.
+- Privacy settings now provide a phrase-confirmed action for deleting all local data. It clears the database, project
+  files and private caches, then returns the app to an empty-project state.
 - `PRIVACY_AND_GOOGLE_PLAY_RELEASE.md` records the provisional ML Kit Data safety mapping, permission inventory,
   merged-manifest distinction, unencrypted manual ZIP warning, release command and remaining Play Console/signing
   actions. Google Play still requires a public policy URL even though the complete policy is also available inside
@@ -461,7 +484,7 @@ sqflite 2.4.3
 sqflite_common_ffi 2.4.2
 path_provider 2.1.6
 file_picker 11.0.2
-flutter_local_notifications 22.1.0
+flutter_local_notifications 22.2.0
 flutter_timezone 5.1.0
 google_mlkit_document_scanner 0.5.0
 google_mlkit_text_recognition 0.16.0
@@ -491,7 +514,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-28. The full suite contains 468 passing tests. Debug APK:
+All commands passed on 2026-07-30. The full suite contains 473 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk

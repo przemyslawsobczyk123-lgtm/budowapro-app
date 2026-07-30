@@ -3,6 +3,7 @@ import 'package:budowapro/features/costs/data/cost_attachment_stager.dart';
 import 'package:budowapro/features/costs/data/cost_providers.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
 import 'package:budowapro/features/costs/domain/cost_repository.dart';
+import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 import 'package:budowapro/features/projects/data/project_providers.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
 import 'package:budowapro/features/projects/domain/project_repository.dart';
@@ -216,6 +217,17 @@ final class LocalCostEditorGateway implements CostEditorGateway {
       asDraft: false,
     );
     _requireImmutableFinancialFields(entry, confirmedInput);
+    if (entry.amount.gross != confirmedInput.amount.gross) {
+      final deltaGross = confirmedInput.amount.gross - entry.amount.gross;
+      await _costRepository.addCorrection(
+        CostCorrectionInput(
+          projectId: entry.projectId,
+          costEntryId: entry.id,
+          reason: CostCorrectionReason.priceCorrection,
+          delta: VatBreakdown.fromGross(deltaGross, entry.amount.rate),
+        ),
+      );
+    }
     return _costRepository.updateDetails(
       projectId: entry.projectId,
       costEntryId: entry.id,
@@ -346,14 +358,11 @@ void _requireImmutableFinancialFields(
   CostEntryInput submitted,
 ) {
   final original = existing.input;
-  final amountChanged =
-      original.amount.net != submitted.amount.net ||
-      original.amount.vat != submitted.amount.vat ||
-      original.amount.gross != submitted.amount.gross ||
-      original.amount.rate != submitted.amount.rate;
+  final amountChanged = original.amount.gross != submitted.amount.gross;
   if (original.type != submitted.type ||
       original.status != submitted.status ||
-      amountChanged) {
+      original.amount.rate != submitted.amount.rate ||
+      (amountChanged && original.type != CostEntryType.cost)) {
     throw StateError('Confirmed financial fields require a correction');
   }
 }

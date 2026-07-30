@@ -237,6 +237,67 @@ final class ProjectFileStore implements ProjectFileStorage {
     return _maintenanceLock.runOperation(() => _deleteProjectFiles(projectId));
   }
 
+  /// Removes every project attachment while preserving the application root.
+  ///
+  /// The maintenance lock prevents an import from racing with the destructive
+  /// privacy reset operation.
+  Future<void> deleteAllProjectFiles() {
+    return _maintenanceLock.runMaintenance(_deleteAllProjectFiles);
+  }
+
+  Future<void> _deleteAllProjectFiles() async {
+    if (!await _rootDirectory.exists()) {
+      return;
+    }
+
+    final rootType = await FileSystemEntity.type(
+      _rootDirectory.path,
+      followLinks: false,
+    );
+    if (rootType != FileSystemEntityType.directory) {
+      throw const FileSystemException(
+        'Project storage root is not a directory',
+      );
+    }
+
+    final projectsDirectory = Directory(
+      p.join(_rootDirectory.path, 'projects'),
+    );
+    final projectsType = await FileSystemEntity.type(
+      projectsDirectory.path,
+      followLinks: false,
+    );
+    if (projectsType == FileSystemEntityType.notFound) {
+      return;
+    }
+    if (projectsType != FileSystemEntityType.directory) {
+      throw const FileSystemException('Project storage is not a directory');
+    }
+
+    final resolvedRoot = p.normalize(
+      await _rootDirectory.resolveSymbolicLinks(),
+    );
+    final resolvedProjects = p.normalize(
+      await projectsDirectory.resolveSymbolicLinks(),
+    );
+    if (!p.isWithin(resolvedRoot, resolvedProjects)) {
+      throw const FileSystemException('Project storage escapes local storage');
+    }
+
+    await for (final entity in projectsDirectory.list(
+      recursive: true,
+      followLinks: false,
+    )) {
+      final type = await FileSystemEntity.type(entity.path, followLinks: false);
+      if (type == FileSystemEntityType.link) {
+        throw const FileSystemException(
+          'Project storage contains an unsupported symbolic link',
+        );
+      }
+    }
+    await projectsDirectory.delete(recursive: true);
+  }
+
   Future<void> _deleteProjectFiles(String projectId) async {
     final projectDirectory = await _existingProjectDirectory(projectId);
     if (projectDirectory == null) {

@@ -2,7 +2,7 @@
 
 ## Status
 
-Target architecture for the future Flutter Android app. Package versions are intentionally not pinned before the Flutter project exists. At scaffold time, versions must be verified against current official documentation and locked in `pubspec.lock`.
+Target architecture for the Flutter Android and iOS app. Package versions are intentionally not pinned before the Flutter project exists. At scaffold time, versions must be verified against current official documentation and locked in `pubspec.lock`.
 
 Official foundations:
 
@@ -33,7 +33,7 @@ Rules:
 - views render state and dispatch intent,
 - view models coordinate use cases and immutable UI state,
 - domain owns money, status transitions, health reasons and validation rules,
-- data layer owns SQL, file paths, OCR plugins and Android integrations,
+- data layer owns SQL, file paths, OCR plugins and platform integrations,
 - optional cloud AI is an adapter behind an explicit consent boundary,
 - local rule engine is the default assistant and has no network dependency.
 
@@ -390,8 +390,9 @@ input through the stored IANA zone before persistence.
 
 Local reminders use `flutter_local_notifications` with `timezone` and
 `flutter_timezone`. Android scheduling uses `inexactAllowWhileIdle`, so the app
-does not request exact-alarm access. `POST_NOTIFICATIONS` is requested only from
-an explicit user action; denial never rolls back or blocks a schedule write.
+does not request exact-alarm access. Android requests `POST_NOTIFICATIONS`,
+while iOS requests the equivalent Darwin notification permissions only from an
+explicit user action; denial never rolls back or blocks a schedule write.
 Scheduled reminders are restored after reboot by the plugin receivers.
 
 Flutter 3.44 still reports a forward-compatibility warning because
@@ -454,10 +455,11 @@ Schema `v6` adds four local tables:
   visit status, result and agreements.
 
 Device contact import is a separate gateway from `ContactRepository`. Android
-opens `ACTION_PICK` for `CommonDataKinds.Phone.CONTENT_URI`, so the contacts app
-provides its own searchable picker and delegates temporary access only to the
-selected phone row. BudowaPRO copies the validated display name and selected
-number into the unsaved form. It does not request broad contacts permission,
+opens `ACTION_PICK` for `CommonDataKinds.Phone.CONTENT_URI`, while iOS opens
+`CNContactPickerViewController`. Both system pickers provide their own
+searchable selection flow and delegate temporary access only to the selected
+phone row. BudowaPRO copies the validated display name and selected number into
+the unsaved form. It does not request broad contacts permission,
 retain a provider URI or system contact ID, synchronize later, or select a trade
 role automatically.
 

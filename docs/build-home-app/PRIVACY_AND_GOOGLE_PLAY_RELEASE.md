@@ -1,6 +1,6 @@
 # BudowaPRO - prywatnosc i wydanie Google Play
 
-Stan audytu kodu: 2026-07-28.
+Stan audytu kodu: 2026-07-29.
 
 Dokument opisuje wdrozone zabezpieczenia oraz czynnosci nalezace do wydawcy.
 Nie zastepuje indywidualnej opinii prawnej ani konfiguracji Play Console.
@@ -16,6 +16,9 @@ Nie zastepuje indywidualnej opinii prawnej ani konfiguracji Play Console.
   ani Firebase Crashlytics.
 - Automatyczna kopia Androida jest wylaczona. Reguly Android 11 i 12+
   wykluczaja prywatne pliki z backupu i transferu urzadzenie-urzadzenie.
+- Ustawienia prywatnosci zawieraja jawna akcje usuniecia wszystkich danych.
+  Wymaga ona wpisania frazy potwierdzajacej, usuwa baze, pliki projektow i
+  lokalne cache, a po operacji odswieza aplikacje do stanu bez projektu.
 - Prywatna baza uzywa `secure_delete`; katalogi tymczasowe OCR, eksportu,
   udostepniania, kopii i odtwarzania sa szybko odpinane przy starcie, a ich
   rekursywne kasowanie odbywa sie po pokazaniu pierwszej klatki aplikacji.
@@ -170,7 +173,7 @@ jawnego audytu i aktualizacji allowlisty.
 11. Opublikuj etapowo i zachowaj AAB, `release-metadata.json` oraz symbole.
 
 Brak konta uzytkownika oznacza, ze URL usuwania konta nie jest wymagany.
-Lokalne dane usuwa sie w aplikacji, ustawieniach Androida lub przez
+Lokalne dane mozna usunac w aplikacji, ustawieniach Androida lub przez
 odinstalowanie. Reczne kopie i eksporty trzeba usunac osobno.
 
 ## 8. Znane granice

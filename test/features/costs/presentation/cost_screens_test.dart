@@ -121,6 +121,43 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('allows correcting the gross amount of a confirmed cost', (
+    tester,
+  ) async {
+    final entry = _entry();
+    final gateway = _FakeGateway(
+      data: CostEditorData(
+        project: _project(),
+        entry: entry,
+        attachments: const [],
+      ),
+    );
+    await tester.pumpWidget(
+      _gatewayApp(
+        gateway,
+        CostFormScreen(projectId: 'project-1', costEntryId: entry.id),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final grossField = tester.widget<TextFormField>(
+      find.byKey(const ValueKey('costGrossField')),
+    );
+    expect(grossField.enabled, isTrue);
+    expect(find.textContaining('Zmiana kwoty zapisze korektę'), findsOneWidget);
+
+    await tester.enterText(
+      find.byKey(const ValueKey('costGrossField')),
+      '1300,00',
+    );
+    await tester.ensureVisible(find.byKey(const ValueKey('costSave')));
+    await tester.tap(find.byKey(const ValueKey('costSave')));
+    await tester.pumpAndSettle();
+
+    expect(gateway.lastSubmission?.grossAmount, '1300,00');
+    expect(gateway.saveCallCount, 1);
+  });
+
   testWidgets('offers a custom project stage in the cost form', (tester) async {
     final gateway = _FakeGateway(
       data: CostEditorData(
@@ -311,6 +348,21 @@ void main() {
 
     expect(find.byKey(const ValueKey('costBudgetCreate')), findsOneWidget);
     expect(find.text('Beton B20'), findsOneWidget);
+  });
+
+  testWidgets('shows the effective amount after a price correction', (
+    tester,
+  ) async {
+    final costs = _FakeCostRepository(
+      entries: [_entry()],
+      effectiveGrossByEntryId: <String, Money>{
+        'cost-1': Money(minorUnits: 130000, currencyCode: 'PLN'),
+      },
+    );
+    await tester.pumpWidget(_budgetApp(costs));
+    await tester.pumpAndSettle();
+
+    expect(find.text('1\u00A0300,00 PLN'), findsOneWidget);
   });
 
   testWidgets('keeps search text while applying a combined status filter', (
@@ -601,6 +653,7 @@ class _FakeGateway implements CostEditorGateway {
   final int loadFailures;
   CostStatus? changedStatus;
   String? deletedEntryId;
+  CostFormSubmission? lastSubmission;
   var saveCallCount = 0;
   var loadCallCount = 0;
 
@@ -623,6 +676,7 @@ class _FakeGateway implements CostEditorGateway {
     required bool asDraft,
   }) async {
     saveCallCount += 1;
+    lastSubmission = submission;
     return data.entry ?? _entry();
   }
 
@@ -750,9 +804,10 @@ class _FakeStageRepository implements StageRepository {
 }
 
 class _FakeCostRepository implements CostRepository {
-  _FakeCostRepository({required this.entries});
+  _FakeCostRepository({required this.entries, this.effectiveGrossByEntryId});
 
   final List<CostEntry> entries;
+  final Map<String, Money>? effectiveGrossByEntryId;
   final List<CostQuery> listQueries = <CostQuery>[];
   final List<PageRequest> pageRequests = <PageRequest>[];
   Completer<void>? nextPageGate;
@@ -829,7 +884,8 @@ class _FakeCostRepository implements CostRepository {
         .map(
           (entry) => CostExportRecord(
             entry: entry,
-            effectiveGross: entry.amount.gross,
+            effectiveGross:
+                effectiveGrossByEntryId?[entry.id] ?? entry.amount.gross,
           ),
         )
         .skip(page.offset)

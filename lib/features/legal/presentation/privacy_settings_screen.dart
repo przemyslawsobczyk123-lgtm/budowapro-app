@@ -1,9 +1,22 @@
+import 'package:budowapro/features/dashboard/presentation/dashboard_controller.dart';
+import 'package:budowapro/features/legal/data/legal_providers.dart';
+import 'package:budowapro/features/projects/data/project_providers.dart';
+import 'package:budowapro/features/projects/presentation/projects_controller.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class PrivacySettingsScreen extends StatelessWidget {
+class PrivacySettingsScreen extends ConsumerStatefulWidget {
   const PrivacySettingsScreen({super.key});
+
+  @override
+  ConsumerState<PrivacySettingsScreen> createState() =>
+      _PrivacySettingsScreenState();
+}
+
+class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
+  var _isDeleting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -88,15 +101,141 @@ class PrivacySettingsScreen extends StatelessWidget {
             trailing: const Icon(Icons.chevron_right_rounded),
             onTap: () => context.push('/legal/privacy-policy'),
           ),
+          const Divider(height: 28),
+          _SectionTitle(text: l10n.privacyDeleteDataSection),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+            child: Text(l10n.privacyDeleteDataHelp),
+          ),
+          ListTile(
+            key: const ValueKey('privacyDeleteAllDataTile'),
+            minTileHeight: 72,
+            leading: Icon(
+              Icons.delete_forever_outlined,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            title: Text(l10n.privacyDeleteAllTitle),
+            subtitle: Text(l10n.privacyDeleteAllSubtitle),
+            trailing: _isDeleting
+                ? const SizedBox.square(
+                    dimension: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.chevron_right_rounded),
+            onTap: _isDeleting ? null : _deleteAllData,
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
             child: Text(
-              l10n.privacyDeleteDataHelp,
-              style: Theme.of(context).textTheme.bodySmall,
+              l10n.privacyDeleteAllWarning,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _deleteAllData() async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => _DeleteAllDataDialog(l10n: l10n),
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _isDeleting = true);
+    try {
+      final deletion = await ref.read(localDataDeletionProvider.future);
+      await deletion.deleteAll();
+      ref.invalidate(appDatabaseProvider);
+      ref.invalidate(projectFileStoreProvider);
+      ref.invalidate(projectRepositoryProvider);
+      ref.invalidate(projectsControllerProvider);
+      ref.invalidate(dashboardControllerProvider);
+      if (!mounted) return;
+      final router = GoRouter.maybeOf(context);
+      if (router != null) {
+        router.go('/');
+      } else {
+        setState(() => _isDeleting = false);
+      }
+    } on Object {
+      if (!mounted) return;
+      setState(() => _isDeleting = false);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.privacyDeleteAllError)));
+    }
+  }
+}
+
+class _DeleteAllDataDialog extends StatefulWidget {
+  const _DeleteAllDataDialog({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  @override
+  State<_DeleteAllDataDialog> createState() => _DeleteAllDataDialogState();
+}
+
+class _DeleteAllDataDialogState extends State<_DeleteAllDataDialog> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final phrase = widget.l10n.privacyDeleteAllConfirmationPhrase;
+    return AlertDialog(
+      title: Text(widget.l10n.privacyDeleteAllConfirmTitle),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(widget.l10n.privacyDeleteAllConfirmMessage),
+            const SizedBox(height: 16),
+            TextField(
+              key: const ValueKey('privacyDeleteAllPhraseField'),
+              controller: _controller,
+              autofocus: true,
+              maxLength: phrase.length,
+              textCapitalization: TextCapitalization.characters,
+              decoration: InputDecoration(
+                labelText: widget.l10n.privacyDeleteAllPhraseLabel,
+                helperText: phrase,
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: Text(widget.l10n.cancelAction),
+        ),
+        ValueListenableBuilder<TextEditingValue>(
+          valueListenable: _controller,
+          builder: (context, value, child) => FilledButton(
+            key: const ValueKey('privacyDeleteAllConfirmButton'),
+            onPressed: value.text.trim() == phrase
+                ? () => Navigator.pop(context, true)
+                : null,
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
+            ),
+            child: Text(widget.l10n.privacyDeleteAllConfirmAction),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -670,7 +670,11 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get costFinancialFieldsLocked =>
-      'Zatwierdzone dane finansowe są zablokowane.';
+      'Rodzaj i status zatwierdzonego wpisu są zablokowane.';
+
+  @override
+  String get costAmountCorrectionHint =>
+      'Zmiana kwoty zapisze korektę i zachowa pierwotną wartość w historii.';
 
   @override
   String get costDetailsEditAction => 'Edytuj';
@@ -4179,6 +4183,40 @@ class AppLocalizationsPl extends AppLocalizations {
       'Sam wybierasz lokalizację. Plik ZIP nie jest szyfrowany, dlatego przechowuj go w zaufanym miejscu.';
 
   @override
+  String get privacyDeleteDataSection => 'Trwałe usuwanie';
+
+  @override
   String get privacyDeleteDataHelp =>
-      'Pojedynczy projekt usuń z jego ustawień. Wszystkie dane prywatne usuniesz przez „Wyczyść dane” w ustawieniach Androida albo odinstalowanie aplikacji. Ręczne kopie i eksporty trzeba usunąć osobno.';
+      'Możesz usunąć wszystkie dane zapisane przez BudowaPRO bezpośrednio tutaj. Eksporty i ręczne kopie zapisane poza aplikacją trzeba usunąć osobno.';
+
+  @override
+  String get privacyDeleteAllTitle => 'Usuń wszystkie dane BudowaPRO';
+
+  @override
+  String get privacyDeleteAllSubtitle =>
+      'Projekty, koszty, kontakty, dokumenty, zdjęcia, OCR i szkice zostaną trwale usunięte.';
+
+  @override
+  String get privacyDeleteAllWarning =>
+      'Tej operacji nie można cofnąć. Przed usunięciem utwórz kopię, jeśli chcesz zachować dane.';
+
+  @override
+  String get privacyDeleteAllConfirmTitle => 'Usunąć wszystkie dane?';
+
+  @override
+  String get privacyDeleteAllConfirmMessage =>
+      'Zostanie usunięta baza BudowaPRO oraz wszystkie lokalne pliki projektów. Aby potwierdzić, wpisz dokładnie poniższą frazę.';
+
+  @override
+  String get privacyDeleteAllPhraseLabel => 'Fraza potwierdzająca';
+
+  @override
+  String get privacyDeleteAllConfirmationPhrase => 'USUŃ DANE';
+
+  @override
+  String get privacyDeleteAllConfirmAction => 'Usuń bezpowrotnie';
+
+  @override
+  String get privacyDeleteAllError =>
+      'Nie udało się dokończyć usuwania danych. Spróbuj ponownie.';
 }

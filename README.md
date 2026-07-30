@@ -1,21 +1,25 @@
 # BudowaPRO
 
-Local-first Android application for managing a house build or renovation.
+Local-first Flutter application for managing a house build or renovation on
+Android and iOS.
 
 ## Status
 
 The local-first MVP covers projects, stages and source-backed checklists, costs,
 receipt/invoice OCR review, contacts, schedule and reminders, documents,
 photos, quotes, reports, capture inbox, backup/restore and in-app legal
-documents. Production release hardening and an audited Android AAB pipeline are
-included; Play Console configuration and final publisher data remain external.
+documents. Privacy settings also provide a confirmed in-app deletion of all
+local project data. Production release hardening and an audited Android AAB
+pipeline are included; Play Console/App Store Connect configuration, signing
+and final publisher data remain external.
 
 ## Requirements
 
 - Flutter 3.44.4 or compatible stable release,
 - Dart 3.12.2 or compatible SDK,
 - Java 17+,
-- Android SDK with API 28+ support.
+- Android SDK with API 28+ support,
+- macOS with Xcode for iOS build, simulator and App Store distribution.
 
 ## Commands
 
@@ -42,6 +46,8 @@ dart run tool/release/build_android_release.dart
 - `docs/build-home-app/IMPLEMENTATION_STATUS.md`
 - `docs/build-home-app/TECHNICAL_ARCHITECTURE.md`
 - `docs/build-home-app/PRIVACY_AND_GOOGLE_PLAY_RELEASE.md`
+- `docs/build-home-app/IOS_AND_ANDROID_COMPATIBILITY.md`
+- `docs/build-home-app/GITHUB_IOS_CI.md`
 - `docs/build-home-app-mockups/index.html`
 
 ## Privacy baseline

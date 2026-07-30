@@ -159,6 +159,8 @@ class _CostFormState extends State<_CostForm> {
   CostEntry? get _entry => widget.initialData.entry;
   bool get _financialFieldsLocked =>
       _entry?.lifecycle == CostLifecycle.confirmed;
+  bool get _canCorrectAmount =>
+      !_financialFieldsLocked || _entry?.type == CostEntryType.cost;
   bool get _canSaveDraft => !_financialFieldsLocked;
 
   @override
@@ -326,7 +328,7 @@ class _CostFormState extends State<_CostForm> {
                     TextFormField(
                       key: const ValueKey('costGrossField'),
                       controller: _grossController,
-                      enabled: !_financialFieldsLocked && !_isSubmitting,
+                      enabled: !_isSubmitting && _canCorrectAmount,
                       keyboardType: const TextInputType.numberWithOptions(
                         decimal: true,
                       ),
@@ -370,6 +372,15 @@ class _CostFormState extends State<_CostForm> {
                     ),
                   ],
                 ),
+                if (_financialFieldsLocked && _canCorrectAmount) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    localizations.costAmountCorrectionHint,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 12),
                 _ResponsivePair(
                   children: [
