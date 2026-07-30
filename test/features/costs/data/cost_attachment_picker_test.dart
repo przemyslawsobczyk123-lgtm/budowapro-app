@@ -21,6 +21,7 @@ void main() {
     expect(selected.reportedByteSize, 500);
     expect(selected.mediaType, 'application/pdf');
     expect(selected.sourceUri.isScheme('file'), isTrue);
+    expect(selected.sourceUri.path, contains('faktura.pdf'));
   });
 
   test('returns null when the system picker is cancelled', () async {

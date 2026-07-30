@@ -30,7 +30,10 @@ final class FilePickerLocalAttachmentPicker implements LocalAttachmentPicker {
       throw const FileSystemException('Selected file has no local path');
     }
     return PickedLocalAttachment(
-      sourceUri: Uri.file(sourcePath),
+      sourceUri: Uri.file(
+        sourcePath,
+        windows: p.windows.isAbsolute(sourcePath),
+      ),
       displayName: selected.name,
       reportedByteSize: selected.size,
       mediaType: _mediaTypeFor(selected.name),
