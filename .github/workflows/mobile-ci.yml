@@ -35,7 +35,20 @@ jobs:
         run: flutter analyze
 
       - name: Test
-        run: flutter test --concurrency=1
+        shell: bash
+        run: |
+          set +e
+          flutter test --concurrency=1 --reporter expanded 2>&1 | tee test-output.log
+          status=${PIPESTATUS[0]}
+          exit "$status"
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: budowapro-test-report
+          path: test-output.log
+          if-no-files-found: error
 
   android:
     name: Android debug APK
