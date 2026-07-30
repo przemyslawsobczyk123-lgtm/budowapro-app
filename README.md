@@ -48,6 +48,7 @@ dart run tool/release/build_android_release.dart
 - `docs/build-home-app/PRIVACY_AND_GOOGLE_PLAY_RELEASE.md`
 - `docs/build-home-app/IOS_AND_ANDROID_COMPATIBILITY.md`
 - `docs/build-home-app/GITHUB_IOS_CI.md`
+- `docs/build-home-app/IOS_TESTFLIGHT_SETUP.md`
 - `docs/build-home-app-mockups/index.html`
 
 ## Privacy baseline

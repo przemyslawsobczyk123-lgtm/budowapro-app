@@ -1,0 +1,197 @@
+name: BudowaPRO iOS TestFlight
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_number:
+        description: "Apple build number; empty uses the GitHub run number"
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: budowapro-ios-testflight
+  cancel-in-progress: false
+
+env:
+  FLUTTER_VERSION: 3.44.4
+  IOS_BUNDLE_ID: pl.budowapro
+
+jobs:
+  build-and-upload:
+    name: Signed iOS build and TestFlight upload
+    runs-on: macos-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Install iOS dependencies
+        working-directory: ios
+        run: pod install
+
+      - name: Validate release secrets
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPSTORE_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+          APPSTORE_API_KEY_ID: ${{ secrets.APPSTORE_API_KEY_ID }}
+          APPSTORE_API_PRIVATE_KEY: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+          IOS_CERTIFICATE_P12_BASE64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
+          IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=()
+          for name in \
+            APPLE_TEAM_ID \
+            APPSTORE_ISSUER_ID \
+            APPSTORE_API_KEY_ID \
+            APPSTORE_API_PRIVATE_KEY \
+            IOS_CERTIFICATE_P12_BASE64 \
+            IOS_CERTIFICATE_PASSWORD \
+            IOS_PROVISIONING_PROFILE_BASE64; do
+            if [[ -z "${!name}" ]]; then
+              missing+=("$name")
+            fi
+          done
+          if (( ${#missing[@]} > 0 )); then
+            printf 'Missing required GitHub secrets: %s\n' "${missing[*]}" >&2
+            exit 1
+          fi
+
+          if [[ ! "$APPLE_TEAM_ID" =~ ^[A-Z0-9]{10}$ ]]; then
+            echo 'APPLE_TEAM_ID must be the 10-character Apple Team ID.' >&2
+            exit 1
+          fi
+
+      - name: Import Apple distribution certificate
+        uses: apple-actions/import-codesign-certs@v7
+        with:
+          p12-file-base64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
+          p12-password: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+
+      - name: Install and inspect App Store provisioning profile
+        env:
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          profile_path="$RUNNER_TEMP/budowapro.mobileprovision"
+          profile_plist="$RUNNER_TEMP/budowapro-profile.plist"
+          printf '%s' "$IOS_PROVISIONING_PROFILE_BASE64" | base64 --decode > "$profile_path"
+          security cms -D -i "$profile_path" > "$profile_plist"
+
+          profile_name=$(/usr/libexec/PlistBuddy -c 'Print :Name' "$profile_plist")
+          profile_uuid=$(/usr/libexec/PlistBuddy -c 'Print :UUID' "$profile_plist")
+          application_identifier=$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:application-identifier' "$profile_plist")
+          get_task_allow=$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:get-task-allow' "$profile_plist")
+
+          if [[ "$application_identifier" != *":${IOS_BUNDLE_ID}" ]]; then
+            echo "Provisioning profile does not target ${IOS_BUNDLE_ID}." >&2
+            exit 1
+          fi
+          if [[ "$get_task_allow" != "false" ]]; then
+            echo 'The provisioning profile is not an App Store distribution profile.' >&2
+            exit 1
+          fi
+
+          profiles_dir="$HOME/Library/MobileDevice/Provisioning Profiles"
+          mkdir -p "$profiles_dir"
+          cp "$profile_path" "$profiles_dir/$profile_uuid.mobileprovision"
+          {
+            echo "IOS_PROFILE_NAME=$profile_name"
+            echo "IOS_PROFILE_UUID=$profile_uuid"
+          } >> "$GITHUB_ENV"
+
+      - name: Prepare export options
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          export_options="$RUNNER_TEMP/ExportOptions.plist"
+          rm -f "$export_options"
+          /usr/libexec/PlistBuddy -c 'Add :destination string export' "$export_options"
+          /usr/libexec/PlistBuddy -c 'Add :method string app-store' "$export_options"
+          /usr/libexec/PlistBuddy -c 'Add :signingStyle string manual' "$export_options"
+          /usr/libexec/PlistBuddy -c 'Add :stripSwiftSymbols bool true' "$export_options"
+          /usr/libexec/PlistBuddy -c 'Add :uploadSymbols bool true' "$export_options"
+          /usr/libexec/PlistBuddy -c "Add :teamID string $APPLE_TEAM_ID" "$export_options"
+          /usr/libexec/PlistBuddy -c 'Add :provisioningProfiles dict' "$export_options"
+          /usr/libexec/PlistBuddy -c "Add :provisioningProfiles:${IOS_BUNDLE_ID} string $IOS_PROFILE_NAME" "$export_options"
+          echo "IOS_EXPORT_OPTIONS=$export_options" >> "$GITHUB_ENV"
+
+      - name: Generate Flutter iOS configuration
+        run: flutter build ios --config-only
+
+      - name: Build signed iOS archive
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          REQUESTED_BUILD_NUMBER: ${{ inputs.build_number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          build_number="${REQUESTED_BUILD_NUMBER:-$GITHUB_RUN_NUMBER}"
+          if [[ ! "$build_number" =~ ^[1-9][0-9]*$ ]]; then
+            echo 'build_number must be a positive integer.' >&2
+            exit 1
+          fi
+          archive_path="$RUNNER_TEMP/BudowaPRO.xcarchive"
+          xcodebuild archive \
+            -workspace ios/Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$archive_path" \
+            "CURRENT_PROJECT_VERSION=$build_number" \
+            "DEVELOPMENT_TEAM=$APPLE_TEAM_ID" \
+            'CODE_SIGN_STYLE=Manual' \
+            'CODE_SIGN_IDENTITY=Apple Distribution' \
+            "PROVISIONING_PROFILE=$IOS_PROFILE_UUID" \
+            "PROVISIONING_PROFILE_SPECIFIER=$IOS_PROFILE_UUID"
+
+          export_path="$RUNNER_TEMP/ipa"
+          rm -rf "$export_path"
+          mkdir -p "$export_path"
+          xcodebuild -exportArchive \
+            -archivePath "$archive_path" \
+            -exportOptionsPlist "$IOS_EXPORT_OPTIONS" \
+            -exportPath "$export_path"
+
+          ipa_path="$(find "$export_path" -maxdepth 1 -type f -name '*.ipa' -print -quit)"
+          if [[ -z "$ipa_path" ]]; then
+            echo 'Xcode did not produce an IPA.' >&2
+            exit 1
+          fi
+          echo "ipa_path=$ipa_path" >> "$GITHUB_OUTPUT"
+        id: build
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: budowapro-ios-release-${{ github.run_number }}
+          path: ${{ steps.build.outputs.ipa_path }}
+          if-no-files-found: error
+
+      - name: Upload build to TestFlight
+        uses: apple-actions/upload-testflight-build@v4
+        with:
+          app-path: ${{ steps.build.outputs.ipa_path }}
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
