@@ -64,19 +64,17 @@ To sa czynnosci wydawcy, a nie dane, ktore mozna bezpiecznie wymyslic w kodzie:
 1. Ustaw prawdziwe `BUDOWAPRO_PUBLISHER_NAME`,
    `BUDOWAPRO_PRIVACY_CONTACT_EMAIL`,
    `BUDOWAPRO_PRIVACY_POLICY_URL` i `BUDOWAPRO_SUPPORT_URL`.
-2. Aktywuj przygotowany workflow GitHub Pages i sprawdz polityke oraz wsparcie
-   pod publicznym HTTPS bez logowania.
-3. Uzyj docelowego klucza upload, wlacz Play App Signing i zachowaj sekret oraz
+2. Uzyj docelowego klucza upload, wlacz Play App Signing i zachowaj sekret oraz
    kopie klucza poza repozytorium.
-4. Wypelnij Play Console: Data safety, reklamy, grupe docelowa, klasyfikacje,
+3. Wypelnij Play Console: Data safety, reklamy, grupe docelowa, klasyfikacje,
    dane kontaktowe, dostep recenzenta, listing, zrzuty i test zamkniety, gdy
    konto go wymaga.
-5. Na Macu wykonaj `pod install`, build i test na fizycznym iPhonie. Sprawdz
+4. Na Macu wykonaj `pod install`, build i test na fizycznym iPhonie. Sprawdz
    privacy manifest razem z manifestami SDK po instalacji CocoaPods; tego nie
    da sie wiarygodnie potwierdzic samym buildem Androida.
    Workflow TestFlight przekazuje do IPA cztery wartosci `BUDOWAPRO_*` jako
    sekrety GitHub Actions.
-6. Wykonaj recenzje prawna polityki, warunkow, porad budowlanych, zdjec,
+5. Wykonaj recenzje prawna polityki, warunkow, porad budowlanych, zdjec,
    kontaktow wykonawcow i retencji danych. Kod nie jest opinia prawna ani
    projektem budowlanym.
 

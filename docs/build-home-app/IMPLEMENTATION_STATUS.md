@@ -20,7 +20,7 @@ Last updated: 2026-08-01
 - Project-specific `AGENTS.md` added.
 - ADR 0001 accepts local-first Clean Architecture.
 - ADR 0002 accepts `go_router`, `flutter_riverpod` and five stateful branches.
-- CI remains pending until the remote repository target is selected.
+- GitHub remote is configured and mobile CI is green for commit `545377b`.
 
 ### Task 1.1 - Flutter application shell
 
@@ -29,9 +29,9 @@ Last updated: 2026-08-01
 - Minimum Android version set to API 28 (Android 9).
 - Minimum iOS version set to 15.5 for the locked ML Kit iOS pods.
 - BudowaPRO app icon is installed in Android launcher resources and the iOS
-    `AppIcon.appiconset`.
+  `AppIcon.appiconset`.
 - iOS `PrivacyInfo.xcprivacy` is bundled with declarations for local disk-space
-    and file-metadata checks; the app declares no tracking or collected data.
+  and file-metadata checks; the app declares no tracking or collected data.
 - Polish localization generated from ARB resources.
 - Five primary destinations implemented with `StatefulShellRoute.indexedStack`.
 - Riverpod owns router composition and disposal.
@@ -659,10 +659,12 @@ The complete production-readiness review is recorded in
 `docs/build-home-app/PRODUCTION_READINESS_SPEC.md`, with the shorter functional
 gap summary in `PRODUCTION_GAP_AUDIT.md`. Version `1.0.0+1` is a technical R1
 release candidate. The frozen P0 scope is complete, an Android integration
-smoke passed on API 34, and CI now repeats it on API 28 and 36. Public legal
-pages, store copy, privacy worksheets, icon and Google Play feature graphic are
-ready in the repository. Store account declarations, signed current artifacts,
-final screenshots and physical-device evidence remain owner release gates.
+smoke passed on API 34, and CI passed it on API 28 and 36. The same workflow
+also passed 560 tests, debug APK and unsigned iOS 26 compilation. Public legal
+pages are live through GitHub Pages; store copy, privacy worksheets, icon and
+Google Play feature graphic are ready. Store account declarations, signed
+current artifacts, final screenshots and physical-device evidence remain owner
+release gates.
 
 ## Next task
 

@@ -29,8 +29,7 @@ tozsamosci, zgody, platnego konta albo sekretu nalezacego do wydawcy.
 - wskazac prawna nazwe wydawcy i monitorowany adres kontaktowy;
 - potwierdzic, ze `Przemyslaw Sobczyk` i
   `przemyslawsobczyk123@gmail.com` sa wlasciwymi danymi do publicznej polityki;
-- w ustawieniach repozytorium wlaczyc GitHub Pages ze zrodlem `GitHub Actions`;
-- sprawdzic bez logowania przygotowane adresy
+- sprawdzic tresc opublikowanych adresow
   `https://przemyslawsobczyk123-lgtm.github.io/budowapro-app/privacy/` i
   `https://przemyslawsobczyk123-lgtm.github.io/budowapro-app/support/`;
 - zlecic finalny przeglad prawny polityki, warunkow i porad budowlanych;
@@ -42,8 +41,8 @@ plikow moga zostac wykonane w repozytorium bez dodatkowej ingerencji.
 
 ## Minimalna kolejnosc
 
-1. Potwierdz dane publiczne i wlacz GitHub Pages.
+1. Potwierdz dane publiczne widoczne na opublikowanych stronach.
 2. Dodaj sekrety podpisu Android/iOS bez wysylania ich w czacie.
-3. Uruchom zielone CI, Android internal test i TestFlight.
+3. Uruchom Android internal test i TestFlight; CI commita jest juz zielone.
 4. Wykonaj fizyczny smoke oraz finalne zrzuty z wersji release.
 5. Zatwierdz formularze sklepow i rozpocznij etapowa bete/produkcje.

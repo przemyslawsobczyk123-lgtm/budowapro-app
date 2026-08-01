@@ -19,16 +19,16 @@ backup i sam wybiera odbiorce pliku.
 
 ## 2. Werdykt na dzis
 
-| Obszar | Stan | Wniosek |
-| --- | --- | --- |
-| Android debug | zielony | Analiza, 560 testow i debug APK przeszly 2026-08-01. |
-| Rdzen projektu i finansow | zielony | Projekty, etapy, checklisty, koszty, OCR, dokumenty i backup dzialaja lokalnie. |
-| ROOM i rdzen MAT | zielony | Pomieszczenia, wybory, materialy, dostawy i zwroty maja trwale rekordy. |
-| Android release | zolty | Pipeline AAB jest walidowany i fail-closed; docelowy klucz, Play App Signing i produkcyjny AAB wymagaja konta wlasciciela. |
-| iOS build | zolty | CI wymusza macOS/Xcode 26 i unsigned compile; podpis, TestFlight i fizyczny iPhone wymagaja Apple Developer. |
-| Sklepy i prawo | zolty | Tresci, strony, listingi i arkusze deklaracji sa gotowe; publikacja URL i formularze konsol wymagaja wlasciciela. |
-| Testy urzadzen | zolty | Android smoke na API 34 przeszedl, a CI obejmuje API 28/36; fizyczny Android i iPhone pozostaja wymagane. |
-| Zgodnosc z zamrozonym P0 R1 | zielony | Dawne luki rozstrzygnieto wdrozeniem albo jawnym przesunieciem do P1. |
+| Obszar                      | Stan    | Wniosek                                                                                                                                |
+| --------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Android debug               | zielony | Analiza, 560 testow i debug APK przeszly 2026-08-01.                                                                                   |
+| Rdzen projektu i finansow   | zielony | Projekty, etapy, checklisty, koszty, OCR, dokumenty i backup dzialaja lokalnie.                                                        |
+| ROOM i rdzen MAT            | zielony | Pomieszczenia, wybory, materialy, dostawy i zwroty maja trwale rekordy.                                                                |
+| Android release             | zolty   | Pipeline AAB jest walidowany i fail-closed; docelowy klucz, Play App Signing i produkcyjny AAB wymagaja konta wlasciciela.             |
+| iOS build                   | zolty   | CI na macOS/Xcode 26 zaliczylo unsigned compile; podpis, TestFlight i fizyczny iPhone wymagaja Apple Developer.                        |
+| Sklepy i prawo              | zolty   | Tresci, publiczne strony HTTPS, listingi i arkusze deklaracji sa gotowe; prawdziwa tozsamosc i formularze konsol wymagaja wlasciciela. |
+| Testy urzadzen              | zolty   | Android smoke przeszedl na API 34 lokalnie oraz API 28/36 w CI; fizyczny Android i iPhone pozostaja wymagane.                          |
+| Zgodnosc z zamrozonym P0 R1 | zielony | Dawne luki rozstrzygnieto wdrozeniem albo jawnym przesunieciem do P1.                                                                  |
 
 **Decyzja:** kod i materialy repozytorium sa technicznym kandydatem R1. Publiczna
 produkcja i App Review pozostaja zablokowane wyłącznie przez dowody urzadzen,
@@ -238,15 +238,15 @@ Dowod: raporty torow testowych i zamkniete bledy krytyczne/wysokie.
 Zakres P0 zostal zamrozony. Funkcje ponizej sa wdrozone albo jawnie
 przesuniete do P1, dlatego nie stanowia juz niejednoznacznych wymagan R1.
 
-| ID | Rozstrzygniecie R1 | Dowod zakresu |
-| --- | --- | --- |
-| `DASH-004` | Wdrozone szybkie akcje kosztu, OCR, checklist, harmonogramu, usterki i zdjec etapow. | Asystent pozostaje P1 i nie jest obiecywany w listingu R1. |
-| `COST-006/007` | Wdrozone wyszukiwanie oraz filtry daty, etapu, kategorii, wykonawcy, statusu, platnosci i zrodla. | Tagi i gwarancje pozostaja P1. |
-| `COST-009` | Szczegoly pokazuja dokumenty, materialy, pomieszczenia i historie bez kopiowania rekordow. | Powiazanie z decyzja ma osobne wymaganie `COST-018` P1. |
-| `CNT-005` | Wizyta zapisuje wynik, notatke i ustalenia. | Zdjecia i nowe zadania po wizycie sa `CNT-010` P1. |
-| `DOC-003` | Dokument laczy sie z kosztem, etapem, checklista, kontaktem i pomieszczeniem. | Decyzja, usterka i urzadzenie sa `DOC-009` P1. |
-| `SET-003` | Zmiany globalne ingerujace w istniejace dane nie naleza do R1. | Bezpieczna migracja ustawien pozostaje P1. |
-| `NOTIF-004` | Zdarzenie ma wlaczenie przypomnienia i wyprzedzenie; odmowa zgody nie blokuje zapisu. | Globalne typy i godziny pozostaja P1. |
+| ID             | Rozstrzygniecie R1                                                                                | Dowod zakresu                                              |
+| -------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `DASH-004`     | Wdrozone szybkie akcje kosztu, OCR, checklist, harmonogramu, usterki i zdjec etapow.              | Asystent pozostaje P1 i nie jest obiecywany w listingu R1. |
+| `COST-006/007` | Wdrozone wyszukiwanie oraz filtry daty, etapu, kategorii, wykonawcy, statusu, platnosci i zrodla. | Tagi i gwarancje pozostaja P1.                             |
+| `COST-009`     | Szczegoly pokazuja dokumenty, materialy, pomieszczenia i historie bez kopiowania rekordow.        | Powiazanie z decyzja ma osobne wymaganie `COST-018` P1.    |
+| `CNT-005`      | Wizyta zapisuje wynik, notatke i ustalenia.                                                       | Zdjecia i nowe zadania po wizycie sa `CNT-010` P1.         |
+| `DOC-003`      | Dokument laczy sie z kosztem, etapem, checklista, kontaktem i pomieszczeniem.                     | Decyzja, usterka i urzadzenie sa `DOC-009` P1.             |
+| `SET-003`      | Zmiany globalne ingerujace w istniejace dane nie naleza do R1.                                    | Bezpieczna migracja ustawien pozostaje P1.                 |
+| `NOTIF-004`    | Zdarzenie ma wlaczenie przypomnienia i wyprzedzenie; odmowa zgody nie blokuje zapisu.             | Globalne typy i godziny pozostaja P1.                      |
 
 ## 6. Funkcje po R1
 
@@ -264,8 +264,9 @@ nie obiecuje:
 
 ## 7. Kolejnosc prac
 
-1. Wyslac kandydata do `main` i potwierdzic zielone CI Android/iOS/Pages.
-2. Aktywowac publiczne strony, podpisy i prawdziwe dane wydawcy.
+1. `main`, CI Android/iOS i publikacja Pages zostaly potwierdzone dla commita
+   `545377b`.
+2. Potwierdzic prawdziwe dane wydawcy i dodac docelowe podpisy.
 3. Zbudowac finalny AAB, IPA/TestFlight i wykonac testy fizycznych urzadzen.
 4. Zrobic finalne zrzuty z podpisanych buildow i wypelnic deklaracje sklepow.
 5. Przeprowadzic beta, ponowny pelny release gate i staged rollout.
@@ -290,14 +291,18 @@ BudowaPRO jest gotowa do publicznego R1 dopiero, gdy jednoczesnie:
 W czasie zamkniecia technicznego:
 
 - wersja wynosi `1.0.0+1`;
-- `integration_test/app_smoke_test.dart` przeszedl na Androidzie API 34, a CI
-  uruchamia go na API 28 i 36;
+- commit `545377b` ma zielone zdalne CI: 560 testow, debug APK, unsigned iOS 26
+  compile oraz smoke Android API 28 i 36;
+- `integration_test/app_smoke_test.dart` przeszedl rowniez lokalnie na
+  Androidzie API 34;
 - grafika funkcji, ikona, listingi, strony prawne i arkusze prywatnosci sa w
   repozytorium;
+- GitHub Pages publikuje polityke, warunki i wsparcie pod publicznym HTTPS;
 - wymagane wartosci `BUDOWAPRO_*`, Apple i klucz upload pozostaja sekretami
   wlasciciela i sa sprawdzane fail-closed;
 - finalne zrzuty musza pochodzic z podpisanych buildow bez prywatnych danych;
-- wynik zdalnego CI nalezy przypisac do commita po jego wyslaniu.
+- finalny produkcyjny AAB i IPA nadal musza zostac przypisane do oznaczonego
+  commita po dodaniu podpisow wlasciciela.
 
 ## 10. Oficjalne zrodla
 
