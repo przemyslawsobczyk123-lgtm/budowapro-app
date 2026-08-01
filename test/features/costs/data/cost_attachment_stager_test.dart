@@ -475,6 +475,154 @@ void main() {
     );
   });
 
+  test(
+    'startup recovery preserves a file linked only to the journal',
+    () async {
+      final source = File(p.join(temporaryDirectory.path, 'site-note.jpg'));
+      await source.writeAsBytes(<int>[7, 8, 9], flush: true);
+      final attachment = await stager.stage(
+        projectId: 'project-1',
+        pickedFile: PickedCostAttachment(
+          sourceUri: source.uri,
+          displayName: 'site-note.jpg',
+          reportedByteSize: 3,
+          mediaType: 'image/jpeg',
+        ),
+      );
+      final rawDatabase = await database.open();
+      await rawDatabase
+          .insert(AppDatabase.journalEntriesTable, <String, Object?>{
+            'id': 'journal-1',
+            'project_id': 'project-1',
+            'entry_type': 'daily',
+            'status': 'open',
+            'title': 'Prace na budowie',
+            'occurred_at_utc_ms': 0,
+            'created_at_utc_ms': 0,
+            'updated_at_utc_ms': 0,
+            'revision': 1,
+          });
+      await rawDatabase
+          .insert(AppDatabase.journalEntryAttachmentsTable, <String, Object?>{
+            'project_id': 'project-1',
+            'journal_entry_id': 'journal-1',
+            'attachment_id': attachment.id,
+            'sort_order': 0,
+          });
+
+      await stager.recoverUnlinkedAttachments();
+
+      expect(
+        await stager.findById(
+          projectId: 'project-1',
+          attachmentId: attachment.id,
+        ),
+        isNotNull,
+      );
+    },
+  );
+
+  test(
+    'recovery and discard preserve defect resolution and protocol files',
+    () async {
+      final resolutionSource = File(
+        p.join(temporaryDirectory.path, 'after.jpg'),
+      );
+      final protocolSource = File(
+        p.join(temporaryDirectory.path, 'signed-protocol.pdf'),
+      );
+      await resolutionSource.writeAsBytes(<int>[7, 8, 9], flush: true);
+      await protocolSource.writeAsBytes(<int>[1, 2, 3], flush: true);
+      final resolution = await stager.stage(
+        projectId: 'project-1',
+        pickedFile: PickedCostAttachment(
+          sourceUri: resolutionSource.uri,
+          displayName: 'after.jpg',
+          reportedByteSize: 3,
+          mediaType: 'image/jpeg',
+        ),
+      );
+      final protocol = await stager.stage(
+        projectId: 'project-1',
+        pickedFile: PickedCostAttachment(
+          sourceUri: protocolSource.uri,
+          displayName: 'signed-protocol.pdf',
+          reportedByteSize: 3,
+          mediaType: 'application/pdf',
+        ),
+      );
+      final rawDatabase = await database.open();
+      await rawDatabase
+          .insert(AppDatabase.journalEntriesTable, <String, Object?>{
+            'id': 'defect-1',
+            'project_id': 'project-1',
+            'entry_type': 'defect',
+            'status': 'open',
+            'title': 'Nieszczelnosc',
+            'occurred_at_utc_ms': 0,
+            'defect_severity': 'high',
+            'requires_resolution_photo': 1,
+            'requires_signed_protocol': 1,
+            'created_at_utc_ms': 0,
+            'updated_at_utc_ms': 0,
+            'revision': 1,
+          });
+      await rawDatabase.insert(
+        AppDatabase.defectResolutionAttachmentsTable,
+        <String, Object?>{
+          'project_id': 'project-1',
+          'defect_id': 'defect-1',
+          'attachment_id': resolution.id,
+          'sort_order': 0,
+        },
+      );
+      await rawDatabase
+          .insert(AppDatabase.acceptanceProtocolsTable, <String, Object?>{
+            'id': 'protocol-1',
+            'project_id': 'project-1',
+            'title': 'Odbior poprawki',
+            'status': 'signed',
+            'inspected_at_utc_ms': 0,
+            'created_at_utc_ms': 0,
+            'updated_at_utc_ms': 0,
+          });
+      await rawDatabase.insert(
+        AppDatabase.acceptanceProtocolAttachmentsTable,
+        <String, Object?>{
+          'project_id': 'project-1',
+          'protocol_id': 'protocol-1',
+          'attachment_id': protocol.id,
+          'sort_order': 0,
+        },
+      );
+
+      await expectLater(
+        stager.discard(projectId: 'project-1', attachmentId: resolution.id),
+        throwsStateError,
+      );
+      await expectLater(
+        stager.discard(projectId: 'project-1', attachmentId: protocol.id),
+        throwsStateError,
+      );
+      await stager.recoverUnlinkedAttachments();
+
+      expect(
+        await stager.findById(
+          projectId: 'project-1',
+          attachmentId: resolution.id,
+        ),
+        isNotNull,
+      );
+      expect(
+        await stager.findById(
+          projectId: 'project-1',
+          attachmentId: protocol.id,
+        ),
+        isNotNull,
+      );
+    },
+  );
+
   test('startup recovery preserves evidence linked to a checklist', () async {
     final source = File(p.join(temporaryDirectory.path, 'grounding.jpg'));
     await source.writeAsBytes(<int>[4, 5, 6], flush: true);

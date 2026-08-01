@@ -27,8 +27,19 @@ void main() {
 
   test('separates plan and actual while excluding offers and drafts', () {
     final entries = <CostEntry>[
-      _entry('plan', CostEntryType.planned, 10000),
-      _entry('cost', CostEntryType.cost, 8000, status: CostStatus.paid),
+      _entry(
+        'plan',
+        CostEntryType.planned,
+        10000,
+        component: CostComponent.material,
+      ),
+      _entry(
+        'cost',
+        CostEntryType.cost,
+        8000,
+        status: CostStatus.paid,
+        component: CostComponent.labor,
+      ),
       _entry('offer', CostEntryType.offer, 5000),
       _entry('draft', CostEntryType.cost, 2000, lifecycle: CostLifecycle.draft),
     ];
@@ -72,6 +83,15 @@ void main() {
     expect(summary.planned, _pln(10500));
     expect(summary.actual, _pln(7000));
     expect(summary.difference, _pln(-3500));
+    expect(
+      summary.componentTotals[CostComponent.material]?.planned,
+      _pln(10000),
+    );
+    expect(summary.componentTotals[CostComponent.labor]?.actual, _pln(7000));
+    expect(
+      summary.componentTotals[CostComponent.unassigned]?.planned,
+      _pln(500),
+    );
   });
 
   test('positive difference means actual cost is over plan', () {
@@ -219,6 +239,7 @@ CostEntry _entry(
   CostLifecycle lifecycle = CostLifecycle.confirmed,
   String projectId = 'project-1',
   String currencyCode = 'PLN',
+  CostComponent component = CostComponent.unassigned,
 }) {
   return CostEntry(
     id: id,
@@ -226,6 +247,7 @@ CostEntry _entry(
       projectId: projectId,
       name: 'Pozycja $id',
       type: type,
+      component: component,
       status:
           status ??
           switch (type) {

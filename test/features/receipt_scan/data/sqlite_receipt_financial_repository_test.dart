@@ -76,6 +76,15 @@ void main() {
 
       expect(result.drafts, hasLength(3));
       expect(
+        result.drafts.every((entry) => entry.input.stageId == 'state_zero'),
+        isTrue,
+      );
+      expect(result.drafts.map((entry) => entry.component), <CostComponent>[
+        CostComponent.material,
+        CostComponent.labor,
+        CostComponent.material,
+      ]);
+      expect(
         result.drafts.every(
           (entry) =>
               entry.lifecycle == CostLifecycle.draft &&
@@ -207,6 +216,7 @@ ReviewedReceiptBatch _batch(String attachmentId) {
     documentNumber: '004521/2026',
     totalGrossMinorUnits: 6248,
     currencyCode: 'PLN',
+    stageId: 'state_zero',
     lines: <ReviewedReceiptLine>[
       ReviewedReceiptLine(
         name: 'Zaprawa',
@@ -217,6 +227,7 @@ ReviewedReceiptBatch _batch(String attachmentId) {
         name: 'Klej',
         grossMinorUnits: 2499,
         vatRate: VatRate.standard23,
+        component: CostComponent.labor,
       ),
       ReviewedReceiptLine(
         name: 'Kołki',

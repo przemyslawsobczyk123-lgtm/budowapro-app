@@ -3,6 +3,7 @@ final class LegalReleaseConfig {
     required this.publisherName,
     required this.contactEmail,
     required this.privacyPolicyUrl,
+    required this.supportUrl,
   });
 
   const LegalReleaseConfig.fromEnvironment()
@@ -12,11 +13,13 @@ final class LegalReleaseConfig {
       ),
       privacyPolicyUrl = const String.fromEnvironment(
         'BUDOWAPRO_PRIVACY_POLICY_URL',
-      );
+      ),
+      supportUrl = const String.fromEnvironment('BUDOWAPRO_SUPPORT_URL');
 
   final String publisherName;
   final String contactEmail;
   final String privacyPolicyUrl;
+  final String supportUrl;
 
   bool get hasPublisherName {
     final value = publisherName.trim();
@@ -32,12 +35,21 @@ final class LegalReleaseConfig {
   }
 
   Uri? get publicPrivacyPolicyUri {
-    final uri = Uri.tryParse(privacyPolicyUrl.trim());
+    return _publicHttpsUri(privacyPolicyUrl, rejectPdf: true);
+  }
+
+  Uri? get publicSupportUri {
+    return _publicHttpsUri(supportUrl, rejectPdf: true);
+  }
+
+  Uri? _publicHttpsUri(String value, {required bool rejectPdf}) {
+    final uri = Uri.tryParse(value.trim());
     if (uri == null ||
         uri.scheme != 'https' ||
         uri.host.isEmpty ||
+        uri.userInfo.isNotEmpty ||
         !_isPublicDomainHost(uri.host) ||
-        uri.path.toLowerCase().endsWith('.pdf')) {
+        (rejectPdf && uri.path.toLowerCase().endsWith('.pdf'))) {
       return null;
     }
     return uri;
@@ -46,7 +58,8 @@ final class LegalReleaseConfig {
   bool get hasCompleteLegalMetadata =>
       hasPublisherName &&
       hasValidContactEmail &&
-      publicPrivacyPolicyUri != null;
+      publicPrivacyPolicyUri != null &&
+      publicSupportUri != null;
 
   List<LegalReleaseRequirement> get missingRequirements =>
       <LegalReleaseRequirement>[
@@ -54,6 +67,7 @@ final class LegalReleaseConfig {
         if (!hasValidContactEmail) LegalReleaseRequirement.contactEmail,
         if (publicPrivacyPolicyUri == null)
           LegalReleaseRequirement.publicPrivacyPolicyUrl,
+        if (publicSupportUri == null) LegalReleaseRequirement.supportUrl,
       ];
 }
 
@@ -61,6 +75,7 @@ enum LegalReleaseRequirement {
   publisherName,
   contactEmail,
   publicPrivacyPolicyUrl,
+  supportUrl,
 }
 
 bool _isPublicDomainHost(String host) {

@@ -105,6 +105,27 @@ void main() {
     },
   );
 
+  test('persists the current stage selected from the stage plan', () async {
+    final controller = container.read(projectsControllerProvider.notifier);
+    await container.read(projectsControllerProvider.future);
+    await controller.create(_houseDraft('Dom'));
+    final project = container
+        .read(projectsControllerProvider)
+        .requireValue
+        .selectedProject!;
+
+    await controller.setCurrentStage(project, ProjectStageKey.shellClosed);
+
+    expect(
+      container
+          .read(projectsControllerProvider)
+          .requireValue
+          .selectedProject
+          ?.currentStage,
+      ProjectStageKey.shellClosed,
+    );
+  });
+
   test('keeps loaded projects visible when a mutation fails', () async {
     final house = _project('house', _houseDraft('Dom'), 1);
     final apartment = _project('apartment', _renovationDraft('Mieszkanie'), 2);

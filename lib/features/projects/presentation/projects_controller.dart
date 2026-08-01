@@ -42,6 +42,28 @@ final class ProjectsController extends AsyncNotifier<ProjectsState> {
     return _mutate((repository) => repository.update(projectId, draft));
   }
 
+  Future<void> setCurrentStage(Project project, ProjectStageKey stage) {
+    if (!project.template.definition.stages.contains(stage)) {
+      throw ArgumentError.value(stage, 'stage');
+    }
+    return updateProject(
+      project.id,
+      ProjectDraft(
+        name: project.name,
+        type: project.type,
+        template: project.template,
+        locationLabel: project.locationLabel,
+        currencyCode: project.currencyCode,
+        areaSquareMeters: project.areaSquareMeters,
+        plannedBudgetMinorUnits: project.plannedBudgetMinorUnits,
+        plannedStart: project.plannedStart,
+        plannedEnd: project.plannedEnd,
+        dateFormat: project.dateFormat,
+        currentStage: stage,
+      ),
+    );
+  }
+
   Future<void> select(String projectId) {
     return _mutate((repository) => repository.select(projectId));
   }

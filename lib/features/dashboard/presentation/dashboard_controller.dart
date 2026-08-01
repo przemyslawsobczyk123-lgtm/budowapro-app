@@ -37,13 +37,17 @@ final class DashboardController extends AsyncNotifier<DashboardState> {
       return;
     }
     state = const AsyncLoading<DashboardState>();
-    state = await AsyncValue.guard(() => _load(project));
+    final refreshed = await AsyncValue.guard(() => _load(project));
+    if (ref.mounted) {
+      state = refreshed;
+    }
   }
 
   Future<DashboardState> _load(Project project) async {
-    final reader = await ref.read(dashboardReaderProvider.future);
+    final readerFuture = ref.read(dashboardReaderProvider.future);
     final notifications = ref.read(scheduleNotificationGatewayProvider);
     final now = ref.read(scheduleUtcNowProvider)().toUtc();
+    final reader = await readerFuture;
     final window = await _dashboardWindow(notifications, now);
     return DashboardState(
       project: project,

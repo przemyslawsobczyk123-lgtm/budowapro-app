@@ -107,7 +107,7 @@ void main() {
 
     expect(
       find.textContaining('OCR nie ustala pewnej stawki VAT'),
-      findsOneWidget,
+      findsWidgets,
     );
     expect(tester.takeException(), isNull);
   });
@@ -378,6 +378,13 @@ void main() {
 }
 
 Future<void> _confirmAllReceiptItems(WidgetTester tester) async {
+  final component = find.byKey(const ValueKey('receiptAllComponentsField'));
+  await _scrollReceiptResultTo(tester, component);
+  await tester.tap(component);
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Materiał').last);
+  await tester.pumpAndSettle();
+
   for (final itemId in <String>['ocr-item-1', 'ocr-item-2']) {
     final confirm = find.byKey(ValueKey('confirmReceiptItem-$itemId'));
     await _scrollReceiptResultTo(tester, confirm);
@@ -388,13 +395,19 @@ Future<void> _confirmAllReceiptItems(WidgetTester tester) async {
 
 Future<void> _scrollReceiptResultTo(WidgetTester tester, Finder target) async {
   final result = find.byKey(const ValueKey('receiptScanResult'));
-  await tester.scrollUntilVisible(
-    target,
-    300,
-    scrollable: find
-        .descendant(of: result, matching: find.byType(Scrollable))
-        .first,
-  );
+  final scrollable = find
+      .descendant(of: result, matching: find.byType(Scrollable))
+      .first;
+  for (var attempt = 0; attempt < 30; attempt += 1) {
+    if (target.evaluate().isNotEmpty) {
+      await tester.ensureVisible(target);
+      await tester.pumpAndSettle();
+      return;
+    }
+    await tester.drag(scrollable, const Offset(0, -300));
+    await tester.pump();
+  }
+  throw TestFailure('Nie znaleziono elementu podczas przewijania.');
 }
 
 Future<void> _scrollReceiptResultToStart(WidgetTester tester) async {

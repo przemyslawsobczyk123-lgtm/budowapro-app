@@ -16,6 +16,7 @@ const List<String> requiredReleaseEnvironmentVariables = <String>[
   'BUDOWAPRO_PUBLISHER_NAME',
   'BUDOWAPRO_PRIVACY_CONTACT_EMAIL',
   'BUDOWAPRO_PRIVACY_POLICY_URL',
+  'BUDOWAPRO_SUPPORT_URL',
 ];
 
 const Set<String> expectedManifestPermissions = <String>{
@@ -75,6 +76,7 @@ final class ReleaseEnvironment {
     required this.publisherName,
     required this.privacyContactEmail,
     required this.privacyPolicyUrl,
+    required this.supportUrl,
   });
 
   final String uploadStoreFile;
@@ -83,6 +85,7 @@ final class ReleaseEnvironment {
   final String publisherName;
   final String privacyContactEmail;
   final String privacyPolicyUrl;
+  final String supportUrl;
 }
 
 ReleaseOptions parseReleaseOptions(List<String> arguments) {
@@ -155,6 +158,14 @@ ReleaseEnvironment validateReleaseEnvironment(
     );
   }
 
+  final supportUrl = values['BUDOWAPRO_SUPPORT_URL']!;
+  if (!_isPublicPrivacyPolicyUrl(supportUrl) ||
+      (!validationOnly && _hasReservedDomain(supportUrl))) {
+    throw const ReleaseFailure(
+      'BUDOWAPRO_SUPPORT_URL must be a public HTTPS, non-PDF URL.',
+    );
+  }
+
   final uploadCertificateSha256 = normalizeCertificateSha256(
     values['BUDOWAPRO_UPLOAD_CERT_SHA256']!,
   );
@@ -166,6 +177,7 @@ ReleaseEnvironment validateReleaseEnvironment(
     publisherName: publisherName,
     privacyContactEmail: privacyContactEmail,
     privacyPolicyUrl: privacyPolicyUrl,
+    supportUrl: supportUrl,
   );
 }
 
@@ -208,6 +220,7 @@ List<String> buildAppBundleArguments({
         '${environment.privacyContactEmail}',
     '--dart-define=BUDOWAPRO_PRIVACY_POLICY_URL='
         '${environment.privacyPolicyUrl}',
+    '--dart-define=BUDOWAPRO_SUPPORT_URL=${environment.supportUrl}',
   ];
 }
 

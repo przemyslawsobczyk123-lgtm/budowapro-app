@@ -213,6 +213,8 @@ String _valueFor(
     CostCsvColumn.entryDate => _dateValue(entry.entryDate.toLocal()),
     CostCsvColumn.name => entry.name,
     CostCsvColumn.type => labels.types[entry.type] ?? entry.type.name,
+    CostCsvColumn.component =>
+      labels.components[entry.component] ?? entry.component.name,
     CostCsvColumn.status => labels.statuses[entry.status] ?? entry.status.name,
     CostCsvColumn.lifecycle =>
       labels.lifecycles[entry.lifecycle] ?? entry.lifecycle.name,

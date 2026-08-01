@@ -28,7 +28,7 @@ void main() {
     });
 
     test(
-      'covers later construction stages without seeding checklist items',
+      'covers later construction stages and links their checklist items',
       () {
         final guidance = StageGuidanceCatalog.forStage(
           ProjectStageKey.shellOpen,
@@ -87,7 +87,7 @@ void main() {
             ...finishing,
           ].every(
             (item) =>
-                item.relatedChecklistKeys.isEmpty && item.sources.isNotEmpty,
+                item.relatedChecklistKeys.isNotEmpty && item.sources.isNotEmpty,
           ),
           isTrue,
         );
@@ -139,7 +139,7 @@ void main() {
       );
 
       expect(grounding.sources, isNotEmpty);
-      expect(StageGuidanceCatalog.contentVersion, 4);
+      expect(StageGuidanceCatalog.contentVersion, 5);
       expect(
         grounding.sources.map((source) => source.key),
         containsAll(<StageGuidanceSourceKey>{
@@ -177,6 +177,24 @@ void main() {
 
     test('returns no built-in advice for a custom stage', () {
       expect(StageGuidanceCatalog.forStage(null), isEmpty);
+    });
+
+    test('covers every built-in stage in both workflows', () {
+      for (final template in ProjectTemplate.values) {
+        for (final stage in template.definition.stages) {
+          final guidance = StageGuidanceCatalog.forStage(stage);
+          expect(
+            guidance,
+            isNotEmpty,
+            reason: 'Missing guidance for $template / $stage',
+          );
+          expect(
+            guidance.every((item) => item.sources.isNotEmpty),
+            isTrue,
+            reason: 'Missing source for $template / $stage',
+          );
+        }
+      }
     });
   });
 }

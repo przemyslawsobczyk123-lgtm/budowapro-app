@@ -61,6 +61,7 @@ Required environment variables:
   BUDOWAPRO_PUBLISHER_NAME
   BUDOWAPRO_PRIVACY_CONTACT_EMAIL
   BUDOWAPRO_PRIVACY_POLICY_URL
+  BUDOWAPRO_SUPPORT_URL
 ''';
 
 final class _AndroidReleaseBuilder {
@@ -95,7 +96,11 @@ final class _AndroidReleaseBuilder {
     final commit = await repository.commitSha();
 
     await _validateAndroidReleaseConfiguration();
-    await _verifyPrivacyPolicyUrl(environment.privacyPolicyUrl);
+    await _verifyPublicHtmlUrl(
+      environment.privacyPolicyUrl,
+      label: 'privacy policy',
+    );
+    await _verifyPublicHtmlUrl(environment.supportUrl, label: 'support');
     await _runQualityGates();
 
     if (!options.allowDirty && await repository.isDirty()) {
@@ -785,8 +790,8 @@ Future<void> _deleteIfPresent(File file) async {
   }
 }
 
-Future<void> _verifyPrivacyPolicyUrl(String value) async {
-  stdout.writeln('[release] Verify public privacy policy URL');
+Future<void> _verifyPublicHtmlUrl(String value, {required String label}) async {
+  stdout.writeln('[release] Verify public $label URL');
   final client = HttpClient()..connectionTimeout = const Duration(seconds: 10);
   try {
     final request = await client.getUrl(Uri.parse(value));
@@ -804,14 +809,14 @@ Future<void> _verifyPrivacyPolicyUrl(String value) async {
         !redirectsAreHttps ||
         contentType != 'text/html') {
       throw const ReleaseFailure(
-        'The privacy policy URL must return successful public HTML.',
+        'The configured public URL must return successful public HTML.',
       );
     }
   } on ReleaseFailure {
     rethrow;
   } on Object {
     throw const ReleaseFailure(
-      'The privacy policy URL could not be verified as public HTML.',
+      'The configured public URL could not be verified as public HTML.',
     );
   } finally {
     client.close(force: true);

@@ -8,6 +8,8 @@ import 'package:budowapro/features/costs/domain/money.dart';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 import 'package:budowapro/features/documents/data/sqlite_document_repository.dart';
 import 'package:budowapro/features/documents/domain/project_document.dart';
+import 'package:budowapro/features/diary/data/sqlite_journal_repository.dart';
+import 'package:budowapro/features/diary/domain/journal_entry.dart';
 import 'package:budowapro/features/schedule/data/sqlite_schedule_repository.dart';
 import 'package:budowapro/features/schedule/domain/schedule_event.dart';
 import 'package:budowapro/shared/models/page.dart';
@@ -19,6 +21,7 @@ final class SqliteCaptureRepository implements CaptureRepository {
     required SqliteCostRepository costRepository,
     required SqliteDocumentRepository documentRepository,
     required SqliteScheduleRepository scheduleRepository,
+    SqliteJournalRepository? diaryRepository,
     required String Function() idGenerator,
     required DateTime Function() utcNow,
   }) {
@@ -27,6 +30,7 @@ final class SqliteCaptureRepository implements CaptureRepository {
       costRepository,
       documentRepository,
       scheduleRepository,
+      diaryRepository,
       idGenerator,
       utcNow,
     );
@@ -37,6 +41,7 @@ final class SqliteCaptureRepository implements CaptureRepository {
     this._costRepository,
     this._documentRepository,
     this._scheduleRepository,
+    this._diaryRepository,
     this._idGenerator,
     this._utcNow,
   );
@@ -45,6 +50,7 @@ final class SqliteCaptureRepository implements CaptureRepository {
   final SqliteCostRepository _costRepository;
   final SqliteDocumentRepository _documentRepository;
   final SqliteScheduleRepository _scheduleRepository;
+  final SqliteJournalRepository? _diaryRepository;
   final String Function() _idGenerator;
   final DateTime Function() _utcNow;
 
@@ -179,7 +185,7 @@ final class SqliteCaptureRepository implements CaptureRepository {
         CaptureDraftType.task => _classifyTask(transaction, existing),
         CaptureDraftType.note ||
         CaptureDraftType.decision ||
-        CaptureDraftType.defect => Future<String>.value(existing.id),
+        CaptureDraftType.defect => _classifyJournal(transaction, existing),
       };
       final classified = CaptureDraft(
         id: existing.id,
@@ -362,6 +368,45 @@ final class SqliteCaptureRepository implements CaptureRepository {
       ),
     );
     return event.id;
+  }
+
+  Future<String> _classifyJournal(
+    DatabaseExecutor transaction,
+    CaptureDraft draft,
+  ) async {
+    final diaryRepository = _diaryRepository;
+    if (diaryRepository == null) return draft.id;
+    final entry = await diaryRepository.createInTransaction(
+      transaction,
+      JournalEntryInput(
+        projectId: draft.projectId,
+        type: switch (draft.type) {
+          CaptureDraftType.note => JournalEntryType.note,
+          CaptureDraftType.decision => JournalEntryType.decision,
+          CaptureDraftType.defect => JournalEntryType.defect,
+          _ => throw StateError('Unsupported journal capture type'),
+        },
+        title: draft.title!,
+        body: draft.content,
+        occurredAt: draft.createdAtUtc,
+        attachmentIds: draft.attachmentIds,
+        sourceCaptureId: draft.id,
+      ),
+    );
+    for (final attachmentId in draft.attachmentIds) {
+      await _documentRepository.saveDetailsInTransaction(
+        transaction,
+        projectId: draft.projectId,
+        documentId: attachmentId,
+        metadata: DocumentMetadata(
+          title: draft.title!,
+          type: ProjectDocumentType.other,
+          description: draft.content,
+        ),
+        contextLinks: const <DocumentRelation>[],
+      );
+    }
+    return entry.id;
   }
 
   Future<CaptureDraft> _requireOpenDraft(

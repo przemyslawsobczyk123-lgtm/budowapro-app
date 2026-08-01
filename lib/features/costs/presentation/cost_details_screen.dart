@@ -1,5 +1,10 @@
 import 'package:budowapro/features/costs/data/cost_attachment_stager.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
+import 'package:budowapro/features/costs/domain/cost_relation.dart';
+import 'package:budowapro/features/projects/domain/project_template.dart';
+import 'package:budowapro/features/projects/presentation/project_ui_text.dart';
+import 'package:budowapro/features/stages/domain/stage_plan.dart';
+import 'package:budowapro/features/stages/presentation/stage_ui_text.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:budowapro/shared/models/page.dart' as paging;
 import 'package:budowapro/shared/widgets/app_content_states.dart';
@@ -228,6 +233,14 @@ class _CostDetailsState extends State<_CostDetails> {
                         value: costTypeLabel(localizations, entry.type),
                       ),
                       _DetailRow(
+                        icon: Icons.construction_outlined,
+                        label: localizations.costComponentLabel,
+                        value: costComponentLabel(
+                          localizations,
+                          entry.component,
+                        ),
+                      ),
+                      _DetailRow(
                         icon: Icons.calendar_today_outlined,
                         label: localizations.costDateLabel,
                         value: formatCostDate(entry.entryDate.toLocal()),
@@ -256,6 +269,15 @@ class _CostDetailsState extends State<_CostDetails> {
                       ),
                     ],
                   ),
+                  if (!widget.data.relations.isEmpty) ...[
+                    const SizedBox(height: 20),
+                    _DetailsSectionTitle(localizations.costRelationsSection),
+                    const SizedBox(height: 8),
+                    _CostRelationsList(
+                      projectId: widget.data.project.id,
+                      relations: widget.data.relations,
+                    ),
+                  ],
                   const SizedBox(height: 20),
                   _DetailsSectionTitle(localizations.costFormDetailsSection),
                   const SizedBox(height: 8),
@@ -264,9 +286,13 @@ class _CostDetailsState extends State<_CostDetails> {
                       _DetailRow(
                         icon: Icons.flag_outlined,
                         label: localizations.costStageLabel,
-                        value:
-                            input.stageId ??
-                            localizations.projectValueNotProvided,
+                        value: input.stageId == null
+                            ? localizations.projectValueNotProvided
+                            : _costStageLabel(
+                                localizations,
+                                input.stageId!,
+                                widget.data.stageOptions,
+                              ),
                       ),
                       _DetailRow(
                         icon: Icons.category_outlined,
@@ -434,6 +460,107 @@ class _CostDetailsState extends State<_CostDetails> {
     }
   }
 }
+
+class _CostRelationsList extends StatelessWidget {
+  const _CostRelationsList({required this.projectId, required this.relations});
+
+  final String projectId;
+  final CostRelations relations;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        children: [
+          for (var index = 0; index < relations.items.length; index++) ...[
+            if (index > 0) const Divider(height: 1),
+            _CostRelationTile(
+              projectId: projectId,
+              relation: relations.items[index],
+              typeLabel: switch (relations.items[index].type) {
+                CostRelationType.room => l10n.costRelationRoomLabel,
+                CostRelationType.material => l10n.costRelationMaterialLabel,
+              },
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _CostRelationTile extends StatelessWidget {
+  const _CostRelationTile({
+    required this.projectId,
+    required this.relation,
+    required this.typeLabel,
+  });
+
+  final String projectId;
+  final CostRelationReference relation;
+  final String typeLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      key: ValueKey('costRelation-${relation.type.name}-${relation.recordId}'),
+      leading: Icon(switch (relation.type) {
+        CostRelationType.room => Icons.meeting_room_outlined,
+        CostRelationType.material => Icons.inventory_2_outlined,
+      }),
+      title: Text(relation.label),
+      subtitle: Text(typeLabel),
+      trailing: const Icon(Icons.chevron_right_rounded),
+      onTap: () => context.push(_relationRoute(projectId, relation)),
+    );
+  }
+}
+
+String _relationRoute(String projectId, CostRelationReference relation) {
+  final encodedProjectId = Uri.encodeComponent(projectId);
+  final encodedRecordId = Uri.encodeComponent(relation.recordId);
+  return switch (relation.type) {
+    CostRelationType.room =>
+      '/projects/$encodedProjectId/rooms/$encodedRecordId',
+    CostRelationType.material =>
+      '/projects/$encodedProjectId/materials/$encodedRecordId',
+  };
+}
+
+String _costStageLabel(
+  AppLocalizations localizations,
+  String stageId,
+  List<ProjectStage> stages,
+) {
+  for (final stage in stages) {
+    if (stage.id == stageId) return stageName(localizations, stage);
+  }
+  for (final key in ProjectStageKey.values) {
+    if (_stageStorageId(key) == stageId) {
+      return projectStageLabel(localizations, key);
+    }
+  }
+  return stageId;
+}
+
+String _stageStorageId(ProjectStageKey value) => switch (value) {
+  ProjectStageKey.planning => 'planning',
+  ProjectStageKey.formalities => 'formalities',
+  ProjectStageKey.sitePreparation => 'site_preparation',
+  ProjectStageKey.stateZero => 'state_zero',
+  ProjectStageKey.shellOpen => 'shell_open',
+  ProjectStageKey.shellClosed => 'shell_closed',
+  ProjectStageKey.demolition => 'demolition',
+  ProjectStageKey.installations => 'installations',
+  ProjectStageKey.plaster => 'plaster',
+  ProjectStageKey.finishing => 'finishing',
+  ProjectStageKey.handover => 'handover',
+};
 
 enum _DetailsAction { copyDraft, markPaid, delete }
 

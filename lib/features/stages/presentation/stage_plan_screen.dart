@@ -1,4 +1,5 @@
 import 'package:budowapro/features/projects/presentation/project_ui_text.dart';
+import 'package:budowapro/features/projects/presentation/projects_controller.dart';
 import 'package:budowapro/features/stages/domain/stage_guidance.dart';
 import 'package:budowapro/features/stages/domain/stage_plan.dart';
 import 'package:budowapro/features/stages/presentation/stage_editor_dialogs.dart';
@@ -186,6 +187,20 @@ class _StagePlanContentState extends ConsumerState<_StagePlanContent> {
                     state: state,
                     onEdit: () => _editStage(context, ref, state),
                     onRename: () => _renameStage(context, ref, selectedStage),
+                    onSetCurrent: selectedStage.templateKey == null
+                        ? null
+                        : () => _setCurrentStage(
+                            context,
+                            ref,
+                            state,
+                            selectedStage,
+                          ),
+                    onToggleCompleted: () => _toggleStageCompleted(
+                      context,
+                      ref,
+                      state,
+                      selectedStage,
+                    ),
                   ),
                 ),
               if (selectedStage != null)
@@ -649,12 +664,16 @@ class _StageOverview extends StatelessWidget {
     required this.state,
     required this.onEdit,
     required this.onRename,
+    required this.onSetCurrent,
+    required this.onToggleCompleted,
   });
 
   final ProjectStage stage;
   final StagePlanState state;
   final VoidCallback onEdit;
   final VoidCallback onRename;
+  final VoidCallback? onSetCurrent;
+  final VoidCallback onToggleCompleted;
 
   @override
   Widget build(BuildContext context) {
@@ -758,12 +777,46 @@ class _StageOverview extends StatelessWidget {
                     state.project!.currencyCode,
                   ),
                 ),
+                if (stage.templateKey == state.project!.currentStage)
+                  _StageMeta(
+                    icon: Icons.play_arrow_rounded,
+                    label: l10n.stageCurrentLabel,
+                  ),
                 if (progress.blockedItems > 0)
                   _StageMeta(
                     icon: Icons.block_rounded,
                     label: l10n.stageBlockedCount(progress.blockedItems),
                     isWarning: true,
                   ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                if (onSetCurrent != null &&
+                    stage.templateKey != state.project!.currentStage)
+                  OutlinedButton.icon(
+                    key: const ValueKey<String>('stage-set-current'),
+                    onPressed: onSetCurrent,
+                    icon: const Icon(Icons.play_arrow_rounded),
+                    label: Text(l10n.stageSetCurrentAction),
+                  ),
+                FilledButton.icon(
+                  key: const ValueKey<String>('stage-toggle-completed'),
+                  onPressed: onToggleCompleted,
+                  icon: Icon(
+                    stage.status == StageStatus.completed
+                        ? Icons.replay_rounded
+                        : Icons.check_circle_outline_rounded,
+                  ),
+                  label: Text(
+                    stage.status == StageStatus.completed
+                        ? l10n.stageReopenAction
+                        : l10n.stageCompleteAction,
+                  ),
+                ),
               ],
             ),
           ],
@@ -1075,6 +1128,88 @@ Future<void> _editStage(
   );
 }
 
+Future<void> _setCurrentStage(
+  BuildContext context,
+  WidgetRef ref,
+  StagePlanState state,
+  ProjectStage stage,
+) async {
+  final stageKey = stage.templateKey;
+  if (stageKey == null || state.project == null) return;
+  await _runMutation(context, () async {
+    if (stage.status != StageStatus.completed &&
+        stage.status != StageStatus.inProgress) {
+      await ref
+          .read(stagePlanControllerProvider.notifier)
+          .updateStage(
+            stage.id,
+            StageDetailsInput(
+              status: StageStatus.inProgress,
+              plannedStart: stage.plannedStart,
+              plannedEnd: stage.plannedEnd,
+              plannedBudgetMinorUnits: stage.plannedBudgetMinorUnits,
+            ),
+          );
+    }
+    await ref
+        .read(projectsControllerProvider.notifier)
+        .setCurrentStage(state.project!, stageKey);
+    ref.invalidate(stagePlanControllerProvider);
+  });
+}
+
+Future<void> _toggleStageCompleted(
+  BuildContext context,
+  WidgetRef ref,
+  StagePlanState state,
+  ProjectStage stage,
+) async {
+  final l10n = AppLocalizations.of(context);
+  final nextStatus = stage.status == StageStatus.completed
+      ? StageStatus.inProgress
+      : StageStatus.completed;
+  if (nextStatus == StageStatus.completed &&
+      stage.progress.resolvedItems < stage.progress.totalItems) {
+    final shouldContinue = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.stageCompleteWithOpenItemsTitle),
+        content: Text(
+          l10n.stageCompleteWithOpenItemsMessage(
+            stage.progress.totalItems - stage.progress.resolvedItems,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.cancelAction),
+          ),
+          FilledButton(
+            key: const ValueKey<String>('stage-complete-confirm'),
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.stageCompleteAction),
+          ),
+        ],
+      ),
+    );
+    if (shouldContinue != true || !context.mounted) return;
+  }
+  await _runMutation(
+    context,
+    () => ref
+        .read(stagePlanControllerProvider.notifier)
+        .updateStage(
+          stage.id,
+          StageDetailsInput(
+            status: nextStatus,
+            plannedStart: stage.plannedStart,
+            plannedEnd: stage.plannedEnd,
+            plannedBudgetMinorUnits: stage.plannedBudgetMinorUnits,
+          ),
+        ),
+  );
+}
+
 Future<void> _addChecklistItem(BuildContext context, WidgetRef ref) async {
   final result = await showAddChecklistDialog(context);
   if (result == null || !context.mounted) return;
@@ -1269,6 +1404,7 @@ Color _statusColor(ColorScheme colors, ChecklistStatus status) =>
     };
 
 IconData _guidanceIcon(StageGuidanceKey key) => switch (key) {
+  StageGuidanceKey.planningScopeAndSurvey => Icons.rule_folder_outlined,
   StageGuidanceKey.planningAndGroundConditions => Icons.map_outlined,
   StageGuidanceKey.designUtilitiesAndApprovals => Icons.draw_outlined,
   StageGuidanceKey.legalConstructionStart => Icons.gavel_outlined,
@@ -1276,6 +1412,7 @@ IconData _guidanceIcon(StageGuidanceKey key) => switch (key) {
   StageGuidanceKey.temporaryUtilitiesAndFacilities =>
     Icons.electrical_services_outlined,
   StageGuidanceKey.siteSafetyAndEvidence => Icons.health_and_safety_outlined,
+  StageGuidanceKey.demolitionSafetyAndUtilities => Icons.construction_outlined,
   StageGuidanceKey.servicePenetrations => Icons.cable_rounded,
   StageGuidanceKey.foundationGrounding => Icons.electric_bolt_rounded,
   StageGuidanceKey.foundationWaterproofing => Icons.water_drop_outlined,
@@ -1288,6 +1425,8 @@ IconData _guidanceIcon(StageGuidanceKey key) => switch (key) {
   StageGuidanceKey.closedShellMoistureControl => Icons.air_outlined,
   StageGuidanceKey.installationRoutesAndAccess => Icons.account_tree_outlined,
   StageGuidanceKey.installationTestsAndEvidence => Icons.fact_check_outlined,
+  StageGuidanceKey.plasterAndScreedExecution => Icons.format_paint_outlined,
   StageGuidanceKey.finishSubstratesAndHeating => Icons.layers_outlined,
   StageGuidanceKey.wetAreaWaterproofing => Icons.shower_outlined,
+  StageGuidanceKey.handoverAndOccupancy => Icons.assignment_turned_in_outlined,
 };

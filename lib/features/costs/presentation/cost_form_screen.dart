@@ -144,6 +144,7 @@ class _CostFormState extends State<_CostForm> {
   final _supplierFocusNode = FocusNode();
 
   late CostEntryType _type;
+  late CostComponent _component;
   late CostStatus _status;
   late VatRate _vatRate;
   late DateTime _entryDate;
@@ -178,6 +179,7 @@ class _CostFormState extends State<_CostForm> {
     _unitController.text = input?.unit ?? '';
     _noteController.text = input?.note ?? '';
     _type = input?.type ?? CostEntryType.cost;
+    _component = input?.component ?? CostComponent.material;
     _status = input != null && validStatusesFor(_type).contains(input.status)
         ? input.status
         : defaultStatusFor(_type);
@@ -218,7 +220,7 @@ class _CostFormState extends State<_CostForm> {
           onChanged: _markDirty,
           onPopInvokedWithResult: _handlePopInvoked,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 184),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -310,6 +312,37 @@ class _CostFormState extends State<_CostForm> {
                           _errorText(CostFormField.status, localizations),
                     ),
                   ],
+                ),
+                const SizedBox(height: 12),
+                DropdownButtonFormField<CostComponent>(
+                  key: ValueKey('costComponent-${_component.name}'),
+                  initialValue: _component,
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    labelText: localizations.costComponentLabel,
+                    prefixIcon: const Icon(Icons.construction_outlined),
+                  ),
+                  items: CostComponent.values
+                      .map(
+                        (value) => DropdownMenuItem<CostComponent>(
+                          value: value,
+                          child: Text(
+                            costComponentLabel(localizations, value),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      )
+                      .toList(growable: false),
+                  onChanged: _isSubmitting
+                      ? null
+                      : (value) {
+                          if (value != null) {
+                            setState(() {
+                              _component = value;
+                              _isDirty = true;
+                            });
+                          }
+                        },
                 ),
                 if (_financialFieldsLocked) ...[
                   const SizedBox(height: 8),
@@ -619,6 +652,7 @@ class _CostFormState extends State<_CostForm> {
     return CostFormSubmission(
       name: _nameController.text,
       type: _type,
+      component: _component,
       status: _status,
       grossAmount: _grossController.text,
       vatRate: _vatRate,
@@ -666,7 +700,7 @@ class _CostFormState extends State<_CostForm> {
         _isSubmitting = false;
         _isDirty = false;
       });
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(true);
     } on CostFormValidationException catch (error) {
       if (!mounted) return;
       setState(() {
@@ -1190,6 +1224,14 @@ String costTypeLabel(AppLocalizations l10n, CostEntryType value) =>
       CostEntryType.cost => l10n.costTypeCost,
       CostEntryType.offer => l10n.costTypeOffer,
       CostEntryType.planned => l10n.costTypePlanned,
+    };
+
+String costComponentLabel(AppLocalizations l10n, CostComponent value) =>
+    switch (value) {
+      CostComponent.material => l10n.costComponentMaterial,
+      CostComponent.labor => l10n.costComponentLabor,
+      CostComponent.mixed => l10n.costComponentMixed,
+      CostComponent.unassigned => l10n.costComponentUnassigned,
     };
 
 String costStatusLabel(AppLocalizations l10n, CostStatus value) =>

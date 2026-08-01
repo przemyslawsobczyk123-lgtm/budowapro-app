@@ -77,6 +77,7 @@ final class CostQuery {
     required String projectId,
     String? searchText,
     Set<CostEntryType> types = const <CostEntryType>{},
+    Set<CostComponent> components = const <CostComponent>{},
     Set<CostStatus> statuses = const <CostStatus>{},
     Set<String> stageIds = const <String>{},
     Set<String> categoryIds = const <String>{},
@@ -106,6 +107,9 @@ final class CostQuery {
       projectId: _requiredProjectId(projectId),
       searchText: _optionalSearchText(searchText),
       types: UnmodifiableSetView<CostEntryType>(Set<CostEntryType>.of(types)),
+      components: UnmodifiableSetView<CostComponent>(
+        Set<CostComponent>.of(components),
+      ),
       statuses: UnmodifiableSetView<CostStatus>(Set<CostStatus>.of(statuses)),
       stageIds: _normalizedIds(stageIds, 'stageIds'),
       categoryIds: _normalizedIds(categoryIds, 'categoryIds'),
@@ -129,6 +133,7 @@ final class CostQuery {
     required this.projectId,
     required this.searchText,
     required this.types,
+    required this.components,
     required this.statuses,
     required this.stageIds,
     required this.categoryIds,
@@ -146,6 +151,7 @@ final class CostQuery {
   final String projectId;
   final String? searchText;
   final UnmodifiableSetView<CostEntryType> types;
+  final UnmodifiableSetView<CostComponent> components;
   final UnmodifiableSetView<CostStatus> statuses;
   final UnmodifiableSetView<String> stageIds;
   final UnmodifiableSetView<String> categoryIds;
@@ -163,6 +169,7 @@ final class CostQuery {
     var count = 0;
     if (searchText != null) count++;
     if (types.isNotEmpty) count++;
+    if (components.isNotEmpty) count++;
     if (statuses.isNotEmpty) count++;
     if (stageIds.isNotEmpty) count++;
     if (categoryIds.isNotEmpty) count++;
@@ -179,6 +186,7 @@ final class CostQuery {
     projectId: projectId,
     searchText: searchText,
     types: types,
+    components: components,
     statuses: statuses,
     stageIds: stageIds,
     categoryIds: categoryIds,

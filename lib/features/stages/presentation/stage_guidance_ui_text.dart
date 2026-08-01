@@ -22,6 +22,13 @@ StageGuidanceContent stageGuidanceContent(
   StageGuidanceKey key,
 ) {
   return switch (key) {
+    StageGuidanceKey.planningScopeAndSurvey => StageGuidanceContent(
+      title: l10n.guidancePlanningScopeAndSurveyTitle,
+      timing: l10n.guidancePlanningScopeAndSurveyTiming,
+      summary: l10n.guidancePlanningScopeAndSurveySummary,
+      checks: _lines(l10n.guidancePlanningScopeAndSurveyChecks),
+      questions: _lines(l10n.guidancePlanningScopeAndSurveyQuestions),
+    ),
     StageGuidanceKey.planningAndGroundConditions => StageGuidanceContent(
       title: l10n.guidancePlanningAndGroundConditionsTitle,
       timing: l10n.guidancePlanningAndGroundConditionsTiming,
@@ -63,6 +70,13 @@ StageGuidanceContent stageGuidanceContent(
       summary: l10n.guidanceSiteSafetyAndEvidenceSummary,
       checks: _lines(l10n.guidanceSiteSafetyAndEvidenceChecks),
       questions: _lines(l10n.guidanceSiteSafetyAndEvidenceQuestions),
+    ),
+    StageGuidanceKey.demolitionSafetyAndUtilities => StageGuidanceContent(
+      title: l10n.guidanceDemolitionSafetyAndUtilitiesTitle,
+      timing: l10n.guidanceDemolitionSafetyAndUtilitiesTiming,
+      summary: l10n.guidanceDemolitionSafetyAndUtilitiesSummary,
+      checks: _lines(l10n.guidanceDemolitionSafetyAndUtilitiesChecks),
+      questions: _lines(l10n.guidanceDemolitionSafetyAndUtilitiesQuestions),
     ),
     StageGuidanceKey.servicePenetrations => StageGuidanceContent(
       title: l10n.guidanceServicePenetrationsTitle,
@@ -148,6 +162,13 @@ StageGuidanceContent stageGuidanceContent(
       checks: _lines(l10n.guidanceInstallationTestsAndEvidenceChecks),
       questions: _lines(l10n.guidanceInstallationTestsAndEvidenceQuestions),
     ),
+    StageGuidanceKey.plasterAndScreedExecution => StageGuidanceContent(
+      title: l10n.guidancePlasterAndScreedExecutionTitle,
+      timing: l10n.guidancePlasterAndScreedExecutionTiming,
+      summary: l10n.guidancePlasterAndScreedExecutionSummary,
+      checks: _lines(l10n.guidancePlasterAndScreedExecutionChecks),
+      questions: _lines(l10n.guidancePlasterAndScreedExecutionQuestions),
+    ),
     StageGuidanceKey.finishSubstratesAndHeating => StageGuidanceContent(
       title: l10n.guidanceFinishSubstratesAndHeatingTitle,
       timing: l10n.guidanceFinishSubstratesAndHeatingTiming,
@@ -161,6 +182,13 @@ StageGuidanceContent stageGuidanceContent(
       summary: l10n.guidanceWetAreaWaterproofingSummary,
       checks: _lines(l10n.guidanceWetAreaWaterproofingChecks),
       questions: _lines(l10n.guidanceWetAreaWaterproofingQuestions),
+    ),
+    StageGuidanceKey.handoverAndOccupancy => StageGuidanceContent(
+      title: l10n.guidanceHandoverAndOccupancyTitle,
+      timing: l10n.guidanceHandoverAndOccupancyTiming,
+      summary: l10n.guidanceHandoverAndOccupancySummary,
+      checks: _lines(l10n.guidanceHandoverAndOccupancyChecks),
+      questions: _lines(l10n.guidanceHandoverAndOccupancyQuestions),
     ),
   };
 }

@@ -9,6 +9,9 @@ import 'package:budowapro/features/contacts/presentation/contact_form_screen.dar
 import 'package:budowapro/features/contacts/presentation/contacts_screen.dart';
 import 'package:budowapro/features/contacts/presentation/site_visit_form_screen.dart';
 import 'package:budowapro/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:budowapro/features/diary/presentation/journal_details_screen.dart';
+import 'package:budowapro/features/diary/presentation/journal_form_screen.dart';
+import 'package:budowapro/features/diary/presentation/journal_screen.dart';
 import 'package:budowapro/features/documents/presentation/document_details_screen.dart';
 import 'package:budowapro/features/documents/presentation/document_form_screen.dart';
 import 'package:budowapro/features/documents/presentation/document_viewer_screen.dart';
@@ -16,19 +19,35 @@ import 'package:budowapro/features/documents/presentation/documents_screen.dart'
 import 'package:budowapro/features/legal/presentation/legal_center_screen.dart';
 import 'package:budowapro/features/legal/presentation/legal_document_screen.dart';
 import 'package:budowapro/features/legal/presentation/privacy_settings_screen.dart';
+import 'package:budowapro/features/materials/presentation/material_details_screen.dart';
+import 'package:budowapro/features/materials/presentation/material_form_screen.dart';
+import 'package:budowapro/features/materials/presentation/materials_screen.dart';
 import 'package:budowapro/features/projects/presentation/project_form_screen.dart';
+import 'package:budowapro/features/punch_list/presentation/defect_details_screen.dart';
+import 'package:budowapro/features/punch_list/presentation/defect_form_screen.dart';
+import 'package:budowapro/features/punch_list/presentation/protocol_details_screen.dart';
+import 'package:budowapro/features/punch_list/presentation/protocol_form_screen.dart';
+import 'package:budowapro/features/punch_list/presentation/punch_screen.dart';
 import 'package:budowapro/features/quotes/presentation/quote_comparison_screen.dart';
 import 'package:budowapro/features/quotes/presentation/quote_details_screen.dart';
 import 'package:budowapro/features/quotes/presentation/quote_form_screen.dart';
 import 'package:budowapro/features/quotes/presentation/quotes_screen.dart';
 import 'package:budowapro/features/receipt_scan/presentation/receipt_scan_screen.dart';
 import 'package:budowapro/features/reports/presentation/budget_report_screen.dart';
+import 'package:budowapro/features/rooms/presentation/room_choice_form_screen.dart';
+import 'package:budowapro/features/rooms/presentation/room_details_screen.dart';
+import 'package:budowapro/features/rooms/presentation/room_form_screen.dart';
+import 'package:budowapro/features/rooms/presentation/room_relations_screen.dart';
+import 'package:budowapro/features/rooms/presentation/rooms_screen.dart';
 import 'package:budowapro/features/schedule/data/schedule_providers.dart';
 import 'package:budowapro/features/schedule/presentation/schedule_event_details_screen.dart';
 import 'package:budowapro/features/schedule/presentation/schedule_event_form_screen.dart';
 import 'package:budowapro/features/schedule/presentation/schedule_plan_screen.dart';
 import 'package:budowapro/features/shell/presentation/app_shell.dart';
 import 'package:budowapro/features/shell/presentation/more_tools_screen.dart';
+import 'package:budowapro/features/technical_photos/presentation/technical_photo_details_screen.dart';
+import 'package:budowapro/features/technical_photos/presentation/technical_photo_form_screen.dart';
+import 'package:budowapro/features/technical_photos/presentation/technical_photos_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -124,6 +143,71 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/reports',
         builder: (context, state) => const BudgetReportScreen(),
       ),
+      GoRoute(path: '/rooms', builder: (context, state) => const RoomsScreen()),
+      GoRoute(
+        path: '/materials',
+        builder: (context, state) => const MaterialsScreen(),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/materials/new',
+        builder: (context, state) =>
+            MaterialFormScreen(projectId: state.pathParameters['projectId']!),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/materials/:materialId/edit',
+        builder: (context, state) => MaterialFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          materialId: state.pathParameters['materialId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/materials/:materialId',
+        builder: (context, state) => MaterialDetailsScreen(
+          projectId: state.pathParameters['projectId']!,
+          materialId: state.pathParameters['materialId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/rooms/new',
+        builder: (context, state) =>
+            RoomFormScreen(projectId: state.pathParameters['projectId']!),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/rooms/:roomId/edit',
+        builder: (context, state) => RoomFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          roomId: state.pathParameters['roomId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/rooms/:roomId/choices/new',
+        builder: (context, state) => RoomChoiceFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          roomId: state.pathParameters['roomId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/rooms/:roomId/relations',
+        builder: (context, state) => RoomRelationsScreen(
+          projectId: state.pathParameters['projectId']!,
+          roomId: state.pathParameters['roomId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/rooms/:roomId/choices/:choiceId/edit',
+        builder: (context, state) => RoomChoiceFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          roomId: state.pathParameters['roomId']!,
+          choiceId: state.pathParameters['choiceId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/rooms/:roomId',
+        builder: (context, state) => RoomDetailsScreen(
+          projectId: state.pathParameters['projectId']!,
+          roomId: state.pathParameters['roomId']!,
+        ),
+      ),
       GoRoute(
         path: '/backup',
         builder: (context, state) => const BackupScreen(),
@@ -131,6 +215,84 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/captures',
         builder: (context, state) => const CapturesScreen(),
+      ),
+      GoRoute(
+        path: '/diary/new',
+        builder: (context, state) => const JournalFormScreen(),
+      ),
+      GoRoute(
+        path: '/diary/:entryId/edit',
+        builder: (context, state) =>
+            JournalFormScreen(entryId: state.pathParameters['entryId']!),
+      ),
+      GoRoute(
+        path: '/diary/:entryId',
+        builder: (context, state) =>
+            JournalDetailsScreen(entryId: state.pathParameters['entryId']!),
+      ),
+      GoRoute(
+        path: '/diary',
+        builder: (context, state) => const JournalScreen(),
+      ),
+      GoRoute(
+        path: '/technical',
+        builder: (context, state) => const TechnicalPhotosScreen(),
+      ),
+      GoRoute(path: '/punch', builder: (context, state) => const PunchScreen()),
+      GoRoute(
+        path: '/projects/:projectId/punch/defects/new',
+        builder: (context, state) =>
+            DefectFormScreen(projectId: state.pathParameters['projectId']!),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/punch/defects/:defectId/edit',
+        builder: (context, state) => DefectFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          defectId: state.pathParameters['defectId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/punch/defects/:defectId',
+        builder: (context, state) => DefectDetailsScreen(
+          projectId: state.pathParameters['projectId']!,
+          defectId: state.pathParameters['defectId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/punch/protocols/new',
+        builder: (context, state) => ProtocolFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          initialDefectId: state.uri.queryParameters['defectId'],
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/punch/protocols/:protocolId/edit',
+        builder: (context, state) => ProtocolFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          protocolId: state.pathParameters['protocolId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/punch/protocols/:protocolId',
+        builder: (context, state) => ProtocolDetailsScreen(
+          projectId: state.pathParameters['projectId']!,
+          protocolId: state.pathParameters['protocolId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/technical/:attachmentId/edit',
+        builder: (context, state) => TechnicalPhotoFormScreen(
+          projectId: state.pathParameters['projectId']!,
+          attachmentId: state.pathParameters['attachmentId']!,
+          isNew: state.uri.queryParameters['new'] == '1',
+        ),
+      ),
+      GoRoute(
+        path: '/projects/:projectId/technical/:attachmentId',
+        builder: (context, state) => TechnicalPhotoDetailsScreen(
+          projectId: state.pathParameters['projectId']!,
+          attachmentId: state.pathParameters['attachmentId']!,
+        ),
       ),
       GoRoute(
         path: '/legal',

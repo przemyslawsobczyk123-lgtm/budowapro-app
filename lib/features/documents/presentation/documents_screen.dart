@@ -35,7 +35,16 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
     final l10n = AppLocalizations.of(context);
     final asyncState = ref.watch(documentsControllerProvider);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.documentsTitle)),
+      appBar: AppBar(
+        title: Text(l10n.documentsTitle),
+        actions: [
+          IconButton(
+            tooltip: l10n.technicalPhotosTitle,
+            onPressed: () => context.push('/technical'),
+            icon: const Icon(Icons.photo_library_outlined),
+          ),
+        ],
+      ),
       body: asyncState.when(
         loading: () => AppLoadingState(label: l10n.documentsTitle),
         error: (error, stackTrace) => AppErrorState(

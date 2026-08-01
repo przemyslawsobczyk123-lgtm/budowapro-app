@@ -772,6 +772,12 @@ abstract class AppLocalizations {
   /// **'Rodzaj wpisu'**
   String get costRegisterTypeSection;
 
+  /// No description provided for @costRegisterComponentSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Skład kosztu'**
+  String get costRegisterComponentSection;
+
   /// No description provided for @costRegisterStatusSection.
   ///
   /// In pl, this message translates to:
@@ -934,6 +940,12 @@ abstract class AppLocalizations {
   /// **'Tryb wpisu'**
   String get costCsvLifecycleColumn;
 
+  /// No description provided for @costCsvComponentColumn.
+  ///
+  /// In pl, this message translates to:
+  /// **'Skład kosztu'**
+  String get costCsvComponentColumn;
+
   /// No description provided for @costCsvConfirmedValue.
   ///
   /// In pl, this message translates to:
@@ -1060,6 +1072,12 @@ abstract class AppLocalizations {
   /// **'Rodzaj'**
   String get costTypeLabel;
 
+  /// No description provided for @costComponentLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Skład kosztu'**
+  String get costComponentLabel;
+
   /// No description provided for @costGrossAmountLabel.
   ///
   /// In pl, this message translates to:
@@ -1155,6 +1173,30 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Plan'**
   String get costTypePlanned;
+
+  /// No description provided for @costComponentMaterial.
+  ///
+  /// In pl, this message translates to:
+  /// **'Materiał'**
+  String get costComponentMaterial;
+
+  /// No description provided for @costComponentLabor.
+  ///
+  /// In pl, this message translates to:
+  /// **'Robocizna'**
+  String get costComponentLabor;
+
+  /// No description provided for @costComponentMixed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wspólna wycena: materiał + robocizna'**
+  String get costComponentMixed;
+
+  /// No description provided for @costComponentUnassigned.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieprzypisane'**
+  String get costComponentUnassigned;
 
   /// No description provided for @costStatusPlanned.
   ///
@@ -1408,6 +1450,24 @@ abstract class AppLocalizations {
   /// **'Nie udało się wykonać akcji.'**
   String get costDetailsActionError;
 
+  /// No description provided for @costRelationsSection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiązane dane'**
+  String get costRelationsSection;
+
+  /// No description provided for @costRelationRoomLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenie'**
+  String get costRelationRoomLabel;
+
+  /// No description provided for @costRelationMaterialLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Materiał'**
+  String get costRelationMaterialLabel;
+
   /// No description provided for @costHistorySection.
   ///
   /// In pl, this message translates to:
@@ -1611,6 +1671,42 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Zakończony'**
   String get stageStatusCompleted;
+
+  /// No description provided for @stageCurrentLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bieżący etap'**
+  String get stageCurrentLabel;
+
+  /// No description provided for @stageSetCurrentAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustaw jako bieżący'**
+  String get stageSetCurrentAction;
+
+  /// No description provided for @stageCompleteAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Oznacz jako ukończony'**
+  String get stageCompleteAction;
+
+  /// No description provided for @stageReopenAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wznów etap'**
+  String get stageReopenAction;
+
+  /// No description provided for @stageCompleteWithOpenItemsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap ma otwarte punkty'**
+  String get stageCompleteWithOpenItemsTitle;
+
+  /// No description provided for @stageCompleteWithOpenItemsMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pozostało otwartych punktów: {count}. Możesz mimo to oznaczyć etap jako ukończony, jeśli świadomie przenosisz je poza zakres albo rozliczysz je później.'**
+  String stageCompleteWithOpenItemsMessage(int count);
 
   /// No description provided for @stageStartDateLabel.
   ///
@@ -2823,6 +2919,558 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Odchyłki położenia mogą ujawnić się dopiero przy kolejnych etapach lub odbiorze.'**
   String get checklistPostFoundationSurveyRisk;
+
+  /// No description provided for @checklistPlanningScopeAndBudget.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustal zakres remontu, budżet i rezerwę'**
+  String get checklistPlanningScopeAndBudget;
+
+  /// No description provided for @checklistPlanningScopeAndBudgetRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak zakresu i rezerwy utrudnia porównanie ofert oraz zwiększa ryzyko kosztownych zmian w trakcie robót.'**
+  String get checklistPlanningScopeAndBudgetRisk;
+
+  /// No description provided for @checklistExistingBuildingSurvey.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zrób inwentaryzację istniejącego stanu'**
+  String get checklistExistingBuildingSurvey;
+
+  /// No description provided for @checklistExistingBuildingSurveyRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieudokumentowane wymiary, instalacje i uszkodzenia mogą prowadzić do kolizji oraz sporów przy remoncie.'**
+  String get checklistExistingBuildingSurveyRisk;
+
+  /// No description provided for @checklistDesignDecisionsRegister.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz decyzje materiałowe i wykonawcze'**
+  String get checklistDesignDecisionsRegister;
+
+  /// No description provided for @checklistDesignDecisionsRegisterRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustalenia ustne łatwo się rozchodzą, a późniejsze zmiany zwiększają koszt i opóźnienie.'**
+  String get checklistDesignDecisionsRegisterRisk;
+
+  /// No description provided for @checklistDemolitionHazardSurvey.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź zagrożenia przed rozbiórką'**
+  String get checklistDemolitionHazardSurvey;
+
+  /// No description provided for @checklistDemolitionHazardSurveyRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieznany azbest, szkło, instalacje pod napięciem lub niestabilne elementy mogą zagrozić zdrowiu i konstrukcji.'**
+  String get checklistDemolitionHazardSurveyRisk;
+
+  /// No description provided for @checklistUtilityDisconnectionAndProtection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odłącz i zabezpiecz istniejące instalacje'**
+  String get checklistUtilityDisconnectionAndProtection;
+
+  /// No description provided for @checklistUtilityDisconnectionAndProtectionRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pozostawione zasilanie, gaz, woda lub kanalizacja może spowodować porażenie, zalanie albo pożar.'**
+  String get checklistUtilityDisconnectionAndProtectionRisk;
+
+  /// No description provided for @checklistDemolitionPlanAndWaste.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustal kolejność rozbiórki i odbiór odpadów'**
+  String get checklistDemolitionPlanAndWaste;
+
+  /// No description provided for @checklistDemolitionPlanAndWasteRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak kolejności może naruszyć stateczność budynku, a odpady bez segregacji utrudnią legalne przekazanie.'**
+  String get checklistDemolitionPlanAndWasteRisk;
+
+  /// No description provided for @checklistNeighborAndCommonAreaProtection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zabezpiecz sąsiadów i części wspólne'**
+  String get checklistNeighborAndCommonAreaProtection;
+
+  /// No description provided for @checklistNeighborAndCommonAreaProtectionRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pył, hałas, drgania i uszkodzenia komunikacji wspólnej mogą zatrzymać prace i wywołać roszczenia.'**
+  String get checklistNeighborAndCommonAreaProtectionRisk;
+
+  /// No description provided for @checklistDemolitionCompletionInspection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odbierz stan po rozbiórce'**
+  String get checklistDemolitionCompletionInspection;
+
+  /// No description provided for @checklistDemolitionCompletionInspectionRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pozostawione odpady, otwarte przejścia lub niezinwentaryzowane uszkodzenia utrudnią bezpieczny kolejny etap.'**
+  String get checklistDemolitionCompletionInspectionRisk;
+
+  /// No description provided for @checklistShellStructuralAcceptance.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odbierz konstrukcję i elementy przed zakryciem'**
+  String get checklistShellStructuralAcceptance;
+
+  /// No description provided for @checklistShellStructuralAcceptanceRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Błąd zbrojenia, geometrii lub otworu po zakryciu jest trudny do wykrycia i naprawy.'**
+  String get checklistShellStructuralAcceptanceRisk;
+
+  /// No description provided for @checklistRoofWeatherProtection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zabezpiecz dach i odwodnienie przed opadami'**
+  String get checklistRoofWeatherProtection;
+
+  /// No description provided for @checklistRoofWeatherProtectionRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieszczelne przejścia, obróbki lub rynny mogą zawilgocić konstrukcję i wnętrze.'**
+  String get checklistRoofWeatherProtectionRisk;
+
+  /// No description provided for @checklistOpeningAndShadingPreparation.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzgodnij otwory pod okna i osłony'**
+  String get checklistOpeningAndShadingPreparation;
+
+  /// No description provided for @checklistOpeningAndShadingPreparationRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak detalu rolety lub żaluzji przed nadprożem może wymusić mostek cieplny albo przeróbkę konstrukcji.'**
+  String get checklistOpeningAndShadingPreparationRisk;
+
+  /// No description provided for @checklistShellSafetyAndAccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zabezpiecz otwory, schody i komunikację'**
+  String get checklistShellSafetyAndAccess;
+
+  /// No description provided for @checklistShellSafetyAndAccessRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Niezabezpieczone krawędzie, otwory i tymczasowe schody są bezpośrednim ryzykiem wypadku.'**
+  String get checklistShellSafetyAndAccessRisk;
+
+  /// No description provided for @checklistWindowDoorAcceptance.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odbierz montaż okien i drzwi zewnętrznych'**
+  String get checklistWindowDoorAcceptance;
+
+  /// No description provided for @checklistWindowDoorAcceptanceRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak podparcia, mocowania lub ciągłości uszczelnienia powoduje nieszczelności i problemy z użytkowaniem.'**
+  String get checklistWindowDoorAcceptanceRisk;
+
+  /// No description provided for @checklistWeatherTightnessAndMoisture.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź szczelność budynku i wilgoć'**
+  String get checklistWeatherTightnessAndMoisture;
+
+  /// No description provided for @checklistWeatherTightnessAndMoistureRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zakrycie przecieków lub mokrych przegród utrwala zawilgocenie, pleśń i odspojenia wykończenia.'**
+  String get checklistWeatherTightnessAndMoistureRisk;
+
+  /// No description provided for @checklistTemporaryVentilationAndHeating.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustal wietrzenie, osuszanie i ogrzewanie technologiczne'**
+  String get checklistTemporaryVentilationAndHeating;
+
+  /// No description provided for @checklistTemporaryVentilationAndHeatingRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieprawidłowe suszenie lub wychłodzenie może uszkodzić świeże warstwy i materiały.'**
+  String get checklistTemporaryVentilationAndHeatingRisk;
+
+  /// No description provided for @checklistInstallationCoordination.
+  ///
+  /// In pl, this message translates to:
+  /// **'Skoordynuj wszystkie trasy instalacji'**
+  String get checklistInstallationCoordination;
+
+  /// No description provided for @checklistInstallationCoordinationRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak wspólnego planu prowadzi do kolizji, kucia i przypadkowego osłabiania konstrukcji.'**
+  String get checklistInstallationCoordinationRisk;
+
+  /// No description provided for @checklistElectricalInstallationRoutes.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonaj i sprawdź trasy elektryczne'**
+  String get checklistElectricalInstallationRoutes;
+
+  /// No description provided for @checklistElectricalInstallationRoutesRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Błędne trasy, brak ochrony lub niewłaściwe przepusty mogą uniemożliwić bezpieczny odbiór instalacji.'**
+  String get checklistElectricalInstallationRoutesRisk;
+
+  /// No description provided for @checklistWaterSewerHeatingRoutes.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonaj trasy wody, kanalizacji i ogrzewania'**
+  String get checklistWaterSewerHeatingRoutes;
+
+  /// No description provided for @checklistWaterSewerHeatingRoutesRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak spadków, rewizji, izolacji lub dostępu serwisowego często oznacza kucie po wykończeniu.'**
+  String get checklistWaterSewerHeatingRoutesRisk;
+
+  /// No description provided for @checklistVentilationAndLowVoltageRoutes.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonaj wentylację i teletechnikę'**
+  String get checklistVentilationAndLowVoltageRoutes;
+
+  /// No description provided for @checklistVentilationAndLowVoltageRoutesRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zgniecione kanały, brak izolacji lub rezerw ograniczy działanie wentylacji i późniejszą rozbudowę.'**
+  String get checklistVentilationAndLowVoltageRoutesRisk;
+
+  /// No description provided for @checklistInstallationTests.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonaj próby i pomiary instalacji'**
+  String get checklistInstallationTests;
+
+  /// No description provided for @checklistInstallationTestsRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zakrycie instalacji bez protokołu utrudnia wykrycie nieszczelności, błędów ochrony i wad działania.'**
+  String get checklistInstallationTestsRisk;
+
+  /// No description provided for @checklistConcealedInstallationPhotos.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz zdjęcia instalacji przed zakryciem'**
+  String get checklistConcealedInstallationPhotos;
+
+  /// No description provided for @checklistConcealedInstallationPhotosRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez zdjęć z miarą późniejsze wiercenie, serwis i znalezienie trasy są obarczone zgadywaniem.'**
+  String get checklistConcealedInstallationPhotosRisk;
+
+  /// No description provided for @checklistSubstrateInspection.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź podłoża przed tynkami i wylewkami'**
+  String get checklistSubstrateInspection;
+
+  /// No description provided for @checklistSubstrateInspectionRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wilgotne, słabe lub zabrudzone podłoże może spowodować pękanie i odspajanie warstw.'**
+  String get checklistSubstrateInspectionRisk;
+
+  /// No description provided for @checklistPlasterAndScreedExecution.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonaj tynki i wylewki według technologii'**
+  String get checklistPlasterAndScreedExecution;
+
+  /// No description provided for @checklistPlasterAndScreedExecutionRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zła temperatura, pielęgnacja lub dylatacje zwiększają ryzyko pęknięć i nierówności.'**
+  String get checklistPlasterAndScreedExecutionRisk;
+
+  /// No description provided for @checklistFloorHeatingCommissioning.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonaj próbę i wygrzewanie ogrzewania podłogowego'**
+  String get checklistFloorHeatingCommissioning;
+
+  /// No description provided for @checklistFloorHeatingCommissioningRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak próby przed wylewką ukrywa nieszczelność, a brak wygrzewania może uszkodzić późniejszą podłogę.'**
+  String get checklistFloorHeatingCommissioningRisk;
+
+  /// No description provided for @checklistPlasterScreedAcceptance.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odbierz równość, wilgotność i dylatacje'**
+  String get checklistPlasterScreedAcceptance;
+
+  /// No description provided for @checklistPlasterScreedAcceptanceRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykończenie na nieodebranym podłożu przenosi wady na płytki, panele i farby.'**
+  String get checklistPlasterScreedAcceptanceRisk;
+
+  /// No description provided for @checklistWetAreaWaterproofing.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonaj hydroizolację pomieszczeń mokrych'**
+  String get checklistWetAreaWaterproofing;
+
+  /// No description provided for @checklistWetAreaWaterproofingRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Płytki i fuga nie zastępują systemowej hydroizolacji, a nieszczelne detale mogą uszkodzić przegrody.'**
+  String get checklistWetAreaWaterproofingRisk;
+
+  /// No description provided for @checklistFinishMaterialsAndSamples.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatwierdź materiały, próbki i układy'**
+  String get checklistFinishMaterialsAndSamples;
+
+  /// No description provided for @checklistFinishMaterialsAndSamplesRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak próbki i zatwierdzonego układu kończy się różnicami koloru, formatu lub zakresu dostawy.'**
+  String get checklistFinishMaterialsAndSamplesRisk;
+
+  /// No description provided for @checklistFloorsWallsCeilings.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonaj i odbierz podłogi, ściany oraz sufity'**
+  String get checklistFloorsWallsCeilings;
+
+  /// No description provided for @checklistFloorsWallsCeilingsRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieodebrane powierzchnie mogą mieć wady widoczne dopiero po montażu wyposażenia i oświetlenia.'**
+  String get checklistFloorsWallsCeilingsRisk;
+
+  /// No description provided for @checklistJoineryAndPainting.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamontuj stolarkę wewnętrzną i wykonaj malowanie'**
+  String get checklistJoineryAndPainting;
+
+  /// No description provided for @checklistJoineryAndPaintingRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak ochrony i kolejności robót zwiększa ryzyko uszkodzeń, zabrudzeń i poprawek.'**
+  String get checklistJoineryAndPaintingRisk;
+
+  /// No description provided for @checklistSystemsCommissioning.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uruchom i wyreguluj urządzenia'**
+  String get checklistSystemsCommissioning;
+
+  /// No description provided for @checklistSystemsCommissioningRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez uruchomienia i regulacji ogrzewanie, wentylacja, alarm lub automatyka mogą nie działać zgodnie z założeniami.'**
+  String get checklistSystemsCommissioningRisk;
+
+  /// No description provided for @checklistWarrantiesAndManuals.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zbierz gwarancje, instrukcje i karty serwisowe'**
+  String get checklistWarrantiesAndManuals;
+
+  /// No description provided for @checklistWarrantiesAndManualsRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak dokumentów utrudnia serwis, reklamację i późniejszą bezpieczną obsługę urządzeń.'**
+  String get checklistWarrantiesAndManualsRisk;
+
+  /// No description provided for @checklistAsBuiltDocumentation.
+  ///
+  /// In pl, this message translates to:
+  /// **'Skompletuj dokumentację powykonawczą'**
+  String get checklistAsBuiltDocumentation;
+
+  /// No description provided for @checklistAsBuiltDocumentationRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieaktualna dokumentacja utrudnia odbiór, serwis i potwierdzenie zgodności wykonania.'**
+  String get checklistAsBuiltDocumentationRisk;
+
+  /// No description provided for @checklistAsBuiltSurvey.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zleć geodezyjną inwentaryzację powykonawczą'**
+  String get checklistAsBuiltSurvey;
+
+  /// No description provided for @checklistAsBuiltSurveyRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak inwentaryzacji może zablokować prawidłowe zakończenie procesu i ujawnić błędne położenie sieci lub obiektu.'**
+  String get checklistAsBuiltSurveyRisk;
+
+  /// No description provided for @checklistTestsCertificates.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zbierz protokoły prób, pomiarów i certyfikaty'**
+  String get checklistTestsCertificates;
+
+  /// No description provided for @checklistTestsCertificatesRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez protokołów trudno potwierdzić bezpieczeństwo i poprawne uruchomienie instalacji.'**
+  String get checklistTestsCertificatesRisk;
+
+  /// No description provided for @checklistConstructionCompletionNotice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zweryfikuj tryb zakończenia budowy i użytkowania'**
+  String get checklistConstructionCompletionNotice;
+
+  /// No description provided for @checklistConstructionCompletionNoticeRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przystąpienie do użytkowania bez właściwego zawiadomienia lub pozwolenia może naruszać procedurę budowlaną.'**
+  String get checklistConstructionCompletionNoticeRisk;
+
+  /// No description provided for @checklistDefectsAndHandover.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamknij listę usterek i przekazanie domu'**
+  String get checklistDefectsAndHandover;
+
+  /// No description provided for @checklistDefectsAndHandoverRisk.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak protokołu odbioru, terminów i odpowiedzialności utrudnia egzekwowanie poprawek.'**
+  String get checklistDefectsAndHandoverRisk;
+
+  /// No description provided for @guidancePlanningScopeAndSurveyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zakres remontu i stan istniejący'**
+  String get guidancePlanningScopeAndSurveyTitle;
+
+  /// No description provided for @guidancePlanningScopeAndSurveyTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed zamówieniem ofert, materiałów i pierwszych prac'**
+  String get guidancePlanningScopeAndSurveyTiming;
+
+  /// No description provided for @guidancePlanningScopeAndSurveySummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'W remoncie zacznij od inwentaryzacji, zakresu i budżetu, a nie od przypadkowego zakupu materiałów. Ustal, które ściany, instalacje i elementy są istniejące, a które mają zostać zmienione; w budynku wielorodzinnym sprawdź zasady zarządcy i części wspólne.'**
+  String get guidancePlanningScopeAndSurveySummary;
+
+  /// No description provided for @guidancePlanningScopeAndSurveyChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz pomiary, zdjęcia, istniejące uszkodzenia, trasy instalacji i miejsca wymagające odkrywek.\nPodziel zakres na roboty konieczne, warianty i wyposażenie; dodaj rezerwę budżetową oraz terminy decyzji.\nSprawdź, czy zmiana układu, instalacji, elewacji, wentylacji lub elementów konstrukcyjnych wymaga projektanta, zgody właściciela albo zarządcy.\nZbierz próbki i karty techniczne materiałów, zanim wykonawca wyceni rozwiązanie.\nUtwórz jedną wersję rysunków, ustaleń i zdjęć dla ekip.'**
+  String get guidancePlanningScopeAndSurveyChecks;
+
+  /// No description provided for @guidancePlanningScopeAndSurveyQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy zakres obejmuje także demontaż, wywóz, zabezpieczenia i odtworzenie?\nCzy znamy przebieg instalacji, grubości przegród i stan podłoży?\nCzy planowana zmiana dotyka konstrukcji, części wspólnych, elewacji lub dróg ewakuacji?\nKto zatwierdza każdą zmianę przed wykonaniem?'**
+  String get guidancePlanningScopeAndSurveyQuestions;
+
+  /// No description provided for @guidanceDemolitionSafetyAndUtilitiesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozbiórka bez niespodzianek'**
+  String get guidanceDemolitionSafetyAndUtilitiesTitle;
+
+  /// No description provided for @guidanceDemolitionSafetyAndUtilitiesTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed pierwszym skuciem, cięciem lub demontażem'**
+  String get guidanceDemolitionSafetyAndUtilitiesTiming;
+
+  /// No description provided for @guidanceDemolitionSafetyAndUtilitiesSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozbiórkę planuj od rozpoznania zagrożeń i odłączenia mediów. Nie zakładaj, że ściana jest działowa, a instalacja nieczynna; elementy konstrukcyjne, materiały zawierające azbest i instalacje wymagają właściwej oceny oraz fachowego wykonania.'**
+  String get guidanceDemolitionSafetyAndUtilitiesSummary;
+
+  /// No description provided for @guidanceDemolitionSafetyAndUtilitiesChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potwierdź z projektantem lub kierownikiem, które elementy są nośne i w jakiej kolejności można je usuwać.\nZidentyfikuj azbest, szkło, stare izolacje, pyły, substancje niebezpieczne i miejsca o podwyższonym ryzyku.\nOdłącz, sprawdź i zabezpiecz prąd, gaz, wodę, ogrzewanie, kanalizację oraz teletechnikę.\nZabezpiecz sąsiadów, części wspólne, okna, drzwi, wentylację i drogi ewakuacji przed pyłem i gruzem.\nUstal segregację, transport i legalne przekazanie odpadów; po rozbiórce wykonaj odbiór odkrytych podłoży i instalacji.'**
+  String get guidanceDemolitionSafetyAndUtilitiesChecks;
+
+  /// No description provided for @guidanceDemolitionSafetyAndUtilitiesQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kto potwierdzi odłączenie każdej instalacji?\nCzy w budynku występują materiały wymagające specjalistycznego usunięcia?\nCzy rozbiórka może zmienić stateczność lub ochronę przeciwpożarową?\nJak udokumentujemy stan sąsiadujących lokali i części wspólnych przed pracą?'**
+  String get guidanceDemolitionSafetyAndUtilitiesQuestions;
+
+  /// No description provided for @guidancePlasterAndScreedExecutionTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tynki, wylewki i dojrzewanie'**
+  String get guidancePlasterAndScreedExecutionTitle;
+
+  /// No description provided for @guidancePlasterAndScreedExecutionTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po próbach instalacji, przed montażem podłóg i szczelną zabudową'**
+  String get guidancePlasterAndScreedExecutionTiming;
+
+  /// No description provided for @guidancePlasterAndScreedExecutionSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tynki i wylewki wykonuj dopiero po zamknięciu tras oraz udokumentowaniu prób. O wyniku decydują rodzaj podłoża, materiał, warunki w pomieszczeniu, dylatacje i czas dojrzewania, a nie jedna uniwersalna recepta.'**
+  String get guidancePlasterAndScreedExecutionSummary;
+
+  /// No description provided for @guidancePlasterAndScreedExecutionChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sprawdź nośność, czystość, wilgotność i przygotowanie podłoża zgodnie z kartą systemu.\nPrzed wylewką potwierdź próby ogrzewania podłogowego, oznaczenie pętli, osłony rur i taśmy brzegowe.\nZachowaj dylatacje konstrukcyjne i zaprojektuj podział pól zgodnie z pomieszczeniami, ogrzewaniem i okładziną.\nUstal temperaturę, wentylację, ochronę przed przeciągiem, mrozem i zbyt szybkim wysychaniem.\nPo dojrzewaniu zmierz równość i wilgotność metodą wymaganą przez planowaną podłogę.'**
+  String get guidancePlasterAndScreedExecutionChecks;
+
+  /// No description provided for @guidancePlasterAndScreedExecutionQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Czy każda warstwa ma kartę techniczną i wymagany czas dojrzewania?\nCzy przejścia i dylatacje są zgodne z projektem podłóg?\nCzy protokół ogrzewania podłogowego jest kompletny przed wylewką?\nJakie kryteria odbioru przyjmujemy dla równości, wilgotności i spękań?'**
+  String get guidancePlasterAndScreedExecutionQuestions;
+
+  /// No description provided for @guidanceHandoverAndOccupancyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokumenty, odbiór i użytkowanie'**
+  String get guidanceHandoverAndOccupancyTitle;
+
+  /// No description provided for @guidanceHandoverAndOccupancyTiming.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed przekazaniem domu i przed rozpoczęciem użytkowania'**
+  String get guidanceHandoverAndOccupancyTiming;
+
+  /// No description provided for @guidanceHandoverAndOccupancySummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odbiór to nie tylko oględziny pomieszczeń. Zamknij dokumentację powykonawczą, geodezję, protokoły, instrukcje, listę usterek i właściwą procedurę zakończenia lub użytkowania. Dla remontu zakres formalny może być inny niż dla budowy domu, więc potwierdź go dla konkretnej inwestycji.'**
+  String get guidanceHandoverAndOccupancySummary;
+
+  /// No description provided for @guidanceHandoverAndOccupancyChecks.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zbierz aktualny projekt, zmiany zaakceptowane przez właściwe osoby, zdjęcia robót zakrytych i dokumentację powykonawczą.\nDołącz geodezyjną inwentaryzację powykonawczą, jeżeli wynika z zakresu inwestycji i przepisów.\nSkompletuj protokoły instalacji, prób, pomiarów, uruchomień, kominiarskie i inne wymagane dla obiektu.\nSprawdź z kierownikiem lub urzędem, czy potrzebne jest zawiadomienie o zakończeniu budowy czy pozwolenie na użytkowanie; nie przenoś tej procedury automatycznie na zwykły remont.\nPodpisz protokół przekazania z listą usterek, terminami, gwarancjami, instrukcjami i stanami liczników.'**
+  String get guidanceHandoverAndOccupancyChecks;
+
+  /// No description provided for @guidanceHandoverAndOccupancyQuestions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jaki tryb zakończenia i użytkowania dotyczy tej inwestycji?\nCzy dokumentacja powykonawcza pokazuje rzeczywiste trasy i zmiany?\nCzy wszystkie próby, pomiary i uruchomienia mają podpisane protokoły?\nKto i do kiedy usuwa każdą usterkę z protokołu przekazania?'**
+  String get guidanceHandoverAndOccupancyQuestions;
 
   /// No description provided for @guidancePlanningAndGroundConditionsTitle.
   ///
@@ -5734,6 +6382,36 @@ abstract class AppLocalizations {
   /// **'Plan'**
   String get budgetReportPlanLabel;
 
+  /// No description provided for @budgetReportBasePlanLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plan bazowy'**
+  String get budgetReportBasePlanLabel;
+
+  /// No description provided for @budgetReportDecisionDeltaLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatwierdzone zmiany'**
+  String get budgetReportDecisionDeltaLabel;
+
+  /// No description provided for @budgetReportAdjustedPlanLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plan po zmianach'**
+  String get budgetReportAdjustedPlanLabel;
+
+  /// No description provided for @budgetReportDecisionImpactHeading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpływ decyzji'**
+  String get budgetReportDecisionImpactHeading;
+
+  /// No description provided for @budgetReportDecisionImpactMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count, plural, =1{1 zatwierdzona decyzja} few{{count} zatwierdzone decyzje} many{{count} zatwierdzonych decyzji} other{{count} zatwierdzonych decyzji}} · termin {days} dni'**
+  String budgetReportDecisionImpactMessage(int count, String days);
+
   /// No description provided for @budgetReportCommittedLabel.
   ///
   /// In pl, this message translates to:
@@ -5775,6 +6453,12 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Wykonawca'**
   String get budgetReportDimensionSupplier;
+
+  /// No description provided for @budgetReportDimensionComponent.
+  ///
+  /// In pl, this message translates to:
+  /// **'Skład kosztu'**
+  String get budgetReportDimensionComponent;
 
   /// No description provided for @budgetReportDimensionMonth.
   ///
@@ -7030,6 +7714,12 @@ abstract class AppLocalizations {
   /// **'Publiczna kopia polityki'**
   String get legalPublicPolicyLabel;
 
+  /// No description provided for @legalSupportUrlLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Publiczna strona wsparcia'**
+  String get legalSupportUrlLabel;
+
   /// No description provided for @legalDocumentVersion.
   ///
   /// In pl, this message translates to:
@@ -7077,6 +7767,12 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'publiczny adres HTTPS polityki'**
   String get legalMissingPublicUrlRequirement;
+
+  /// No description provided for @legalMissingSupportUrlRequirement.
+  ///
+  /// In pl, this message translates to:
+  /// **'publiczny adres HTTPS wsparcia'**
+  String get legalMissingSupportUrlRequirement;
 
   /// No description provided for @legalOpenLinkError.
   ///
@@ -7201,7 +7897,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacySectionRetentionBody.
   ///
   /// In pl, this message translates to:
-  /// **'Dane pozostają w aplikacji do czasu usunięcia rekordu lub projektu, wyczyszczenia danych BudowaPRO w ustawieniach Androida albo odinstalowania aplikacji. Ręcznie wyeksportowane pliki pozostają w wybranej lokalizacji do czasu, aż usuniesz je osobno. Automatyczny backup danych aplikacji jest wyłączony i wykluczony w regułach Androida.'**
+  /// **'Dane pozostają w aplikacji do czasu usunięcia rekordu lub projektu, wyczyszczenia danych aplikacji albo jej odinstalowania. Ręcznie wyeksportowane pliki pozostają w wybranej lokalizacji do czasu, aż usuniesz je osobno. Android wyklucza prywatne pliki BudowaPRO z kopii chmurowej i transferu urządzenie–urządzenie. Na iOS systemowa kopia urządzenia może objąć dane aplikacji zgodnie z ustawieniami i zasadami Apple.'**
   String get privacySectionRetentionBody;
 
   /// No description provided for @privacySectionRightsTitle.
@@ -7453,13 +8149,13 @@ abstract class AppLocalizations {
   /// No description provided for @privacyAutomaticBackupTitle.
   ///
   /// In pl, this message translates to:
-  /// **'Automatyczny backup Androida wyłączony'**
+  /// **'Kopie systemowe urządzenia'**
   String get privacyAutomaticBackupTitle;
 
   /// No description provided for @privacyAutomaticBackupSubtitle.
   ///
   /// In pl, this message translates to:
-  /// **'BudowaPRO deklaruje wykluczenie prywatnych plików z kopii chmurowej i przenoszenia urządzenie–urządzenie. Ręczna kopia ZIP nie jest szyfrowana.'**
+  /// **'Android wyklucza prywatne pliki BudowaPRO z kopii chmurowej i transferu na nowe urządzenie. Na iOS systemowa kopia urządzenia może objąć dane aplikacji zgodnie z ustawieniami Apple. Ręczna kopia ZIP nie jest szyfrowana.'**
   String get privacyAutomaticBackupSubtitle;
 
   /// No description provided for @privacyDataControlSection.
@@ -7545,6 +8241,3036 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Nie udało się dokończyć usuwania danych. Spróbuj ponownie.'**
   String get privacyDeleteAllError;
+
+  /// No description provided for @journalTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dziennik budowy'**
+  String get journalTitle;
+
+  /// No description provided for @journalSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatki, decyzje, usterki i zmiany zakresu w jednym miejscu.'**
+  String get journalSubtitle;
+
+  /// No description provided for @journalEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dziennik jest pusty'**
+  String get journalEmptyTitle;
+
+  /// No description provided for @journalEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj pierwszy wpis dnia, notatkę, decyzję albo usterkę.'**
+  String get journalEmptyMessage;
+
+  /// No description provided for @journalNoProjectTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz projekt'**
+  String get journalNoProjectTitle;
+
+  /// No description provided for @journalNoProjectMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dziennik jest przypisany do wybranej budowy lub remontu.'**
+  String get journalNoProjectMessage;
+
+  /// No description provided for @journalLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać dziennika.'**
+  String get journalLoadError;
+
+  /// No description provided for @journalAddTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj wpis'**
+  String get journalAddTooltip;
+
+  /// No description provided for @journalAllFilter.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie'**
+  String get journalAllFilter;
+
+  /// No description provided for @journalSearchHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szukaj po tytule i treści'**
+  String get journalSearchHint;
+
+  /// No description provided for @journalLoadMore.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pokaż starsze wpisy'**
+  String get journalLoadMore;
+
+  /// No description provided for @journalTypeDaily.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpis dnia'**
+  String get journalTypeDaily;
+
+  /// No description provided for @journalTypeNote.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatka'**
+  String get journalTypeNote;
+
+  /// No description provided for @journalTypeDecision.
+  ///
+  /// In pl, this message translates to:
+  /// **'Decyzja'**
+  String get journalTypeDecision;
+
+  /// No description provided for @journalTypeDefect.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterka'**
+  String get journalTypeDefect;
+
+  /// No description provided for @journalTypeScopeChange.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmiana zakresu'**
+  String get journalTypeScopeChange;
+
+  /// No description provided for @journalStatusDraft.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szkic'**
+  String get journalStatusDraft;
+
+  /// No description provided for @journalStatusOpen.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwarte'**
+  String get journalStatusOpen;
+
+  /// No description provided for @journalStatusInProgress.
+  ///
+  /// In pl, this message translates to:
+  /// **'W toku'**
+  String get journalStatusInProgress;
+
+  /// No description provided for @journalStatusProposal.
+  ///
+  /// In pl, this message translates to:
+  /// **'Propozycja'**
+  String get journalStatusProposal;
+
+  /// No description provided for @journalStatusPending.
+  ///
+  /// In pl, this message translates to:
+  /// **'Do decyzji'**
+  String get journalStatusPending;
+
+  /// No description provided for @journalStatusApproved.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatwierdzone'**
+  String get journalStatusApproved;
+
+  /// No description provided for @journalStatusRejected.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odrzucone'**
+  String get journalStatusRejected;
+
+  /// No description provided for @journalStatusImplemented.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wdrożone'**
+  String get journalStatusImplemented;
+
+  /// No description provided for @journalStatusRecheck.
+  ///
+  /// In pl, this message translates to:
+  /// **'Do sprawdzenia'**
+  String get journalStatusRecheck;
+
+  /// No description provided for @journalStatusFixed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Naprawione'**
+  String get journalStatusFixed;
+
+  /// No description provided for @journalStatusClosed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamknięte'**
+  String get journalStatusClosed;
+
+  /// No description provided for @journalNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowy wpis'**
+  String get journalNewTitle;
+
+  /// No description provided for @journalEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj wpis'**
+  String get journalEditTitle;
+
+  /// No description provided for @journalDetailsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły wpisu'**
+  String get journalDetailsTitle;
+
+  /// No description provided for @journalTitleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tytuł'**
+  String get journalTitleLabel;
+
+  /// No description provided for @journalDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data wpisu'**
+  String get journalDateLabel;
+
+  /// No description provided for @journalStageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap'**
+  String get journalStageLabel;
+
+  /// No description provided for @journalStageNone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez przypisanego etapu'**
+  String get journalStageNone;
+
+  /// No description provided for @journalPersonLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Osoba odpowiedzialna'**
+  String get journalPersonLabel;
+
+  /// No description provided for @journalPersonNone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez przypisanej osoby'**
+  String get journalPersonNone;
+
+  /// No description provided for @journalDecisionMakerLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Osoba decyzyjna'**
+  String get journalDecisionMakerLabel;
+
+  /// No description provided for @journalDecisionMakerNone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie wskazano osoby decyzyjnej'**
+  String get journalDecisionMakerNone;
+
+  /// No description provided for @journalStatusLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Status'**
+  String get journalStatusLabel;
+
+  /// No description provided for @journalBodyLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Treść'**
+  String get journalBodyLabel;
+
+  /// No description provided for @journalWeatherLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pogoda'**
+  String get journalWeatherLabel;
+
+  /// No description provided for @journalPeopleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ekipa / osoby na budowie'**
+  String get journalPeopleLabel;
+
+  /// No description provided for @journalWorkLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonane prace'**
+  String get journalWorkLabel;
+
+  /// No description provided for @journalDeliveriesLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostawy'**
+  String get journalDeliveriesLabel;
+
+  /// No description provided for @journalDelaysLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Opóźnienia i przeszkody'**
+  String get journalDelaysLabel;
+
+  /// No description provided for @journalNextStepsLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kolejne kroki'**
+  String get journalNextStepsLabel;
+
+  /// No description provided for @journalProblemLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Problem lub pytanie'**
+  String get journalProblemLabel;
+
+  /// No description provided for @journalVariantsLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozważane warianty'**
+  String get journalVariantsLabel;
+
+  /// No description provided for @journalSelectedOptionLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybrany wariant'**
+  String get journalSelectedOptionLabel;
+
+  /// No description provided for @journalRationaleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzasadnienie'**
+  String get journalRationaleLabel;
+
+  /// No description provided for @journalDueDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Termin sprawdzenia / realizacji'**
+  String get journalDueDateLabel;
+
+  /// No description provided for @journalClearDueDate.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyczyść termin'**
+  String get journalClearDueDate;
+
+  /// No description provided for @journalSaveAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz wpis'**
+  String get journalSaveAction;
+
+  /// No description provided for @journalSavedMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpis zapisany.'**
+  String get journalSavedMessage;
+
+  /// No description provided for @journalSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać wpisu. Sprawdź pola i spróbuj ponownie.'**
+  String get journalSaveError;
+
+  /// No description provided for @journalEditTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj wpis'**
+  String get journalEditTooltip;
+
+  /// No description provided for @journalChangeStatusTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień status'**
+  String get journalChangeStatusTooltip;
+
+  /// No description provided for @journalHistoryTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Historia zmian'**
+  String get journalHistoryTitle;
+
+  /// No description provided for @journalHistoryCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wersje: {count}'**
+  String journalHistoryCount(int count);
+
+  /// No description provided for @journalAttachmentsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Załączniki'**
+  String get journalAttachmentsTitle;
+
+  /// No description provided for @journalAttachmentAdd.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj plik'**
+  String get journalAttachmentAdd;
+
+  /// No description provided for @journalAttachmentRemove.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń załącznik'**
+  String get journalAttachmentRemove;
+
+  /// No description provided for @journalAttachmentCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Załączniki: {count}'**
+  String journalAttachmentCount(int count);
+
+  /// No description provided for @journalRelatedRecordsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiązane rekordy'**
+  String get journalRelatedRecordsTitle;
+
+  /// No description provided for @journalStageLink.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwórz etap'**
+  String get journalStageLink;
+
+  /// No description provided for @journalContactLink.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwórz osobę'**
+  String get journalContactLink;
+
+  /// No description provided for @journalRevisionCreated.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utworzono'**
+  String get journalRevisionCreated;
+
+  /// No description provided for @journalRevisionUpdated.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmieniono'**
+  String get journalRevisionUpdated;
+
+  /// No description provided for @journalRevisionStatusChanged.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmieniono status'**
+  String get journalRevisionStatusChanged;
+
+  /// No description provided for @journalNoContent.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak dodatkowej treści.'**
+  String get journalNoContent;
+
+  /// No description provided for @journalTypeRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz typ wpisu.'**
+  String get journalTypeRequiredError;
+
+  /// No description provided for @journalTitleRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz tytuł.'**
+  String get journalTitleRequiredError;
+
+  /// No description provided for @journalBodyRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj treść wpisu.'**
+  String get journalBodyRequiredError;
+
+  /// No description provided for @journalDatePickerLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz datę'**
+  String get journalDatePickerLabel;
+
+  /// No description provided for @journalAttachmentError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się dodać pliku.'**
+  String get journalAttachmentError;
+
+  /// No description provided for @journalAttachmentRemoveConfirm.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunąć załącznik z wpisu?'**
+  String get journalAttachmentRemoveConfirm;
+
+  /// No description provided for @journalCostImpactLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpływ kosztowy'**
+  String get journalCostImpactLabel;
+
+  /// No description provided for @journalScheduleImpactLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpływ na termin'**
+  String get journalScheduleImpactLabel;
+
+  /// No description provided for @journalCostImpactHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'np. 1250,00 lub -300,00'**
+  String get journalCostImpactHint;
+
+  /// No description provided for @journalScheduleImpactHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'np. 2 lub -1'**
+  String get journalScheduleImpactHint;
+
+  /// No description provided for @journalImpactInvalidError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz poprawną kwotę i pełną liczbę dni.'**
+  String get journalImpactInvalidError;
+
+  /// No description provided for @journalBlockedRecordsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Blokowane zadania'**
+  String get journalBlockedRecordsTitle;
+
+  /// No description provided for @journalBlockedRecordsEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ta decyzja nie blokuje żadnego zadania z harmonogramu.'**
+  String get journalBlockedRecordsEmpty;
+
+  /// No description provided for @journalBlockedRecordsSelect.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz zadania'**
+  String get journalBlockedRecordsSelect;
+
+  /// No description provided for @journalBlockedRecordsDone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gotowe'**
+  String get journalBlockedRecordsDone;
+
+  /// No description provided for @journalApproveAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatwierdź decyzję'**
+  String get journalApproveAction;
+
+  /// No description provided for @journalApprovalTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatwierdzenie'**
+  String get journalApprovalTitle;
+
+  /// No description provided for @journalApprovalPersonLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatwierdził(a)'**
+  String get journalApprovalPersonLabel;
+
+  /// No description provided for @journalApprovalDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data zatwierdzenia'**
+  String get journalApprovalDateLabel;
+
+  /// No description provided for @journalApprovalDialogTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatwierdź wybrany wariant'**
+  String get journalApprovalDialogTitle;
+
+  /// No description provided for @journalApprovalDialogMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potwierdź osobę zatwierdzającą. Od tej chwili delta decyzji będzie widoczna w raporcie budżetu.'**
+  String get journalApprovalDialogMessage;
+
+  /// No description provided for @journalApprovalContactRequired.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj kontakt lub wskaż osobę, która zatwierdza decyzję.'**
+  String get journalApprovalContactRequired;
+
+  /// No description provided for @journalApprovalOptionRequired.
+  ///
+  /// In pl, this message translates to:
+  /// **'Najpierw wpisz wybrany wariant.'**
+  String get journalApprovalOptionRequired;
+
+  /// No description provided for @journalApprovalSuccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Decyzja zatwierdzona i uwzględniona w raporcie.'**
+  String get journalApprovalSuccess;
+
+  /// No description provided for @journalApprovalError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zatwierdzić decyzji.'**
+  String get journalApprovalError;
+
+  /// No description provided for @journalApprovalManagedInDetails.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zatwierdzenie i wdrożenie zmienisz w szczegółach wpisu.'**
+  String get journalApprovalManagedInDetails;
+
+  /// No description provided for @journalDaysSuffix.
+  ///
+  /// In pl, this message translates to:
+  /// **'dni'**
+  String get journalDaysSuffix;
+
+  /// No description provided for @technicalPhotosTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokumentacja techniczna'**
+  String get technicalPhotosTitle;
+
+  /// No description provided for @technicalPhotosSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcia robót zanikających, instalacji i odbiorów'**
+  String get technicalPhotosSubtitle;
+
+  /// No description provided for @technicalPhotosLoading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytywanie dokumentacji technicznej'**
+  String get technicalPhotosLoading;
+
+  /// No description provided for @technicalPhotosLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać dokumentacji technicznej.'**
+  String get technicalPhotosLoadError;
+
+  /// No description provided for @technicalPhotosNoProjectTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz projekt'**
+  String get technicalPhotosNoProjectTitle;
+
+  /// No description provided for @technicalPhotosNoProjectMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcia techniczne są przypisane do wybranej budowy lub remontu.'**
+  String get technicalPhotosNoProjectMessage;
+
+  /// No description provided for @technicalPhotosEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak zdjęć technicznych'**
+  String get technicalPhotosEmptyTitle;
+
+  /// No description provided for @technicalPhotosEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj zdjęcie przed zakryciem instalacji, zalaniem betonu albo wykonaniem kolejnej warstwy.'**
+  String get technicalPhotosEmptyMessage;
+
+  /// No description provided for @technicalPhotosSearchHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szukaj po nazwie, opisie, strefie lub tagu'**
+  String get technicalPhotosSearchHint;
+
+  /// No description provided for @technicalPhotosAddTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj zdjęcie techniczne'**
+  String get technicalPhotosAddTooltip;
+
+  /// No description provided for @technicalPhotosAlbumAddTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utwórz album'**
+  String get technicalPhotosAlbumAddTooltip;
+
+  /// No description provided for @technicalPhotosFilterTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Filtry zdjęć'**
+  String get technicalPhotosFilterTooltip;
+
+  /// No description provided for @technicalPhotosAllAlbums.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie'**
+  String get technicalPhotosAllAlbums;
+
+  /// No description provided for @technicalPhotosCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcia: {count}'**
+  String technicalPhotosCount(int count);
+
+  /// No description provided for @technicalPhotosLoadMore.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytaj kolejne zdjęcia'**
+  String get technicalPhotosLoadMore;
+
+  /// No description provided for @technicalPhotosMissingPreview.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podgląd pliku jest niedostępny'**
+  String get technicalPhotosMissingPreview;
+
+  /// No description provided for @technicalPhotosImportError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się dodać zdjęcia.'**
+  String get technicalPhotosImportError;
+
+  /// No description provided for @technicalPhotosUnsupportedFile.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz plik obrazu, np. JPG, PNG lub HEIC.'**
+  String get technicalPhotosUnsupportedFile;
+
+  /// No description provided for @technicalAlbumNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowy album techniczny'**
+  String get technicalAlbumNewTitle;
+
+  /// No description provided for @technicalAlbumTitleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa albumu'**
+  String get technicalAlbumTitleLabel;
+
+  /// No description provided for @technicalAlbumKindLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rodzaj albumu'**
+  String get technicalAlbumKindLabel;
+
+  /// No description provided for @technicalAlbumDescriptionLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Cel i zakres albumu'**
+  String get technicalAlbumDescriptionLabel;
+
+  /// No description provided for @technicalAlbumCreateAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utwórz album'**
+  String get technicalAlbumCreateAction;
+
+  /// No description provided for @technicalAlbumCreateError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się utworzyć albumu.'**
+  String get technicalAlbumCreateError;
+
+  /// No description provided for @technicalAlbumRequiredError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Najpierw utwórz album techniczny.'**
+  String get technicalAlbumRequiredError;
+
+  /// No description provided for @technicalAlbumBeforeConcrete.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed betonowaniem'**
+  String get technicalAlbumBeforeConcrete;
+
+  /// No description provided for @technicalAlbumBeforeBackfill.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed zasypaniem'**
+  String get technicalAlbumBeforeBackfill;
+
+  /// No description provided for @technicalAlbumBeforePlaster.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed tynkowaniem'**
+  String get technicalAlbumBeforePlaster;
+
+  /// No description provided for @technicalAlbumBeforeScreed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed wylewką'**
+  String get technicalAlbumBeforeScreed;
+
+  /// No description provided for @technicalAlbumBeforeTiles.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przed płytkami'**
+  String get technicalAlbumBeforeTiles;
+
+  /// No description provided for @technicalAlbumAsBuilt.
+  ///
+  /// In pl, this message translates to:
+  /// **'Stan powykonawczy'**
+  String get technicalAlbumAsBuilt;
+
+  /// No description provided for @technicalAlbumCustom.
+  ///
+  /// In pl, this message translates to:
+  /// **'Własny album'**
+  String get technicalAlbumCustom;
+
+  /// No description provided for @technicalFiltersTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Filtry dokumentacji'**
+  String get technicalFiltersTitle;
+
+  /// No description provided for @technicalFilterAlbumLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Album'**
+  String get technicalFilterAlbumLabel;
+
+  /// No description provided for @technicalFilterStageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap'**
+  String get technicalFilterStageLabel;
+
+  /// No description provided for @technicalFilterInstallationLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Instalacja lub zakres'**
+  String get technicalFilterInstallationLabel;
+
+  /// No description provided for @technicalFilterTagLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tag'**
+  String get technicalFilterTagLabel;
+
+  /// No description provided for @technicalFilterAllStages.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie etapy'**
+  String get technicalFilterAllStages;
+
+  /// No description provided for @technicalFilterAllInstallations.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie instalacje'**
+  String get technicalFilterAllInstallations;
+
+  /// No description provided for @technicalFilterAllTags.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie tagi'**
+  String get technicalFilterAllTags;
+
+  /// No description provided for @technicalPhotoNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Opisz zdjęcie techniczne'**
+  String get technicalPhotoNewTitle;
+
+  /// No description provided for @technicalPhotoEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj zdjęcie techniczne'**
+  String get technicalPhotoEditTitle;
+
+  /// No description provided for @technicalPhotoDetailsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły zdjęcia'**
+  String get technicalPhotoDetailsTitle;
+
+  /// No description provided for @technicalPhotoTitleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa zdjęcia'**
+  String get technicalPhotoTitleLabel;
+
+  /// No description provided for @technicalPhotoDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data wykonania zdjęcia'**
+  String get technicalPhotoDateLabel;
+
+  /// No description provided for @technicalPhotoZoneLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenie lub strefa'**
+  String get technicalPhotoZoneLabel;
+
+  /// No description provided for @technicalPhotoContractorLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonawca'**
+  String get technicalPhotoContractorLabel;
+
+  /// No description provided for @technicalPhotoChecklistLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Punkt checklisty jako dowód'**
+  String get technicalPhotoChecklistLabel;
+
+  /// No description provided for @technicalPhotoDescriptionLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Opis tego, co widać'**
+  String get technicalPhotoDescriptionLabel;
+
+  /// No description provided for @technicalPhotoTagsLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tagi oddzielone przecinkami'**
+  String get technicalPhotoTagsLabel;
+
+  /// No description provided for @technicalPhotoNoContact.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez wykonawcy'**
+  String get technicalPhotoNoContact;
+
+  /// No description provided for @technicalPhotoNoChecklist.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez powiązania z checklistą'**
+  String get technicalPhotoNoChecklist;
+
+  /// No description provided for @technicalPhotoNoStage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez przypisanego etapu'**
+  String get technicalPhotoNoStage;
+
+  /// No description provided for @technicalPhotoSaveAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz zdjęcie'**
+  String get technicalPhotoSaveAction;
+
+  /// No description provided for @technicalPhotoSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać zdjęcia. Sprawdź wymagane pola.'**
+  String get technicalPhotoSaveError;
+
+  /// No description provided for @technicalPhotoSavedMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcie zapisane w dokumentacji technicznej.'**
+  String get technicalPhotoSavedMessage;
+
+  /// No description provided for @technicalPhotoNotFound.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcie nie istnieje albo zostało usunięte.'**
+  String get technicalPhotoNotFound;
+
+  /// No description provided for @technicalPhotoOpenFile.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwórz pełne zdjęcie'**
+  String get technicalPhotoOpenFile;
+
+  /// No description provided for @technicalPhotoEditTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj opis zdjęcia'**
+  String get technicalPhotoEditTooltip;
+
+  /// No description provided for @technicalPhotoLinkedChecklist.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dowód do checklisty'**
+  String get technicalPhotoLinkedChecklist;
+
+  /// No description provided for @technicalInstallationStructure.
+  ///
+  /// In pl, this message translates to:
+  /// **'Konstrukcja'**
+  String get technicalInstallationStructure;
+
+  /// No description provided for @technicalInstallationElectrical.
+  ///
+  /// In pl, this message translates to:
+  /// **'Elektryka'**
+  String get technicalInstallationElectrical;
+
+  /// No description provided for @technicalInstallationWater.
+  ///
+  /// In pl, this message translates to:
+  /// **'Woda'**
+  String get technicalInstallationWater;
+
+  /// No description provided for @technicalInstallationSewage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kanalizacja'**
+  String get technicalInstallationSewage;
+
+  /// No description provided for @technicalInstallationHeating.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ogrzewanie'**
+  String get technicalInstallationHeating;
+
+  /// No description provided for @technicalInstallationVentilation.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wentylacja'**
+  String get technicalInstallationVentilation;
+
+  /// No description provided for @technicalInstallationWaterproofing.
+  ///
+  /// In pl, this message translates to:
+  /// **'Hydroizolacja'**
+  String get technicalInstallationWaterproofing;
+
+  /// No description provided for @technicalInstallationInsulation.
+  ///
+  /// In pl, this message translates to:
+  /// **'Izolacja termiczna'**
+  String get technicalInstallationInsulation;
+
+  /// No description provided for @technicalInstallationGrounding.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uziemienie i połączenia wyrównawcze'**
+  String get technicalInstallationGrounding;
+
+  /// No description provided for @technicalInstallationOther.
+  ///
+  /// In pl, this message translates to:
+  /// **'Inny zakres'**
+  String get technicalInstallationOther;
+
+  /// No description provided for @punchTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterki i odbiory'**
+  String get punchTitle;
+
+  /// No description provided for @punchSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterki, poprawki i protokoły odbioru'**
+  String get punchSubtitle;
+
+  /// No description provided for @punchDefectsTab.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterki'**
+  String get punchDefectsTab;
+
+  /// No description provided for @punchProtocolsTab.
+  ///
+  /// In pl, this message translates to:
+  /// **'Protokoły'**
+  String get punchProtocolsTab;
+
+  /// No description provided for @punchLoading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytywanie usterek i protokołów'**
+  String get punchLoading;
+
+  /// No description provided for @punchLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać usterek i protokołów.'**
+  String get punchLoadError;
+
+  /// No description provided for @punchNoProjectTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz projekt'**
+  String get punchNoProjectTitle;
+
+  /// No description provided for @punchNoProjectMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterki i odbiory są przypisane do wybranej budowy lub remontu.'**
+  String get punchNoProjectMessage;
+
+  /// No description provided for @punchSearchHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szukaj usterki lub protokołu'**
+  String get punchSearchHint;
+
+  /// No description provided for @punchFilterTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Filtry usterek'**
+  String get punchFilterTooltip;
+
+  /// No description provided for @punchFiltersTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Filtry usterek'**
+  String get punchFiltersTitle;
+
+  /// No description provided for @punchOpenCounter.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwarte'**
+  String get punchOpenCounter;
+
+  /// No description provided for @punchCriticalCounter.
+  ///
+  /// In pl, this message translates to:
+  /// **'Krytyczne'**
+  String get punchCriticalCounter;
+
+  /// No description provided for @punchOverdueCounter.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po terminie'**
+  String get punchOverdueCounter;
+
+  /// No description provided for @punchDefectCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterki: {count}'**
+  String punchDefectCount(int count);
+
+  /// No description provided for @punchProtocolCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Protokoły: {count}'**
+  String punchProtocolCount(int count);
+
+  /// No description provided for @punchLoadMore.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytaj kolejne'**
+  String get punchLoadMore;
+
+  /// No description provided for @punchDefectsEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak usterek'**
+  String get punchDefectsEmptyTitle;
+
+  /// No description provided for @punchDefectsEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj pierwszą usterkę i przypisz termin, etap oraz osobę odpowiedzialną.'**
+  String get punchDefectsEmptyMessage;
+
+  /// No description provided for @punchProtocolsEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak protokołów'**
+  String get punchProtocolsEmptyTitle;
+
+  /// No description provided for @punchProtocolsEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utwórz protokół odbioru i powiąż z nim sprawdzane usterki.'**
+  String get punchProtocolsEmptyMessage;
+
+  /// No description provided for @punchAddDefectTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj usterkę'**
+  String get punchAddDefectTooltip;
+
+  /// No description provided for @punchAddProtocolTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj protokół odbioru'**
+  String get punchAddProtocolTooltip;
+
+  /// No description provided for @punchStatusLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Status'**
+  String get punchStatusLabel;
+
+  /// No description provided for @punchStatusOpen.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwarta'**
+  String get punchStatusOpen;
+
+  /// No description provided for @punchStatusInProgress.
+  ///
+  /// In pl, this message translates to:
+  /// **'W naprawie'**
+  String get punchStatusInProgress;
+
+  /// No description provided for @punchStatusRecheck.
+  ///
+  /// In pl, this message translates to:
+  /// **'Do ponownej kontroli'**
+  String get punchStatusRecheck;
+
+  /// No description provided for @punchStatusFixed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Naprawiona'**
+  String get punchStatusFixed;
+
+  /// No description provided for @punchStatusClosed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamknięta'**
+  String get punchStatusClosed;
+
+  /// No description provided for @punchSeverityLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ważność'**
+  String get punchSeverityLabel;
+
+  /// No description provided for @punchSeverityLow.
+  ///
+  /// In pl, this message translates to:
+  /// **'Niska'**
+  String get punchSeverityLow;
+
+  /// No description provided for @punchSeverityMedium.
+  ///
+  /// In pl, this message translates to:
+  /// **'Średnia'**
+  String get punchSeverityMedium;
+
+  /// No description provided for @punchSeverityHigh.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wysoka'**
+  String get punchSeverityHigh;
+
+  /// No description provided for @punchSeverityCritical.
+  ///
+  /// In pl, this message translates to:
+  /// **'Krytyczna'**
+  String get punchSeverityCritical;
+
+  /// No description provided for @punchOverdueOnly.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tylko po terminie'**
+  String get punchOverdueOnly;
+
+  /// No description provided for @punchAllStages.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie etapy'**
+  String get punchAllStages;
+
+  /// No description provided for @punchAllContacts.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wszystkie osoby'**
+  String get punchAllContacts;
+
+  /// No description provided for @punchRoomFilterLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenie lub strefa'**
+  String get punchRoomFilterLabel;
+
+  /// No description provided for @punchClearFilters.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyczyść filtry'**
+  String get punchClearFilters;
+
+  /// No description provided for @punchApplyFilters.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zastosuj'**
+  String get punchApplyFilters;
+
+  /// No description provided for @defectNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowa usterka'**
+  String get defectNewTitle;
+
+  /// No description provided for @defectEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj usterkę'**
+  String get defectEditTitle;
+
+  /// No description provided for @defectDetailsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły usterki'**
+  String get defectDetailsTitle;
+
+  /// No description provided for @defectTitleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa usterki'**
+  String get defectTitleLabel;
+
+  /// No description provided for @defectDescriptionLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Opis i oczekiwany sposób poprawy'**
+  String get defectDescriptionLabel;
+
+  /// No description provided for @defectOccurredAtLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data zgłoszenia'**
+  String get defectOccurredAtLabel;
+
+  /// No description provided for @defectDueAtLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Termin poprawy'**
+  String get defectDueAtLabel;
+
+  /// No description provided for @defectClearDueAt.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń termin'**
+  String get defectClearDueAt;
+
+  /// No description provided for @defectStageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap'**
+  String get defectStageLabel;
+
+  /// No description provided for @defectNoStage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez przypisanego etapu'**
+  String get defectNoStage;
+
+  /// No description provided for @defectRoomLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenie lub strefa'**
+  String get defectRoomLabel;
+
+  /// No description provided for @defectResponsibleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Osoba odpowiedzialna'**
+  String get defectResponsibleLabel;
+
+  /// No description provided for @defectNoResponsible.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez przypisanej osoby'**
+  String get defectNoResponsible;
+
+  /// No description provided for @defectRequiresPhoto.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wymagaj zdjęcia po naprawie przed zamknięciem'**
+  String get defectRequiresPhoto;
+
+  /// No description provided for @defectRequiresProtocol.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wymagaj podpisanego protokołu przed zamknięciem'**
+  String get defectRequiresProtocol;
+
+  /// No description provided for @defectReportEvidenceTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcia przy zgłoszeniu'**
+  String get defectReportEvidenceTitle;
+
+  /// No description provided for @defectResolutionEvidenceTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcia po naprawie'**
+  String get defectResolutionEvidenceTitle;
+
+  /// No description provided for @defectAddEvidence.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj zdjęcie'**
+  String get defectAddEvidence;
+
+  /// No description provided for @defectRemoveEvidence.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń załącznik'**
+  String get defectRemoveEvidence;
+
+  /// No description provided for @defectNoEvidence.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak zdjęć'**
+  String get defectNoEvidence;
+
+  /// No description provided for @defectUnsupportedEvidence.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz plik obrazu, np. JPG, PNG lub HEIC.'**
+  String get defectUnsupportedEvidence;
+
+  /// No description provided for @defectSaveAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz usterkę'**
+  String get defectSaveAction;
+
+  /// No description provided for @defectSavedMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterka została zapisana.'**
+  String get defectSavedMessage;
+
+  /// No description provided for @defectSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać usterki. Sprawdź wymagane pola.'**
+  String get defectSaveError;
+
+  /// No description provided for @defectNotFound.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterka nie istnieje albo została usunięta.'**
+  String get defectNotFound;
+
+  /// No description provided for @defectEditTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj usterkę'**
+  String get defectEditTooltip;
+
+  /// No description provided for @defectCloseAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamknij usterkę'**
+  String get defectCloseAction;
+
+  /// No description provided for @defectSetStatusAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień status'**
+  String get defectSetStatusAction;
+
+  /// No description provided for @defectClosureReady.
+  ///
+  /// In pl, this message translates to:
+  /// **'Komplet dowodów do zamknięcia'**
+  String get defectClosureReady;
+
+  /// No description provided for @defectClosureMissingPhoto.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj zdjęcie po naprawie.'**
+  String get defectClosureMissingPhoto;
+
+  /// No description provided for @defectClosureMissingProtocol.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj podpisany protokół powiązany z usterką.'**
+  String get defectClosureMissingProtocol;
+
+  /// No description provided for @defectStatusChangeError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zmienić statusu usterki.'**
+  String get defectStatusChangeError;
+
+  /// No description provided for @defectAttachmentError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się dodać załącznika.'**
+  String get defectAttachmentError;
+
+  /// No description provided for @protocolNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowy protokół odbioru'**
+  String get protocolNewTitle;
+
+  /// No description provided for @protocolEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj protokół'**
+  String get protocolEditTitle;
+
+  /// No description provided for @protocolDetailsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły protokołu'**
+  String get protocolDetailsTitle;
+
+  /// No description provided for @protocolTitleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa protokołu'**
+  String get protocolTitleLabel;
+
+  /// No description provided for @protocolDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data odbioru'**
+  String get protocolDateLabel;
+
+  /// No description provided for @protocolStatusLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Status protokołu'**
+  String get protocolStatusLabel;
+
+  /// No description provided for @protocolStatusDraft.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szkic'**
+  String get protocolStatusDraft;
+
+  /// No description provided for @protocolStatusFinalized.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gotowy do podpisu'**
+  String get protocolStatusFinalized;
+
+  /// No description provided for @protocolStatusSigned.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podpisany'**
+  String get protocolStatusSigned;
+
+  /// No description provided for @protocolStageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap'**
+  String get protocolStageLabel;
+
+  /// No description provided for @protocolRoomLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenie lub strefa'**
+  String get protocolRoomLabel;
+
+  /// No description provided for @protocolContractorLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wykonawca'**
+  String get protocolContractorLabel;
+
+  /// No description provided for @protocolNotesLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustalenia i uwagi z odbioru'**
+  String get protocolNotesLabel;
+
+  /// No description provided for @protocolDefectsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterki w protokole'**
+  String get protocolDefectsTitle;
+
+  /// No description provided for @protocolSelectDefects.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz usterki'**
+  String get protocolSelectDefects;
+
+  /// No description provided for @protocolNoDefects.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak powiązanych usterek'**
+  String get protocolNoDefects;
+
+  /// No description provided for @protocolSignedFilesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podpisany dokument'**
+  String get protocolSignedFilesTitle;
+
+  /// No description provided for @protocolAddSignedFile.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj skan lub PDF'**
+  String get protocolAddSignedFile;
+
+  /// No description provided for @protocolNoSignedFile.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak podpisanego dokumentu'**
+  String get protocolNoSignedFile;
+
+  /// No description provided for @protocolSignedFileRequired.
+  ///
+  /// In pl, this message translates to:
+  /// **'Status „Podpisany” wymaga skanu lub pliku PDF.'**
+  String get protocolSignedFileRequired;
+
+  /// No description provided for @protocolUnsupportedFile.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz obraz albo plik PDF.'**
+  String get protocolUnsupportedFile;
+
+  /// No description provided for @protocolSaveAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz protokół'**
+  String get protocolSaveAction;
+
+  /// No description provided for @protocolSavedMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Protokół został zapisany.'**
+  String get protocolSavedMessage;
+
+  /// No description provided for @protocolSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać protokołu. Sprawdź wymagane pola.'**
+  String get protocolSaveError;
+
+  /// No description provided for @protocolNotFound.
+  ///
+  /// In pl, this message translates to:
+  /// **'Protokół nie istnieje albo został usunięty.'**
+  String get protocolNotFound;
+
+  /// No description provided for @protocolEditTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj protokół'**
+  String get protocolEditTooltip;
+
+  /// No description provided for @protocolGeneratePdf.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utwórz PDF protokołu'**
+  String get protocolGeneratePdf;
+
+  /// No description provided for @protocolSelectDefectsDone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Gotowe'**
+  String get protocolSelectDefectsDone;
+
+  /// No description provided for @protocolPdfTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Protokół odbioru'**
+  String get protocolPdfTitle;
+
+  /// No description provided for @protocolPdfProjectLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Projekt'**
+  String get protocolPdfProjectLabel;
+
+  /// No description provided for @protocolPdfDefectTitleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterka'**
+  String get protocolPdfDefectTitleLabel;
+
+  /// No description provided for @protocolPdfDeadlineLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Termin'**
+  String get protocolPdfDeadlineLabel;
+
+  /// No description provided for @protocolPdfSignaturesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potwierdzenie odbioru'**
+  String get protocolPdfSignaturesTitle;
+
+  /// No description provided for @protocolPdfInvestorSignature.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podpis inwestora'**
+  String get protocolPdfInvestorSignature;
+
+  /// No description provided for @protocolPdfContractorSignature.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podpis wykonawcy'**
+  String get protocolPdfContractorSignature;
+
+  /// No description provided for @protocolPdfGeneratedNotice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokument wygenerowany lokalnie w BudowaPRO. Sam wydruk nie zastępuje podpisanego protokołu.'**
+  String get protocolPdfGeneratedNotice;
+
+  /// No description provided for @protocolPdfShareError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się utworzyć lub udostępnić pliku PDF.'**
+  String get protocolPdfShareError;
+
+  /// No description provided for @technicalPhotoLinksTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiązania zdjęcia'**
+  String get technicalPhotoLinksTitle;
+
+  /// No description provided for @technicalPhotoNoLink.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez powiązania'**
+  String get technicalPhotoNoLink;
+
+  /// No description provided for @technicalPhotoCostLink.
+  ///
+  /// In pl, this message translates to:
+  /// **'Koszt'**
+  String get technicalPhotoCostLink;
+
+  /// No description provided for @technicalPhotoDecisionLink.
+  ///
+  /// In pl, this message translates to:
+  /// **'Decyzja lub zmiana zakresu'**
+  String get technicalPhotoDecisionLink;
+
+  /// No description provided for @technicalPhotoDefectLink.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterka'**
+  String get technicalPhotoDefectLink;
+
+  /// No description provided for @technicalPhotoProtocolLink.
+  ///
+  /// In pl, this message translates to:
+  /// **'Protokół odbioru'**
+  String get technicalPhotoProtocolLink;
+
+  /// No description provided for @dashboardAddDefect.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj usterkę'**
+  String get dashboardAddDefect;
+
+  /// No description provided for @dashboardOpenPunch.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usterki i odbiory'**
+  String get dashboardOpenPunch;
+
+  /// No description provided for @dashboardOpenTechnicalPhotos.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcia etapów'**
+  String get dashboardOpenTechnicalPhotos;
+
+  /// No description provided for @roomsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenia'**
+  String get roomsTitle;
+
+  /// No description provided for @roomsSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Budżety, wybory i postęp każdego pomieszczenia'**
+  String get roomsSubtitle;
+
+  /// No description provided for @roomsLoading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytywanie pomieszczeń'**
+  String get roomsLoading;
+
+  /// No description provided for @roomsLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać pomieszczeń.'**
+  String get roomsLoadError;
+
+  /// No description provided for @roomsNoProjectTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz projekt'**
+  String get roomsNoProjectTitle;
+
+  /// No description provided for @roomsNoProjectMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenia są przypisane do wybranej budowy lub remontu.'**
+  String get roomsNoProjectMessage;
+
+  /// No description provided for @roomsEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak pomieszczeń'**
+  String get roomsEmptyTitle;
+
+  /// No description provided for @roomsEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj pierwsze pomieszczenie, aby osobno pilnować budżetu, wyborów i usterek.'**
+  String get roomsEmptyMessage;
+
+  /// No description provided for @roomsSearchHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szukaj pomieszczenia lub kondygnacji'**
+  String get roomsSearchHint;
+
+  /// No description provided for @roomsSearchAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szukaj'**
+  String get roomsSearchAction;
+
+  /// No description provided for @roomsClearSearch.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyczyść wyszukiwanie'**
+  String get roomsClearSearch;
+
+  /// No description provided for @roomsAddTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj pomieszczenie'**
+  String get roomsAddTooltip;
+
+  /// No description provided for @roomsLoadMore.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytaj kolejne'**
+  String get roomsLoadMore;
+
+  /// No description provided for @roomsRoomCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenia: {count}'**
+  String roomsRoomCount(int count);
+
+  /// No description provided for @roomsPlannedTotal.
+  ///
+  /// In pl, this message translates to:
+  /// **'Budżet pomieszczeń'**
+  String get roomsPlannedTotal;
+
+  /// No description provided for @roomsActualTotal.
+  ///
+  /// In pl, this message translates to:
+  /// **'Koszt przypisany'**
+  String get roomsActualTotal;
+
+  /// No description provided for @roomsOpenChoices.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwarte wybory'**
+  String get roomsOpenChoices;
+
+  /// No description provided for @roomNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowe pomieszczenie'**
+  String get roomNewTitle;
+
+  /// No description provided for @roomEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj pomieszczenie'**
+  String get roomEditTitle;
+
+  /// No description provided for @roomDetailsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Karta pomieszczenia'**
+  String get roomDetailsTitle;
+
+  /// No description provided for @roomNameLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa pomieszczenia lub strefy'**
+  String get roomNameLabel;
+
+  /// No description provided for @roomFloorLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kondygnacja lub część budynku'**
+  String get roomFloorLabel;
+
+  /// No description provided for @roomStandardLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Standard wykończenia'**
+  String get roomStandardLabel;
+
+  /// No description provided for @roomStandardBasic.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podstawowy'**
+  String get roomStandardBasic;
+
+  /// No description provided for @roomStandardStandard.
+  ///
+  /// In pl, this message translates to:
+  /// **'Standardowy'**
+  String get roomStandardStandard;
+
+  /// No description provided for @roomStandardElevated.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podwyższony'**
+  String get roomStandardElevated;
+
+  /// No description provided for @roomStandardCustom.
+  ///
+  /// In pl, this message translates to:
+  /// **'Indywidualny'**
+  String get roomStandardCustom;
+
+  /// No description provided for @roomDimensionsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wymiary pomieszczenia'**
+  String get roomDimensionsTitle;
+
+  /// No description provided for @roomLengthLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Długość'**
+  String get roomLengthLabel;
+
+  /// No description provided for @roomWidthLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szerokość'**
+  String get roomWidthLabel;
+
+  /// No description provided for @roomHeightLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wysokość'**
+  String get roomHeightLabel;
+
+  /// No description provided for @roomMetersSuffix.
+  ///
+  /// In pl, this message translates to:
+  /// **'m'**
+  String get roomMetersSuffix;
+
+  /// No description provided for @roomBudgetLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowany budżet'**
+  String get roomBudgetLabel;
+
+  /// No description provided for @roomNoteLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatka'**
+  String get roomNoteLabel;
+
+  /// No description provided for @roomSaveAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz pomieszczenie'**
+  String get roomSaveAction;
+
+  /// No description provided for @roomSavedMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenie zostało zapisane.'**
+  String get roomSavedMessage;
+
+  /// No description provided for @roomSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać pomieszczenia. Sprawdź wymagane pola.'**
+  String get roomSaveError;
+
+  /// No description provided for @roomConflictError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenie o tej nazwie już istnieje na wskazanej kondygnacji.'**
+  String get roomConflictError;
+
+  /// No description provided for @roomNotFound.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenie nie istnieje albo zostało usunięte.'**
+  String get roomNotFound;
+
+  /// No description provided for @roomEditTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj pomieszczenie'**
+  String get roomEditTooltip;
+
+  /// No description provided for @roomDeleteTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń pomieszczenie'**
+  String get roomDeleteTooltip;
+
+  /// No description provided for @roomDeleteTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunąć pomieszczenie?'**
+  String get roomDeleteTitle;
+
+  /// No description provided for @roomDeleteMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunięte zostaną karty wyborów i przypisania. Koszty, zdjęcia, kontakty i usterki pozostaną w projekcie.'**
+  String get roomDeleteMessage;
+
+  /// No description provided for @roomDeleteAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń pomieszczenie'**
+  String get roomDeleteAction;
+
+  /// No description provided for @roomDeleteError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się usunąć pomieszczenia.'**
+  String get roomDeleteError;
+
+  /// No description provided for @roomBudgetPlanned.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plan'**
+  String get roomBudgetPlanned;
+
+  /// No description provided for @roomBudgetActual.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wydano'**
+  String get roomBudgetActual;
+
+  /// No description provided for @roomBudgetRemaining.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pozostało'**
+  String get roomBudgetRemaining;
+
+  /// No description provided for @roomNoBudget.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie ustawiono budżetu'**
+  String get roomNoBudget;
+
+  /// No description provided for @roomChoicesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybory i warianty'**
+  String get roomChoicesTitle;
+
+  /// No description provided for @roomAddChoiceAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj wybór'**
+  String get roomAddChoiceAction;
+
+  /// No description provided for @roomNoChoices.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak kart wyborów'**
+  String get roomNoChoices;
+
+  /// No description provided for @roomNoChoicesMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj np. płytki, drzwi, armaturę lub kolor farby i porównaj warianty.'**
+  String get roomNoChoicesMessage;
+
+  /// No description provided for @roomChoiceStatusOpen.
+  ///
+  /// In pl, this message translates to:
+  /// **'Do wyboru'**
+  String get roomChoiceStatusOpen;
+
+  /// No description provided for @roomChoiceStatusSelected.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybrano'**
+  String get roomChoiceStatusSelected;
+
+  /// No description provided for @roomChoiceStatusCancelled.
+  ///
+  /// In pl, this message translates to:
+  /// **'Anulowano'**
+  String get roomChoiceStatusCancelled;
+
+  /// No description provided for @roomChoiceSelectAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz wariant'**
+  String get roomChoiceSelectAction;
+
+  /// No description provided for @roomChoiceReopenAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień wybór'**
+  String get roomChoiceReopenAction;
+
+  /// No description provided for @roomChoiceCancelAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Anuluj wybór'**
+  String get roomChoiceCancelAction;
+
+  /// No description provided for @roomChoiceEditTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj kartę wyboru'**
+  String get roomChoiceEditTooltip;
+
+  /// No description provided for @roomChoiceDeleteTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń kartę wyboru'**
+  String get roomChoiceDeleteTooltip;
+
+  /// No description provided for @roomChoiceEstimatedTotal.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szacunkowo: {amount}'**
+  String roomChoiceEstimatedTotal(String amount);
+
+  /// No description provided for @roomChoiceQuantityWithWaste.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ilość z zapasem: {quantity} {unit}'**
+  String roomChoiceQuantityWithWaste(String quantity, String unit);
+
+  /// No description provided for @roomChoiceOrderDue.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamów do: {date}'**
+  String roomChoiceOrderDue(String date);
+
+  /// No description provided for @roomChoiceNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowa karta wyboru'**
+  String get roomChoiceNewTitle;
+
+  /// No description provided for @roomChoiceEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj kartę wyboru'**
+  String get roomChoiceEditTitle;
+
+  /// No description provided for @roomChoiceTitleLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Co wybierasz?'**
+  String get roomChoiceTitleLabel;
+
+  /// No description provided for @roomChoiceQuantityLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ilość'**
+  String get roomChoiceQuantityLabel;
+
+  /// No description provided for @roomChoiceUnitLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jednostka'**
+  String get roomChoiceUnitLabel;
+
+  /// No description provided for @roomChoiceWasteLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapas'**
+  String get roomChoiceWasteLabel;
+
+  /// No description provided for @roomChoiceWasteSuffix.
+  ///
+  /// In pl, this message translates to:
+  /// **'%'**
+  String get roomChoiceWasteSuffix;
+
+  /// No description provided for @roomChoiceOrderDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Termin zamówienia'**
+  String get roomChoiceOrderDateLabel;
+
+  /// No description provided for @roomChoiceNoOrderDate.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez terminu zamówienia'**
+  String get roomChoiceNoOrderDate;
+
+  /// No description provided for @roomChoiceClearOrderDate.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń termin'**
+  String get roomChoiceClearOrderDate;
+
+  /// No description provided for @roomChoiceNoteLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatka do wyboru'**
+  String get roomChoiceNoteLabel;
+
+  /// No description provided for @roomChoiceVariantsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Porównywane warianty'**
+  String get roomChoiceVariantsTitle;
+
+  /// No description provided for @roomChoiceAddVariant.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj wariant'**
+  String get roomChoiceAddVariant;
+
+  /// No description provided for @roomChoiceRemoveVariant.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń wariant'**
+  String get roomChoiceRemoveVariant;
+
+  /// No description provided for @roomChoiceVariantLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa wariantu'**
+  String get roomChoiceVariantLabel;
+
+  /// No description provided for @roomChoiceVariantPriceLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Cena brutto za jednostkę'**
+  String get roomChoiceVariantPriceLabel;
+
+  /// No description provided for @roomChoiceVariantSupplierLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Sklep lub dostawca'**
+  String get roomChoiceVariantSupplierLabel;
+
+  /// No description provided for @roomChoiceVariantCodeLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kod produktu'**
+  String get roomChoiceVariantCodeLabel;
+
+  /// No description provided for @roomChoiceVariantNoteLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uwagi do wariantu'**
+  String get roomChoiceVariantNoteLabel;
+
+  /// No description provided for @roomChoiceSaveAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz kartę wyboru'**
+  String get roomChoiceSaveAction;
+
+  /// No description provided for @roomChoiceSavedMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Karta wyboru została zapisana.'**
+  String get roomChoiceSavedMessage;
+
+  /// No description provided for @roomChoiceSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać karty wyboru. Dodaj co najmniej jeden poprawny wariant.'**
+  String get roomChoiceSaveError;
+
+  /// No description provided for @roomChoiceSelectionTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potwierdź wariant'**
+  String get roomChoiceSelectionTitle;
+
+  /// No description provided for @roomChoiceSelectionMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybór zostanie zapisany jako decyzja w karcie pomieszczenia. Nie utworzy kosztu ani zamówienia bez osobnej akcji.'**
+  String get roomChoiceSelectionMessage;
+
+  /// No description provided for @roomChoiceCreatePlannedCost.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utwórz szkic kosztu'**
+  String get roomChoiceCreatePlannedCost;
+
+  /// No description provided for @roomChoicePlannedCostCreated.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szkic kosztu utworzony'**
+  String get roomChoicePlannedCostCreated;
+
+  /// No description provided for @roomChoiceCreateMaterial.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj do materiałów'**
+  String get roomChoiceCreateMaterial;
+
+  /// No description provided for @roomChoiceMaterialCreated.
+  ///
+  /// In pl, this message translates to:
+  /// **'Materiał dodany'**
+  String get roomChoiceMaterialCreated;
+
+  /// No description provided for @roomChoiceCreateDecision.
+  ///
+  /// In pl, this message translates to:
+  /// **'Utwórz decyzję'**
+  String get roomChoiceCreateDecision;
+
+  /// No description provided for @roomChoiceDecisionCreated.
+  ///
+  /// In pl, this message translates to:
+  /// **'Decyzja utworzona'**
+  String get roomChoiceDecisionCreated;
+
+  /// No description provided for @roomChoiceOutputError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się utworzyć powiązanego rekordu.'**
+  String get roomChoiceOutputError;
+
+  /// No description provided for @roomChoiceVatTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz stawkę VAT dla planowanego kosztu'**
+  String get roomChoiceVatTitle;
+
+  /// No description provided for @roomChoiceCostName.
+  ///
+  /// In pl, this message translates to:
+  /// **'{choice}: {variant}'**
+  String roomChoiceCostName(String choice, String variant);
+
+  /// No description provided for @roomChoiceCostNote.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szkic utworzony z karty wyboru w pomieszczeniu: {room}.'**
+  String roomChoiceCostNote(String room);
+
+  /// No description provided for @roomChoiceDecisionTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybór w pomieszczeniu {room}: {choice}'**
+  String roomChoiceDecisionTitle(String room, String choice);
+
+  /// No description provided for @roomRelatedTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiązane dane'**
+  String get roomRelatedTitle;
+
+  /// No description provided for @roomRelatedDecisions.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwarte decyzje'**
+  String get roomRelatedDecisions;
+
+  /// No description provided for @roomRelatedMaterials.
+  ///
+  /// In pl, this message translates to:
+  /// **'Materiały'**
+  String get roomRelatedMaterials;
+
+  /// No description provided for @roomRelatedTeams.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ekipy'**
+  String get roomRelatedTeams;
+
+  /// No description provided for @roomRelatedPhotos.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zdjęcia techniczne'**
+  String get roomRelatedPhotos;
+
+  /// No description provided for @roomRelatedDefects.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwarte usterki'**
+  String get roomRelatedDefects;
+
+  /// No description provided for @roomRelatedCosts.
+  ///
+  /// In pl, this message translates to:
+  /// **'Koszty'**
+  String get roomRelatedCosts;
+
+  /// No description provided for @roomManageRelationsAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypisz dane'**
+  String get roomManageRelationsAction;
+
+  /// No description provided for @roomRelationsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dane pomieszczenia'**
+  String get roomRelationsTitle;
+
+  /// No description provided for @roomRelationsSearchHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szukaj na tej liście'**
+  String get roomRelationsSearchHint;
+
+  /// No description provided for @roomRelationsEmpty.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak elementów do przypisania.'**
+  String get roomRelationsEmpty;
+
+  /// No description provided for @roomRelationsAssignedElsewhere.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypisano do: {roomName}'**
+  String roomRelationsAssignedElsewhere(String roomName);
+
+  /// No description provided for @roomRelationsMoveTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przenieść przypisanie?'**
+  String get roomRelationsMoveTitle;
+
+  /// No description provided for @roomRelationsMoveMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ten element jest przypisany do pomieszczenia „{roomName}”. Po zatwierdzeniu zostanie przeniesiony tutaj.'**
+  String roomRelationsMoveMessage(String roomName);
+
+  /// No description provided for @roomRelationsMoveAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przenieś'**
+  String get roomRelationsMoveAction;
+
+  /// No description provided for @roomRelationsSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zmienić przypisania.'**
+  String get roomRelationsSaveError;
+
+  /// No description provided for @roomRelatedCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'{count}'**
+  String roomRelatedCount(int count);
+
+  /// No description provided for @roomSelectedChoiceEditNotice.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edycja ponownie otworzy wybór i będzie wymagała jawnego zatwierdzenia wariantu.'**
+  String get roomSelectedChoiceEditNotice;
+
+  /// No description provided for @requiredFieldError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uzupełnij wymagane pole.'**
+  String get requiredFieldError;
+
+  /// No description provided for @invalidAmountError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz kwotę z maksymalnie dwiema cyframi po przecinku.'**
+  String get invalidAmountError;
+
+  /// No description provided for @invalidNumberError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz dodatnią liczbę.'**
+  String get invalidNumberError;
+
+  /// No description provided for @materialsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Materiały i dostawy'**
+  String get materialsTitle;
+
+  /// No description provided for @materialsSubtitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamówienia, dostawy, składowanie i zwroty'**
+  String get materialsSubtitle;
+
+  /// No description provided for @materialsLoading.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytywanie materiałów'**
+  String get materialsLoading;
+
+  /// No description provided for @materialsLoadError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się wczytać materiałów.'**
+  String get materialsLoadError;
+
+  /// No description provided for @materialsNoProjectTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz projekt'**
+  String get materialsNoProjectTitle;
+
+  /// No description provided for @materialsNoProjectMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Materiały są przypisane do konkretnej budowy lub remontu.'**
+  String get materialsNoProjectMessage;
+
+  /// No description provided for @materialsEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak materiałów'**
+  String get materialsEmptyTitle;
+
+  /// No description provided for @materialsEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj pierwszy materiał, aby kontrolować zamówienie, dostawy i zwroty.'**
+  String get materialsEmptyMessage;
+
+  /// No description provided for @materialsNoResultsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak pasujących materiałów'**
+  String get materialsNoResultsTitle;
+
+  /// No description provided for @materialsNoResultsMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień wyszukiwanie lub filtry statusu.'**
+  String get materialsNoResultsMessage;
+
+  /// No description provided for @materialsSearchHint.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szukaj materiału lub miejsca składowania'**
+  String get materialsSearchHint;
+
+  /// No description provided for @materialsClearSearch.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wyczyść wyszukiwanie'**
+  String get materialsClearSearch;
+
+  /// No description provided for @materialsAddTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj materiał'**
+  String get materialsAddTooltip;
+
+  /// No description provided for @materialsLoadMore.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wczytaj więcej'**
+  String get materialsLoadMore;
+
+  /// No description provided for @materialsOrderedValue.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wartość zamówień'**
+  String get materialsOrderedValue;
+
+  /// No description provided for @materialsExpectedReturns.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowane zwroty'**
+  String get materialsExpectedReturns;
+
+  /// No description provided for @materialsDelayedCount.
+  ///
+  /// In pl, this message translates to:
+  /// **'Opóźnienia'**
+  String get materialsDelayedCount;
+
+  /// No description provided for @materialsOverdueReturns.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zwroty po terminie'**
+  String get materialsOverdueReturns;
+
+  /// No description provided for @materialsOpenDeliveries.
+  ///
+  /// In pl, this message translates to:
+  /// **'Otwarte dostawy'**
+  String get materialsOpenDeliveries;
+
+  /// No description provided for @materialStatusPlanned.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowany'**
+  String get materialStatusPlanned;
+
+  /// No description provided for @materialStatusOrdered.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamówiony'**
+  String get materialStatusOrdered;
+
+  /// No description provided for @materialStatusPartiallyDelivered.
+  ///
+  /// In pl, this message translates to:
+  /// **'Częściowo dostarczony'**
+  String get materialStatusPartiallyDelivered;
+
+  /// No description provided for @materialStatusDelivered.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostarczony'**
+  String get materialStatusDelivered;
+
+  /// No description provided for @materialStatusDelayed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Opóźniony'**
+  String get materialStatusDelayed;
+
+  /// No description provided for @materialStatusReturned.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zwrócony'**
+  String get materialStatusReturned;
+
+  /// No description provided for @materialNewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nowy materiał'**
+  String get materialNewTitle;
+
+  /// No description provided for @materialEditTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj materiał'**
+  String get materialEditTitle;
+
+  /// No description provided for @materialDetailsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Szczegóły materiału'**
+  String get materialDetailsTitle;
+
+  /// No description provided for @materialNotFound.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie znaleziono materiału.'**
+  String get materialNotFound;
+
+  /// No description provided for @materialNameLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa materiału'**
+  String get materialNameLabel;
+
+  /// No description provided for @materialQuantityLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ilość zamówiona'**
+  String get materialQuantityLabel;
+
+  /// No description provided for @materialUnitLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Jednostka'**
+  String get materialUnitLabel;
+
+  /// No description provided for @materialDefaultUnit.
+  ///
+  /// In pl, this message translates to:
+  /// **'szt.'**
+  String get materialDefaultUnit;
+
+  /// No description provided for @materialStageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap'**
+  String get materialStageLabel;
+
+  /// No description provided for @materialRoomLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Pomieszczenie'**
+  String get materialRoomLabel;
+
+  /// No description provided for @materialSupplierLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostawca'**
+  String get materialSupplierLabel;
+
+  /// No description provided for @materialCostLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiązany koszt'**
+  String get materialCostLabel;
+
+  /// No description provided for @materialReceiptLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Paragon lub faktura'**
+  String get materialReceiptLabel;
+
+  /// No description provided for @materialOrderedGrossLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wartość zamówienia brutto'**
+  String get materialOrderedGrossLabel;
+
+  /// No description provided for @materialStorageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Miejsce składowania'**
+  String get materialStorageLabel;
+
+  /// No description provided for @materialOrderedToggle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Materiał został zamówiony'**
+  String get materialOrderedToggle;
+
+  /// No description provided for @materialOrderedDateLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Data zamówienia'**
+  String get materialOrderedDateLabel;
+
+  /// No description provided for @materialExpectedDeliveryLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Planowana dostawa'**
+  String get materialExpectedDeliveryLabel;
+
+  /// No description provided for @materialReminderToggle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypomnienie o terminie'**
+  String get materialReminderToggle;
+
+  /// No description provided for @materialNoteLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Notatka'**
+  String get materialNoteLabel;
+
+  /// No description provided for @materialNoRelation.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak przypisania'**
+  String get materialNoRelation;
+
+  /// No description provided for @materialSaveAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz materiał'**
+  String get materialSaveAction;
+
+  /// No description provided for @materialSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać materiału. Sprawdź powiązania i wartości.'**
+  String get materialSaveError;
+
+  /// No description provided for @materialEditTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Edytuj materiał'**
+  String get materialEditTooltip;
+
+  /// No description provided for @materialDeleteTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń materiał'**
+  String get materialDeleteTooltip;
+
+  /// No description provided for @materialDeleteTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunąć materiał?'**
+  String get materialDeleteTitle;
+
+  /// No description provided for @materialDeleteMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunięte zostaną także jego dostawy i zwroty. Koszt, dokumenty i kontakty pozostaną bez zmian.'**
+  String get materialDeleteMessage;
+
+  /// No description provided for @materialDeleteAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń'**
+  String get materialDeleteAction;
+
+  /// No description provided for @materialDeleteError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się usunąć materiału.'**
+  String get materialDeleteError;
+
+  /// No description provided for @materialOrderedQuantity.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zamówiono'**
+  String get materialOrderedQuantity;
+
+  /// No description provided for @materialDeliveredQuantity.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostarczono'**
+  String get materialDeliveredQuantity;
+
+  /// No description provided for @materialReturnedQuantity.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zwrócono'**
+  String get materialReturnedQuantity;
+
+  /// No description provided for @materialRelationsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiązania i składowanie'**
+  String get materialRelationsTitle;
+
+  /// No description provided for @materialDeliveriesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostawy'**
+  String get materialDeliveriesTitle;
+
+  /// No description provided for @materialAddDeliveryAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj dostawę'**
+  String get materialAddDeliveryAction;
+
+  /// No description provided for @materialNoDeliveries.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie zapisano jeszcze dostaw.'**
+  String get materialNoDeliveries;
+
+  /// No description provided for @materialDeliveryExpectedLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ilość w tej dostawie'**
+  String get materialDeliveryExpectedLabel;
+
+  /// No description provided for @materialDeliveryDueLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Termin dostawy'**
+  String get materialDeliveryDueLabel;
+
+  /// No description provided for @materialDeliveryReceivedToggle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostawa odebrana'**
+  String get materialDeliveryReceivedToggle;
+
+  /// No description provided for @materialDeliveryActualLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ilość odebrana'**
+  String get materialDeliveryActualLabel;
+
+  /// No description provided for @materialDeliveryDocumentLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokument WZ'**
+  String get materialDeliveryDocumentLabel;
+
+  /// No description provided for @materialDeliveryContactLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kontakt przy dostawie'**
+  String get materialDeliveryContactLabel;
+
+  /// No description provided for @materialDeliveryShortageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Braki ilościowe'**
+  String get materialDeliveryShortageLabel;
+
+  /// No description provided for @materialDeliveryDamageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Uszkodzenia i zastrzeżenia'**
+  String get materialDeliveryDamageLabel;
+
+  /// No description provided for @materialDeliverySaveAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz dostawę'**
+  String get materialDeliverySaveAction;
+
+  /// No description provided for @materialDeliverySaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać dostawy.'**
+  String get materialDeliverySaveError;
+
+  /// No description provided for @materialDeliveryOverTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dostawa przekracza zamówienie'**
+  String get materialDeliveryOverTitle;
+
+  /// No description provided for @materialDeliveryOverMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Suma odebrana jest większa niż ilość zamówiona. Potwierdzenie skoryguje ilość zamówioną do faktycznie odebranej.'**
+  String get materialDeliveryOverMessage;
+
+  /// No description provided for @materialDeliveryOverAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Potwierdź korektę'**
+  String get materialDeliveryOverAction;
+
+  /// No description provided for @materialDeliveryDelayed.
+  ///
+  /// In pl, this message translates to:
+  /// **'Po terminie'**
+  String get materialDeliveryDelayed;
+
+  /// No description provided for @materialDeliveryReceived.
+  ///
+  /// In pl, this message translates to:
+  /// **'Odebrana'**
+  String get materialDeliveryReceived;
+
+  /// No description provided for @materialDeliveryPlanned.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaplanowana'**
+  String get materialDeliveryPlanned;
+
+  /// No description provided for @materialReturnsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zwroty'**
+  String get materialReturnsTitle;
+
+  /// No description provided for @materialAddReturnAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dodaj zwrot'**
+  String get materialAddReturnAction;
+
+  /// No description provided for @materialNoReturns.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie zapisano materiału do zwrotu.'**
+  String get materialNoReturns;
+
+  /// No description provided for @materialReturnQuantityLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ilość do zwrotu'**
+  String get materialReturnQuantityLabel;
+
+  /// No description provided for @materialReturnDeadlineLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Termin zwrotu'**
+  String get materialReturnDeadlineLabel;
+
+  /// No description provided for @materialReturnExpectedLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przewidywany zwrot pieniędzy'**
+  String get materialReturnExpectedLabel;
+
+  /// No description provided for @materialReturnReceiptRequired.
+  ///
+  /// In pl, this message translates to:
+  /// **'Paragon lub faktura są wymagane'**
+  String get materialReturnReceiptRequired;
+
+  /// No description provided for @materialReturnDocumentLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Dokument zakupu'**
+  String get materialReturnDocumentLabel;
+
+  /// No description provided for @materialReturnCompletedToggle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zwrot wykonany'**
+  String get materialReturnCompletedToggle;
+
+  /// No description provided for @materialReturnActualLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Faktycznie odzyskana kwota'**
+  String get materialReturnActualLabel;
+
+  /// No description provided for @materialReturnSaveAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zapisz zwrot'**
+  String get materialReturnSaveAction;
+
+  /// No description provided for @materialReturnSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać zwrotu.'**
+  String get materialReturnSaveError;
+
+  /// No description provided for @materialReturnOverdue.
+  ///
+  /// In pl, this message translates to:
+  /// **'Termin zwrotu minął'**
+  String get materialReturnOverdue;
+
+  /// No description provided for @materialReturnCompleted.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zwrot wykonany'**
+  String get materialReturnCompleted;
+
+  /// No description provided for @materialReturnPending.
+  ///
+  /// In pl, this message translates to:
+  /// **'Do zwrotu'**
+  String get materialReturnPending;
+
+  /// No description provided for @materialRecordDeleteTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usuń wpis'**
+  String get materialRecordDeleteTooltip;
+
+  /// No description provided for @materialInvalidQuantity.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz dodatnią ilość z maksymalnie sześcioma cyframi po przecinku.'**
+  String get materialInvalidQuantity;
+
+  /// No description provided for @materialDatePickTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz datę'**
+  String get materialDatePickTooltip;
+
+  /// No description provided for @materialRelationMissing.
+  ///
+  /// In pl, this message translates to:
+  /// **'Powiązany rekord został usunięty lub należy do innego projektu.'**
+  String get materialRelationMissing;
+
+  /// No description provided for @receiptStageLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etap dokumentu'**
+  String get receiptStageLabel;
+
+  /// No description provided for @receiptApplyComponentLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustaw skład dla wszystkich pozycji'**
+  String get receiptApplyComponentLabel;
+
+  /// No description provided for @receiptComponentRequiredMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz materiał, robociznę albo wspólną wycenę dla każdej pozycji.'**
+  String get receiptComponentRequiredMessage;
 }
 
 class _AppLocalizationsDelegate

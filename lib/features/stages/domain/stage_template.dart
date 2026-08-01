@@ -31,10 +31,17 @@ abstract final class StageTemplateCatalog {
           (stage) => StageTemplateDefinition(
             stageKey: stage,
             checklistItems: switch (stage) {
+              ProjectStageKey.planning => planningChecklist,
               ProjectStageKey.formalities => formalitiesChecklist,
               ProjectStageKey.sitePreparation => sitePreparationChecklist,
               ProjectStageKey.stateZero => stateZeroChecklist,
-              _ => const <ChecklistTemplateDefinition>[],
+              ProjectStageKey.shellOpen => shellOpenChecklist,
+              ProjectStageKey.shellClosed => shellClosedChecklist,
+              ProjectStageKey.demolition => demolitionChecklist,
+              ProjectStageKey.installations => installationsChecklist,
+              ProjectStageKey.plaster => plasterChecklist,
+              ProjectStageKey.finishing => finishingChecklist,
+              ProjectStageKey.handover => handoverChecklist,
             },
           ),
         )
@@ -108,6 +115,22 @@ abstract final class StageTemplateCatalog {
     ChecklistTemplateDefinition(
       key: ChecklistTemplateKey.preStartDocumentAudit,
       importance: ChecklistImportance.critical,
+    ),
+  ];
+
+  static const List<ChecklistTemplateDefinition> planningChecklist = [
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.planningScopeAndBudget,
+      importance: ChecklistImportance.high,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.existingBuildingSurvey,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.designDecisionsRegister,
+      importance: ChecklistImportance.normal,
     ),
   ];
 
@@ -236,6 +259,188 @@ abstract final class StageTemplateCatalog {
       key: ChecklistTemplateKey.postFoundationSurvey,
       importance: ChecklistImportance.high,
       evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+  ];
+
+  static const List<ChecklistTemplateDefinition> shellOpenChecklist = [
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.shellStructuralAcceptance,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.roofWeatherProtection,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.openingAndShadingPreparation,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.shellSafetyAndAccess,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+  ];
+
+  static const List<ChecklistTemplateDefinition> shellClosedChecklist = [
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.windowDoorAcceptance,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.weatherTightnessAndMoisture,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.temporaryVentilationAndHeating,
+      importance: ChecklistImportance.normal,
+    ),
+  ];
+
+  static const List<ChecklistTemplateDefinition> demolitionChecklist = [
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.demolitionHazardSurvey,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.utilityDisconnectionAndProtection,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.neighborAndCommonAreaProtection,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.demolitionPlanAndWaste,
+      importance: ChecklistImportance.high,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.demolitionCompletionInspection,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+  ];
+
+  static const List<ChecklistTemplateDefinition> installationsChecklist = [
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.installationCoordination,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.electricalInstallationRoutes,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.waterSewerHeatingRoutes,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.ventilationAndLowVoltageRoutes,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.installationTests,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.concealedInstallationPhotos,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+  ];
+
+  static const List<ChecklistTemplateDefinition> plasterChecklist = [
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.substrateInspection,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.plasterAndScreedExecution,
+      importance: ChecklistImportance.high,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.floorHeatingCommissioning,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.plasterScreedAcceptance,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+  ];
+
+  static const List<ChecklistTemplateDefinition> finishingChecklist = [
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.wetAreaWaterproofing,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.finishMaterialsAndSamples,
+      importance: ChecklistImportance.normal,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.floorsWallsCeilings,
+      importance: ChecklistImportance.normal,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.joineryAndPainting,
+      importance: ChecklistImportance.normal,
+      evidenceRequirement: EvidenceRequirement.photo,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.systemsCommissioning,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.warrantiesAndManuals,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+  ];
+
+  static const List<ChecklistTemplateDefinition> handoverChecklist = [
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.asBuiltDocumentation,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.asBuiltSurvey,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.testsCertificates,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.constructionCompletionNotice,
+      importance: ChecklistImportance.critical,
+      evidenceRequirement: EvidenceRequirement.anyAttachment,
+    ),
+    ChecklistTemplateDefinition(
+      key: ChecklistTemplateKey.defectsAndHandover,
+      importance: ChecklistImportance.high,
+      evidenceRequirement: EvidenceRequirement.photo,
     ),
   ];
 }

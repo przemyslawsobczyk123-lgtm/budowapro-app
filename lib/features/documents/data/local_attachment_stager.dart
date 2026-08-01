@@ -522,9 +522,33 @@ final class LocalAttachmentStager {
           SELECT attachment_id
           FROM ${AppDatabase.captureDraftAttachmentsTable}
           WHERE project_id = ? AND attachment_id = ?
+          UNION ALL
+          SELECT attachment_id
+          FROM ${AppDatabase.journalEntryAttachmentsTable}
+          WHERE project_id = ? AND attachment_id = ?
+          UNION ALL
+          SELECT attachment_id
+          FROM ${AppDatabase.technicalPhotosTable}
+          WHERE project_id = ? AND attachment_id = ?
+          UNION ALL
+          SELECT attachment_id
+          FROM ${AppDatabase.defectResolutionAttachmentsTable}
+          WHERE project_id = ? AND attachment_id = ?
+          UNION ALL
+          SELECT attachment_id
+          FROM ${AppDatabase.acceptanceProtocolAttachmentsTable}
+          WHERE project_id = ? AND attachment_id = ?
           LIMIT 1
         ''',
         <Object?>[
+          projectId,
+          attachmentId,
+          projectId,
+          attachmentId,
+          projectId,
+          attachmentId,
+          projectId,
+          attachmentId,
           projectId,
           attachmentId,
           projectId,
@@ -668,6 +692,26 @@ final class LocalAttachmentStager {
         AND NOT EXISTS (
           SELECT 1
           FROM ${AppDatabase.captureDraftAttachmentsTable} l
+          WHERE l.project_id = a.project_id AND l.attachment_id = a.id
+        )
+        AND NOT EXISTS (
+          SELECT 1
+          FROM ${AppDatabase.journalEntryAttachmentsTable} l
+          WHERE l.project_id = a.project_id AND l.attachment_id = a.id
+        )
+        AND NOT EXISTS (
+          SELECT 1
+          FROM ${AppDatabase.technicalPhotosTable} p
+          WHERE p.project_id = a.project_id AND p.attachment_id = a.id
+        )
+        AND NOT EXISTS (
+          SELECT 1
+          FROM ${AppDatabase.defectResolutionAttachmentsTable} l
+          WHERE l.project_id = a.project_id AND l.attachment_id = a.id
+        )
+        AND NOT EXISTS (
+          SELECT 1
+          FROM ${AppDatabase.acceptanceProtocolAttachmentsTable} l
           WHERE l.project_id = a.project_id AND l.attachment_id = a.id
         )
       ORDER BY a.imported_at_utc_ms ASC, a.id ASC

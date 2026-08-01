@@ -42,6 +42,7 @@ Przed wydaniem trzeba podac prawdziwe wartosci:
 BUDOWAPRO_PUBLISHER_NAME
 BUDOWAPRO_PRIVACY_CONTACT_EMAIL
 BUDOWAPRO_PRIVACY_POLICY_URL
+BUDOWAPRO_SUPPORT_URL
 ```
 
 Adres polityki musi:
@@ -50,6 +51,11 @@ Adres polityki musi:
 - zwracac publiczny dokument HTML bez logowania;
 - nie prowadzic do PDF;
 - odpowiadac tresci polityki dostepnej w aplikacji.
+
+`BUDOWAPRO_SUPPORT_URL` musi wskazywac publiczna strone HTTPS wsparcia bez
+logowania. Jest wyswietlany w centrum prawnym aplikacji i sluzy jako dedykowany
+adres pomocy w metadanych sklepu. Nie uzywaj adresu lokalnego ani tymczasowej
+strony testowej.
 
 Google Play wymaga publicznego URL nawet wtedy, gdy aplikacja przechowuje dane
 projektu tylko lokalnie. Sama zakladka w APK nie wypelnia tego wymagania.
@@ -79,7 +85,7 @@ Play App Signing.
 
 ## 4. Kontrolowany build AAB
 
-Po ustawieniu wszystkich osmiu zmiennych uruchom:
+Po ustawieniu wszystkich dziewieciu zmiennych uruchom:
 
 ```powershell
 dart run tool/release/build_android_release.dart
@@ -161,7 +167,8 @@ jawnego audytu i aktualizacji allowlisty.
 
 1. Potwierdz prawna nazwe, adres i dane konta dewelopera.
 2. Wlacz Play App Signing i zarejestruj certyfikat klucza upload.
-3. Wpisz publiczny URL polityki oraz zgodny e-mail wsparcia.
+3. Wpisz publiczny URL polityki, publiczny URL wsparcia oraz zgodny e-mail
+   wsparcia.
 4. Wypelnij Data safety dla dokladnego AAB i wersji ML Kit.
 5. Ustaw deklaracje reklam na `Nie`.
 6. Wypelnij grupe docelowa, klasyfikacje tresci i dostep dla recenzenta.

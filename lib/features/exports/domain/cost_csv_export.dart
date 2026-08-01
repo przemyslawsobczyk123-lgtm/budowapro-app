@@ -7,6 +7,7 @@ enum CostCsvColumn {
   entryDate,
   name,
   type,
+  component,
   status,
   lifecycle,
   effectiveGross,
@@ -29,6 +30,7 @@ final class CostCsvLabels {
   CostCsvLabels({
     required Map<CostCsvColumn, String> headers,
     required Map<CostEntryType, String> types,
+    required Map<CostComponent, String> components,
     required Map<CostStatus, String> statuses,
     required Map<CostLifecycle, String> lifecycles,
     required Map<CostPaymentMethod, String> paymentMethods,
@@ -40,6 +42,9 @@ final class CostCsvLabels {
        ),
        types = UnmodifiableMapView<CostEntryType, String>(
          Map<CostEntryType, String>.of(types),
+       ),
+       components = UnmodifiableMapView<CostComponent, String>(
+         Map<CostComponent, String>.of(components),
        ),
        statuses = UnmodifiableMapView<CostStatus, String>(
          Map<CostStatus, String>.of(statuses),
@@ -70,6 +75,7 @@ final class CostCsvLabels {
 
   final UnmodifiableMapView<CostCsvColumn, String> headers;
   final UnmodifiableMapView<CostEntryType, String> types;
+  final UnmodifiableMapView<CostComponent, String> components;
   final UnmodifiableMapView<CostStatus, String> statuses;
   final UnmodifiableMapView<CostLifecycle, String> lifecycles;
   final UnmodifiableMapView<CostPaymentMethod, String> paymentMethods;

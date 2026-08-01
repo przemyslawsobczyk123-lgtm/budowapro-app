@@ -3,6 +3,7 @@ import 'package:budowapro/features/captures/domain/capture_draft.dart';
 import 'package:budowapro/features/captures/domain/capture_repository.dart';
 import 'package:budowapro/features/costs/data/cost_providers.dart';
 import 'package:budowapro/features/dashboard/presentation/dashboard_controller.dart';
+import 'package:budowapro/features/diary/presentation/journal_controller.dart';
 import 'package:budowapro/features/documents/presentation/documents_controller.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
 import 'package:budowapro/features/projects/presentation/projects_controller.dart';
@@ -300,6 +301,7 @@ final class CapturesController extends AsyncNotifier<CapturesState> {
       case CaptureTargetType.note ||
           CaptureTargetType.decision ||
           CaptureTargetType.defect:
+        ref.invalidate(journalControllerProvider);
         break;
     }
   }

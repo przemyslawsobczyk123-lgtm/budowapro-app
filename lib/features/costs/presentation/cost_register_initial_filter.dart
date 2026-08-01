@@ -6,6 +6,7 @@ import 'package:budowapro/features/costs/domain/cost_repository.dart';
 final class CostRegisterInitialFilter {
   factory CostRegisterInitialFilter({
     Set<CostEntryType> types = const <CostEntryType>{},
+    Set<CostComponent> components = const <CostComponent>{},
     Set<CostStatus> statuses = const <CostStatus>{},
     Set<CostMissingAssignment> missingAssignments =
         const <CostMissingAssignment>{},
@@ -25,6 +26,7 @@ final class CostRegisterInitialFilter {
     }
     return CostRegisterInitialFilter._(
       types: UnmodifiableSetView(Set<CostEntryType>.of(types)),
+      components: UnmodifiableSetView(Set<CostComponent>.of(components)),
       statuses: UnmodifiableSetView(Set<CostStatus>.of(statuses)),
       missingAssignments: UnmodifiableSetView(
         Set<CostMissingAssignment>.of(missingAssignments),
@@ -44,6 +46,7 @@ final class CostRegisterInitialFilter {
     final fromDate = _parseDate(parameters['from']);
     final toDate = _parseDate(parameters['to']);
     final type = _enumValue(CostEntryType.values, parameters['type']);
+    final component = _enumValue(CostComponent.values, parameters['component']);
     final status = _enumValue(CostStatus.values, parameters['status']);
     final missing = _enumValue(
       CostMissingAssignment.values,
@@ -53,6 +56,9 @@ final class CostRegisterInitialFilter {
         fromDate != null && toDate != null && fromDate.isAfter(toDate);
     return CostRegisterInitialFilter(
       types: type == null ? const <CostEntryType>{} : <CostEntryType>{type},
+      components: component == null
+          ? const <CostComponent>{}
+          : <CostComponent>{component},
       statuses: status == null ? const <CostStatus>{} : <CostStatus>{status},
       missingAssignments: missing == null
           ? const <CostMissingAssignment>{}
@@ -74,6 +80,7 @@ final class CostRegisterInitialFilter {
 
   const CostRegisterInitialFilter._({
     required this.types,
+    required this.components,
     required this.statuses,
     required this.missingAssignments,
     required this.stageId,
@@ -85,6 +92,7 @@ final class CostRegisterInitialFilter {
   });
 
   final UnmodifiableSetView<CostEntryType> types;
+  final UnmodifiableSetView<CostComponent> components;
   final UnmodifiableSetView<CostStatus> statuses;
   final UnmodifiableSetView<CostMissingAssignment> missingAssignments;
   final String? stageId;
@@ -96,6 +104,7 @@ final class CostRegisterInitialFilter {
 
   String get cacheKey => <Object?>[
     types.map((value) => value.name).join(','),
+    components.map((value) => value.name).join(','),
     statuses.map((value) => value.name).join(','),
     missingAssignments.map((value) => value.name).join(','),
     stageId,

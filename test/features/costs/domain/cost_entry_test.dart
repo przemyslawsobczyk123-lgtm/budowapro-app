@@ -171,6 +171,7 @@ void main() {
   test('confirmed details input contains no monetary or status fields', () {
     final details = ConfirmedCostDetailsInput(
       name: '  Zmieniona nazwa  ',
+      component: CostComponent.labor,
       entryDate: DateTime(2026, 7, 20),
       stageId: ' state-zero ',
       quantity: DecimalQuantity(unscaledValue: 25, scale: 1),
@@ -180,6 +181,7 @@ void main() {
     );
 
     expect(details.name, 'Zmieniona nazwa');
+    expect(details.component, CostComponent.labor);
     expect(details.entryDate.isUtc, isTrue);
     expect(details.stageId, 'state-zero');
     expect(details.unit, 'm');

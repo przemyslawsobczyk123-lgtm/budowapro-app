@@ -2,11 +2,15 @@ import 'dart:io';
 
 import 'package:budowapro/core/database/app_database.dart';
 import 'package:budowapro/core/files/project_file_store.dart';
+import 'package:budowapro/features/contacts/data/sqlite_contact_repository.dart';
+import 'package:budowapro/features/contacts/domain/contact.dart';
 import 'package:budowapro/features/costs/data/sqlite_cost_repository.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
 import 'package:budowapro/features/costs/domain/money.dart';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 import 'package:budowapro/features/costs/domain/cost_repository.dart';
+import 'package:budowapro/features/diary/data/sqlite_journal_repository.dart';
+import 'package:budowapro/features/diary/domain/journal_entry.dart';
 import 'package:budowapro/features/projects/data/sqlite_project_repository.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
 import 'package:budowapro/features/reports/data/sqlite_budget_report_repository.dart';
@@ -25,6 +29,8 @@ void main() {
   late String databasePath;
   late SqliteCostRepository costs;
   late SqliteBudgetReportRepository reports;
+  late SqliteJournalRepository journal;
+  late String approverId;
   var nextId = 0;
 
   setUp(() async {
@@ -55,6 +61,25 @@ void main() {
       utcNow: () => DateTime.utc(2026, 7, 1, 12, nextId),
     );
     reports = SqliteBudgetReportRepository(database: database);
+    journal = SqliteJournalRepository(
+      database: database,
+      idGenerator: () => 'journal-${++nextId}',
+      utcNow: () => DateTime.utc(2026, 7, 1, 14),
+    );
+    approverId =
+        (await SqliteContactRepository(
+              database: database,
+              idGenerator: () => 'contact-1',
+              utcNow: () => DateTime.utc(2026, 7, 1, 13),
+            ).create(
+              projectId: 'project-1',
+              draft: ContactDraft(
+                displayName: 'Inwestor',
+                kind: ContactKind.person,
+                roles: const <ContactRole>{ContactRole.other},
+              ),
+            ))
+            .id;
   });
 
   tearDown(() async {
@@ -71,6 +96,7 @@ void main() {
         _entry(
           name: 'Beton',
           gross: 100000,
+          component: CostComponent.material,
           status: CostStatus.paid,
           stageId: 'stage-zero',
           categoryId: 'materials',
@@ -92,6 +118,7 @@ void main() {
         _entry(
           name: 'Elektryk',
           gross: 50000,
+          component: CostComponent.labor,
           status: CostStatus.due,
           stageId: 'installations',
           categoryId: 'labour',
@@ -105,6 +132,7 @@ void main() {
         _entry(
           name: 'Koszt bez przypisania',
           gross: 10000,
+          component: CostComponent.mixed,
           status: CostStatus.ordered,
           stageId: null,
           categoryId: null,
@@ -150,6 +178,12 @@ void main() {
     );
     expect(
       report
+          .slicesFor(BudgetBreakdownDimension.component)
+          .map((slice) => (slice.key, slice.committed.minorUnits)),
+      [('material', 90000), ('labor', 50000), ('mixed', 10000)],
+    );
+    expect(
+      report
           .slicesFor(BudgetBreakdownDimension.month)
           .map((slice) => (slice.key, slice.committed.minorUnits)),
       [('2026-01', 90000), ('2026-02', 60000)],
@@ -192,12 +226,42 @@ void main() {
       throwsA(isA<BudgetReportProjectNotFoundException>()),
     );
   });
+
+  test('keeps the base plan and reports approved decision deltas', () async {
+    final decision = await journal.create(
+      JournalEntryInput(
+        projectId: 'project-1',
+        type: JournalEntryType.decision,
+        title: 'Dodatkowy przepust',
+        occurredAt: DateTime.utc(2026, 7, 1),
+        selectedOption: 'Rura oslonowa 110 mm',
+        costDeltaMinorUnits: 125000,
+        scheduleDeltaDays: 2,
+      ),
+    );
+    await journal.approveDecision(
+      projectId: 'project-1',
+      entryId: decision.id,
+      approvedByContactId: approverId,
+    );
+
+    final report = await reports.load(projectId: 'project-1');
+
+    expect(report.plan, _pln(200000));
+    expect(report.approvedDecisionDelta, _pln(125000));
+    expect(report.adjustedPlan, _pln(325000));
+    expect(report.approvedScheduleDeltaDays, 2);
+    expect(report.approvedDecisionCount, 1);
+    expect(report.committed, _pln(0));
+    expect(report.remaining, _pln(325000));
+  });
 }
 
 CostEntryInput _entry({
   required String name,
   required int gross,
   CostEntryType type = CostEntryType.cost,
+  CostComponent component = CostComponent.unassigned,
   CostStatus status = CostStatus.planned,
   String? stageId = 'stage-zero',
   String? categoryId = 'materials',
@@ -208,6 +272,7 @@ CostEntryInput _entry({
     projectId: 'project-1',
     name: name,
     type: type,
+    component: component,
     status: status,
     amount: VatBreakdown.fromGross(_pln(gross), VatRate.zero),
     entryDate: date ?? DateTime.utc(2026, 1, 1, 12),

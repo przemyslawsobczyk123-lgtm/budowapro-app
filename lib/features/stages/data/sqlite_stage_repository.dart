@@ -873,6 +873,9 @@ ProjectStageKey _stageKeyFromStorage(String value) => switch (value) {
 };
 
 String _checklistKeyToStorage(ChecklistTemplateKey value) => switch (value) {
+  ChecklistTemplateKey.planningScopeAndBudget => 'planning_scope_and_budget',
+  ChecklistTemplateKey.existingBuildingSurvey => 'existing_building_survey',
+  ChecklistTemplateKey.designDecisionsRegister => 'design_decisions_register',
   ChecklistTemplateKey.planningPermissionBasis => 'planning_permission_basis',
   ChecklistTemplateKey.landTitleAndRoadAccess => 'land_title_and_road_access',
   ChecklistTemplateKey.designMap => 'design_map',
@@ -930,9 +933,59 @@ String _checklistKeyToStorage(ChecklistTemplateKey value) => switch (value) {
   ChecklistTemplateKey.concreteDeliveryAndAcceptance =>
     'concrete_delivery_and_acceptance',
   ChecklistTemplateKey.postFoundationSurvey => 'post_foundation_survey',
+  ChecklistTemplateKey.demolitionHazardSurvey => 'demolition_hazard_survey',
+  ChecklistTemplateKey.utilityDisconnectionAndProtection =>
+    'utility_disconnection_and_protection',
+  ChecklistTemplateKey.demolitionPlanAndWaste => 'demolition_plan_and_waste',
+  ChecklistTemplateKey.neighborAndCommonAreaProtection =>
+    'neighbor_and_common_area_protection',
+  ChecklistTemplateKey.demolitionCompletionInspection =>
+    'demolition_completion_inspection',
+  ChecklistTemplateKey.shellStructuralAcceptance =>
+    'shell_structural_acceptance',
+  ChecklistTemplateKey.roofWeatherProtection => 'roof_weather_protection',
+  ChecklistTemplateKey.openingAndShadingPreparation =>
+    'opening_and_shading_preparation',
+  ChecklistTemplateKey.shellSafetyAndAccess => 'shell_safety_and_access',
+  ChecklistTemplateKey.windowDoorAcceptance => 'window_door_acceptance',
+  ChecklistTemplateKey.weatherTightnessAndMoisture =>
+    'weather_tightness_and_moisture',
+  ChecklistTemplateKey.temporaryVentilationAndHeating =>
+    'temporary_ventilation_and_heating',
+  ChecklistTemplateKey.installationCoordination => 'installation_coordination',
+  ChecklistTemplateKey.electricalInstallationRoutes =>
+    'electrical_installation_routes',
+  ChecklistTemplateKey.waterSewerHeatingRoutes => 'water_sewer_heating_routes',
+  ChecklistTemplateKey.ventilationAndLowVoltageRoutes =>
+    'ventilation_and_low_voltage_routes',
+  ChecklistTemplateKey.installationTests => 'installation_tests',
+  ChecklistTemplateKey.concealedInstallationPhotos =>
+    'concealed_installation_photos',
+  ChecklistTemplateKey.substrateInspection => 'substrate_inspection',
+  ChecklistTemplateKey.plasterAndScreedExecution =>
+    'plaster_and_screed_execution',
+  ChecklistTemplateKey.floorHeatingCommissioning =>
+    'floor_heating_commissioning',
+  ChecklistTemplateKey.plasterScreedAcceptance => 'plaster_screed_acceptance',
+  ChecklistTemplateKey.wetAreaWaterproofing => 'wet_area_waterproofing',
+  ChecklistTemplateKey.finishMaterialsAndSamples =>
+    'finish_materials_and_samples',
+  ChecklistTemplateKey.floorsWallsCeilings => 'floors_walls_ceilings',
+  ChecklistTemplateKey.joineryAndPainting => 'joinery_and_painting',
+  ChecklistTemplateKey.systemsCommissioning => 'systems_commissioning',
+  ChecklistTemplateKey.warrantiesAndManuals => 'warranties_and_manuals',
+  ChecklistTemplateKey.asBuiltDocumentation => 'as_built_documentation',
+  ChecklistTemplateKey.asBuiltSurvey => 'as_built_survey',
+  ChecklistTemplateKey.testsCertificates => 'tests_certificates',
+  ChecklistTemplateKey.constructionCompletionNotice =>
+    'construction_completion_notice',
+  ChecklistTemplateKey.defectsAndHandover => 'defects_and_handover',
 };
 
 ChecklistTemplateKey _checklistKeyFromStorage(String value) => switch (value) {
+  'planning_scope_and_budget' => ChecklistTemplateKey.planningScopeAndBudget,
+  'existing_building_survey' => ChecklistTemplateKey.existingBuildingSurvey,
+  'design_decisions_register' => ChecklistTemplateKey.designDecisionsRegister,
   'planning_permission_basis' => ChecklistTemplateKey.planningPermissionBasis,
   'land_title_and_road_access' => ChecklistTemplateKey.landTitleAndRoadAccess,
   'design_map' => ChecklistTemplateKey.designMap,
@@ -990,6 +1043,53 @@ ChecklistTemplateKey _checklistKeyFromStorage(String value) => switch (value) {
   'concrete_delivery_and_acceptance' =>
     ChecklistTemplateKey.concreteDeliveryAndAcceptance,
   'post_foundation_survey' => ChecklistTemplateKey.postFoundationSurvey,
+  'demolition_hazard_survey' => ChecklistTemplateKey.demolitionHazardSurvey,
+  'utility_disconnection_and_protection' =>
+    ChecklistTemplateKey.utilityDisconnectionAndProtection,
+  'demolition_plan_and_waste' => ChecklistTemplateKey.demolitionPlanAndWaste,
+  'neighbor_and_common_area_protection' =>
+    ChecklistTemplateKey.neighborAndCommonAreaProtection,
+  'demolition_completion_inspection' =>
+    ChecklistTemplateKey.demolitionCompletionInspection,
+  'shell_structural_acceptance' =>
+    ChecklistTemplateKey.shellStructuralAcceptance,
+  'roof_weather_protection' => ChecklistTemplateKey.roofWeatherProtection,
+  'opening_and_shading_preparation' =>
+    ChecklistTemplateKey.openingAndShadingPreparation,
+  'shell_safety_and_access' => ChecklistTemplateKey.shellSafetyAndAccess,
+  'window_door_acceptance' => ChecklistTemplateKey.windowDoorAcceptance,
+  'weather_tightness_and_moisture' =>
+    ChecklistTemplateKey.weatherTightnessAndMoisture,
+  'temporary_ventilation_and_heating' =>
+    ChecklistTemplateKey.temporaryVentilationAndHeating,
+  'installation_coordination' => ChecklistTemplateKey.installationCoordination,
+  'electrical_installation_routes' =>
+    ChecklistTemplateKey.electricalInstallationRoutes,
+  'water_sewer_heating_routes' => ChecklistTemplateKey.waterSewerHeatingRoutes,
+  'ventilation_and_low_voltage_routes' =>
+    ChecklistTemplateKey.ventilationAndLowVoltageRoutes,
+  'installation_tests' => ChecklistTemplateKey.installationTests,
+  'concealed_installation_photos' =>
+    ChecklistTemplateKey.concealedInstallationPhotos,
+  'substrate_inspection' => ChecklistTemplateKey.substrateInspection,
+  'plaster_and_screed_execution' =>
+    ChecklistTemplateKey.plasterAndScreedExecution,
+  'floor_heating_commissioning' =>
+    ChecklistTemplateKey.floorHeatingCommissioning,
+  'plaster_screed_acceptance' => ChecklistTemplateKey.plasterScreedAcceptance,
+  'wet_area_waterproofing' => ChecklistTemplateKey.wetAreaWaterproofing,
+  'finish_materials_and_samples' =>
+    ChecklistTemplateKey.finishMaterialsAndSamples,
+  'floors_walls_ceilings' => ChecklistTemplateKey.floorsWallsCeilings,
+  'joinery_and_painting' => ChecklistTemplateKey.joineryAndPainting,
+  'systems_commissioning' => ChecklistTemplateKey.systemsCommissioning,
+  'warranties_and_manuals' => ChecklistTemplateKey.warrantiesAndManuals,
+  'as_built_documentation' => ChecklistTemplateKey.asBuiltDocumentation,
+  'as_built_survey' => ChecklistTemplateKey.asBuiltSurvey,
+  'tests_certificates' => ChecklistTemplateKey.testsCertificates,
+  'construction_completion_notice' =>
+    ChecklistTemplateKey.constructionCompletionNotice,
+  'defects_and_handover' => ChecklistTemplateKey.defectsAndHandover,
   _ => throw StateError('Unknown checklist key'),
 };
 

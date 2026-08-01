@@ -13,6 +13,7 @@ final class ReviewedReceiptLine {
     required String name,
     required int grossMinorUnits,
     required VatRate vatRate,
+    CostComponent component = CostComponent.material,
   }) {
     if (grossMinorUnits < 1 || grossMinorUnits > Money.maximumMinorUnits) {
       throw RangeError.range(
@@ -30,6 +31,7 @@ final class ReviewedReceiptLine {
       ),
       grossMinorUnits: grossMinorUnits,
       vatRate: vatRate,
+      component: component,
     );
   }
 
@@ -37,11 +39,13 @@ final class ReviewedReceiptLine {
     required this.name,
     required this.grossMinorUnits,
     required this.vatRate,
+    required this.component,
   });
 
   final String name;
   final int grossMinorUnits;
   final VatRate vatRate;
+  final CostComponent component;
 }
 
 final class ReviewedReceiptBatch {
@@ -52,6 +56,7 @@ final class ReviewedReceiptBatch {
     required DateTime purchaseDate,
     required int totalGrossMinorUnits,
     required String currencyCode,
+    String? stageId,
     String? documentNumber,
     Iterable<ReviewedReceiptLine> lines = const <ReviewedReceiptLine>[],
     bool totalMismatchAcknowledged = false,
@@ -115,6 +120,7 @@ final class ReviewedReceiptBatch {
       ),
       totalGrossMinorUnits: totalGrossMinorUnits,
       currencyCode: currencyCode,
+      stageId: _optionalText(stageId, 'stageId', maximumLength: 64),
       lines: normalizedLines,
       totalMismatchAcknowledged: totalMismatchAcknowledged,
     );
@@ -129,6 +135,7 @@ final class ReviewedReceiptBatch {
     required this.documentNumber,
     required this.totalGrossMinorUnits,
     required this.currencyCode,
+    required this.stageId,
     required Iterable<ReviewedReceiptLine> lines,
     required this.totalMismatchAcknowledged,
   }) : lines = UnmodifiableListView<ReviewedReceiptLine>(
@@ -145,6 +152,7 @@ final class ReviewedReceiptBatch {
   final String? documentNumber;
   final int totalGrossMinorUnits;
   final String currencyCode;
+  final String? stageId;
   final UnmodifiableListView<ReviewedReceiptLine> lines;
   final bool totalMismatchAcknowledged;
 }

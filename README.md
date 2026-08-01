@@ -39,6 +39,12 @@ environment values, including the expected upload-certificate SHA-256:
 dart run tool/release/build_android_release.dart
 ```
 
+Android integration smoke on a connected emulator or device:
+
+```bash
+flutter test integration_test/app_smoke_test.dart -d <device-id>
+```
+
 ## Product documentation
 
 - `docs/build-home-app/SPEC.md`
@@ -49,8 +55,13 @@ dart run tool/release/build_android_release.dart
 - `docs/build-home-app/IOS_AND_ANDROID_COMPATIBILITY.md`
 - `docs/build-home-app/GITHUB_IOS_CI.md`
 - `docs/build-home-app/IOS_TESTFLIGHT_SETUP.md`
+- `docs/build-home-app/PRODUCTION_READINESS_SPEC.md`
+- `docs/build-home-app/PRODUCTION_RELEASE_REPORT.md`
 - `docs/build-home-app-mockups/index.html`
 
 ## Privacy baseline
 
-The MVP has no account, backend, synchronization or automatic upload. Project data and attachments remain on the device unless the user explicitly exports them.
+The MVP has no account, backend, synchronization or app-initiated automatic
+upload. Project data and attachments remain in the app unless the user exports
+them. Android system backup is excluded; iOS device backup may include app data
+according to the user's Apple backup settings.

@@ -576,18 +576,168 @@ A pin references exactly one plan version and can link to photos, defects, measu
 
 ## Decisions And Change Impact
 
-A decision is separate from a cost. One decision can create multiple cost changes and schedule effects.
+A decision is separate from a cost. Journal schema `v13` stores the selected
+option and signed cost/schedule deltas on the decision, while
+`approved_by_contact_id` and `approved_at_utc_ms` form an explicit approval
+event. A regular status edit cannot create that event.
 
 ```text
 Decision
   -> selected option
   -> approval event
-  -> zero or more CostImpact records
-  -> zero or more ScheduleImpact records
+  -> signed cost delta
+  -> signed schedule delta
   -> linked documents/photos/quotes
 ```
 
-Impact values are auditable deltas. Editing the current budget does not erase the original decision history.
+Task 7.2 persists one aggregate signed cost delta and one aggregate signed
+schedule delta on each decision. Separate multiple impact records remain a
+target for a later allocation module. Impact values are auditable deltas;
+editing the current budget does not erase the original decision history.
+
+Only decisions in `approved` or `implemented` status with a complete approval
+event contribute to the impact aggregate. Proposals, pending and rejected
+records contribute zero. Editing approval-sensitive content on an approved
+decision appends a revision, clears the approval and returns the current record
+to `proposal`; the previous approved snapshot remains immutable in
+`journal_entry_revisions`.
+
+`journal_entry_links.relation_purpose` separates context links from records
+blocked by a decision. The first UI supports selecting multiple open schedule
+records and opens each blocker from decision details.
+
+The budget report keeps the project plan as the base plan. It displays the
+approved decision delta and calculated plan after changes separately; committed
+and paid totals still come only from confirmed cost records and corrections.
+This makes E2E-04 auditable without manufacturing a cost or overwriting the
+original plan.
+
+## Technical Evidence Albums
+
+Task 9.1 uses the existing private attachment as the binary source of truth.
+`technical_photos` is a project-scoped metadata index and never creates a
+second image copy:
+
+```text
+cost_attachments (private original + bounded preview)
+  -> document_metadata (shared document catalogue)
+  -> technical_photos (album, stage, zone, installation, contractor, date)
+  -> technical_photo_tags (normalized search tags)
+  -> checklist_item_attachments (optional evidence link)
+```
+
+The complete write runs in one SQLite transaction. Invalid media, cross-project
+targets or an incompatible checklist stage roll back document metadata, tags
+and evidence together. If the selected album has no stage and the photo links
+to a checklist item, that checklist stage becomes the technical photo stage.
+
+Album and photo foreign keys use the project id in every relation. SQL filters
+are parameterized; text/tag limits are enforced in both domain constructors and
+SQLite checks. The list query is offset-paged with a stable capture-date/id
+order and the UI requests 30 records at a time. Preview lookup is batched for
+the current page and a missing physical file renders a controlled state without
+discarding retained metadata.
+
+Schema `v14` contains the technical album, photo and tag tables. Backup restore
+validates their exact schema fingerprint and migrates v13 archives before the
+active database swap.
+
+Schema `v15` adds `technical_photo_links` and the PUNCH acceptance model. A
+technical photo can reference a validated cost, decision/scope change, defect
+or acceptance protocol. Each relation stores `(project_id, attachment_id,
+relation_type, target_id)` and validates both project ownership and target type
+inside the photo transaction. The UI resolves labels at read time and opens the
+exact source record; it never stores a title as the relation identity.
+
+Schema `v16` adds the non-null `cost_entries.cost_component` classification
+(`material`, `labor`, `mixed`, `unassigned`) and a project-scoped query index.
+The migration assigns `unassigned` to legacy rows because inferring labor or
+materials from free text would corrupt financial reporting. New manual and OCR
+entries select the value explicitly; filters, summaries, reports and CSV read
+the same persisted column.
+
+Schema `v17` adds the ROOM aggregate without replacing source records:
+
+```text
+rooms
+  -> room_choices
+       -> room_choice_variants
+       -> room_choice_outputs (planned cost / decision / material)
+  -> room_record_links (cost / journal / technical photo)
+  -> room_contact_links
+```
+
+Room identity is always a project-scoped stable ID. Existing cost, journal,
+technical-photo, defect and contact tables remain their source of truth; room
+links contain IDs only and resolve current labels at read time. A cost or
+journal/photo record has at most one room assignment, while a contact can be
+linked to many rooms. Cross-project targets are rejected before every write.
+
+Dimensions are integer millimetres, quantity is an integer plus decimal scale,
+waste is stored in basis points and money remains integer minor units. Choice
+estimates use checked `BigInt` intermediates and half-up rounding. A variant
+selection does not create financial or journal data. Separate explicit actions
+can create one planned material-cost draft and one proposed decision; durable
+`room_choice_outputs` rows prevent duplicate generation. A material action
+creates one local proposal in the MAT aggregate with the exact waste-adjusted
+quantity, room link and estimated value; it never places an external order.
+
+The room list is paged in groups of 30. Aggregate SQL counts only existing
+joined source records and includes only confirmed actual costs plus corrections
+in room spending. Deleting a room cascades room choices and links but preserves
+the source costs, journal entries, photos, defects and contacts.
+
+Schema `v18` adds the MAT aggregate:
+
+```text
+materials
+  -> material_deliveries
+  -> material_returns
+```
+
+Material identity is project-scoped. Optional stage, room, supplier contact,
+cost and receipt/invoice links are validated against the same project before a
+transaction is committed. Quantities are stored as integer microunits and
+money as integer minor units, so partial deliveries, refunds and summaries do
+not depend on binary floating-point arithmetic.
+
+Deliveries preserve expected and actual dates, received quantity, WZ reference,
+shortage and damage evidence. The repository rejects overdelivery unless the
+caller explicitly confirms the corrected ordered quantity. Returns preserve a
+deadline, expected and actual refund and proof-document requirement. Reminder
+preferences are persisted on these records; OS scheduling and deep-link
+delivery remain owned by `NOTIF-002`.
+
+The material list uses offset pagination with a stable updated-at/id order and
+project/status indexes. Dashboard aggregates are calculated in SQL, while ROOM
+creates at most one material proposal per durable choice-output identity.
+
+## Punch List And Acceptance Protocols
+
+Defects reuse `journal_entries` as their single source of truth. Severity,
+room/zone and closure requirements are typed defect columns, while report
+photos continue through `journal_entry_attachments` and after-repair evidence
+uses `defect_resolution_attachments`. This avoids a second defect row drifting
+away from captures and the construction diary.
+
+```text
+journal_entries (entry_type = defect)
+  -> journal_entry_attachments (report evidence)
+  -> defect_resolution_attachments (after-repair evidence)
+  -> acceptance_protocol_defects
+       -> acceptance_protocols
+       -> acceptance_protocol_attachments (signed scan/PDF)
+```
+
+Closing is a repository invariant, not a screen rule. Both PUNCH and legacy
+journal actions delegate to `PunchRepository`; a transaction rejects `closed`
+when the configured after-photo or signed-protocol evidence is missing. Local
+attachment recovery treats all of the tables above as live references.
+
+Protocol PDF generation is local. A bundled Roboto font provides Polish glyphs,
+the generated file is written only to the app export cache, shared through the
+platform sheet and removed afterwards. A generated unsigned PDF is explicitly
+labelled as not replacing a signed acceptance document.
 
 ## Project Health Engine
 

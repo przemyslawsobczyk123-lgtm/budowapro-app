@@ -1,10 +1,14 @@
 import 'dart:io';
 
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
+import 'package:budowapro/features/costs/domain/cost_entry.dart';
 import 'package:budowapro/features/receipt_scan/data/receipt_scan_providers.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_financial.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_review.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_scan.dart';
+import 'package:budowapro/features/projects/domain/project_template.dart';
+import 'package:budowapro/features/stages/domain/stage_plan.dart';
+import 'package:budowapro/features/stages/presentation/stage_ui_text.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,6 +22,8 @@ class ReceiptScanScreen extends ConsumerStatefulWidget {
     this.gateway,
     this.financialRepository,
     this.currencyCode,
+    this.stageOptions = const <ProjectStage>[],
+    this.defaultStageId,
     super.key,
   }) : assert(
          (gateway == null &&
@@ -32,6 +38,8 @@ class ReceiptScanScreen extends ConsumerStatefulWidget {
   final ReceiptScanGateway? gateway;
   final ReceiptFinancialRepository? financialRepository;
   final String? currencyCode;
+  final List<ProjectStage> stageOptions;
+  final String? defaultStageId;
 
   @override
   ConsumerState<ReceiptScanScreen> createState() => _ReceiptScanScreenState();
@@ -40,6 +48,7 @@ class ReceiptScanScreen extends ConsumerStatefulWidget {
 class _ReceiptScanScreenState extends ConsumerState<ReceiptScanScreen> {
   ReceiptScanController? _controller;
   String? _currencyCode;
+  List<ProjectStage> _stages = const <ProjectStage>[];
 
   @override
   void initState() {
@@ -96,6 +105,7 @@ class _ReceiptScanScreenState extends ConsumerState<ReceiptScanScreen> {
               duplicateCheck: state.duplicateCheck,
               saveFailed: state.saveFailed,
               currencyCode: _currencyCode!,
+              stages: _stages,
               controller: controller,
               onDiscard: controller.discard,
             ),
@@ -148,11 +158,15 @@ class _ReceiptScanScreenState extends ConsumerState<ReceiptScanScreen> {
   void _attachController(ReceiptScanDependencies dependencies) {
     if (_controller != null) return;
     _currencyCode = dependencies.currencyCode;
+    _stages = dependencies.stages.isEmpty
+        ? widget.stageOptions
+        : dependencies.stages;
     _controller = ReceiptScanController(
       projectId: widget.projectId,
       currencyCode: dependencies.currencyCode,
       gateway: dependencies.gateway,
       financialRepository: dependencies.financialRepository,
+      defaultStageId: dependencies.defaultStageId ?? widget.defaultStageId,
     )..addListener(_handleControllerChange);
   }
 
@@ -275,6 +289,7 @@ class _ReceiptScanResult extends StatelessWidget {
     required this.duplicateCheck,
     required this.saveFailed,
     required this.currencyCode,
+    required this.stages,
     required this.controller,
     required this.onDiscard,
   });
@@ -284,6 +299,7 @@ class _ReceiptScanResult extends StatelessWidget {
   final ReceiptDuplicateCheck? duplicateCheck;
   final bool saveFailed;
   final String currencyCode;
+  final List<ProjectStage> stages;
   final ReceiptScanController controller;
   final Future<void> Function() onDiscard;
 
@@ -372,6 +388,56 @@ class _ReceiptScanResult extends StatelessWidget {
                   heading: l10n.receiptVatLinesLabel,
                   lines: candidates.vatLines.map((line) => line.value),
                 ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String?>(
+                key: const ValueKey('receiptStageField'),
+                initialValue: draft.stageId,
+                isExpanded: true,
+                decoration: InputDecoration(labelText: l10n.receiptStageLabel),
+                items: <DropdownMenuItem<String?>>[
+                  DropdownMenuItem<String?>(
+                    value: null,
+                    child: Text(l10n.materialNoRelation),
+                  ),
+                  ...stages.map(
+                    (stage) => DropdownMenuItem<String?>(
+                      value: _stageId(stage),
+                      child: Text(stageName(l10n, stage)),
+                    ),
+                  ),
+                ],
+                onChanged: controller.updateStage,
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<CostComponent?>(
+                key: const ValueKey('receiptAllComponentsField'),
+                initialValue: null,
+                isExpanded: true,
+                decoration: InputDecoration(
+                  labelText: l10n.receiptApplyComponentLabel,
+                ),
+                items: CostComponent.values
+                    .where((value) => value != CostComponent.unassigned)
+                    .map(
+                      (value) => DropdownMenuItem<CostComponent?>(
+                        value: value,
+                        child: Text(_receiptComponentLabel(l10n, value)),
+                      ),
+                    )
+                    .toList(growable: false),
+                onChanged: (value) {
+                  if (value != null) controller.applyComponentToAll(value);
+                },
+              ),
+              if (draft.validationIssues.contains(
+                ReceiptReviewIssue.componentRequired,
+              )) ...[
+                const SizedBox(height: 8),
+                Text(
+                  l10n.receiptComponentRequiredMessage,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              ],
               const SizedBox(height: 20),
               Row(
                 children: [
@@ -487,6 +553,8 @@ class _ReceiptScanResult extends StatelessWidget {
         onAmountChanged: (value) =>
             controller.updateItem(item.id, grossAmountText: value),
         onVatChanged: (value) => controller.updateItem(item.id, vatRate: value),
+        onComponentChanged: (value) =>
+            controller.updateItem(item.id, component: value),
         onConfirm: () => controller.confirmItem(item.id),
         onMerge: () => controller.mergeWithNext(index),
         onSplit: () => _splitItem(context, index: index, item: item),
@@ -574,6 +642,7 @@ class _ReceiptItemEditor extends StatefulWidget {
     required this.onNameChanged,
     required this.onAmountChanged,
     required this.onVatChanged,
+    required this.onComponentChanged,
     required this.onConfirm,
     required this.onMerge,
     required this.onSplit,
@@ -588,6 +657,7 @@ class _ReceiptItemEditor extends StatefulWidget {
   final ValueChanged<String> onNameChanged;
   final ValueChanged<String> onAmountChanged;
   final ValueChanged<VatRate> onVatChanged;
+  final ValueChanged<CostComponent> onComponentChanged;
   final VoidCallback onConfirm;
   final VoidCallback onMerge;
   final VoidCallback onSplit;
@@ -663,6 +733,7 @@ class _ReceiptItemEditorState extends State<_ReceiptItemEditor> {
               builder: (context, constraints) {
                 final amountField = _amountField(l10n, item);
                 final vatField = _vatField(l10n, item);
+                final componentField = _componentField(l10n, item);
                 final scaledBodySize = MediaQuery.textScalerOf(
                   context,
                 ).scale(14);
@@ -675,6 +746,8 @@ class _ReceiptItemEditorState extends State<_ReceiptItemEditor> {
                       amountField,
                       const SizedBox(height: 10),
                       vatField,
+                      const SizedBox(height: 10),
+                      componentField,
                     ],
                   );
                 }
@@ -684,6 +757,8 @@ class _ReceiptItemEditorState extends State<_ReceiptItemEditor> {
                     Expanded(flex: 3, child: amountField),
                     const SizedBox(width: 10),
                     Expanded(flex: 2, child: vatField),
+                    const SizedBox(width: 10),
+                    Expanded(flex: 3, child: componentField),
                   ],
                 );
               },
@@ -744,6 +819,29 @@ class _ReceiptItemEditorState extends State<_ReceiptItemEditor> {
     );
   }
 
+  Widget _componentField(AppLocalizations l10n, ReceiptReviewItem item) {
+    return DropdownButtonFormField<CostComponent>(
+      key: ValueKey('receiptItemComponent-${item.id}'),
+      initialValue: item.component,
+      isExpanded: true,
+      decoration: InputDecoration(
+        labelText: l10n.costComponentLabel,
+        prefixIcon: const Icon(Icons.construction_outlined),
+      ),
+      items: CostComponent.values
+          .map(
+            (component) => DropdownMenuItem<CostComponent>(
+              value: component,
+              child: Text(_componentLabel(l10n, component)),
+            ),
+          )
+          .toList(growable: false),
+      onChanged: (value) {
+        if (value != null) widget.onComponentChanged(value);
+      },
+    );
+  }
+
   Widget _amountField(AppLocalizations l10n, ReceiptReviewItem item) {
     return TextFormField(
       key: ValueKey('receiptItemAmount-${item.id}'),
@@ -776,6 +874,14 @@ class _ReceiptItemEditorState extends State<_ReceiptItemEditor> {
       },
     );
   }
+
+  String _componentLabel(AppLocalizations l10n, CostComponent value) =>
+      switch (value) {
+        CostComponent.material => l10n.costComponentMaterial,
+        CostComponent.labor => l10n.costComponentLabor,
+        CostComponent.mixed => l10n.costComponentMixed,
+        CostComponent.unassigned => l10n.costComponentUnassigned,
+      };
 
   static void _syncController(TextEditingController controller, String value) {
     if (controller.text == value) return;
@@ -859,6 +965,33 @@ class _ReceiptTotalsSummary extends StatelessWidget {
       ),
     );
   }
+}
+
+String _receiptComponentLabel(AppLocalizations l10n, CostComponent value) =>
+    switch (value) {
+      CostComponent.material => l10n.costComponentMaterial,
+      CostComponent.labor => l10n.costComponentLabor,
+      CostComponent.mixed => l10n.costComponentMixed,
+      CostComponent.unassigned => l10n.costComponentUnassigned,
+    };
+
+String _stageId(ProjectStage stage) {
+  final key = stage.templateKey;
+  return key == null
+      ? stage.id
+      : switch (key) {
+          ProjectStageKey.planning => 'planning',
+          ProjectStageKey.formalities => 'formalities',
+          ProjectStageKey.sitePreparation => 'site_preparation',
+          ProjectStageKey.stateZero => 'state_zero',
+          ProjectStageKey.shellOpen => 'shell_open',
+          ProjectStageKey.shellClosed => 'shell_closed',
+          ProjectStageKey.demolition => 'demolition',
+          ProjectStageKey.installations => 'installations',
+          ProjectStageKey.plaster => 'plaster',
+          ProjectStageKey.finishing => 'finishing',
+          ProjectStageKey.handover => 'handover',
+        };
 }
 
 class _ReceiptTotalMismatchNotice extends StatelessWidget {

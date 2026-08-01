@@ -1,11 +1,36 @@
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 import 'package:budowapro/features/costs/domain/money.dart';
+import 'package:budowapro/features/costs/domain/cost_entry.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_ocr.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_review.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ReceiptReviewDraft', () {
+    test('requires classification and applies one component to all lines', () {
+      final draft = ReceiptReviewDraft.fromCandidates(
+        _candidates(),
+        initialStageId: 'state_zero',
+      );
+
+      expect(draft.stageId, 'state_zero');
+      expect(
+        draft.validationIssues,
+        contains(ReceiptReviewIssue.componentRequired),
+      );
+
+      final classified = draft.applyComponentToAll(CostComponent.mixed);
+
+      expect(
+        classified.items.every((item) => item.component == CostComponent.mixed),
+        isTrue,
+      );
+      expect(
+        classified.validationIssues,
+        isNot(contains(ReceiptReviewIssue.componentRequired)),
+      );
+    });
+
     test(
       'requires explicit review for every retained low-confidence field',
       () {
@@ -28,6 +53,7 @@ void main() {
 
         final reviewed = draft
             .confirmField(ReceiptReviewFieldKey.date)
+            .applyComponentToAll(CostComponent.material)
             .confirmItem(draft.items[0].id)
             .confirmItem(draft.items[1].id);
 
@@ -267,7 +293,7 @@ void main() {
 }
 
 ReceiptReviewDraft _confirmAllItems(ReceiptReviewDraft draft) {
-  var reviewed = draft;
+  var reviewed = draft.applyComponentToAll(CostComponent.material);
   for (final item in draft.items) {
     reviewed = reviewed.confirmItem(item.id);
   }

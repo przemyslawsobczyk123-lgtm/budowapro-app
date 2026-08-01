@@ -61,6 +61,12 @@ String checklistTemplateTitle(
   AppLocalizations l10n,
   ChecklistTemplateKey key,
 ) => switch (key) {
+  ChecklistTemplateKey.planningScopeAndBudget =>
+    l10n.checklistPlanningScopeAndBudget,
+  ChecklistTemplateKey.existingBuildingSurvey =>
+    l10n.checklistExistingBuildingSurvey,
+  ChecklistTemplateKey.designDecisionsRegister =>
+    l10n.checklistDesignDecisionsRegister,
   ChecklistTemplateKey.planningPermissionBasis =>
     l10n.checklistPlanningPermissionBasis,
   ChecklistTemplateKey.landTitleAndRoadAccess =>
@@ -134,12 +140,77 @@ String checklistTemplateTitle(
     l10n.checklistConcreteDeliveryAndAcceptance,
   ChecklistTemplateKey.postFoundationSurvey =>
     l10n.checklistPostFoundationSurvey,
+  ChecklistTemplateKey.demolitionHazardSurvey =>
+    l10n.checklistDemolitionHazardSurvey,
+  ChecklistTemplateKey.utilityDisconnectionAndProtection =>
+    l10n.checklistUtilityDisconnectionAndProtection,
+  ChecklistTemplateKey.demolitionPlanAndWaste =>
+    l10n.checklistDemolitionPlanAndWaste,
+  ChecklistTemplateKey.neighborAndCommonAreaProtection =>
+    l10n.checklistNeighborAndCommonAreaProtection,
+  ChecklistTemplateKey.demolitionCompletionInspection =>
+    l10n.checklistDemolitionCompletionInspection,
+  ChecklistTemplateKey.shellStructuralAcceptance =>
+    l10n.checklistShellStructuralAcceptance,
+  ChecklistTemplateKey.roofWeatherProtection =>
+    l10n.checklistRoofWeatherProtection,
+  ChecklistTemplateKey.openingAndShadingPreparation =>
+    l10n.checklistOpeningAndShadingPreparation,
+  ChecklistTemplateKey.shellSafetyAndAccess =>
+    l10n.checklistShellSafetyAndAccess,
+  ChecklistTemplateKey.windowDoorAcceptance =>
+    l10n.checklistWindowDoorAcceptance,
+  ChecklistTemplateKey.weatherTightnessAndMoisture =>
+    l10n.checklistWeatherTightnessAndMoisture,
+  ChecklistTemplateKey.temporaryVentilationAndHeating =>
+    l10n.checklistTemporaryVentilationAndHeating,
+  ChecklistTemplateKey.installationCoordination =>
+    l10n.checklistInstallationCoordination,
+  ChecklistTemplateKey.electricalInstallationRoutes =>
+    l10n.checklistElectricalInstallationRoutes,
+  ChecklistTemplateKey.waterSewerHeatingRoutes =>
+    l10n.checklistWaterSewerHeatingRoutes,
+  ChecklistTemplateKey.ventilationAndLowVoltageRoutes =>
+    l10n.checklistVentilationAndLowVoltageRoutes,
+  ChecklistTemplateKey.installationTests => l10n.checklistInstallationTests,
+  ChecklistTemplateKey.concealedInstallationPhotos =>
+    l10n.checklistConcealedInstallationPhotos,
+  ChecklistTemplateKey.substrateInspection => l10n.checklistSubstrateInspection,
+  ChecklistTemplateKey.plasterAndScreedExecution =>
+    l10n.checklistPlasterAndScreedExecution,
+  ChecklistTemplateKey.floorHeatingCommissioning =>
+    l10n.checklistFloorHeatingCommissioning,
+  ChecklistTemplateKey.plasterScreedAcceptance =>
+    l10n.checklistPlasterScreedAcceptance,
+  ChecklistTemplateKey.wetAreaWaterproofing =>
+    l10n.checklistWetAreaWaterproofing,
+  ChecklistTemplateKey.finishMaterialsAndSamples =>
+    l10n.checklistFinishMaterialsAndSamples,
+  ChecklistTemplateKey.floorsWallsCeilings => l10n.checklistFloorsWallsCeilings,
+  ChecklistTemplateKey.joineryAndPainting => l10n.checklistJoineryAndPainting,
+  ChecklistTemplateKey.systemsCommissioning =>
+    l10n.checklistSystemsCommissioning,
+  ChecklistTemplateKey.warrantiesAndManuals =>
+    l10n.checklistWarrantiesAndManuals,
+  ChecklistTemplateKey.asBuiltDocumentation =>
+    l10n.checklistAsBuiltDocumentation,
+  ChecklistTemplateKey.asBuiltSurvey => l10n.checklistAsBuiltSurvey,
+  ChecklistTemplateKey.testsCertificates => l10n.checklistTestsCertificates,
+  ChecklistTemplateKey.constructionCompletionNotice =>
+    l10n.checklistConstructionCompletionNotice,
+  ChecklistTemplateKey.defectsAndHandover => l10n.checklistDefectsAndHandover,
 };
 
 String checklistTemplateRisk(
   AppLocalizations l10n,
   ChecklistTemplateKey key,
 ) => switch (key) {
+  ChecklistTemplateKey.planningScopeAndBudget =>
+    l10n.checklistPlanningScopeAndBudgetRisk,
+  ChecklistTemplateKey.existingBuildingSurvey =>
+    l10n.checklistExistingBuildingSurveyRisk,
+  ChecklistTemplateKey.designDecisionsRegister =>
+    l10n.checklistDesignDecisionsRegisterRisk,
   ChecklistTemplateKey.planningPermissionBasis =>
     l10n.checklistPlanningPermissionBasisRisk,
   ChecklistTemplateKey.landTitleAndRoadAccess =>
@@ -218,4 +289,67 @@ String checklistTemplateRisk(
     l10n.checklistConcreteDeliveryAndAcceptanceRisk,
   ChecklistTemplateKey.postFoundationSurvey =>
     l10n.checklistPostFoundationSurveyRisk,
+  ChecklistTemplateKey.demolitionHazardSurvey =>
+    l10n.checklistDemolitionHazardSurveyRisk,
+  ChecklistTemplateKey.utilityDisconnectionAndProtection =>
+    l10n.checklistUtilityDisconnectionAndProtectionRisk,
+  ChecklistTemplateKey.demolitionPlanAndWaste =>
+    l10n.checklistDemolitionPlanAndWasteRisk,
+  ChecklistTemplateKey.neighborAndCommonAreaProtection =>
+    l10n.checklistNeighborAndCommonAreaProtectionRisk,
+  ChecklistTemplateKey.demolitionCompletionInspection =>
+    l10n.checklistDemolitionCompletionInspectionRisk,
+  ChecklistTemplateKey.shellStructuralAcceptance =>
+    l10n.checklistShellStructuralAcceptanceRisk,
+  ChecklistTemplateKey.roofWeatherProtection =>
+    l10n.checklistRoofWeatherProtectionRisk,
+  ChecklistTemplateKey.openingAndShadingPreparation =>
+    l10n.checklistOpeningAndShadingPreparationRisk,
+  ChecklistTemplateKey.shellSafetyAndAccess =>
+    l10n.checklistShellSafetyAndAccessRisk,
+  ChecklistTemplateKey.windowDoorAcceptance =>
+    l10n.checklistWindowDoorAcceptanceRisk,
+  ChecklistTemplateKey.weatherTightnessAndMoisture =>
+    l10n.checklistWeatherTightnessAndMoistureRisk,
+  ChecklistTemplateKey.temporaryVentilationAndHeating =>
+    l10n.checklistTemporaryVentilationAndHeatingRisk,
+  ChecklistTemplateKey.installationCoordination =>
+    l10n.checklistInstallationCoordinationRisk,
+  ChecklistTemplateKey.electricalInstallationRoutes =>
+    l10n.checklistElectricalInstallationRoutesRisk,
+  ChecklistTemplateKey.waterSewerHeatingRoutes =>
+    l10n.checklistWaterSewerHeatingRoutesRisk,
+  ChecklistTemplateKey.ventilationAndLowVoltageRoutes =>
+    l10n.checklistVentilationAndLowVoltageRoutesRisk,
+  ChecklistTemplateKey.installationTests => l10n.checklistInstallationTestsRisk,
+  ChecklistTemplateKey.concealedInstallationPhotos =>
+    l10n.checklistConcealedInstallationPhotosRisk,
+  ChecklistTemplateKey.substrateInspection =>
+    l10n.checklistSubstrateInspectionRisk,
+  ChecklistTemplateKey.plasterAndScreedExecution =>
+    l10n.checklistPlasterAndScreedExecutionRisk,
+  ChecklistTemplateKey.floorHeatingCommissioning =>
+    l10n.checklistFloorHeatingCommissioningRisk,
+  ChecklistTemplateKey.plasterScreedAcceptance =>
+    l10n.checklistPlasterScreedAcceptanceRisk,
+  ChecklistTemplateKey.wetAreaWaterproofing =>
+    l10n.checklistWetAreaWaterproofingRisk,
+  ChecklistTemplateKey.finishMaterialsAndSamples =>
+    l10n.checklistFinishMaterialsAndSamplesRisk,
+  ChecklistTemplateKey.floorsWallsCeilings =>
+    l10n.checklistFloorsWallsCeilingsRisk,
+  ChecklistTemplateKey.joineryAndPainting =>
+    l10n.checklistJoineryAndPaintingRisk,
+  ChecklistTemplateKey.systemsCommissioning =>
+    l10n.checklistSystemsCommissioningRisk,
+  ChecklistTemplateKey.warrantiesAndManuals =>
+    l10n.checklistWarrantiesAndManualsRisk,
+  ChecklistTemplateKey.asBuiltDocumentation =>
+    l10n.checklistAsBuiltDocumentationRisk,
+  ChecklistTemplateKey.asBuiltSurvey => l10n.checklistAsBuiltSurveyRisk,
+  ChecklistTemplateKey.testsCertificates => l10n.checklistTestsCertificatesRisk,
+  ChecklistTemplateKey.constructionCompletionNotice =>
+    l10n.checklistConstructionCompletionNoticeRisk,
+  ChecklistTemplateKey.defectsAndHandover =>
+    l10n.checklistDefectsAndHandoverRisk,
 };

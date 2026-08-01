@@ -104,19 +104,20 @@ void main() {
           ...sitePreparation,
           ...checklist,
         ].map((item) => item.templateKey).toSet(),
-        ChecklistTemplateKey.values
-            .where((key) => key != ChecklistTemplateKey.siteRoadPowerWater)
-            .toSet(),
+        containsAll(<ChecklistTemplateKey>{
+          ChecklistTemplateKey.planningPermissionBasis,
+          ChecklistTemplateKey.foundationGrounding,
+        }),
       );
       final shellOpenChecklist = await repository.listChecklistItems(
         projectId: 'project-1',
         stageId: 'shell_open',
       );
-      expect(shellOpenChecklist, isEmpty);
+      expect(shellOpenChecklist, hasLength(4));
       final projectChecklist = await repository.listProjectChecklistItems(
         projectId: 'project-1',
       );
-      expect(projectChecklist, hasLength(43));
+      expect(projectChecklist, hasLength(67));
       expect(
         projectChecklist.every((item) => item.projectId == 'project-1'),
         isTrue,
@@ -219,7 +220,7 @@ void main() {
       );
       expect(
         await repository.listProjectChecklistItems(projectId: 'project-1'),
-        hasLength(43),
+        hasLength(67),
       );
     },
   );

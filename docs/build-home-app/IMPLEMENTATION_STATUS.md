@@ -1,6 +1,6 @@
 # BudowaPRO - implementation status
 
-Last updated: 2026-07-30
+Last updated: 2026-08-01
 
 ## Current release
 
@@ -83,6 +83,8 @@ Last updated: 2026-07-30
 - Arithmetic and VAT use checked `BigInt` intermediates; no persisted amount uses `double`.
 - VAT 0%, 8% and 23% share one tested half-up rounding rule for net and gross input.
 - Cost, offer and planned entry types are separate from financial and draft statuses.
+- Every entry independently records its cost component: material, labor, mixed or unassigned.
+  Existing records migrate to unassigned instead of being guessed from their name or category.
 - Quantity uses an integer scale; unit, payment method, source and attachment IDs are preserved.
 - Returns and price/VAT changes are append-only corrections; decision impacts remain separate deltas.
 - Summary calculation excludes drafts and offers, applies approved impacts and reports
@@ -93,8 +95,9 @@ Last updated: 2026-07-30
 
 - Schema `v3` persists cost entries, generic attachment metadata, many-to-many cost links,
   append-only revisions and financial corrections.
-- The manual form supports cost, offer and plan entries, Polish gross amounts, VAT 0/8/23,
-  quantity with unit, supplier, category, stage, payment method, note and entry date.
+- The manual form supports cost, offer and plan entries, material/labor/mixed classification,
+  Polish gross amounts, VAT 0/8/23, quantity with unit, supplier, category, stage, payment method,
+  note and entry date.
 - Entries can be saved as drafts or confirmed, then edited, copied to a new draft and moved
   through valid payment statuses. Any entry can be deleted after explicit confirmation.
 - Drafts preserve their selected target status across database reopening while remaining excluded
@@ -110,15 +113,16 @@ Last updated: 2026-07-30
 - File staging is recoverable. Only available attachments can be linked, and cost rows, attachment
   links and revisions are committed in one SQLite transaction. Streaming byte limits and recovery
   cover interrupted `.part` files and interrupted deletions.
-- The budget branch provides a compact summary and direct access to add, inspect and edit entries.
+- The budget branch provides a compact summary with planned and actual material/labor totals and
+  direct access to add, inspect and edit entries.
 - Validation preserves all entered values, and SQLite reopening tests verify exact amounts and status.
 
 ### Task 2.3 - cost register, search and filters
 
 - The budget branch now loads a stable 30-row page and fetches the next page near the scroll edge.
   Search and filter state remains in the screen session and survives result reloads.
-- Combined parameterized filters cover text, type, status, stage, category, supplier, date range,
-  payment method, source and data-quality warnings. Sorting supports date, amount and name.
+- Combined parameterized filters cover text, type, cost component, status, stage, category, supplier,
+  date range, payment method, source and data-quality warnings. Sorting supports date, amount and name.
 - One shared SQL predicate drives the result list, total count and aggregate summary, so the active
   plan, actual and difference always represent the same filter set. Drafts remain excluded from KPI.
 - Search treats `%`, `_` and `\` as literal user input. Filter values are normalized and bounded before
@@ -138,11 +142,17 @@ Last updated: 2026-07-30
 
 - Schema `v4` persists ordered project stages, checklist items and many-to-many links to generic
   local attachments. Project deletion impact now counts stage and checklist records as well as costs.
-- House and renovation templates are seeded idempotently. The house template now has 15 formalities,
-  12 site-preparation tasks and 16 `Stan 0` tasks. Ground investigation is kept with formalities, while
-  access, fencing, site facilities and temporary utilities form a dedicated stage before foundations.
+- House and renovation templates are seeded idempotently. The house template has 15 formalities,
+  12 site-preparation tasks, 16 `Stan 0` tasks, 4 open-shell tasks, 3 closed-shell tasks,
+  6 installation tasks, 6 finishing tasks and 5 handover tasks. Renovation has dedicated planning,
+  demolition, installation, plaster/screed, finishing and handover tasks. Ground investigation is kept
+  with formalities, while access, fencing, site facilities and temporary utilities form a dedicated stage
+  before foundations.
 - Users can add and rename project-local stages, reorder the complete stage timeline, and edit stage
   status, planned dates and planned budget. Stable stage IDs preserve existing cost assignments.
+- The selected stage can be set as the persisted current project stage with one action. A second action
+  marks the stage complete or reopens it; completion warns about unresolved checklist points and keeps the
+  decision explicit instead of silently closing work.
 - The Plan branch provides a compact horizontal stage selector, derived progress, blocked-item count,
   stage metadata and a risk-focused checklist. Loading, no-project, empty-checklist and error states are
   implemented, including a tested 320 px layout.
@@ -157,11 +167,11 @@ Last updated: 2026-07-30
   costs or checklist items, and failed linking removes only the unlinked staged file.
 - Custom stages are available immediately in the cost form and budget filters; labels are resolved from
   persisted stage records rather than shown as raw IDs.
-- A versioned offline guidance catalog adds five compact `Stan 0` decision guides for service penetrations,
+- A versioned offline guidance catalog adds compact `Stan 0` decision guides for service penetrations,
   foundation earthing, waterproofing, drainage/ground levels and concealed-work evidence. Each detail shows
   when to decide, inspection points, specialist questions, structured source metadata, content version and a clear
   boundary that it is not an execution design.
-- Foundation-earthing guidance content version `4` separates a foundation earth electrode from a ring earth
+- Foundation-earthing guidance content version `5` separates a foundation earth electrode from a ring earth
   electrode and vertical electrodes. It explains that ring or vertical electrodes can be designed after the
   foundation is complete, but their material, layout and quantity require ground conditions, system function,
   corrosion assessment and measured results. It deliberately provides no universal conductor size, electrode
@@ -172,14 +182,12 @@ Last updated: 2026-07-30
 - Six additional source-backed guides cover planning and ground conditions, coordinated approvals, lawful
   construction start, site access and logistics, temporary utilities/facilities, and site safety/evidence.
   The content remains collapsed and task-oriented rather than becoming a wall of legal text.
-- The shell-open stage has an informational guide for agreeing the exact window/shading detail before lintels.
-  It does not seed a database row or change progress in existing projects. The content explicitly treats `5 cm`,
-  conductor dimensions, PMBC/KMB, XPS, dimpled membrane and drainage as project/system-dependent rather than
-  universal instructions.
-- Eight additional source-backed guides cover structural and roof checks in the open shell, window/door
-  installation and moisture control in the closed shell, coordinated routes and pre-covering tests for
-  installations, and substrate readiness plus wet-room waterproofing during finishing. These guides are also
-  read-only catalog content, so existing checklist progress and user data are not reseeded.
+- The shell-open stage has a guide and an operational checklist for agreeing the exact window/shading detail
+  before lintels. The catalog explicitly treats `5 cm`, conductor dimensions, PMBC/KMB, XPS, dimpled membrane
+  and drainage as project/system-dependent rather than universal instructions.
+- Source-backed guides now cover every built-in stage in both workflows, including renovation planning and
+  demolition, open/closed shell, installations, plaster/screed, finishing and handover. New checklist rows
+  are additive and keyed by stable template identifiers, so existing progress, notes and evidence remain intact.
 - Formalities now explicitly send ground-investigation results to the adapting/structural designer before the
   slab, footings or another foundation solution is selected. Site preparation explicitly covers a temporary
   fence, equipment-sized gate and hardened route, plus a stable, secured sheet-metal shed or container.
@@ -306,7 +314,8 @@ Last updated: 2026-07-30
   stays unavailable without a project plan and remains negative as an explicit budget overrun.
 - Drafts, offers and planned-only entries are excluded. The financial fixture verifies corrections, payment status,
   unassigned costs, empty totals and exact agreement between headline values and breakdown slices.
-- SQL groups commitments, paid amounts and record counts by stage, category, supplier and local-calendar month.
+- SQL groups commitments, paid amounts and record counts by stage, category, supplier, cost component
+  and local-calendar month.
   Empty projects show the budget summary and a dedicated empty state without a zero-value chart.
 - The compact report screen supports pull-to-refresh and a horizontally scrollable segmented dimension control.
   Stage labels resolve from persisted project stages, and the layout is verified at 320 px.
@@ -319,6 +328,7 @@ Last updated: 2026-07-30
 - The cost register exports the exact active SQL filters and user-selected columns to semicolon CSV with UTF-8 BOM.
   Export pages are streamed, effective gross includes corrections, and user-authored cells are neutralized against
   spreadsheet formula injection before the Android share panel opens.
+- CSV includes the cost component, and receipt/invoice OCR review assigns it per detected line before drafts are saved.
 - Backup format `budowapro-backup` version `1` contains a consistent `VACUUM INTO` snapshot at
   `database/budowapro.db`, project originals/previews/exports, an exact manifest and SHA-256 catalog. Hashing,
   ZIP creation, inspection and extraction run outside the UI isolate.
@@ -412,14 +422,132 @@ Last updated: 2026-07-30
   derived open-count badge. Loading another page never materializes the complete inbox.
 - Classification is transactional. Photos/documents become documentation records, costs become excluded cost drafts
   and tasks become local schedule events. Dashboard and destination providers are invalidated only after success.
-- Notes, decisions and defects remain durable classified capture records until the dedicated diary and decision
-  modules are implemented in Phase 7. They do not affect financial or schedule summaries.
+- Notes, decisions and defects are promoted transactionally into the local journal module described below. The
+  original capture remains the source record and the journal entry stores its source id, so the inbox history can
+  be audited without duplicating a cost or schedule event.
 - Merge is available only where all source data can be retained. Cost and task merge is rejected in both UI and the
   repository so a second amount or schedule cannot be lost.
 - Reject removes the capture and then discards only attachments that are no longer linked. Rollback coverage proves
   that a failed status update cannot leave a target cost behind.
 - The inbox, composer, editor and merge picker are localized, scrollable and covered at a 320 px viewport and 200%
   text scaling.
+
+### Task 7.1 - local construction diary
+
+- SQLite schema `v12` adds journal entries, attachments, typed links and immutable revision snapshots. Existing
+  v11 and older databases migrate forward without losing project data; backup fixtures validate the new tables
+  and older migration paths.
+- The journal supports daily entries, notes, decisions, defects and scope changes. Each record has an occurrence
+  date, type, status, optional stage/person, content fields, due date, attachments and optional cost/time delta.
+- `/diary` is available from More. It provides a chronological, paged list with type filters and search, a focused
+  form, detail view, status changes and revision history. The form is scrollable and supports local file staging.
+- Classified note, decision and defect captures now create a journal record in the same SQLite transaction. Their
+  local attachments are also catalogued as documentation records, so the same evidence can be opened from the
+  document library without uploading it.
+- Stage and contact references are validated against the active project before persistence. Journal text and revision
+  snapshots remain local and are not sent to logs.
+
+### Task 7.2 - decisions and auditable deltas
+
+- SQLite schema `v13` adds the approving contact, approval time and a relation purpose that distinguishes context
+  from records blocked by a decision. The v12 migration is covered directly; legacy approved/implemented rows without
+  an auditable person and time return to `pending` instead of affecting reports silently.
+- Decision and scope-change forms accept signed PLN and day deltas, an optional decision maker and multiple blocked
+  schedule tasks. Blocked tasks remain typed project links and open from decision details.
+- Approval is a dedicated action. It requires a selected option and an existing project contact, stores person/time,
+  creates a revision and includes the decision in aggregates. A normal status edit cannot manufacture approval.
+- Editing approval-sensitive data after approval appends another immutable revision, clears approval and returns the
+  current version to `proposal`. The previously approved snapshot is preserved.
+- The budget report keeps the project plan unchanged and shows approved decision delta plus adjusted plan separately.
+  Committed and paid totals still contain only confirmed costs and corrections. Proposed/rejected decisions contribute
+  zero; approved and implemented decisions contribute exactly once.
+
+### Task 9.1 - technical evidence albums
+
+- SQLite schema `v14` adds project-scoped technical albums, technical photo metadata and normalized tags. The direct
+  v13 migration, current schema fingerprint and previous-schema backup restore are covered without losing data.
+- The technical library is available from Build and More. It provides albums for evidence before concrete, backfill,
+  plaster, screed and tiles, plus as-built and custom albums. Photos are paged in groups of 30 and searchable by title,
+  description, zone or tag, with stage, installation and tag filters.
+- Every technical photo indexes one existing private attachment instead of copying the image. Metadata includes capture
+  date, stage, room/zone, installation type, contractor, description and up to 12 normalized tags.
+- A photo can be linked as checklist evidence in the same SQLite transaction that writes document metadata, technical
+  metadata and tags. When no stage is selected explicitly, the checklist stage becomes the photo stage so filtering
+  and audit context remain consistent.
+- Album creation, image import, metadata editing and details are localized and usable at 320 px and 200% text scaling.
+  A physically missing original or preview has a controlled fallback while retained metadata remains readable.
+- Repository coverage proves atomic rollback for invalid media and paginates a 500-photo fixture without materializing
+  the complete collection. Startup attachment recovery now preserves files linked only to the journal or technical
+  documentation.
+- Task 9.1 intentionally completes checklist evidence first. Durable links from a photo to a cost, decision, defect and
+  acceptance protocol remain in the next PUNCH/linking slice rather than being stored as misleading text labels.
+
+### Task 9.2 - punch list, acceptance protocols and typed evidence links
+
+- SQLite schema `v15` extends journal-backed defects with severity, room/zone and explicit closure evidence rules.
+  It also adds resolution-photo links, acceptance protocols, protocol-defect links, signed protocol attachments and
+  typed technical-photo links. The direct v14 migration, current fingerprint and previous-schema backup fixture are
+  covered without deleting old journal defects.
+- `/punch` is available from More and from project quick actions. It provides separate defect and protocol views,
+  open/critical/overdue counters, search, multi-select status/severity filters and stage, room, responsible-person and
+  overdue filters. Lists remain paged in groups of 30.
+- Defects support severity, stage, room, responsible contact, report and resolution photos, due date and the statuses
+  open, in progress, recheck, fixed and closed. Closure is rejected transactionally when a required after-photo or a
+  linked signed protocol is missing. The older journal screen delegates defect saves/status changes to the same
+  repository, so the evidence rule cannot be bypassed through that route.
+- Acceptance protocols select multiple defects, stage, room and contractor; signed status requires a local PDF or
+  image attachment. The app can generate and share a local PDF summary with embedded Roboto for Polish characters,
+  defect rows and signature lines. The PDF states that an unsigned generated copy is not itself a signed protocol.
+- Technical photos now link through validated typed relations to a cost, decision/scope change, defect and acceptance
+  protocol. The edit form preserves existing links and details open the exact related record. Cross-project or wrong-
+  type targets roll back the complete photo save.
+- Attachment recovery recognizes report photos, resolution photos and signed protocols, so startup cleanup cannot
+  remove live evidence. Punch UI coverage includes 320 px and 200% text scaling; PDF tests verify the `%PDF` artifact
+  and deletion of temporary exports after sharing.
+
+### Task 8.1 - rooms and finish choice cards
+
+- SQLite schema `v17` adds project-scoped rooms, finish choices, price variants, durable choice outputs, typed source
+  links and many-to-many contact links. The direct v16 migration, schema fingerprint, backup migration and project
+  deletion impact are covered without inferring room identity from free-text labels.
+- Rooms store a stable ID, name, floor/zone, finish standard, dimensions in integer millimetres, optional planned
+  budget and note. The paged/searchable room list shows aggregate planned budget, linked actual cost and open choices.
+- A room card shows plan, actual, remaining budget, open decisions, materials, teams, technical photos and open
+  defects. Actual value reads confirmed source costs and corrections; planned costs and drafts do not inflate it.
+- Choice cards store quantity as a scaled integer, unit, waste basis points, order deadline, note and up to eight
+  variants with supplier, code and gross unit price. Quantity with waste and estimated gross use checked integer/
+  `BigInt` arithmetic rather than floating point.
+- Selecting a variant requires an explicit confirmation. A selected choice can separately create one local planned
+  material-cost draft after the user selects VAT, and one journal decision. Durable output links prevent accidental
+  duplicates; neither action places an order or changes actual spending.
+- The relation manager uses compact tabs and checkboxes to link existing costs, decisions, technical photos, defects
+  and contacts. Reassigning a source record from another room requires confirmation; source rows remain owned by
+  their original modules and deleting a room removes only room cards and links.
+- Forms, detail cards and relation tabs are localized and tested at 320 px and 200% text scaling. The `MAT` module
+  now owns real material records, delivery/return statuses and creation of the material output.
+
+### Task 8.2 - materials, deliveries and returns
+
+- SQLite schema `v18` adds project-scoped material, partial-delivery and return records. Quantities use exact integer
+  microunits, and money remains integer minor units; no floating-point values enter persistence or summaries.
+- A material can be linked independently to a stage, room, supplier contact, cost and receipt/invoice document. The
+  register supports search, status filters and pagination, and its summary shows ordered value, pending refunds,
+  delayed items, overdue returns and open deliveries.
+- Delivery records track expected and actual dates, quantity, WZ document, supplier contact, shortage, damage and a
+  reminder preference. Overdelivery requires explicit user confirmation and raises the ordered quantity to the
+  confirmed delivered total rather than silently corrupting stock state.
+- Return records track quantity, deadline, expected and actual refund, receipt/document and a reminder preference.
+  The repository normalizes a confirmed actual refund when no estimate existed and validates every linked record as
+  belonging to the same project.
+- A selected room variant can now create one explicit material proposal with waste-adjusted quantity, room link,
+  estimated gross value and existing planned-cost link. Durable output identity prevents duplicate proposals; the
+  action does not place an external order.
+- OCR review now assigns one document stage and requires every saved row to be classified as material, labor or
+  mixed. A bulk selector applies a component to all rows while preserving per-row edits. Stage and component are
+  independent reporting dimensions; mixed values are never guessed into an artificial 50/50 split.
+- Forms, details and the material register are localized and covered at 320 px with 200% text scaling. Database,
+  backup-migration, repository, ROOM output and presentation tests cover the new records. Android notification
+  scheduling for delivery and return reminders remains deliberately paired with deep links in `NOTIF-002`.
 
 ### Production privacy and legal readiness
 
@@ -431,9 +559,11 @@ Last updated: 2026-07-30
   document images are uploaded to Google.
 - The terms include a construction-safety boundary, mandatory professional verification, OCR review, backup
   responsibility and a clause preserving mandatory consumer rights.
-- Publisher name, privacy contact and public privacy-policy URL are build-time values. Android `preReleaseBuild`
+- Publisher name, privacy contact, public privacy-policy URL and public support URL are build-time values. Android `preReleaseBuild`
   depends on a validation task and fails when metadata is missing, malformed, local-only or points to a PDF; no legal
-  identity is invented in source. A separate CI utility verifies that the configured public URL responds with HTML.
+  fallback identity is injected into the app binary. The draft public pages use the owner data available for this
+  release and must be confirmed against the store accounts. A separate CI utility verifies that the configured public
+  URL responds with HTML.
 - Android API 36 is the explicit compile/target level. Automatic cloud backup is disabled and both legacy and Android
   12+ extraction rules exclude private app files from cloud and device-transfer backups.
 - Privacy settings now provide a phrase-confirmed action for deleting all local data. It clears the database, project
@@ -449,7 +579,7 @@ Last updated: 2026-07-30
   `android/key.properties`; mixed sources cannot select a different key. The release helper also compares the
   configured certificate SHA-256 with the keystore and final AAB. No debug-key fallback is allowed.
 - `tool/release/build_android_release.dart` provides one reproducible Android release path. It requires a clean Git
-  worktree by default, verifies the public HTML policy, runs all quality gates, builds a signed/obfuscated AAB,
+  worktree by default, verifies the public HTML policy and support page, runs all quality gates, builds a signed/obfuscated AAB,
   verifies its signature, enforces an exact permission allowlist and checks AAB configuration, 64-bit ELF LOAD
   segments, a universal APK and `zipalign -P 16` with a pinned SHA-256-checked bundletool.
 - Each successful release archives the AAB SHA-256, commit, R8 mapping, Dart obfuscation map, split Dart symbols and
@@ -465,13 +595,15 @@ Last updated: 2026-07-30
   before native decoding. Imported private copies are hash-verified against the selected source.
 - Backup restore accepts supported older schemas by migrating a validated staging database before atomic promotion;
   current data stays active until every migration and project/file consistency check passes. A synthetic backup
-  with the exact v8 schema is covered through the complete v8 -> v11 migration chain; a historical device fixture
+  with the exact v8 schema is covered through the complete v8 -> v13 migration chain; a historical device fixture
   remains part of pre-launch migration testing.
 - The Google Play listing icon is generated deterministically at
   `assets/store/google-play-icon-512.png` and passes the 512 px / 1 MB constraints.
-- A full signed validation build was completed with a disposable key and non-production legal data. The resulting
-  test AAB was 85,637,925 bytes, its signature and manifest passed, and bundletool reported
-  `PAGE_ALIGNMENT_16K`. It is evidence of the pipeline only and must not be uploaded to Play.
+- A full signed validation build for `1.0.0+1` was completed with a disposable key and non-production legal data.
+  The resulting test AAB was 89,798,971 bytes with SHA-256
+  `8ec731de02fffc402171b938282b44416d38b56586c8593f14738015c3ec7ba4`; its signature, exact permission
+  manifest, 10 native 64-bit libraries and universal APK passed, and bundletool reported `PAGE_ALIGNMENT_16K`.
+  It is evidence of the pipeline only and must not be uploaded to Play.
 
 ## Verified baseline
 
@@ -491,6 +623,7 @@ google_mlkit_text_recognition 0.16.0
 timezone 0.11.1
 url_launcher 6.3.2
 pdfrx 2.4.7
+pdf 3.13.0
 image 4.9.1
 crypto 3.0.7
 archive 4.0.9
@@ -514,14 +647,26 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-07-30. The full suite contains 473 passing tests. Debug APK:
+All commands passed on 2026-08-01. The full suite contains 560 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
 ```
 
+## Production gap audit
+
+The complete production-readiness review is recorded in
+`docs/build-home-app/PRODUCTION_READINESS_SPEC.md`, with the shorter functional
+gap summary in `PRODUCTION_GAP_AUDIT.md`. Version `1.0.0+1` is a technical R1
+release candidate. The frozen P0 scope is complete, an Android integration
+smoke passed on API 34, and CI now repeats it on API 28 and 36. Public legal
+pages, store copy, privacy worksheets, icon and Google Play feature graphic are
+ready in the repository. Store account declarations, signed current artifacts,
+final screenshots and physical-device evidence remain owner release gates.
+
 ## Next task
 
-Task 7.1 from `IMPLEMENTATION_PLAN.md`: implement the local daily site diary and
-allow classified notes, decisions and defects to become chronological entries
-without exposing their content to logs.
+For R1, execute the owner-only release checklist in
+`OWNER_RELEASE_ACTIONS.md`. Product development after R1 starts with Task 8.3
+from `IMPLEMENTATION_PLAN.md`: quantity calculators, followed by expanded
+delivery, return and warranty reminders.

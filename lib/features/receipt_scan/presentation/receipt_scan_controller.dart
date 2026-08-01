@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
+import 'package:budowapro/features/costs/domain/cost_entry.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_financial.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_review.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_scan.dart';
@@ -53,12 +54,14 @@ final class ReceiptScanController extends ChangeNotifier {
     required String currencyCode,
     required ReceiptScanGateway gateway,
     required ReceiptFinancialRepository financialRepository,
+    String? defaultStageId,
   }) {
     return ReceiptScanController._(
       projectId,
       currencyCode,
       gateway,
       financialRepository,
+      defaultStageId,
     );
   }
 
@@ -67,12 +70,14 @@ final class ReceiptScanController extends ChangeNotifier {
     this._currencyCode,
     this._gateway,
     this._financialRepository,
+    this._defaultStageId,
   );
 
   final String _projectId;
   final String _currencyCode;
   final ReceiptScanGateway _gateway;
   final ReceiptFinancialRepository _financialRepository;
+  final String? _defaultStageId;
   ReceiptScanViewState _state = const ReceiptScanViewState.idle();
   bool _isDisposed = false;
 
@@ -136,6 +141,7 @@ final class ReceiptScanController extends ChangeNotifier {
     String? name,
     String? grossAmountText,
     VatRate? vatRate,
+    CostComponent? component,
   }) {
     final draft = _state.reviewDraft;
     if (_state.status != ReceiptScanViewStatus.result || draft == null) return;
@@ -145,6 +151,7 @@ final class ReceiptScanController extends ChangeNotifier {
         name: name,
         grossAmountText: grossAmountText,
         vatRate: vatRate,
+        component: component,
       ),
     );
   }
@@ -153,6 +160,18 @@ final class ReceiptScanController extends ChangeNotifier {
     final draft = _state.reviewDraft;
     if (_state.status != ReceiptScanViewStatus.result || draft == null) return;
     _publishReview(draft.confirmItem(itemId));
+  }
+
+  void updateStage(String? stageId) {
+    final draft = _state.reviewDraft;
+    if (_state.status != ReceiptScanViewStatus.result || draft == null) return;
+    _publishReview(draft.updateStage(stageId));
+  }
+
+  void applyComponentToAll(CostComponent component) {
+    final draft = _state.reviewDraft;
+    if (_state.status != ReceiptScanViewStatus.result || draft == null) return;
+    _publishReview(draft.applyComponentToAll(component));
   }
 
   void addItem() {
@@ -306,7 +325,10 @@ final class ReceiptScanController extends ChangeNotifier {
           status: ReceiptScanViewStatus.result,
           source: source,
           session: session,
-          reviewDraft: ReceiptReviewDraft.fromCandidates(session.candidates),
+          reviewDraft: ReceiptReviewDraft.fromCandidates(
+            session.candidates,
+            initialStageId: _defaultStageId,
+          ),
         ),
       );
     } on ReceiptScanException catch (error) {
@@ -340,12 +362,14 @@ final class ReceiptScanController extends ChangeNotifier {
       documentNumber: draft.documentNumber.value,
       totalGrossMinorUnits: draft.receiptTotalMinorUnits!,
       currencyCode: _currencyCode,
+      stageId: draft.stageId,
       totalMismatchAcknowledged: draft.totalMismatchAccepted,
       lines: draft.items.map(
         (item) => ReviewedReceiptLine(
           name: item.name,
           grossMinorUnits: parseReceiptMinorUnits(item.grossAmountText)!,
           vatRate: item.vatRate,
+          component: item.component,
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:budowapro/features/costs/domain/money.dart';
 
-enum BudgetBreakdownDimension { stage, category, supplier, month }
+enum BudgetBreakdownDimension { stage, category, supplier, component, month }
 
 final class BudgetReportSlice {
   factory BudgetReportSlice({
@@ -57,6 +57,9 @@ final class BudgetReport {
     required Money paid,
     required int costRecordCount,
     Money? plan,
+    Money? approvedDecisionDelta,
+    int approvedScheduleDeltaDays = 0,
+    int approvedDecisionCount = 0,
     Map<BudgetBreakdownDimension, Iterable<BudgetReportSlice>> breakdowns =
         const <BudgetBreakdownDimension, Iterable<BudgetReportSlice>>{},
   }) {
@@ -67,9 +70,13 @@ final class BudgetReport {
     if (!RegExp(r'^[A-Z]{3}$').hasMatch(currencyCode)) {
       throw ArgumentError.value(currencyCode, 'currencyCode', 'must be valid');
     }
+    final decisionDelta =
+        approvedDecisionDelta ??
+        Money(minorUnits: 0, currencyCode: currencyCode);
     if (committed.currencyCode != currencyCode ||
         paid.currencyCode != currencyCode ||
-        (plan != null && plan.currencyCode != currencyCode)) {
+        (plan != null && plan.currencyCode != currencyCode) ||
+        decisionDelta.currencyCode != currencyCode) {
       throw ArgumentError('All report amounts must use $currencyCode');
     }
     if (committed.isNegative || paid.isNegative || plan?.isNegative == true) {
@@ -80,6 +87,15 @@ final class BudgetReport {
     }
     if (costRecordCount < 0) {
       throw RangeError.value(costRecordCount, 'costRecordCount');
+    }
+    if (approvedDecisionCount < 0) {
+      throw RangeError.value(approvedDecisionCount, 'approvedDecisionCount');
+    }
+    if (approvedDecisionCount == 0 &&
+        (!decisionDelta.isZero || approvedScheduleDeltaDays != 0)) {
+      throw ArgumentError(
+        'Decision deltas require at least one approved decision',
+      );
     }
     if (costRecordCount == 0 && (!committed.isZero || !paid.isZero)) {
       throw ArgumentError('An empty report must have zero totals');
@@ -103,6 +119,9 @@ final class BudgetReport {
       committed: committed,
       paid: paid,
       costRecordCount: costRecordCount,
+      approvedDecisionDelta: decisionDelta,
+      approvedScheduleDeltaDays: approvedScheduleDeltaDays,
+      approvedDecisionCount: approvedDecisionCount,
       breakdowns: UnmodifiableMapView(normalizedBreakdowns),
     );
   }
@@ -114,6 +133,9 @@ final class BudgetReport {
     required this.committed,
     required this.paid,
     required this.costRecordCount,
+    required this.approvedDecisionDelta,
+    required this.approvedScheduleDeltaDays,
+    required this.approvedDecisionCount,
     required this.breakdowns,
   });
 
@@ -123,6 +145,9 @@ final class BudgetReport {
   final Money committed;
   final Money paid;
   final int costRecordCount;
+  final Money approvedDecisionDelta;
+  final int approvedScheduleDeltaDays;
+  final int approvedDecisionCount;
   final UnmodifiableMapView<
     BudgetBreakdownDimension,
     UnmodifiableListView<BudgetReportSlice>
@@ -131,7 +156,11 @@ final class BudgetReport {
 
   bool get hasCosts => costRecordCount > 0;
 
-  Money? get remaining => plan == null ? null : plan! - committed;
+  Money? get adjustedPlan =>
+      plan == null ? null : plan! + approvedDecisionDelta;
+
+  Money? get remaining =>
+      adjustedPlan == null ? null : adjustedPlan! - committed;
 
   List<BudgetReportSlice> slicesFor(BudgetBreakdownDimension dimension) =>
       breakdowns[dimension] ?? const <BudgetReportSlice>[];

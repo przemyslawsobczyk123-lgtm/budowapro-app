@@ -1,10 +1,43 @@
+import 'dart:collection';
+
 import 'cost_entry.dart';
 import 'money.dart';
+
+final class CostComponentTotals {
+  factory CostComponentTotals({
+    required CostComponent component,
+    required Money planned,
+    required Money actual,
+  }) {
+    if (planned.currencyCode != actual.currencyCode) {
+      throw ArgumentError('Component totals must use one currency');
+    }
+    return CostComponentTotals._(
+      component: component,
+      planned: planned,
+      actual: actual,
+    );
+  }
+
+  const CostComponentTotals._({
+    required this.component,
+    required this.planned,
+    required this.actual,
+  });
+
+  final CostComponent component;
+  final Money planned;
+  final Money actual;
+
+  Money get difference => actual - planned;
+}
 
 final class CostSummary {
   factory CostSummary.fromTotals({
     required Money planned,
     required Money actual,
+    Iterable<CostComponentTotals> componentTotals =
+        const <CostComponentTotals>[],
   }) {
     if (planned.currencyCode != actual.currencyCode) {
       throw ArgumentError.value(
@@ -13,10 +46,23 @@ final class CostSummary {
         'must use currency ${planned.currencyCode}',
       );
     }
+    final normalizedComponents = <CostComponent, CostComponentTotals>{};
+    for (final totals in componentTotals) {
+      if (totals.planned.currencyCode != planned.currencyCode) {
+        throw ArgumentError(
+          'Component totals must use ${planned.currencyCode}',
+        );
+      }
+      if (normalizedComponents.containsKey(totals.component)) {
+        throw ArgumentError('Component totals must not contain duplicates');
+      }
+      normalizedComponents[totals.component] = totals;
+    }
     return CostSummary._(
       planned: planned,
       actual: actual,
       difference: actual - planned,
+      componentTotals: UnmodifiableMapView(normalizedComponents),
     );
   }
 
@@ -24,11 +70,13 @@ final class CostSummary {
     required this.planned,
     required this.actual,
     required this.difference,
+    required this.componentTotals,
   });
 
   final Money planned;
   final Money actual;
   final Money difference;
+  final UnmodifiableMapView<CostComponent, CostComponentTotals> componentTotals;
 }
 
 final class CalculateCostSummary {
@@ -48,6 +96,8 @@ final class CalculateCostSummary {
 
     var plannedMinorUnits = BigInt.zero;
     var actualMinorUnits = BigInt.zero;
+    final plannedByComponent = <CostComponent, BigInt>{};
+    final actualByComponent = <CostComponent, BigInt>{};
     final entriesById = <String, CostEntry>{};
 
     for (final entry in entries) {
@@ -63,8 +113,18 @@ final class CalculateCostSummary {
       switch (entry.type) {
         case CostEntryType.planned:
           plannedMinorUnits += BigInt.from(entry.amount.gross.minorUnits);
+          plannedByComponent.update(
+            entry.component,
+            (value) => value + BigInt.from(entry.amount.gross.minorUnits),
+            ifAbsent: () => BigInt.from(entry.amount.gross.minorUnits),
+          );
         case CostEntryType.cost:
           actualMinorUnits += BigInt.from(entry.amount.gross.minorUnits);
+          actualByComponent.update(
+            entry.component,
+            (value) => value + BigInt.from(entry.amount.gross.minorUnits),
+            ifAbsent: () => BigInt.from(entry.amount.gross.minorUnits),
+          );
         case CostEntryType.offer:
           break;
       }
@@ -99,6 +159,11 @@ final class CalculateCostSummary {
         throw StateError('Cost corrections exceed the original gross amount');
       }
       actualMinorUnits += correctionTotal.value;
+      actualByComponent.update(
+        target.component,
+        (value) => value + correctionTotal.value,
+        ifAbsent: () => correctionTotal.value,
+      );
     }
 
     final impactIds = <String>{};
@@ -110,6 +175,11 @@ final class CalculateCostSummary {
       }
       if (impact.status == DecisionCostImpactStatus.approved) {
         plannedMinorUnits += BigInt.from(impact.delta.minorUnits);
+        plannedByComponent.update(
+          CostComponent.unassigned,
+          (value) => value + BigInt.from(impact.delta.minorUnits),
+          ifAbsent: () => BigInt.from(impact.delta.minorUnits),
+        );
       }
     }
 
@@ -121,10 +191,22 @@ final class CalculateCostSummary {
       minorUnits: actualMinorUnits,
       currencyCode: currencyCode,
     );
-    return CostSummary._(
+    return CostSummary.fromTotals(
       planned: planned,
       actual: actual,
-      difference: actual - planned,
+      componentTotals: CostComponent.values.map(
+        (component) => CostComponentTotals(
+          component: component,
+          planned: Money.fromBigInt(
+            minorUnits: plannedByComponent[component] ?? BigInt.zero,
+            currencyCode: currencyCode,
+          ),
+          actual: Money.fromBigInt(
+            minorUnits: actualByComponent[component] ?? BigInt.zero,
+            currencyCode: currencyCode,
+          ),
+        ),
+      ),
     );
   }
 

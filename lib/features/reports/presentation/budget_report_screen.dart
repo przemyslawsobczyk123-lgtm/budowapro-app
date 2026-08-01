@@ -154,6 +154,11 @@ class _ReportContentState extends State<_ReportContent> {
                     label: Text(l10n.budgetReportDimensionSupplier),
                   ),
                   ButtonSegment(
+                    value: BudgetBreakdownDimension.component,
+                    icon: const Icon(Icons.construction_outlined),
+                    label: Text(l10n.budgetReportDimensionComponent),
+                  ),
+                  ButtonSegment(
                     value: BudgetBreakdownDimension.month,
                     icon: const Icon(Icons.calendar_month_outlined),
                     label: Text(l10n.budgetReportDimensionMonth),
@@ -216,6 +221,48 @@ class _BudgetSummary extends StatelessWidget {
                 color: isOverBudget ? colorScheme.error : colorScheme.primary,
               ),
             ),
+            if (report.approvedDecisionCount > 0) ...[
+              const SizedBox(height: 16),
+              DecoratedBox(
+                key: const ValueKey('budgetReportDecisionImpact'),
+                decoration: BoxDecoration(
+                  color: colorScheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.alt_route_rounded,
+                        color: colorScheme.onSecondaryContainer,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l10n.budgetReportDecisionImpactHeading,
+                              style: Theme.of(context).textTheme.titleSmall,
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              l10n.budgetReportDecisionImpactMessage(
+                                report.approvedDecisionCount,
+                                _signedInt(report.approvedScheduleDeltaDays),
+                              ),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 16),
             LayoutBuilder(
               builder: (context, constraints) {
@@ -224,11 +271,30 @@ class _BudgetSummary extends StatelessWidget {
                   children: [
                     _Metric(
                       width: width,
-                      label: l10n.budgetReportPlanLabel,
+                      label: report.approvedDecisionCount > 0
+                          ? l10n.budgetReportBasePlanLabel
+                          : l10n.budgetReportPlanLabel,
                       value: report.plan == null
                           ? l10n.budgetReportNoPlan
                           : _money(report.plan!, report.currencyCode),
                     ),
+                    if (report.approvedDecisionCount > 0)
+                      _Metric(
+                        width: width,
+                        label: l10n.budgetReportDecisionDeltaLabel,
+                        value: _signedMoney(
+                          report.approvedDecisionDelta,
+                          report.currencyCode,
+                        ),
+                      ),
+                    if (report.approvedDecisionCount > 0)
+                      _Metric(
+                        width: width,
+                        label: l10n.budgetReportAdjustedPlanLabel,
+                        value: report.adjustedPlan == null
+                            ? l10n.budgetReportNoPlan
+                            : _money(report.adjustedPlan!, report.currencyCode),
+                      ),
                     _Metric(
                       key: const ValueKey('budgetReportCommitted'),
                       width: width,
@@ -496,6 +562,9 @@ void _openCosts(
         case BudgetBreakdownDimension.supplier:
           parameters['supplierId'] = key;
           break;
+        case BudgetBreakdownDimension.component:
+          parameters['component'] = key;
+          break;
         case BudgetBreakdownDimension.month:
           final month = _parseMonth(key);
           if (month != null) {
@@ -523,6 +592,15 @@ String _sliceLabel(
   if (dimension == BudgetBreakdownDimension.stage) {
     return stageLabels[key] ?? key;
   }
+  if (dimension == BudgetBreakdownDimension.component) {
+    return switch (key) {
+      'material' => l10n.costComponentMaterial,
+      'labor' => l10n.costComponentLabor,
+      'mixed' => l10n.costComponentMixed,
+      'unassigned' => l10n.costComponentUnassigned,
+      _ => key,
+    };
+  }
   if (dimension == BudgetBreakdownDimension.month) {
     final month = _parseMonth(key);
     if (month != null) {
@@ -549,3 +627,10 @@ String _dateParameter(DateTime value) =>
 
 String _money(Money value, String currencyCode) =>
     formatMoneyForDisplay(value, currencyCode);
+
+String _signedMoney(Money value, String currencyCode) {
+  final formatted = _money(value, currencyCode);
+  return value.minorUnits > 0 ? '+$formatted' : formatted;
+}
+
+String _signedInt(int value) => value > 0 ? '+$value' : '$value';

@@ -326,9 +326,30 @@ final class SqliteProjectRepository implements ProjectRepository {
           (SELECT COUNT(*) FROM ${AppDatabase.contactsTable}
             WHERE project_id = ?) +
           (SELECT COUNT(*) FROM ${AppDatabase.captureDraftsTable}
+            WHERE project_id = ?) +
+          (SELECT COUNT(*) FROM ${AppDatabase.roomsTable}
+            WHERE project_id = ?) +
+          (SELECT COUNT(*) FROM ${AppDatabase.roomChoicesTable}
+            WHERE project_id = ?) +
+          (SELECT COUNT(*) FROM ${AppDatabase.roomChoiceVariantsTable}
+            WHERE project_id = ?) +
+          (SELECT COUNT(*) FROM ${AppDatabase.roomChoiceOutputsTable}
+            WHERE project_id = ?) +
+          (SELECT COUNT(*) FROM ${AppDatabase.materialsTable}
+            WHERE project_id = ?) +
+          (SELECT COUNT(*) FROM ${AppDatabase.materialDeliveriesTable}
+            WHERE project_id = ?) +
+          (SELECT COUNT(*) FROM ${AppDatabase.materialReturnsTable}
             WHERE project_id = ?) AS total
       ''',
       <Object?>[
+        projectId,
+        projectId,
+        projectId,
+        projectId,
+        projectId,
+        projectId,
+        projectId,
         projectId,
         projectId,
         projectId,

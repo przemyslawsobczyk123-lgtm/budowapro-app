@@ -73,6 +73,7 @@ void main() {
         ConfirmedCostEntryInput(
           _input(
             name: 'Beton na lawy',
+            component: CostComponent.material,
             status: CostStatus.paid,
             netMinorUnits: 123456,
             quantity: DecimalQuantity(unscaledValue: 185, scale: 1),
@@ -98,6 +99,7 @@ void main() {
       expect(loaded!.name, 'Beton na lawy');
       expect(loaded.lifecycle, CostLifecycle.confirmed);
       expect(loaded.status, CostStatus.paid);
+      expect(loaded.component, CostComponent.material);
       expect(loaded.amount.net.minorUnits, 123456);
       expect(loaded.amount.vat.minorUnits, 28395);
       expect(loaded.amount.gross.minorUnits, 151851);
@@ -709,6 +711,7 @@ void main() {
       costEntryId: original.id,
       input: ConfirmedCostDetailsInput(
         name: 'Beton C30/37',
+        component: CostComponent.mixed,
         entryDate: DateTime.utc(2026, 7, 16),
         stageId: 'state_zero',
         categoryId: 'concrete',
@@ -722,6 +725,7 @@ void main() {
     expect(updated.amount.gross, original.amount.gross);
     expect(updated.status, original.status);
     expect(updated.type, original.type);
+    expect(updated.component, CostComponent.mixed);
     expect(updated.revision, 2);
     final history = await repository.history(
       projectId: 'project-1',
@@ -733,11 +737,56 @@ void main() {
       CostHistoryAction.created,
     ]);
   });
+
+  test('filters and summarizes material and labor independently', () async {
+    await repository.create(
+      ConfirmedCostEntryInput(
+        _input(
+          name: 'Bloczek',
+          component: CostComponent.material,
+          status: CostStatus.paid,
+          netMinorUnits: 10000,
+        ),
+      ),
+    );
+    await repository.create(
+      ConfirmedCostEntryInput(
+        _input(
+          name: 'Murarz',
+          component: CostComponent.labor,
+          status: CostStatus.paid,
+          netMinorUnits: 20000,
+        ),
+      ),
+    );
+
+    final labor = await repository.list(
+      CostQuery(
+        projectId: 'project-1',
+        components: const <CostComponent>{CostComponent.labor},
+      ),
+      PageRequest(),
+    );
+    final summary = await repository.summarize(
+      CostSummaryQuery(projectId: 'project-1'),
+    );
+
+    expect(labor.items.map((entry) => entry.name), <String>['Murarz']);
+    expect(
+      summary.componentTotals[CostComponent.material]?.actual.minorUnits,
+      12300,
+    );
+    expect(
+      summary.componentTotals[CostComponent.labor]?.actual.minorUnits,
+      24600,
+    );
+  });
 }
 
 CostEntryInput _input({
   String name = 'Pozycja kosztowa',
   CostEntryType type = CostEntryType.cost,
+  CostComponent component = CostComponent.unassigned,
   CostStatus status = CostStatus.planned,
   int netMinorUnits = 10000,
   String currencyCode = 'PLN',
@@ -757,6 +806,7 @@ CostEntryInput _input({
     projectId: 'project-1',
     name: name,
     type: type,
+    component: component,
     status: status,
     amount: VatBreakdown.fromNet(
       Money(minorUnits: netMinorUnits, currencyCode: currencyCode),

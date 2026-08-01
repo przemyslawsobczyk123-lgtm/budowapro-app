@@ -538,6 +538,22 @@ class _QuickActions extends ConsumerWidget {
                 textAlign: TextAlign.center,
               ),
             ),
+            OutlinedButton.icon(
+              onPressed: () => context.push(
+                '/projects/${Uri.encodeComponent(project.id)}'
+                '/punch/defects/new',
+              ),
+              icon: const Icon(Icons.add_task_rounded),
+              label: Text(l10n.dashboardAddDefect, textAlign: TextAlign.center),
+            ),
+            OutlinedButton.icon(
+              onPressed: () => context.push('/technical'),
+              icon: const Icon(Icons.photo_library_outlined),
+              label: Text(
+                l10n.dashboardOpenTechnicalPhotos,
+                textAlign: TextAlign.center,
+              ),
+            ),
           ],
         ),
       ],

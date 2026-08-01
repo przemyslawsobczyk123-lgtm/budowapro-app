@@ -57,8 +57,11 @@ void main() {
                 contains('BUDOWAPRO_UPLOAD_CERT_SHA256'),
                 contains('BUDOWAPRO_PUBLISHER_NAME'),
               ),
-              contains('BUDOWAPRO_PRIVACY_CONTACT_EMAIL'),
-              contains('BUDOWAPRO_PRIVACY_POLICY_URL'),
+              allOf(
+                contains('BUDOWAPRO_PRIVACY_CONTACT_EMAIL'),
+                contains('BUDOWAPRO_PRIVACY_POLICY_URL'),
+                contains('BUDOWAPRO_SUPPORT_URL'),
+              ),
             ),
           ),
         ),
@@ -80,6 +83,7 @@ void main() {
         environment.privacyPolicyUrl,
         'https://budowapro.pl/polityka-prywatnosci',
       );
+      expect(environment.supportUrl, 'https://budowapro.pl/support');
     });
 
     test('rejects non-public or PDF privacy policy URLs', () {
@@ -147,6 +151,12 @@ void main() {
           reason: email,
         );
       }
+      expect(
+        () => validateReleaseEnvironment(
+          _validEnvironment(supportUrl: 'http://budowapro.pl/support'),
+        ),
+        throwsA(isA<ReleaseFailure>()),
+      );
     });
 
     test('normalizes and validates the expected upload certificate', () {
@@ -211,6 +221,7 @@ void main() {
       expect(joined, contains('BUDOWAPRO_PUBLISHER_NAME=BudowaPRO'));
       expect(joined, contains('BUDOWAPRO_PRIVACY_CONTACT_EMAIL='));
       expect(joined, contains('BUDOWAPRO_PRIVACY_POLICY_URL='));
+      expect(joined, contains('BUDOWAPRO_SUPPORT_URL='));
       expect(joined, isNot(contains('store-secret')));
       expect(joined, isNot(contains('key-secret')));
       expect(joined, isNot(contains('upload-alias')));
@@ -386,6 +397,7 @@ Map<String, String> _validEnvironment({
   String publisherName = 'BudowaPRO',
   String privacyEmail = 'privacy@budowapro.pl',
   String privacyUrl = 'https://budowapro.pl/privacy',
+  String supportUrl = 'https://budowapro.pl/support',
 }) {
   return <String, String>{
     'BUDOWAPRO_UPLOAD_STORE_FILE': 'upload.jks',
@@ -398,6 +410,7 @@ Map<String, String> _validEnvironment({
     'BUDOWAPRO_PUBLISHER_NAME': publisherName,
     'BUDOWAPRO_PRIVACY_CONTACT_EMAIL': privacyEmail,
     'BUDOWAPRO_PRIVACY_POLICY_URL': privacyUrl,
+    'BUDOWAPRO_SUPPORT_URL': supportUrl,
   };
 }
 

@@ -370,6 +370,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get costRegisterTypeSection => 'Rodzaj wpisu';
 
   @override
+  String get costRegisterComponentSection => 'Skład kosztu';
+
+  @override
   String get costRegisterStatusSection => 'Status';
 
   @override
@@ -457,6 +460,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get costCsvLifecycleColumn => 'Tryb wpisu';
 
   @override
+  String get costCsvComponentColumn => 'Skład kosztu';
+
+  @override
   String get costCsvConfirmedValue => 'Zatwierdzony';
 
   @override
@@ -520,6 +526,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get costTypeLabel => 'Rodzaj';
 
   @override
+  String get costComponentLabel => 'Skład kosztu';
+
+  @override
   String get costGrossAmountLabel => 'Kwota brutto';
 
   @override
@@ -566,6 +575,18 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get costTypePlanned => 'Plan';
+
+  @override
+  String get costComponentMaterial => 'Materiał';
+
+  @override
+  String get costComponentLabor => 'Robocizna';
+
+  @override
+  String get costComponentMixed => 'Wspólna wycena: materiał + robocizna';
+
+  @override
+  String get costComponentUnassigned => 'Nieprzypisane';
 
   @override
   String get costStatusPlanned => 'Planowany';
@@ -702,6 +723,15 @@ class AppLocalizationsPl extends AppLocalizations {
   String get costDetailsActionError => 'Nie udało się wykonać akcji.';
 
   @override
+  String get costRelationsSection => 'Powiązane dane';
+
+  @override
+  String get costRelationRoomLabel => 'Pomieszczenie';
+
+  @override
+  String get costRelationMaterialLabel => 'Materiał';
+
+  @override
   String get costHistorySection => 'Historia';
 
   @override
@@ -803,6 +833,26 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get stageStatusCompleted => 'Zakończony';
+
+  @override
+  String get stageCurrentLabel => 'Bieżący etap';
+
+  @override
+  String get stageSetCurrentAction => 'Ustaw jako bieżący';
+
+  @override
+  String get stageCompleteAction => 'Oznacz jako ukończony';
+
+  @override
+  String get stageReopenAction => 'Wznów etap';
+
+  @override
+  String get stageCompleteWithOpenItemsTitle => 'Etap ma otwarte punkty';
+
+  @override
+  String stageCompleteWithOpenItemsMessage(int count) {
+    return 'Pozostało otwartych punktów: $count. Możesz mimo to oznaczyć etap jako ukończony, jeśli świadomie przenosisz je poza zakres albo rozliczysz je później.';
+  }
 
   @override
   String get stageStartDateLabel => 'Planowany start';
@@ -1556,6 +1606,372 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get checklistPostFoundationSurveyRisk =>
       'Odchyłki położenia mogą ujawnić się dopiero przy kolejnych etapach lub odbiorze.';
+
+  @override
+  String get checklistPlanningScopeAndBudget =>
+      'Ustal zakres remontu, budżet i rezerwę';
+
+  @override
+  String get checklistPlanningScopeAndBudgetRisk =>
+      'Brak zakresu i rezerwy utrudnia porównanie ofert oraz zwiększa ryzyko kosztownych zmian w trakcie robót.';
+
+  @override
+  String get checklistExistingBuildingSurvey =>
+      'Zrób inwentaryzację istniejącego stanu';
+
+  @override
+  String get checklistExistingBuildingSurveyRisk =>
+      'Nieudokumentowane wymiary, instalacje i uszkodzenia mogą prowadzić do kolizji oraz sporów przy remoncie.';
+
+  @override
+  String get checklistDesignDecisionsRegister =>
+      'Zapisz decyzje materiałowe i wykonawcze';
+
+  @override
+  String get checklistDesignDecisionsRegisterRisk =>
+      'Ustalenia ustne łatwo się rozchodzą, a późniejsze zmiany zwiększają koszt i opóźnienie.';
+
+  @override
+  String get checklistDemolitionHazardSurvey =>
+      'Sprawdź zagrożenia przed rozbiórką';
+
+  @override
+  String get checklistDemolitionHazardSurveyRisk =>
+      'Nieznany azbest, szkło, instalacje pod napięciem lub niestabilne elementy mogą zagrozić zdrowiu i konstrukcji.';
+
+  @override
+  String get checklistUtilityDisconnectionAndProtection =>
+      'Odłącz i zabezpiecz istniejące instalacje';
+
+  @override
+  String get checklistUtilityDisconnectionAndProtectionRisk =>
+      'Pozostawione zasilanie, gaz, woda lub kanalizacja może spowodować porażenie, zalanie albo pożar.';
+
+  @override
+  String get checklistDemolitionPlanAndWaste =>
+      'Ustal kolejność rozbiórki i odbiór odpadów';
+
+  @override
+  String get checklistDemolitionPlanAndWasteRisk =>
+      'Brak kolejności może naruszyć stateczność budynku, a odpady bez segregacji utrudnią legalne przekazanie.';
+
+  @override
+  String get checklistNeighborAndCommonAreaProtection =>
+      'Zabezpiecz sąsiadów i części wspólne';
+
+  @override
+  String get checklistNeighborAndCommonAreaProtectionRisk =>
+      'Pył, hałas, drgania i uszkodzenia komunikacji wspólnej mogą zatrzymać prace i wywołać roszczenia.';
+
+  @override
+  String get checklistDemolitionCompletionInspection =>
+      'Odbierz stan po rozbiórce';
+
+  @override
+  String get checklistDemolitionCompletionInspectionRisk =>
+      'Pozostawione odpady, otwarte przejścia lub niezinwentaryzowane uszkodzenia utrudnią bezpieczny kolejny etap.';
+
+  @override
+  String get checklistShellStructuralAcceptance =>
+      'Odbierz konstrukcję i elementy przed zakryciem';
+
+  @override
+  String get checklistShellStructuralAcceptanceRisk =>
+      'Błąd zbrojenia, geometrii lub otworu po zakryciu jest trudny do wykrycia i naprawy.';
+
+  @override
+  String get checklistRoofWeatherProtection =>
+      'Zabezpiecz dach i odwodnienie przed opadami';
+
+  @override
+  String get checklistRoofWeatherProtectionRisk =>
+      'Nieszczelne przejścia, obróbki lub rynny mogą zawilgocić konstrukcję i wnętrze.';
+
+  @override
+  String get checklistOpeningAndShadingPreparation =>
+      'Uzgodnij otwory pod okna i osłony';
+
+  @override
+  String get checklistOpeningAndShadingPreparationRisk =>
+      'Brak detalu rolety lub żaluzji przed nadprożem może wymusić mostek cieplny albo przeróbkę konstrukcji.';
+
+  @override
+  String get checklistShellSafetyAndAccess =>
+      'Zabezpiecz otwory, schody i komunikację';
+
+  @override
+  String get checklistShellSafetyAndAccessRisk =>
+      'Niezabezpieczone krawędzie, otwory i tymczasowe schody są bezpośrednim ryzykiem wypadku.';
+
+  @override
+  String get checklistWindowDoorAcceptance =>
+      'Odbierz montaż okien i drzwi zewnętrznych';
+
+  @override
+  String get checklistWindowDoorAcceptanceRisk =>
+      'Brak podparcia, mocowania lub ciągłości uszczelnienia powoduje nieszczelności i problemy z użytkowaniem.';
+
+  @override
+  String get checklistWeatherTightnessAndMoisture =>
+      'Sprawdź szczelność budynku i wilgoć';
+
+  @override
+  String get checklistWeatherTightnessAndMoistureRisk =>
+      'Zakrycie przecieków lub mokrych przegród utrwala zawilgocenie, pleśń i odspojenia wykończenia.';
+
+  @override
+  String get checklistTemporaryVentilationAndHeating =>
+      'Ustal wietrzenie, osuszanie i ogrzewanie technologiczne';
+
+  @override
+  String get checklistTemporaryVentilationAndHeatingRisk =>
+      'Nieprawidłowe suszenie lub wychłodzenie może uszkodzić świeże warstwy i materiały.';
+
+  @override
+  String get checklistInstallationCoordination =>
+      'Skoordynuj wszystkie trasy instalacji';
+
+  @override
+  String get checklistInstallationCoordinationRisk =>
+      'Brak wspólnego planu prowadzi do kolizji, kucia i przypadkowego osłabiania konstrukcji.';
+
+  @override
+  String get checklistElectricalInstallationRoutes =>
+      'Wykonaj i sprawdź trasy elektryczne';
+
+  @override
+  String get checklistElectricalInstallationRoutesRisk =>
+      'Błędne trasy, brak ochrony lub niewłaściwe przepusty mogą uniemożliwić bezpieczny odbiór instalacji.';
+
+  @override
+  String get checklistWaterSewerHeatingRoutes =>
+      'Wykonaj trasy wody, kanalizacji i ogrzewania';
+
+  @override
+  String get checklistWaterSewerHeatingRoutesRisk =>
+      'Brak spadków, rewizji, izolacji lub dostępu serwisowego często oznacza kucie po wykończeniu.';
+
+  @override
+  String get checklistVentilationAndLowVoltageRoutes =>
+      'Wykonaj wentylację i teletechnikę';
+
+  @override
+  String get checklistVentilationAndLowVoltageRoutesRisk =>
+      'Zgniecione kanały, brak izolacji lub rezerw ograniczy działanie wentylacji i późniejszą rozbudowę.';
+
+  @override
+  String get checklistInstallationTests => 'Wykonaj próby i pomiary instalacji';
+
+  @override
+  String get checklistInstallationTestsRisk =>
+      'Zakrycie instalacji bez protokołu utrudnia wykrycie nieszczelności, błędów ochrony i wad działania.';
+
+  @override
+  String get checklistConcealedInstallationPhotos =>
+      'Zapisz zdjęcia instalacji przed zakryciem';
+
+  @override
+  String get checklistConcealedInstallationPhotosRisk =>
+      'Bez zdjęć z miarą późniejsze wiercenie, serwis i znalezienie trasy są obarczone zgadywaniem.';
+
+  @override
+  String get checklistSubstrateInspection =>
+      'Sprawdź podłoża przed tynkami i wylewkami';
+
+  @override
+  String get checklistSubstrateInspectionRisk =>
+      'Wilgotne, słabe lub zabrudzone podłoże może spowodować pękanie i odspajanie warstw.';
+
+  @override
+  String get checklistPlasterAndScreedExecution =>
+      'Wykonaj tynki i wylewki według technologii';
+
+  @override
+  String get checklistPlasterAndScreedExecutionRisk =>
+      'Zła temperatura, pielęgnacja lub dylatacje zwiększają ryzyko pęknięć i nierówności.';
+
+  @override
+  String get checklistFloorHeatingCommissioning =>
+      'Wykonaj próbę i wygrzewanie ogrzewania podłogowego';
+
+  @override
+  String get checklistFloorHeatingCommissioningRisk =>
+      'Brak próby przed wylewką ukrywa nieszczelność, a brak wygrzewania może uszkodzić późniejszą podłogę.';
+
+  @override
+  String get checklistPlasterScreedAcceptance =>
+      'Odbierz równość, wilgotność i dylatacje';
+
+  @override
+  String get checklistPlasterScreedAcceptanceRisk =>
+      'Wykończenie na nieodebranym podłożu przenosi wady na płytki, panele i farby.';
+
+  @override
+  String get checklistWetAreaWaterproofing =>
+      'Wykonaj hydroizolację pomieszczeń mokrych';
+
+  @override
+  String get checklistWetAreaWaterproofingRisk =>
+      'Płytki i fuga nie zastępują systemowej hydroizolacji, a nieszczelne detale mogą uszkodzić przegrody.';
+
+  @override
+  String get checklistFinishMaterialsAndSamples =>
+      'Zatwierdź materiały, próbki i układy';
+
+  @override
+  String get checklistFinishMaterialsAndSamplesRisk =>
+      'Brak próbki i zatwierdzonego układu kończy się różnicami koloru, formatu lub zakresu dostawy.';
+
+  @override
+  String get checklistFloorsWallsCeilings =>
+      'Wykonaj i odbierz podłogi, ściany oraz sufity';
+
+  @override
+  String get checklistFloorsWallsCeilingsRisk =>
+      'Nieodebrane powierzchnie mogą mieć wady widoczne dopiero po montażu wyposażenia i oświetlenia.';
+
+  @override
+  String get checklistJoineryAndPainting =>
+      'Zamontuj stolarkę wewnętrzną i wykonaj malowanie';
+
+  @override
+  String get checklistJoineryAndPaintingRisk =>
+      'Brak ochrony i kolejności robót zwiększa ryzyko uszkodzeń, zabrudzeń i poprawek.';
+
+  @override
+  String get checklistSystemsCommissioning => 'Uruchom i wyreguluj urządzenia';
+
+  @override
+  String get checklistSystemsCommissioningRisk =>
+      'Bez uruchomienia i regulacji ogrzewanie, wentylacja, alarm lub automatyka mogą nie działać zgodnie z założeniami.';
+
+  @override
+  String get checklistWarrantiesAndManuals =>
+      'Zbierz gwarancje, instrukcje i karty serwisowe';
+
+  @override
+  String get checklistWarrantiesAndManualsRisk =>
+      'Brak dokumentów utrudnia serwis, reklamację i późniejszą bezpieczną obsługę urządzeń.';
+
+  @override
+  String get checklistAsBuiltDocumentation =>
+      'Skompletuj dokumentację powykonawczą';
+
+  @override
+  String get checklistAsBuiltDocumentationRisk =>
+      'Nieaktualna dokumentacja utrudnia odbiór, serwis i potwierdzenie zgodności wykonania.';
+
+  @override
+  String get checklistAsBuiltSurvey =>
+      'Zleć geodezyjną inwentaryzację powykonawczą';
+
+  @override
+  String get checklistAsBuiltSurveyRisk =>
+      'Brak inwentaryzacji może zablokować prawidłowe zakończenie procesu i ujawnić błędne położenie sieci lub obiektu.';
+
+  @override
+  String get checklistTestsCertificates =>
+      'Zbierz protokoły prób, pomiarów i certyfikaty';
+
+  @override
+  String get checklistTestsCertificatesRisk =>
+      'Bez protokołów trudno potwierdzić bezpieczeństwo i poprawne uruchomienie instalacji.';
+
+  @override
+  String get checklistConstructionCompletionNotice =>
+      'Zweryfikuj tryb zakończenia budowy i użytkowania';
+
+  @override
+  String get checklistConstructionCompletionNoticeRisk =>
+      'Przystąpienie do użytkowania bez właściwego zawiadomienia lub pozwolenia może naruszać procedurę budowlaną.';
+
+  @override
+  String get checklistDefectsAndHandover =>
+      'Zamknij listę usterek i przekazanie domu';
+
+  @override
+  String get checklistDefectsAndHandoverRisk =>
+      'Brak protokołu odbioru, terminów i odpowiedzialności utrudnia egzekwowanie poprawek.';
+
+  @override
+  String get guidancePlanningScopeAndSurveyTitle =>
+      'Zakres remontu i stan istniejący';
+
+  @override
+  String get guidancePlanningScopeAndSurveyTiming =>
+      'Przed zamówieniem ofert, materiałów i pierwszych prac';
+
+  @override
+  String get guidancePlanningScopeAndSurveySummary =>
+      'W remoncie zacznij od inwentaryzacji, zakresu i budżetu, a nie od przypadkowego zakupu materiałów. Ustal, które ściany, instalacje i elementy są istniejące, a które mają zostać zmienione; w budynku wielorodzinnym sprawdź zasady zarządcy i części wspólne.';
+
+  @override
+  String get guidancePlanningScopeAndSurveyChecks =>
+      'Zapisz pomiary, zdjęcia, istniejące uszkodzenia, trasy instalacji i miejsca wymagające odkrywek.\nPodziel zakres na roboty konieczne, warianty i wyposażenie; dodaj rezerwę budżetową oraz terminy decyzji.\nSprawdź, czy zmiana układu, instalacji, elewacji, wentylacji lub elementów konstrukcyjnych wymaga projektanta, zgody właściciela albo zarządcy.\nZbierz próbki i karty techniczne materiałów, zanim wykonawca wyceni rozwiązanie.\nUtwórz jedną wersję rysunków, ustaleń i zdjęć dla ekip.';
+
+  @override
+  String get guidancePlanningScopeAndSurveyQuestions =>
+      'Czy zakres obejmuje także demontaż, wywóz, zabezpieczenia i odtworzenie?\nCzy znamy przebieg instalacji, grubości przegród i stan podłoży?\nCzy planowana zmiana dotyka konstrukcji, części wspólnych, elewacji lub dróg ewakuacji?\nKto zatwierdza każdą zmianę przed wykonaniem?';
+
+  @override
+  String get guidanceDemolitionSafetyAndUtilitiesTitle =>
+      'Rozbiórka bez niespodzianek';
+
+  @override
+  String get guidanceDemolitionSafetyAndUtilitiesTiming =>
+      'Przed pierwszym skuciem, cięciem lub demontażem';
+
+  @override
+  String get guidanceDemolitionSafetyAndUtilitiesSummary =>
+      'Rozbiórkę planuj od rozpoznania zagrożeń i odłączenia mediów. Nie zakładaj, że ściana jest działowa, a instalacja nieczynna; elementy konstrukcyjne, materiały zawierające azbest i instalacje wymagają właściwej oceny oraz fachowego wykonania.';
+
+  @override
+  String get guidanceDemolitionSafetyAndUtilitiesChecks =>
+      'Potwierdź z projektantem lub kierownikiem, które elementy są nośne i w jakiej kolejności można je usuwać.\nZidentyfikuj azbest, szkło, stare izolacje, pyły, substancje niebezpieczne i miejsca o podwyższonym ryzyku.\nOdłącz, sprawdź i zabezpiecz prąd, gaz, wodę, ogrzewanie, kanalizację oraz teletechnikę.\nZabezpiecz sąsiadów, części wspólne, okna, drzwi, wentylację i drogi ewakuacji przed pyłem i gruzem.\nUstal segregację, transport i legalne przekazanie odpadów; po rozbiórce wykonaj odbiór odkrytych podłoży i instalacji.';
+
+  @override
+  String get guidanceDemolitionSafetyAndUtilitiesQuestions =>
+      'Kto potwierdzi odłączenie każdej instalacji?\nCzy w budynku występują materiały wymagające specjalistycznego usunięcia?\nCzy rozbiórka może zmienić stateczność lub ochronę przeciwpożarową?\nJak udokumentujemy stan sąsiadujących lokali i części wspólnych przed pracą?';
+
+  @override
+  String get guidancePlasterAndScreedExecutionTitle =>
+      'Tynki, wylewki i dojrzewanie';
+
+  @override
+  String get guidancePlasterAndScreedExecutionTiming =>
+      'Po próbach instalacji, przed montażem podłóg i szczelną zabudową';
+
+  @override
+  String get guidancePlasterAndScreedExecutionSummary =>
+      'Tynki i wylewki wykonuj dopiero po zamknięciu tras oraz udokumentowaniu prób. O wyniku decydują rodzaj podłoża, materiał, warunki w pomieszczeniu, dylatacje i czas dojrzewania, a nie jedna uniwersalna recepta.';
+
+  @override
+  String get guidancePlasterAndScreedExecutionChecks =>
+      'Sprawdź nośność, czystość, wilgotność i przygotowanie podłoża zgodnie z kartą systemu.\nPrzed wylewką potwierdź próby ogrzewania podłogowego, oznaczenie pętli, osłony rur i taśmy brzegowe.\nZachowaj dylatacje konstrukcyjne i zaprojektuj podział pól zgodnie z pomieszczeniami, ogrzewaniem i okładziną.\nUstal temperaturę, wentylację, ochronę przed przeciągiem, mrozem i zbyt szybkim wysychaniem.\nPo dojrzewaniu zmierz równość i wilgotność metodą wymaganą przez planowaną podłogę.';
+
+  @override
+  String get guidancePlasterAndScreedExecutionQuestions =>
+      'Czy każda warstwa ma kartę techniczną i wymagany czas dojrzewania?\nCzy przejścia i dylatacje są zgodne z projektem podłóg?\nCzy protokół ogrzewania podłogowego jest kompletny przed wylewką?\nJakie kryteria odbioru przyjmujemy dla równości, wilgotności i spękań?';
+
+  @override
+  String get guidanceHandoverAndOccupancyTitle =>
+      'Dokumenty, odbiór i użytkowanie';
+
+  @override
+  String get guidanceHandoverAndOccupancyTiming =>
+      'Przed przekazaniem domu i przed rozpoczęciem użytkowania';
+
+  @override
+  String get guidanceHandoverAndOccupancySummary =>
+      'Odbiór to nie tylko oględziny pomieszczeń. Zamknij dokumentację powykonawczą, geodezję, protokoły, instrukcje, listę usterek i właściwą procedurę zakończenia lub użytkowania. Dla remontu zakres formalny może być inny niż dla budowy domu, więc potwierdź go dla konkretnej inwestycji.';
+
+  @override
+  String get guidanceHandoverAndOccupancyChecks =>
+      'Zbierz aktualny projekt, zmiany zaakceptowane przez właściwe osoby, zdjęcia robót zakrytych i dokumentację powykonawczą.\nDołącz geodezyjną inwentaryzację powykonawczą, jeżeli wynika z zakresu inwestycji i przepisów.\nSkompletuj protokoły instalacji, prób, pomiarów, uruchomień, kominiarskie i inne wymagane dla obiektu.\nSprawdź z kierownikiem lub urzędem, czy potrzebne jest zawiadomienie o zakończeniu budowy czy pozwolenie na użytkowanie; nie przenoś tej procedury automatycznie na zwykły remont.\nPodpisz protokół przekazania z listą usterek, terminami, gwarancjami, instrukcjami i stanami liczników.';
+
+  @override
+  String get guidanceHandoverAndOccupancyQuestions =>
+      'Jaki tryb zakończenia i użytkowania dotyczy tej inwestycji?\nCzy dokumentacja powykonawcza pokazuje rzeczywiste trasy i zmiany?\nCzy wszystkie próby, pomiary i uruchomienia mają podpisane protokoły?\nKto i do kiedy usuwa każdą usterkę z protokołu przekazania?';
 
   @override
   String get guidancePlanningAndGroundConditionsTitle =>
@@ -3202,6 +3618,31 @@ class AppLocalizationsPl extends AppLocalizations {
   String get budgetReportPlanLabel => 'Plan';
 
   @override
+  String get budgetReportBasePlanLabel => 'Plan bazowy';
+
+  @override
+  String get budgetReportDecisionDeltaLabel => 'Zatwierdzone zmiany';
+
+  @override
+  String get budgetReportAdjustedPlanLabel => 'Plan po zmianach';
+
+  @override
+  String get budgetReportDecisionImpactHeading => 'Wpływ decyzji';
+
+  @override
+  String budgetReportDecisionImpactMessage(int count, String days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count zatwierdzonych decyzji',
+      many: '$count zatwierdzonych decyzji',
+      few: '$count zatwierdzone decyzje',
+      one: '1 zatwierdzona decyzja',
+    );
+    return '$_temp0 · termin $days dni';
+  }
+
+  @override
   String get budgetReportCommittedLabel => 'Zobowiązania';
 
   @override
@@ -3221,6 +3662,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get budgetReportDimensionSupplier => 'Wykonawca';
+
+  @override
+  String get budgetReportDimensionComponent => 'Skład kosztu';
 
   @override
   String get budgetReportDimensionMonth => 'Miesiąc';
@@ -3916,6 +4360,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get legalPublicPolicyLabel => 'Publiczna kopia polityki';
 
   @override
+  String get legalSupportUrlLabel => 'Publiczna strona wsparcia';
+
+  @override
   String get legalDocumentVersion => 'Wersja 1.0 · obowiązuje od 28.07.2026';
 
   @override
@@ -3942,6 +4389,10 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get legalMissingPublicUrlRequirement =>
       'publiczny adres HTTPS polityki';
+
+  @override
+  String get legalMissingSupportUrlRequirement =>
+      'publiczny adres HTTPS wsparcia';
 
   @override
   String get legalOpenLinkError => 'Nie udało się otworzyć odnośnika.';
@@ -4015,7 +4466,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get privacySectionRetentionBody =>
-      'Dane pozostają w aplikacji do czasu usunięcia rekordu lub projektu, wyczyszczenia danych BudowaPRO w ustawieniach Androida albo odinstalowania aplikacji. Ręcznie wyeksportowane pliki pozostają w wybranej lokalizacji do czasu, aż usuniesz je osobno. Automatyczny backup danych aplikacji jest wyłączony i wykluczony w regułach Androida.';
+      'Dane pozostają w aplikacji do czasu usunięcia rekordu lub projektu, wyczyszczenia danych aplikacji albo jej odinstalowania. Ręcznie wyeksportowane pliki pozostają w wybranej lokalizacji do czasu, aż usuniesz je osobno. Android wyklucza prywatne pliki BudowaPRO z kopii chmurowej i transferu urządzenie–urządzenie. Na iOS systemowa kopia urządzenia może objąć dane aplikacji zgodnie z ustawieniami i zasadami Apple.';
 
   @override
   String get privacySectionRightsTitle => '7. Kontrola danych i prawa';
@@ -4165,12 +4616,11 @@ class AppLocalizationsPl extends AppLocalizations {
       'Systemowy selektor lub skaner otwiera się dopiero po Twojej akcji. Manifest nie żąda szerokiego dostępu do pamięci ani kontaktów.';
 
   @override
-  String get privacyAutomaticBackupTitle =>
-      'Automatyczny backup Androida wyłączony';
+  String get privacyAutomaticBackupTitle => 'Kopie systemowe urządzenia';
 
   @override
   String get privacyAutomaticBackupSubtitle =>
-      'BudowaPRO deklaruje wykluczenie prywatnych plików z kopii chmurowej i przenoszenia urządzenie–urządzenie. Ręczna kopia ZIP nie jest szyfrowana.';
+      'Android wyklucza prywatne pliki BudowaPRO z kopii chmurowej i transferu na nowe urządzenie. Na iOS systemowa kopia urządzenia może objąć dane aplikacji zgodnie z ustawieniami Apple. Ręczna kopia ZIP nie jest szyfrowana.';
 
   @override
   String get privacyDataControlSection => 'Kontrola danych';
@@ -4219,4 +4669,1603 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get privacyDeleteAllError =>
       'Nie udało się dokończyć usuwania danych. Spróbuj ponownie.';
+
+  @override
+  String get journalTitle => 'Dziennik budowy';
+
+  @override
+  String get journalSubtitle =>
+      'Notatki, decyzje, usterki i zmiany zakresu w jednym miejscu.';
+
+  @override
+  String get journalEmptyTitle => 'Dziennik jest pusty';
+
+  @override
+  String get journalEmptyMessage =>
+      'Dodaj pierwszy wpis dnia, notatkę, decyzję albo usterkę.';
+
+  @override
+  String get journalNoProjectTitle => 'Wybierz projekt';
+
+  @override
+  String get journalNoProjectMessage =>
+      'Dziennik jest przypisany do wybranej budowy lub remontu.';
+
+  @override
+  String get journalLoadError => 'Nie udało się wczytać dziennika.';
+
+  @override
+  String get journalAddTooltip => 'Dodaj wpis';
+
+  @override
+  String get journalAllFilter => 'Wszystkie';
+
+  @override
+  String get journalSearchHint => 'Szukaj po tytule i treści';
+
+  @override
+  String get journalLoadMore => 'Pokaż starsze wpisy';
+
+  @override
+  String get journalTypeDaily => 'Wpis dnia';
+
+  @override
+  String get journalTypeNote => 'Notatka';
+
+  @override
+  String get journalTypeDecision => 'Decyzja';
+
+  @override
+  String get journalTypeDefect => 'Usterka';
+
+  @override
+  String get journalTypeScopeChange => 'Zmiana zakresu';
+
+  @override
+  String get journalStatusDraft => 'Szkic';
+
+  @override
+  String get journalStatusOpen => 'Otwarte';
+
+  @override
+  String get journalStatusInProgress => 'W toku';
+
+  @override
+  String get journalStatusProposal => 'Propozycja';
+
+  @override
+  String get journalStatusPending => 'Do decyzji';
+
+  @override
+  String get journalStatusApproved => 'Zatwierdzone';
+
+  @override
+  String get journalStatusRejected => 'Odrzucone';
+
+  @override
+  String get journalStatusImplemented => 'Wdrożone';
+
+  @override
+  String get journalStatusRecheck => 'Do sprawdzenia';
+
+  @override
+  String get journalStatusFixed => 'Naprawione';
+
+  @override
+  String get journalStatusClosed => 'Zamknięte';
+
+  @override
+  String get journalNewTitle => 'Nowy wpis';
+
+  @override
+  String get journalEditTitle => 'Edytuj wpis';
+
+  @override
+  String get journalDetailsTitle => 'Szczegóły wpisu';
+
+  @override
+  String get journalTitleLabel => 'Tytuł';
+
+  @override
+  String get journalDateLabel => 'Data wpisu';
+
+  @override
+  String get journalStageLabel => 'Etap';
+
+  @override
+  String get journalStageNone => 'Bez przypisanego etapu';
+
+  @override
+  String get journalPersonLabel => 'Osoba odpowiedzialna';
+
+  @override
+  String get journalPersonNone => 'Bez przypisanej osoby';
+
+  @override
+  String get journalDecisionMakerLabel => 'Osoba decyzyjna';
+
+  @override
+  String get journalDecisionMakerNone => 'Nie wskazano osoby decyzyjnej';
+
+  @override
+  String get journalStatusLabel => 'Status';
+
+  @override
+  String get journalBodyLabel => 'Treść';
+
+  @override
+  String get journalWeatherLabel => 'Pogoda';
+
+  @override
+  String get journalPeopleLabel => 'Ekipa / osoby na budowie';
+
+  @override
+  String get journalWorkLabel => 'Wykonane prace';
+
+  @override
+  String get journalDeliveriesLabel => 'Dostawy';
+
+  @override
+  String get journalDelaysLabel => 'Opóźnienia i przeszkody';
+
+  @override
+  String get journalNextStepsLabel => 'Kolejne kroki';
+
+  @override
+  String get journalProblemLabel => 'Problem lub pytanie';
+
+  @override
+  String get journalVariantsLabel => 'Rozważane warianty';
+
+  @override
+  String get journalSelectedOptionLabel => 'Wybrany wariant';
+
+  @override
+  String get journalRationaleLabel => 'Uzasadnienie';
+
+  @override
+  String get journalDueDateLabel => 'Termin sprawdzenia / realizacji';
+
+  @override
+  String get journalClearDueDate => 'Wyczyść termin';
+
+  @override
+  String get journalSaveAction => 'Zapisz wpis';
+
+  @override
+  String get journalSavedMessage => 'Wpis zapisany.';
+
+  @override
+  String get journalSaveError =>
+      'Nie udało się zapisać wpisu. Sprawdź pola i spróbuj ponownie.';
+
+  @override
+  String get journalEditTooltip => 'Edytuj wpis';
+
+  @override
+  String get journalChangeStatusTooltip => 'Zmień status';
+
+  @override
+  String get journalHistoryTitle => 'Historia zmian';
+
+  @override
+  String journalHistoryCount(int count) {
+    return 'Wersje: $count';
+  }
+
+  @override
+  String get journalAttachmentsTitle => 'Załączniki';
+
+  @override
+  String get journalAttachmentAdd => 'Dodaj plik';
+
+  @override
+  String get journalAttachmentRemove => 'Usuń załącznik';
+
+  @override
+  String journalAttachmentCount(int count) {
+    return 'Załączniki: $count';
+  }
+
+  @override
+  String get journalRelatedRecordsTitle => 'Powiązane rekordy';
+
+  @override
+  String get journalStageLink => 'Otwórz etap';
+
+  @override
+  String get journalContactLink => 'Otwórz osobę';
+
+  @override
+  String get journalRevisionCreated => 'Utworzono';
+
+  @override
+  String get journalRevisionUpdated => 'Zmieniono';
+
+  @override
+  String get journalRevisionStatusChanged => 'Zmieniono status';
+
+  @override
+  String get journalNoContent => 'Brak dodatkowej treści.';
+
+  @override
+  String get journalTypeRequiredError => 'Wybierz typ wpisu.';
+
+  @override
+  String get journalTitleRequiredError => 'Wpisz tytuł.';
+
+  @override
+  String get journalBodyRequiredError => 'Dodaj treść wpisu.';
+
+  @override
+  String get journalDatePickerLabel => 'Wybierz datę';
+
+  @override
+  String get journalAttachmentError => 'Nie udało się dodać pliku.';
+
+  @override
+  String get journalAttachmentRemoveConfirm => 'Usunąć załącznik z wpisu?';
+
+  @override
+  String get journalCostImpactLabel => 'Wpływ kosztowy';
+
+  @override
+  String get journalScheduleImpactLabel => 'Wpływ na termin';
+
+  @override
+  String get journalCostImpactHint => 'np. 1250,00 lub -300,00';
+
+  @override
+  String get journalScheduleImpactHint => 'np. 2 lub -1';
+
+  @override
+  String get journalImpactInvalidError =>
+      'Wpisz poprawną kwotę i pełną liczbę dni.';
+
+  @override
+  String get journalBlockedRecordsTitle => 'Blokowane zadania';
+
+  @override
+  String get journalBlockedRecordsEmpty =>
+      'Ta decyzja nie blokuje żadnego zadania z harmonogramu.';
+
+  @override
+  String get journalBlockedRecordsSelect => 'Wybierz zadania';
+
+  @override
+  String get journalBlockedRecordsDone => 'Gotowe';
+
+  @override
+  String get journalApproveAction => 'Zatwierdź decyzję';
+
+  @override
+  String get journalApprovalTitle => 'Zatwierdzenie';
+
+  @override
+  String get journalApprovalPersonLabel => 'Zatwierdził(a)';
+
+  @override
+  String get journalApprovalDateLabel => 'Data zatwierdzenia';
+
+  @override
+  String get journalApprovalDialogTitle => 'Zatwierdź wybrany wariant';
+
+  @override
+  String get journalApprovalDialogMessage =>
+      'Potwierdź osobę zatwierdzającą. Od tej chwili delta decyzji będzie widoczna w raporcie budżetu.';
+
+  @override
+  String get journalApprovalContactRequired =>
+      'Dodaj kontakt lub wskaż osobę, która zatwierdza decyzję.';
+
+  @override
+  String get journalApprovalOptionRequired => 'Najpierw wpisz wybrany wariant.';
+
+  @override
+  String get journalApprovalSuccess =>
+      'Decyzja zatwierdzona i uwzględniona w raporcie.';
+
+  @override
+  String get journalApprovalError => 'Nie udało się zatwierdzić decyzji.';
+
+  @override
+  String get journalApprovalManagedInDetails =>
+      'Zatwierdzenie i wdrożenie zmienisz w szczegółach wpisu.';
+
+  @override
+  String get journalDaysSuffix => 'dni';
+
+  @override
+  String get technicalPhotosTitle => 'Dokumentacja techniczna';
+
+  @override
+  String get technicalPhotosSubtitle =>
+      'Zdjęcia robót zanikających, instalacji i odbiorów';
+
+  @override
+  String get technicalPhotosLoading => 'Wczytywanie dokumentacji technicznej';
+
+  @override
+  String get technicalPhotosLoadError =>
+      'Nie udało się wczytać dokumentacji technicznej.';
+
+  @override
+  String get technicalPhotosNoProjectTitle => 'Wybierz projekt';
+
+  @override
+  String get technicalPhotosNoProjectMessage =>
+      'Zdjęcia techniczne są przypisane do wybranej budowy lub remontu.';
+
+  @override
+  String get technicalPhotosEmptyTitle => 'Brak zdjęć technicznych';
+
+  @override
+  String get technicalPhotosEmptyMessage =>
+      'Dodaj zdjęcie przed zakryciem instalacji, zalaniem betonu albo wykonaniem kolejnej warstwy.';
+
+  @override
+  String get technicalPhotosSearchHint =>
+      'Szukaj po nazwie, opisie, strefie lub tagu';
+
+  @override
+  String get technicalPhotosAddTooltip => 'Dodaj zdjęcie techniczne';
+
+  @override
+  String get technicalPhotosAlbumAddTooltip => 'Utwórz album';
+
+  @override
+  String get technicalPhotosFilterTooltip => 'Filtry zdjęć';
+
+  @override
+  String get technicalPhotosAllAlbums => 'Wszystkie';
+
+  @override
+  String technicalPhotosCount(int count) {
+    return 'Zdjęcia: $count';
+  }
+
+  @override
+  String get technicalPhotosLoadMore => 'Wczytaj kolejne zdjęcia';
+
+  @override
+  String get technicalPhotosMissingPreview => 'Podgląd pliku jest niedostępny';
+
+  @override
+  String get technicalPhotosImportError => 'Nie udało się dodać zdjęcia.';
+
+  @override
+  String get technicalPhotosUnsupportedFile =>
+      'Wybierz plik obrazu, np. JPG, PNG lub HEIC.';
+
+  @override
+  String get technicalAlbumNewTitle => 'Nowy album techniczny';
+
+  @override
+  String get technicalAlbumTitleLabel => 'Nazwa albumu';
+
+  @override
+  String get technicalAlbumKindLabel => 'Rodzaj albumu';
+
+  @override
+  String get technicalAlbumDescriptionLabel => 'Cel i zakres albumu';
+
+  @override
+  String get technicalAlbumCreateAction => 'Utwórz album';
+
+  @override
+  String get technicalAlbumCreateError => 'Nie udało się utworzyć albumu.';
+
+  @override
+  String get technicalAlbumRequiredError => 'Najpierw utwórz album techniczny.';
+
+  @override
+  String get technicalAlbumBeforeConcrete => 'Przed betonowaniem';
+
+  @override
+  String get technicalAlbumBeforeBackfill => 'Przed zasypaniem';
+
+  @override
+  String get technicalAlbumBeforePlaster => 'Przed tynkowaniem';
+
+  @override
+  String get technicalAlbumBeforeScreed => 'Przed wylewką';
+
+  @override
+  String get technicalAlbumBeforeTiles => 'Przed płytkami';
+
+  @override
+  String get technicalAlbumAsBuilt => 'Stan powykonawczy';
+
+  @override
+  String get technicalAlbumCustom => 'Własny album';
+
+  @override
+  String get technicalFiltersTitle => 'Filtry dokumentacji';
+
+  @override
+  String get technicalFilterAlbumLabel => 'Album';
+
+  @override
+  String get technicalFilterStageLabel => 'Etap';
+
+  @override
+  String get technicalFilterInstallationLabel => 'Instalacja lub zakres';
+
+  @override
+  String get technicalFilterTagLabel => 'Tag';
+
+  @override
+  String get technicalFilterAllStages => 'Wszystkie etapy';
+
+  @override
+  String get technicalFilterAllInstallations => 'Wszystkie instalacje';
+
+  @override
+  String get technicalFilterAllTags => 'Wszystkie tagi';
+
+  @override
+  String get technicalPhotoNewTitle => 'Opisz zdjęcie techniczne';
+
+  @override
+  String get technicalPhotoEditTitle => 'Edytuj zdjęcie techniczne';
+
+  @override
+  String get technicalPhotoDetailsTitle => 'Szczegóły zdjęcia';
+
+  @override
+  String get technicalPhotoTitleLabel => 'Nazwa zdjęcia';
+
+  @override
+  String get technicalPhotoDateLabel => 'Data wykonania zdjęcia';
+
+  @override
+  String get technicalPhotoZoneLabel => 'Pomieszczenie lub strefa';
+
+  @override
+  String get technicalPhotoContractorLabel => 'Wykonawca';
+
+  @override
+  String get technicalPhotoChecklistLabel => 'Punkt checklisty jako dowód';
+
+  @override
+  String get technicalPhotoDescriptionLabel => 'Opis tego, co widać';
+
+  @override
+  String get technicalPhotoTagsLabel => 'Tagi oddzielone przecinkami';
+
+  @override
+  String get technicalPhotoNoContact => 'Bez wykonawcy';
+
+  @override
+  String get technicalPhotoNoChecklist => 'Bez powiązania z checklistą';
+
+  @override
+  String get technicalPhotoNoStage => 'Bez przypisanego etapu';
+
+  @override
+  String get technicalPhotoSaveAction => 'Zapisz zdjęcie';
+
+  @override
+  String get technicalPhotoSaveError =>
+      'Nie udało się zapisać zdjęcia. Sprawdź wymagane pola.';
+
+  @override
+  String get technicalPhotoSavedMessage =>
+      'Zdjęcie zapisane w dokumentacji technicznej.';
+
+  @override
+  String get technicalPhotoNotFound =>
+      'Zdjęcie nie istnieje albo zostało usunięte.';
+
+  @override
+  String get technicalPhotoOpenFile => 'Otwórz pełne zdjęcie';
+
+  @override
+  String get technicalPhotoEditTooltip => 'Edytuj opis zdjęcia';
+
+  @override
+  String get technicalPhotoLinkedChecklist => 'Dowód do checklisty';
+
+  @override
+  String get technicalInstallationStructure => 'Konstrukcja';
+
+  @override
+  String get technicalInstallationElectrical => 'Elektryka';
+
+  @override
+  String get technicalInstallationWater => 'Woda';
+
+  @override
+  String get technicalInstallationSewage => 'Kanalizacja';
+
+  @override
+  String get technicalInstallationHeating => 'Ogrzewanie';
+
+  @override
+  String get technicalInstallationVentilation => 'Wentylacja';
+
+  @override
+  String get technicalInstallationWaterproofing => 'Hydroizolacja';
+
+  @override
+  String get technicalInstallationInsulation => 'Izolacja termiczna';
+
+  @override
+  String get technicalInstallationGrounding =>
+      'Uziemienie i połączenia wyrównawcze';
+
+  @override
+  String get technicalInstallationOther => 'Inny zakres';
+
+  @override
+  String get punchTitle => 'Usterki i odbiory';
+
+  @override
+  String get punchSubtitle => 'Usterki, poprawki i protokoły odbioru';
+
+  @override
+  String get punchDefectsTab => 'Usterki';
+
+  @override
+  String get punchProtocolsTab => 'Protokoły';
+
+  @override
+  String get punchLoading => 'Wczytywanie usterek i protokołów';
+
+  @override
+  String get punchLoadError => 'Nie udało się wczytać usterek i protokołów.';
+
+  @override
+  String get punchNoProjectTitle => 'Wybierz projekt';
+
+  @override
+  String get punchNoProjectMessage =>
+      'Usterki i odbiory są przypisane do wybranej budowy lub remontu.';
+
+  @override
+  String get punchSearchHint => 'Szukaj usterki lub protokołu';
+
+  @override
+  String get punchFilterTooltip => 'Filtry usterek';
+
+  @override
+  String get punchFiltersTitle => 'Filtry usterek';
+
+  @override
+  String get punchOpenCounter => 'Otwarte';
+
+  @override
+  String get punchCriticalCounter => 'Krytyczne';
+
+  @override
+  String get punchOverdueCounter => 'Po terminie';
+
+  @override
+  String punchDefectCount(int count) {
+    return 'Usterki: $count';
+  }
+
+  @override
+  String punchProtocolCount(int count) {
+    return 'Protokoły: $count';
+  }
+
+  @override
+  String get punchLoadMore => 'Wczytaj kolejne';
+
+  @override
+  String get punchDefectsEmptyTitle => 'Brak usterek';
+
+  @override
+  String get punchDefectsEmptyMessage =>
+      'Dodaj pierwszą usterkę i przypisz termin, etap oraz osobę odpowiedzialną.';
+
+  @override
+  String get punchProtocolsEmptyTitle => 'Brak protokołów';
+
+  @override
+  String get punchProtocolsEmptyMessage =>
+      'Utwórz protokół odbioru i powiąż z nim sprawdzane usterki.';
+
+  @override
+  String get punchAddDefectTooltip => 'Dodaj usterkę';
+
+  @override
+  String get punchAddProtocolTooltip => 'Dodaj protokół odbioru';
+
+  @override
+  String get punchStatusLabel => 'Status';
+
+  @override
+  String get punchStatusOpen => 'Otwarta';
+
+  @override
+  String get punchStatusInProgress => 'W naprawie';
+
+  @override
+  String get punchStatusRecheck => 'Do ponownej kontroli';
+
+  @override
+  String get punchStatusFixed => 'Naprawiona';
+
+  @override
+  String get punchStatusClosed => 'Zamknięta';
+
+  @override
+  String get punchSeverityLabel => 'Ważność';
+
+  @override
+  String get punchSeverityLow => 'Niska';
+
+  @override
+  String get punchSeverityMedium => 'Średnia';
+
+  @override
+  String get punchSeverityHigh => 'Wysoka';
+
+  @override
+  String get punchSeverityCritical => 'Krytyczna';
+
+  @override
+  String get punchOverdueOnly => 'Tylko po terminie';
+
+  @override
+  String get punchAllStages => 'Wszystkie etapy';
+
+  @override
+  String get punchAllContacts => 'Wszystkie osoby';
+
+  @override
+  String get punchRoomFilterLabel => 'Pomieszczenie lub strefa';
+
+  @override
+  String get punchClearFilters => 'Wyczyść filtry';
+
+  @override
+  String get punchApplyFilters => 'Zastosuj';
+
+  @override
+  String get defectNewTitle => 'Nowa usterka';
+
+  @override
+  String get defectEditTitle => 'Edytuj usterkę';
+
+  @override
+  String get defectDetailsTitle => 'Szczegóły usterki';
+
+  @override
+  String get defectTitleLabel => 'Nazwa usterki';
+
+  @override
+  String get defectDescriptionLabel => 'Opis i oczekiwany sposób poprawy';
+
+  @override
+  String get defectOccurredAtLabel => 'Data zgłoszenia';
+
+  @override
+  String get defectDueAtLabel => 'Termin poprawy';
+
+  @override
+  String get defectClearDueAt => 'Usuń termin';
+
+  @override
+  String get defectStageLabel => 'Etap';
+
+  @override
+  String get defectNoStage => 'Bez przypisanego etapu';
+
+  @override
+  String get defectRoomLabel => 'Pomieszczenie lub strefa';
+
+  @override
+  String get defectResponsibleLabel => 'Osoba odpowiedzialna';
+
+  @override
+  String get defectNoResponsible => 'Bez przypisanej osoby';
+
+  @override
+  String get defectRequiresPhoto =>
+      'Wymagaj zdjęcia po naprawie przed zamknięciem';
+
+  @override
+  String get defectRequiresProtocol =>
+      'Wymagaj podpisanego protokołu przed zamknięciem';
+
+  @override
+  String get defectReportEvidenceTitle => 'Zdjęcia przy zgłoszeniu';
+
+  @override
+  String get defectResolutionEvidenceTitle => 'Zdjęcia po naprawie';
+
+  @override
+  String get defectAddEvidence => 'Dodaj zdjęcie';
+
+  @override
+  String get defectRemoveEvidence => 'Usuń załącznik';
+
+  @override
+  String get defectNoEvidence => 'Brak zdjęć';
+
+  @override
+  String get defectUnsupportedEvidence =>
+      'Wybierz plik obrazu, np. JPG, PNG lub HEIC.';
+
+  @override
+  String get defectSaveAction => 'Zapisz usterkę';
+
+  @override
+  String get defectSavedMessage => 'Usterka została zapisana.';
+
+  @override
+  String get defectSaveError =>
+      'Nie udało się zapisać usterki. Sprawdź wymagane pola.';
+
+  @override
+  String get defectNotFound => 'Usterka nie istnieje albo została usunięta.';
+
+  @override
+  String get defectEditTooltip => 'Edytuj usterkę';
+
+  @override
+  String get defectCloseAction => 'Zamknij usterkę';
+
+  @override
+  String get defectSetStatusAction => 'Zmień status';
+
+  @override
+  String get defectClosureReady => 'Komplet dowodów do zamknięcia';
+
+  @override
+  String get defectClosureMissingPhoto => 'Dodaj zdjęcie po naprawie.';
+
+  @override
+  String get defectClosureMissingProtocol =>
+      'Dodaj podpisany protokół powiązany z usterką.';
+
+  @override
+  String get defectStatusChangeError =>
+      'Nie udało się zmienić statusu usterki.';
+
+  @override
+  String get defectAttachmentError => 'Nie udało się dodać załącznika.';
+
+  @override
+  String get protocolNewTitle => 'Nowy protokół odbioru';
+
+  @override
+  String get protocolEditTitle => 'Edytuj protokół';
+
+  @override
+  String get protocolDetailsTitle => 'Szczegóły protokołu';
+
+  @override
+  String get protocolTitleLabel => 'Nazwa protokołu';
+
+  @override
+  String get protocolDateLabel => 'Data odbioru';
+
+  @override
+  String get protocolStatusLabel => 'Status protokołu';
+
+  @override
+  String get protocolStatusDraft => 'Szkic';
+
+  @override
+  String get protocolStatusFinalized => 'Gotowy do podpisu';
+
+  @override
+  String get protocolStatusSigned => 'Podpisany';
+
+  @override
+  String get protocolStageLabel => 'Etap';
+
+  @override
+  String get protocolRoomLabel => 'Pomieszczenie lub strefa';
+
+  @override
+  String get protocolContractorLabel => 'Wykonawca';
+
+  @override
+  String get protocolNotesLabel => 'Ustalenia i uwagi z odbioru';
+
+  @override
+  String get protocolDefectsTitle => 'Usterki w protokole';
+
+  @override
+  String get protocolSelectDefects => 'Wybierz usterki';
+
+  @override
+  String get protocolNoDefects => 'Brak powiązanych usterek';
+
+  @override
+  String get protocolSignedFilesTitle => 'Podpisany dokument';
+
+  @override
+  String get protocolAddSignedFile => 'Dodaj skan lub PDF';
+
+  @override
+  String get protocolNoSignedFile => 'Brak podpisanego dokumentu';
+
+  @override
+  String get protocolSignedFileRequired =>
+      'Status „Podpisany” wymaga skanu lub pliku PDF.';
+
+  @override
+  String get protocolUnsupportedFile => 'Wybierz obraz albo plik PDF.';
+
+  @override
+  String get protocolSaveAction => 'Zapisz protokół';
+
+  @override
+  String get protocolSavedMessage => 'Protokół został zapisany.';
+
+  @override
+  String get protocolSaveError =>
+      'Nie udało się zapisać protokołu. Sprawdź wymagane pola.';
+
+  @override
+  String get protocolNotFound => 'Protokół nie istnieje albo został usunięty.';
+
+  @override
+  String get protocolEditTooltip => 'Edytuj protokół';
+
+  @override
+  String get protocolGeneratePdf => 'Utwórz PDF protokołu';
+
+  @override
+  String get protocolSelectDefectsDone => 'Gotowe';
+
+  @override
+  String get protocolPdfTitle => 'Protokół odbioru';
+
+  @override
+  String get protocolPdfProjectLabel => 'Projekt';
+
+  @override
+  String get protocolPdfDefectTitleLabel => 'Usterka';
+
+  @override
+  String get protocolPdfDeadlineLabel => 'Termin';
+
+  @override
+  String get protocolPdfSignaturesTitle => 'Potwierdzenie odbioru';
+
+  @override
+  String get protocolPdfInvestorSignature => 'Podpis inwestora';
+
+  @override
+  String get protocolPdfContractorSignature => 'Podpis wykonawcy';
+
+  @override
+  String get protocolPdfGeneratedNotice =>
+      'Dokument wygenerowany lokalnie w BudowaPRO. Sam wydruk nie zastępuje podpisanego protokołu.';
+
+  @override
+  String get protocolPdfShareError =>
+      'Nie udało się utworzyć lub udostępnić pliku PDF.';
+
+  @override
+  String get technicalPhotoLinksTitle => 'Powiązania zdjęcia';
+
+  @override
+  String get technicalPhotoNoLink => 'Bez powiązania';
+
+  @override
+  String get technicalPhotoCostLink => 'Koszt';
+
+  @override
+  String get technicalPhotoDecisionLink => 'Decyzja lub zmiana zakresu';
+
+  @override
+  String get technicalPhotoDefectLink => 'Usterka';
+
+  @override
+  String get technicalPhotoProtocolLink => 'Protokół odbioru';
+
+  @override
+  String get dashboardAddDefect => 'Dodaj usterkę';
+
+  @override
+  String get dashboardOpenPunch => 'Usterki i odbiory';
+
+  @override
+  String get dashboardOpenTechnicalPhotos => 'Zdjęcia etapów';
+
+  @override
+  String get roomsTitle => 'Pomieszczenia';
+
+  @override
+  String get roomsSubtitle => 'Budżety, wybory i postęp każdego pomieszczenia';
+
+  @override
+  String get roomsLoading => 'Wczytywanie pomieszczeń';
+
+  @override
+  String get roomsLoadError => 'Nie udało się wczytać pomieszczeń.';
+
+  @override
+  String get roomsNoProjectTitle => 'Wybierz projekt';
+
+  @override
+  String get roomsNoProjectMessage =>
+      'Pomieszczenia są przypisane do wybranej budowy lub remontu.';
+
+  @override
+  String get roomsEmptyTitle => 'Brak pomieszczeń';
+
+  @override
+  String get roomsEmptyMessage =>
+      'Dodaj pierwsze pomieszczenie, aby osobno pilnować budżetu, wyborów i usterek.';
+
+  @override
+  String get roomsSearchHint => 'Szukaj pomieszczenia lub kondygnacji';
+
+  @override
+  String get roomsSearchAction => 'Szukaj';
+
+  @override
+  String get roomsClearSearch => 'Wyczyść wyszukiwanie';
+
+  @override
+  String get roomsAddTooltip => 'Dodaj pomieszczenie';
+
+  @override
+  String get roomsLoadMore => 'Wczytaj kolejne';
+
+  @override
+  String roomsRoomCount(int count) {
+    return 'Pomieszczenia: $count';
+  }
+
+  @override
+  String get roomsPlannedTotal => 'Budżet pomieszczeń';
+
+  @override
+  String get roomsActualTotal => 'Koszt przypisany';
+
+  @override
+  String get roomsOpenChoices => 'Otwarte wybory';
+
+  @override
+  String get roomNewTitle => 'Nowe pomieszczenie';
+
+  @override
+  String get roomEditTitle => 'Edytuj pomieszczenie';
+
+  @override
+  String get roomDetailsTitle => 'Karta pomieszczenia';
+
+  @override
+  String get roomNameLabel => 'Nazwa pomieszczenia lub strefy';
+
+  @override
+  String get roomFloorLabel => 'Kondygnacja lub część budynku';
+
+  @override
+  String get roomStandardLabel => 'Standard wykończenia';
+
+  @override
+  String get roomStandardBasic => 'Podstawowy';
+
+  @override
+  String get roomStandardStandard => 'Standardowy';
+
+  @override
+  String get roomStandardElevated => 'Podwyższony';
+
+  @override
+  String get roomStandardCustom => 'Indywidualny';
+
+  @override
+  String get roomDimensionsTitle => 'Wymiary pomieszczenia';
+
+  @override
+  String get roomLengthLabel => 'Długość';
+
+  @override
+  String get roomWidthLabel => 'Szerokość';
+
+  @override
+  String get roomHeightLabel => 'Wysokość';
+
+  @override
+  String get roomMetersSuffix => 'm';
+
+  @override
+  String get roomBudgetLabel => 'Planowany budżet';
+
+  @override
+  String get roomNoteLabel => 'Notatka';
+
+  @override
+  String get roomSaveAction => 'Zapisz pomieszczenie';
+
+  @override
+  String get roomSavedMessage => 'Pomieszczenie zostało zapisane.';
+
+  @override
+  String get roomSaveError =>
+      'Nie udało się zapisać pomieszczenia. Sprawdź wymagane pola.';
+
+  @override
+  String get roomConflictError =>
+      'Pomieszczenie o tej nazwie już istnieje na wskazanej kondygnacji.';
+
+  @override
+  String get roomNotFound =>
+      'Pomieszczenie nie istnieje albo zostało usunięte.';
+
+  @override
+  String get roomEditTooltip => 'Edytuj pomieszczenie';
+
+  @override
+  String get roomDeleteTooltip => 'Usuń pomieszczenie';
+
+  @override
+  String get roomDeleteTitle => 'Usunąć pomieszczenie?';
+
+  @override
+  String get roomDeleteMessage =>
+      'Usunięte zostaną karty wyborów i przypisania. Koszty, zdjęcia, kontakty i usterki pozostaną w projekcie.';
+
+  @override
+  String get roomDeleteAction => 'Usuń pomieszczenie';
+
+  @override
+  String get roomDeleteError => 'Nie udało się usunąć pomieszczenia.';
+
+  @override
+  String get roomBudgetPlanned => 'Plan';
+
+  @override
+  String get roomBudgetActual => 'Wydano';
+
+  @override
+  String get roomBudgetRemaining => 'Pozostało';
+
+  @override
+  String get roomNoBudget => 'Nie ustawiono budżetu';
+
+  @override
+  String get roomChoicesTitle => 'Wybory i warianty';
+
+  @override
+  String get roomAddChoiceAction => 'Dodaj wybór';
+
+  @override
+  String get roomNoChoices => 'Brak kart wyborów';
+
+  @override
+  String get roomNoChoicesMessage =>
+      'Dodaj np. płytki, drzwi, armaturę lub kolor farby i porównaj warianty.';
+
+  @override
+  String get roomChoiceStatusOpen => 'Do wyboru';
+
+  @override
+  String get roomChoiceStatusSelected => 'Wybrano';
+
+  @override
+  String get roomChoiceStatusCancelled => 'Anulowano';
+
+  @override
+  String get roomChoiceSelectAction => 'Wybierz wariant';
+
+  @override
+  String get roomChoiceReopenAction => 'Zmień wybór';
+
+  @override
+  String get roomChoiceCancelAction => 'Anuluj wybór';
+
+  @override
+  String get roomChoiceEditTooltip => 'Edytuj kartę wyboru';
+
+  @override
+  String get roomChoiceDeleteTooltip => 'Usuń kartę wyboru';
+
+  @override
+  String roomChoiceEstimatedTotal(String amount) {
+    return 'Szacunkowo: $amount';
+  }
+
+  @override
+  String roomChoiceQuantityWithWaste(String quantity, String unit) {
+    return 'Ilość z zapasem: $quantity $unit';
+  }
+
+  @override
+  String roomChoiceOrderDue(String date) {
+    return 'Zamów do: $date';
+  }
+
+  @override
+  String get roomChoiceNewTitle => 'Nowa karta wyboru';
+
+  @override
+  String get roomChoiceEditTitle => 'Edytuj kartę wyboru';
+
+  @override
+  String get roomChoiceTitleLabel => 'Co wybierasz?';
+
+  @override
+  String get roomChoiceQuantityLabel => 'Ilość';
+
+  @override
+  String get roomChoiceUnitLabel => 'Jednostka';
+
+  @override
+  String get roomChoiceWasteLabel => 'Zapas';
+
+  @override
+  String get roomChoiceWasteSuffix => '%';
+
+  @override
+  String get roomChoiceOrderDateLabel => 'Termin zamówienia';
+
+  @override
+  String get roomChoiceNoOrderDate => 'Bez terminu zamówienia';
+
+  @override
+  String get roomChoiceClearOrderDate => 'Usuń termin';
+
+  @override
+  String get roomChoiceNoteLabel => 'Notatka do wyboru';
+
+  @override
+  String get roomChoiceVariantsTitle => 'Porównywane warianty';
+
+  @override
+  String get roomChoiceAddVariant => 'Dodaj wariant';
+
+  @override
+  String get roomChoiceRemoveVariant => 'Usuń wariant';
+
+  @override
+  String get roomChoiceVariantLabel => 'Nazwa wariantu';
+
+  @override
+  String get roomChoiceVariantPriceLabel => 'Cena brutto za jednostkę';
+
+  @override
+  String get roomChoiceVariantSupplierLabel => 'Sklep lub dostawca';
+
+  @override
+  String get roomChoiceVariantCodeLabel => 'Kod produktu';
+
+  @override
+  String get roomChoiceVariantNoteLabel => 'Uwagi do wariantu';
+
+  @override
+  String get roomChoiceSaveAction => 'Zapisz kartę wyboru';
+
+  @override
+  String get roomChoiceSavedMessage => 'Karta wyboru została zapisana.';
+
+  @override
+  String get roomChoiceSaveError =>
+      'Nie udało się zapisać karty wyboru. Dodaj co najmniej jeden poprawny wariant.';
+
+  @override
+  String get roomChoiceSelectionTitle => 'Potwierdź wariant';
+
+  @override
+  String get roomChoiceSelectionMessage =>
+      'Wybór zostanie zapisany jako decyzja w karcie pomieszczenia. Nie utworzy kosztu ani zamówienia bez osobnej akcji.';
+
+  @override
+  String get roomChoiceCreatePlannedCost => 'Utwórz szkic kosztu';
+
+  @override
+  String get roomChoicePlannedCostCreated => 'Szkic kosztu utworzony';
+
+  @override
+  String get roomChoiceCreateMaterial => 'Dodaj do materiałów';
+
+  @override
+  String get roomChoiceMaterialCreated => 'Materiał dodany';
+
+  @override
+  String get roomChoiceCreateDecision => 'Utwórz decyzję';
+
+  @override
+  String get roomChoiceDecisionCreated => 'Decyzja utworzona';
+
+  @override
+  String get roomChoiceOutputError =>
+      'Nie udało się utworzyć powiązanego rekordu.';
+
+  @override
+  String get roomChoiceVatTitle => 'Wybierz stawkę VAT dla planowanego kosztu';
+
+  @override
+  String roomChoiceCostName(String choice, String variant) {
+    return '$choice: $variant';
+  }
+
+  @override
+  String roomChoiceCostNote(String room) {
+    return 'Szkic utworzony z karty wyboru w pomieszczeniu: $room.';
+  }
+
+  @override
+  String roomChoiceDecisionTitle(String room, String choice) {
+    return 'Wybór w pomieszczeniu $room: $choice';
+  }
+
+  @override
+  String get roomRelatedTitle => 'Powiązane dane';
+
+  @override
+  String get roomRelatedDecisions => 'Otwarte decyzje';
+
+  @override
+  String get roomRelatedMaterials => 'Materiały';
+
+  @override
+  String get roomRelatedTeams => 'Ekipy';
+
+  @override
+  String get roomRelatedPhotos => 'Zdjęcia techniczne';
+
+  @override
+  String get roomRelatedDefects => 'Otwarte usterki';
+
+  @override
+  String get roomRelatedCosts => 'Koszty';
+
+  @override
+  String get roomManageRelationsAction => 'Przypisz dane';
+
+  @override
+  String get roomRelationsTitle => 'Dane pomieszczenia';
+
+  @override
+  String get roomRelationsSearchHint => 'Szukaj na tej liście';
+
+  @override
+  String get roomRelationsEmpty => 'Brak elementów do przypisania.';
+
+  @override
+  String roomRelationsAssignedElsewhere(String roomName) {
+    return 'Przypisano do: $roomName';
+  }
+
+  @override
+  String get roomRelationsMoveTitle => 'Przenieść przypisanie?';
+
+  @override
+  String roomRelationsMoveMessage(String roomName) {
+    return 'Ten element jest przypisany do pomieszczenia „$roomName”. Po zatwierdzeniu zostanie przeniesiony tutaj.';
+  }
+
+  @override
+  String get roomRelationsMoveAction => 'Przenieś';
+
+  @override
+  String get roomRelationsSaveError => 'Nie udało się zmienić przypisania.';
+
+  @override
+  String roomRelatedCount(int count) {
+    return '$count';
+  }
+
+  @override
+  String get roomSelectedChoiceEditNotice =>
+      'Edycja ponownie otworzy wybór i będzie wymagała jawnego zatwierdzenia wariantu.';
+
+  @override
+  String get requiredFieldError => 'Uzupełnij wymagane pole.';
+
+  @override
+  String get invalidAmountError =>
+      'Wpisz kwotę z maksymalnie dwiema cyframi po przecinku.';
+
+  @override
+  String get invalidNumberError => 'Wpisz dodatnią liczbę.';
+
+  @override
+  String get materialsTitle => 'Materiały i dostawy';
+
+  @override
+  String get materialsSubtitle => 'Zamówienia, dostawy, składowanie i zwroty';
+
+  @override
+  String get materialsLoading => 'Wczytywanie materiałów';
+
+  @override
+  String get materialsLoadError => 'Nie udało się wczytać materiałów.';
+
+  @override
+  String get materialsNoProjectTitle => 'Wybierz projekt';
+
+  @override
+  String get materialsNoProjectMessage =>
+      'Materiały są przypisane do konkretnej budowy lub remontu.';
+
+  @override
+  String get materialsEmptyTitle => 'Brak materiałów';
+
+  @override
+  String get materialsEmptyMessage =>
+      'Dodaj pierwszy materiał, aby kontrolować zamówienie, dostawy i zwroty.';
+
+  @override
+  String get materialsNoResultsTitle => 'Brak pasujących materiałów';
+
+  @override
+  String get materialsNoResultsMessage =>
+      'Zmień wyszukiwanie lub filtry statusu.';
+
+  @override
+  String get materialsSearchHint => 'Szukaj materiału lub miejsca składowania';
+
+  @override
+  String get materialsClearSearch => 'Wyczyść wyszukiwanie';
+
+  @override
+  String get materialsAddTooltip => 'Dodaj materiał';
+
+  @override
+  String get materialsLoadMore => 'Wczytaj więcej';
+
+  @override
+  String get materialsOrderedValue => 'Wartość zamówień';
+
+  @override
+  String get materialsExpectedReturns => 'Planowane zwroty';
+
+  @override
+  String get materialsDelayedCount => 'Opóźnienia';
+
+  @override
+  String get materialsOverdueReturns => 'Zwroty po terminie';
+
+  @override
+  String get materialsOpenDeliveries => 'Otwarte dostawy';
+
+  @override
+  String get materialStatusPlanned => 'Planowany';
+
+  @override
+  String get materialStatusOrdered => 'Zamówiony';
+
+  @override
+  String get materialStatusPartiallyDelivered => 'Częściowo dostarczony';
+
+  @override
+  String get materialStatusDelivered => 'Dostarczony';
+
+  @override
+  String get materialStatusDelayed => 'Opóźniony';
+
+  @override
+  String get materialStatusReturned => 'Zwrócony';
+
+  @override
+  String get materialNewTitle => 'Nowy materiał';
+
+  @override
+  String get materialEditTitle => 'Edytuj materiał';
+
+  @override
+  String get materialDetailsTitle => 'Szczegóły materiału';
+
+  @override
+  String get materialNotFound => 'Nie znaleziono materiału.';
+
+  @override
+  String get materialNameLabel => 'Nazwa materiału';
+
+  @override
+  String get materialQuantityLabel => 'Ilość zamówiona';
+
+  @override
+  String get materialUnitLabel => 'Jednostka';
+
+  @override
+  String get materialDefaultUnit => 'szt.';
+
+  @override
+  String get materialStageLabel => 'Etap';
+
+  @override
+  String get materialRoomLabel => 'Pomieszczenie';
+
+  @override
+  String get materialSupplierLabel => 'Dostawca';
+
+  @override
+  String get materialCostLabel => 'Powiązany koszt';
+
+  @override
+  String get materialReceiptLabel => 'Paragon lub faktura';
+
+  @override
+  String get materialOrderedGrossLabel => 'Wartość zamówienia brutto';
+
+  @override
+  String get materialStorageLabel => 'Miejsce składowania';
+
+  @override
+  String get materialOrderedToggle => 'Materiał został zamówiony';
+
+  @override
+  String get materialOrderedDateLabel => 'Data zamówienia';
+
+  @override
+  String get materialExpectedDeliveryLabel => 'Planowana dostawa';
+
+  @override
+  String get materialReminderToggle => 'Przypomnienie o terminie';
+
+  @override
+  String get materialNoteLabel => 'Notatka';
+
+  @override
+  String get materialNoRelation => 'Brak przypisania';
+
+  @override
+  String get materialSaveAction => 'Zapisz materiał';
+
+  @override
+  String get materialSaveError =>
+      'Nie udało się zapisać materiału. Sprawdź powiązania i wartości.';
+
+  @override
+  String get materialEditTooltip => 'Edytuj materiał';
+
+  @override
+  String get materialDeleteTooltip => 'Usuń materiał';
+
+  @override
+  String get materialDeleteTitle => 'Usunąć materiał?';
+
+  @override
+  String get materialDeleteMessage =>
+      'Usunięte zostaną także jego dostawy i zwroty. Koszt, dokumenty i kontakty pozostaną bez zmian.';
+
+  @override
+  String get materialDeleteAction => 'Usuń';
+
+  @override
+  String get materialDeleteError => 'Nie udało się usunąć materiału.';
+
+  @override
+  String get materialOrderedQuantity => 'Zamówiono';
+
+  @override
+  String get materialDeliveredQuantity => 'Dostarczono';
+
+  @override
+  String get materialReturnedQuantity => 'Zwrócono';
+
+  @override
+  String get materialRelationsTitle => 'Powiązania i składowanie';
+
+  @override
+  String get materialDeliveriesTitle => 'Dostawy';
+
+  @override
+  String get materialAddDeliveryAction => 'Dodaj dostawę';
+
+  @override
+  String get materialNoDeliveries => 'Nie zapisano jeszcze dostaw.';
+
+  @override
+  String get materialDeliveryExpectedLabel => 'Ilość w tej dostawie';
+
+  @override
+  String get materialDeliveryDueLabel => 'Termin dostawy';
+
+  @override
+  String get materialDeliveryReceivedToggle => 'Dostawa odebrana';
+
+  @override
+  String get materialDeliveryActualLabel => 'Ilość odebrana';
+
+  @override
+  String get materialDeliveryDocumentLabel => 'Dokument WZ';
+
+  @override
+  String get materialDeliveryContactLabel => 'Kontakt przy dostawie';
+
+  @override
+  String get materialDeliveryShortageLabel => 'Braki ilościowe';
+
+  @override
+  String get materialDeliveryDamageLabel => 'Uszkodzenia i zastrzeżenia';
+
+  @override
+  String get materialDeliverySaveAction => 'Zapisz dostawę';
+
+  @override
+  String get materialDeliverySaveError => 'Nie udało się zapisać dostawy.';
+
+  @override
+  String get materialDeliveryOverTitle => 'Dostawa przekracza zamówienie';
+
+  @override
+  String get materialDeliveryOverMessage =>
+      'Suma odebrana jest większa niż ilość zamówiona. Potwierdzenie skoryguje ilość zamówioną do faktycznie odebranej.';
+
+  @override
+  String get materialDeliveryOverAction => 'Potwierdź korektę';
+
+  @override
+  String get materialDeliveryDelayed => 'Po terminie';
+
+  @override
+  String get materialDeliveryReceived => 'Odebrana';
+
+  @override
+  String get materialDeliveryPlanned => 'Zaplanowana';
+
+  @override
+  String get materialReturnsTitle => 'Zwroty';
+
+  @override
+  String get materialAddReturnAction => 'Dodaj zwrot';
+
+  @override
+  String get materialNoReturns => 'Nie zapisano materiału do zwrotu.';
+
+  @override
+  String get materialReturnQuantityLabel => 'Ilość do zwrotu';
+
+  @override
+  String get materialReturnDeadlineLabel => 'Termin zwrotu';
+
+  @override
+  String get materialReturnExpectedLabel => 'Przewidywany zwrot pieniędzy';
+
+  @override
+  String get materialReturnReceiptRequired => 'Paragon lub faktura są wymagane';
+
+  @override
+  String get materialReturnDocumentLabel => 'Dokument zakupu';
+
+  @override
+  String get materialReturnCompletedToggle => 'Zwrot wykonany';
+
+  @override
+  String get materialReturnActualLabel => 'Faktycznie odzyskana kwota';
+
+  @override
+  String get materialReturnSaveAction => 'Zapisz zwrot';
+
+  @override
+  String get materialReturnSaveError => 'Nie udało się zapisać zwrotu.';
+
+  @override
+  String get materialReturnOverdue => 'Termin zwrotu minął';
+
+  @override
+  String get materialReturnCompleted => 'Zwrot wykonany';
+
+  @override
+  String get materialReturnPending => 'Do zwrotu';
+
+  @override
+  String get materialRecordDeleteTooltip => 'Usuń wpis';
+
+  @override
+  String get materialInvalidQuantity =>
+      'Wpisz dodatnią ilość z maksymalnie sześcioma cyframi po przecinku.';
+
+  @override
+  String get materialDatePickTooltip => 'Wybierz datę';
+
+  @override
+  String get materialRelationMissing =>
+      'Powiązany rekord został usunięty lub należy do innego projektu.';
+
+  @override
+  String get receiptStageLabel => 'Etap dokumentu';
+
+  @override
+  String get receiptApplyComponentLabel => 'Ustaw skład dla wszystkich pozycji';
+
+  @override
+  String get receiptComponentRequiredMessage =>
+      'Wybierz materiał, robociznę albo wspólną wycenę dla każdej pozycji.';
 }

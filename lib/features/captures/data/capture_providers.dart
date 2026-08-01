@@ -4,6 +4,7 @@ import 'package:budowapro/features/captures/domain/capture_repository.dart';
 import 'package:budowapro/features/costs/data/sqlite_cost_repository.dart';
 import 'package:budowapro/features/documents/data/document_providers.dart';
 import 'package:budowapro/features/documents/data/sqlite_document_repository.dart';
+import 'package:budowapro/features/diary/data/sqlite_journal_repository.dart';
 import 'package:budowapro/features/projects/data/project_providers.dart';
 import 'package:budowapro/features/schedule/data/sqlite_schedule_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,6 +28,11 @@ final captureRepositoryProvider = FutureProvider<CaptureRepository>((
       utcNow: DateTime.now,
     ),
     scheduleRepository: SqliteScheduleRepository(
+      database: database,
+      idGenerator: _secureId,
+      utcNow: DateTime.now,
+    ),
+    diaryRepository: SqliteJournalRepository(
       database: database,
       idGenerator: _secureId,
       utcNow: DateTime.now,

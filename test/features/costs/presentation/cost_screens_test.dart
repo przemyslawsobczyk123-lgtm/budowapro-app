@@ -6,6 +6,7 @@ import 'package:budowapro/features/costs/data/cost_attachment_stager.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
 import 'package:budowapro/features/costs/domain/cost_export_record.dart';
 import 'package:budowapro/features/costs/domain/cost_repository.dart';
+import 'package:budowapro/features/costs/domain/cost_relation.dart';
 import 'package:budowapro/features/costs/domain/cost_summary.dart';
 import 'package:budowapro/features/costs/domain/money.dart';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
@@ -119,6 +120,98 @@ void main() {
 
     expect(find.text('Opłacony'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('saves labor as the selected cost component', (tester) async {
+    final gateway = _FakeGateway(
+      data: CostEditorData(
+        project: _project(),
+        entry: null,
+        attachments: const [],
+      ),
+    );
+    await tester.pumpWidget(
+      _gatewayApp(gateway, const CostFormScreen(projectId: 'project-1')),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const ValueKey('costNameField')),
+      'Montaż instalacji',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('costGrossField')),
+      '2500,00',
+    );
+    await tester.ensureVisible(
+      find.byKey(const ValueKey('costComponent-material')),
+    );
+    await tester.tap(find.byKey(const ValueKey('costComponent-material')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Robocizna').last);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const ValueKey('costSave')));
+    await tester.tap(find.byKey(const ValueKey('costSave')));
+    await tester.pumpAndSettle();
+
+    expect(gateway.lastSubmission?.component, CostComponent.labor);
+  });
+
+  testWidgets('returns a changed result after saving a new cost', (
+    tester,
+  ) async {
+    final gateway = _FakeGateway(
+      data: CostEditorData(
+        project: _project(),
+        entry: null,
+        attachments: const [],
+      ),
+    );
+    bool? changed;
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          costEditorGatewayProvider.overrideWith((ref) async => gateway),
+        ],
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: AppTheme.light,
+          home: Builder(
+            builder: (context) => Scaffold(
+              body: FilledButton(
+                key: const ValueKey('openCostForm'),
+                onPressed: () async {
+                  changed = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute<bool>(
+                      builder: (_) =>
+                          const CostFormScreen(projectId: 'project-1'),
+                    ),
+                  );
+                },
+                child: const Text('open'),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byKey(const ValueKey('openCostForm')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('costNameField')),
+      'Przewod zasilajacy',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('costGrossField')),
+      '349,90',
+    );
+    await tester.ensureVisible(find.byKey(const ValueKey('costSave')));
+    await tester.tap(find.byKey(const ValueKey('costSave')));
+    await tester.pumpAndSettle();
+
+    expect(changed, isTrue);
   });
 
   testWidgets('allows correcting the gross amount of a confirmed cost', (
@@ -264,10 +357,92 @@ void main() {
       300,
       scrollable: find.byType(Scrollable).first,
     );
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, -80));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('costDocument-document-1')));
     await tester.pumpAndSettle();
 
     expect(find.text('document:document-1'), findsOneWidget);
+  });
+
+  testWidgets('opens the room and material linked to a cost', (tester) async {
+    final entry = _entry();
+    final gateway = _FakeGateway(
+      data: CostEditorData(
+        project: _project(),
+        entry: entry,
+        attachments: const [],
+        relations: CostRelations(<CostRelationReference>[
+          CostRelationReference(
+            type: CostRelationType.room,
+            recordId: 'room-1',
+            label: 'Łazienka',
+          ),
+          CostRelationReference(
+            type: CostRelationType.material,
+            recordId: 'material-1',
+            label: 'Gres 60x60',
+          ),
+        ]),
+      ),
+    );
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) =>
+              CostDetailsScreen(projectId: 'project-1', costEntryId: entry.id),
+        ),
+        GoRoute(
+          path: '/projects/:projectId/rooms/:roomId',
+          builder: (context, state) =>
+              Scaffold(body: Text('room:${state.pathParameters['roomId']}')),
+        ),
+        GoRoute(
+          path: '/projects/:projectId/materials/:materialId',
+          builder: (context, state) => Scaffold(
+            body: Text('material:${state.pathParameters['materialId']}'),
+          ),
+        ),
+      ],
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          costEditorGatewayProvider.overrideWith((ref) async => gateway),
+        ],
+        child: MaterialApp.router(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          theme: AppTheme.light,
+          routerConfig: router,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('costRelation-room-room-1')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.byKey(const ValueKey('costRelation-room-room-1')));
+    await tester.pumpAndSettle();
+    expect(find.text('room:room-1'), findsOneWidget);
+
+    router.go('/');
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('costRelation-material-material-1')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(
+      find.byKey(const ValueKey('costRelation-material-material-1')),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('material:material-1'), findsOneWidget);
   });
 
   testWidgets('does not offer mark paid for a returned cost', (tester) async {
@@ -382,8 +557,14 @@ void main() {
     expect(costs.listQueries.last.searchText, 'beton');
     await tester.tap(find.byKey(const ValueKey('costRegisterFilters')));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('costFilterStatus-paid')));
-    await tester.tap(find.byKey(const ValueKey('costFilterApply')));
+    final paid = find.byKey(const ValueKey('costFilterStatus-paid'));
+    await tester.ensureVisible(paid);
+    await tester.pumpAndSettle();
+    await tester.tap(paid);
+    final apply = find.byKey(const ValueKey('costFilterApply'));
+    await tester.ensureVisible(apply);
+    await tester.pumpAndSettle();
+    await tester.tap(apply);
     await tester.pumpAndSettle();
 
     expect(costs.listQueries.last.searchText, 'beton');
@@ -627,12 +808,14 @@ CostEntry _entry({
   String name = 'Beton B20',
   CostLifecycle lifecycle = CostLifecycle.confirmed,
   CostStatus status = CostStatus.paid,
+  CostComponent component = CostComponent.unassigned,
 }) => CostEntry(
   id: id,
   input: CostEntryInput(
     projectId: 'project-1',
     name: name,
     type: CostEntryType.cost,
+    component: component,
     status: status,
     amount: VatBreakdown.fromGross(
       Money(minorUnits: 123000, currencyCode: 'PLN'),

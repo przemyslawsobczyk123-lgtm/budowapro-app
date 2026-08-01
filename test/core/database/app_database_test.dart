@@ -2,6 +2,13 @@ import 'dart:io';
 import 'dart:async';
 
 import 'package:budowapro/core/database/app_database.dart';
+import 'package:budowapro/core/files/project_file_store.dart';
+import 'package:budowapro/features/costs/data/sqlite_cost_repository.dart';
+import 'package:budowapro/features/costs/domain/cost_entry.dart';
+import 'package:budowapro/features/costs/domain/money.dart';
+import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
+import 'package:budowapro/features/projects/data/sqlite_project_repository.dart';
+import 'package:budowapro/features/projects/domain/project.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -68,6 +75,21 @@ void main() {
       AppDatabase.receiptImportsTable,
       AppDatabase.captureDraftsTable,
       AppDatabase.captureDraftAttachmentsTable,
+      AppDatabase.journalEntriesTable,
+      AppDatabase.journalEntryAttachmentsTable,
+      AppDatabase.journalEntryLinksTable,
+      AppDatabase.journalEntryRevisionsTable,
+      AppDatabase.technicalAlbumsTable,
+      AppDatabase.technicalPhotosTable,
+      AppDatabase.technicalPhotoTagsTable,
+      AppDatabase.technicalPhotoLinksTable,
+      AppDatabase.defectResolutionAttachmentsTable,
+      AppDatabase.acceptanceProtocolsTable,
+      AppDatabase.acceptanceProtocolDefectsTable,
+      AppDatabase.acceptanceProtocolAttachmentsTable,
+      AppDatabase.materialsTable,
+      AppDatabase.materialDeliveriesTable,
+      AppDatabase.materialReturnsTable,
     ]) {
       final table = await database.query(
         'sqlite_master',
@@ -219,6 +241,45 @@ void main() {
     );
   });
 
+  test('migrates version 17 to material tracking without data loss', () async {
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    await appDatabase!.writeMetadata(
+      key: 'preserved-v17-setting',
+      value: 'keep-me',
+      updatedAt: DateTime.utc(2026, 8, 1),
+    );
+    final versionSeventeen = await appDatabase!.open();
+    await versionSeventeen.execute(
+      'DROP TABLE ${AppDatabase.materialReturnsTable}',
+    );
+    await versionSeventeen.execute(
+      'DROP TABLE ${AppDatabase.materialDeliveriesTable}',
+    );
+    await versionSeventeen.execute('DROP TABLE ${AppDatabase.materialsTable}');
+    await versionSeventeen.setVersion(17);
+    await appDatabase!.close();
+
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final migrated = await appDatabase!.open();
+
+    expect(await migrated.getVersion(), AppDatabase.schemaVersion);
+    expect(await appDatabase!.readMetadata('preserved-v17-setting'), 'keep-me');
+    for (final table in <String>[
+      AppDatabase.materialsTable,
+      AppDatabase.materialDeliveriesTable,
+      AppDatabase.materialReturnsTable,
+    ]) {
+      expect(
+        await migrated.query(
+          'sqlite_master',
+          where: 'type = ? AND name = ?',
+          whereArgs: <Object?>['table', table],
+        ),
+        hasLength(1),
+      );
+    }
+  });
+
   test('migrates version 10 and adds the project capture inbox', () async {
     appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
     await appDatabase!.writeMetadata(
@@ -254,6 +315,319 @@ void main() {
         hasLength(1),
       );
     }
+    expect(await migrated.rawQuery('PRAGMA foreign_key_check'), isEmpty);
+  });
+
+  test('migrates version 12 and requires audited decision approval', () async {
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final projects = SqliteProjectRepository(
+      database: appDatabase!,
+      fileStore: ProjectFileStore(
+        rootDirectory: Directory(p.join(temporaryDirectory.path, 'files')),
+      ),
+      idGenerator: () => 'project-v12',
+      utcNow: () => DateTime.utc(2026, 7, 30),
+    );
+    await projects.create(
+      ProjectDraft(
+        name: 'Dom',
+        type: ProjectType.houseBuild,
+        template: ProjectTemplate.houseConstruction,
+      ),
+    );
+    final versionTwelveDatabase = await appDatabase!.open();
+    await versionTwelveDatabase
+        .insert(AppDatabase.journalEntriesTable, <String, Object?>{
+          'id': 'decision-v12',
+          'project_id': 'project-v12',
+          'entry_type': 'decision',
+          'status': 'approved',
+          'title': 'Stara decyzja bez audytu',
+          'selected_option': 'Wariant A',
+          'occurred_at_utc_ms': 1,
+          'created_at_utc_ms': 1,
+          'updated_at_utc_ms': 1,
+          'revision': 1,
+        });
+    await versionTwelveDatabase.execute(
+      'DROP INDEX journal_entries_project_approval_idx',
+    );
+    await versionTwelveDatabase.execute(
+      'ALTER TABLE ${AppDatabase.journalEntriesTable} '
+      'DROP COLUMN approved_by_contact_id',
+    );
+    await versionTwelveDatabase.execute(
+      'ALTER TABLE ${AppDatabase.journalEntriesTable} '
+      'DROP COLUMN approved_at_utc_ms',
+    );
+    await versionTwelveDatabase.execute(
+      'ALTER TABLE ${AppDatabase.journalEntryLinksTable} '
+      'DROP COLUMN relation_purpose',
+    );
+    await versionTwelveDatabase.update(
+      AppDatabase.metadataTable,
+      const <String, Object?>{'value': '12'},
+      where: 'key = ?',
+      whereArgs: const <Object?>[AppDatabase.schemaVersionKey],
+    );
+    await versionTwelveDatabase.setVersion(12);
+    await appDatabase!.close();
+
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final migrated = await appDatabase!.open();
+    final journalColumns = await migrated.rawQuery(
+      'PRAGMA table_info(${AppDatabase.journalEntriesTable})',
+    );
+    final linkColumns = await migrated.rawQuery(
+      'PRAGMA table_info(${AppDatabase.journalEntryLinksTable})',
+    );
+
+    expect(await migrated.getVersion(), AppDatabase.schemaVersion);
+    expect(
+      journalColumns.map((column) => column['name']),
+      containsAll(<String>['approved_by_contact_id', 'approved_at_utc_ms']),
+    );
+    expect(
+      linkColumns.map((column) => column['name']),
+      contains('relation_purpose'),
+    );
+    expect(
+      await migrated.query(
+        AppDatabase.journalEntriesTable,
+        columns: const <String>['status'],
+        where: 'id = ?',
+        whereArgs: const <Object?>['decision-v12'],
+      ),
+      <Map<String, Object?>>[
+        <String, Object?>{'status': 'pending'},
+      ],
+    );
+    expect(await migrated.rawQuery('PRAGMA foreign_key_check'), isEmpty);
+  });
+
+  test('migrates version 13 and adds technical photo albums', () async {
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    await appDatabase!.writeMetadata(
+      key: 'preserved-v13-setting',
+      value: 'keep-me',
+      updatedAt: DateTime.utc(2026, 7, 31),
+    );
+    final versionThirteenDatabase = await appDatabase!.open();
+    await versionThirteenDatabase.execute(
+      'DROP TABLE ${AppDatabase.technicalPhotoTagsTable}',
+    );
+    await versionThirteenDatabase.execute(
+      'DROP TABLE ${AppDatabase.technicalPhotosTable}',
+    );
+    await versionThirteenDatabase.execute(
+      'DROP TABLE ${AppDatabase.technicalAlbumsTable}',
+    );
+    await versionThirteenDatabase.update(
+      AppDatabase.metadataTable,
+      const <String, Object?>{'value': '13'},
+      where: 'key = ?',
+      whereArgs: const <Object?>[AppDatabase.schemaVersionKey],
+    );
+    await versionThirteenDatabase.setVersion(13);
+    await appDatabase!.close();
+
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final migrated = await appDatabase!.open();
+
+    expect(await migrated.getVersion(), AppDatabase.schemaVersion);
+    expect(await appDatabase!.readMetadata('preserved-v13-setting'), 'keep-me');
+    for (final tableName in <String>[
+      AppDatabase.technicalAlbumsTable,
+      AppDatabase.technicalPhotosTable,
+      AppDatabase.technicalPhotoTagsTable,
+    ]) {
+      expect(
+        await migrated.query(
+          'sqlite_master',
+          where: 'type = ? AND name = ?',
+          whereArgs: <Object?>['table', tableName],
+        ),
+        hasLength(1),
+      );
+    }
+    expect(await migrated.rawQuery('PRAGMA foreign_key_check'), isEmpty);
+  });
+
+  test(
+    'migrates version 14 and preserves defects while adding PUNCH',
+    () async {
+      appDatabase = AppDatabase(
+        factory: databaseFactoryFfi,
+        path: databasePath,
+      );
+      final projects = SqliteProjectRepository(
+        database: appDatabase!,
+        fileStore: ProjectFileStore(
+          rootDirectory: Directory(p.join(temporaryDirectory.path, 'files')),
+        ),
+        idGenerator: () => 'project-v14',
+        utcNow: () => DateTime.utc(2026, 7, 31),
+      );
+      await projects.create(
+        ProjectDraft(
+          name: 'Dom',
+          type: ProjectType.houseBuild,
+          template: ProjectTemplate.houseConstruction,
+        ),
+      );
+      final versionFourteenDatabase = await appDatabase!.open();
+      await versionFourteenDatabase
+          .insert(AppDatabase.journalEntriesTable, <String, Object?>{
+            'id': 'legacy-defect',
+            'project_id': 'project-v14',
+            'entry_type': 'defect',
+            'status': 'open',
+            'title': 'Stara usterka',
+            'occurred_at_utc_ms': 0,
+            'created_at_utc_ms': 0,
+            'updated_at_utc_ms': 0,
+            'revision': 1,
+          });
+      await versionFourteenDatabase.setVersion(14);
+      await versionFourteenDatabase.update(
+        AppDatabase.metadataTable,
+        const <String, Object?>{'value': '14'},
+        where: 'key = ?',
+        whereArgs: const <Object?>[AppDatabase.schemaVersionKey],
+      );
+      await appDatabase!.close();
+
+      appDatabase = AppDatabase(
+        factory: databaseFactoryFfi,
+        path: databasePath,
+      );
+      final migrated = await appDatabase!.open();
+
+      expect(await migrated.getVersion(), AppDatabase.schemaVersion);
+      final defect = (await migrated.query(
+        AppDatabase.journalEntriesTable,
+        where: 'id = ?',
+        whereArgs: const <Object?>['legacy-defect'],
+      )).single;
+      expect(defect['defect_severity'], 'medium');
+      expect(defect['requires_resolution_photo'], 0);
+      expect(defect['requires_signed_protocol'], 0);
+      expect(await migrated.rawQuery('PRAGMA foreign_key_check'), isEmpty);
+    },
+  );
+
+  test('migrates version 15 and marks existing costs as unassigned', () async {
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final projects = SqliteProjectRepository(
+      database: appDatabase!,
+      fileStore: ProjectFileStore(
+        rootDirectory: Directory(p.join(temporaryDirectory.path, 'files')),
+      ),
+      idGenerator: () => 'project-v15',
+      utcNow: () => DateTime.utc(2026, 7, 31),
+    );
+    await projects.create(
+      ProjectDraft(
+        name: 'Dom',
+        type: ProjectType.houseBuild,
+        template: ProjectTemplate.houseConstruction,
+      ),
+    );
+    final costs = SqliteCostRepository(
+      database: appDatabase!,
+      idGenerator: () => 'legacy-cost-v15',
+      utcNow: () => DateTime.utc(2026, 7, 31),
+    );
+    await costs.create(
+      ConfirmedCostEntryInput(
+        CostEntryInput(
+          projectId: 'project-v15',
+          name: 'Stary koszt',
+          type: CostEntryType.cost,
+          component: CostComponent.labor,
+          status: CostStatus.paid,
+          amount: VatBreakdown.fromGross(
+            Money(minorUnits: 12345, currencyCode: 'PLN'),
+            VatRate.standard23,
+          ),
+          entryDate: DateTime.utc(2026, 7, 31),
+        ),
+      ),
+    );
+    final versionFifteenDatabase = await appDatabase!.open();
+    await versionFifteenDatabase.execute(
+      'DROP INDEX cost_entries_project_component_idx',
+    );
+    await versionFifteenDatabase.execute(
+      'ALTER TABLE ${AppDatabase.costEntriesTable} '
+      'DROP COLUMN cost_component',
+    );
+    await versionFifteenDatabase.update(
+      AppDatabase.metadataTable,
+      const <String, Object?>{'value': '15'},
+      where: 'key = ?',
+      whereArgs: const <Object?>[AppDatabase.schemaVersionKey],
+    );
+    await versionFifteenDatabase.setVersion(15);
+    await appDatabase!.close();
+
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final migrated = await appDatabase!.open();
+    final row = (await migrated.query(
+      AppDatabase.costEntriesTable,
+      where: 'id = ?',
+      whereArgs: const <Object?>['legacy-cost-v15'],
+    )).single;
+
+    expect(await migrated.getVersion(), AppDatabase.schemaVersion);
+    expect(row['cost_component'], 'unassigned');
+    expect(row['gross_minor_units'], 12345);
+    expect(await migrated.rawQuery('PRAGMA foreign_key_check'), isEmpty);
+  });
+
+  test('migrates version 16 by adding room planning tables', () async {
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final current = await appDatabase!.open();
+    await current.execute('DROP TABLE ${AppDatabase.roomContactLinksTable}');
+    await current.execute('DROP TABLE ${AppDatabase.roomRecordLinksTable}');
+    await current.execute('DROP TABLE ${AppDatabase.roomChoiceOutputsTable}');
+    await current.execute('DROP TABLE ${AppDatabase.roomChoiceVariantsTable}');
+    await current.execute('DROP TABLE ${AppDatabase.roomChoicesTable}');
+    await current.execute('DROP TABLE ${AppDatabase.roomsTable}');
+    await current.update(
+      AppDatabase.metadataTable,
+      const <String, Object?>{'value': '16'},
+      where: 'key = ?',
+      whereArgs: const <Object?>[AppDatabase.schemaVersionKey],
+    );
+    await current.setVersion(16);
+    await appDatabase!.close();
+
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final migrated = await appDatabase!.open();
+    final tableRows = await migrated.query(
+      'sqlite_master',
+      columns: const <String>['name'],
+      where: "type = 'table' AND name IN (?, ?, ?, ?, ?, ?)",
+      whereArgs: const <Object?>[
+        AppDatabase.roomsTable,
+        AppDatabase.roomChoicesTable,
+        AppDatabase.roomChoiceVariantsTable,
+        AppDatabase.roomChoiceOutputsTable,
+        AppDatabase.roomRecordLinksTable,
+        AppDatabase.roomContactLinksTable,
+      ],
+    );
+
+    expect(await migrated.getVersion(), AppDatabase.schemaVersion);
+    expect(tableRows.map((row) => row['name']).toSet(), <String>{
+      AppDatabase.roomsTable,
+      AppDatabase.roomChoicesTable,
+      AppDatabase.roomChoiceVariantsTable,
+      AppDatabase.roomChoiceOutputsTable,
+      AppDatabase.roomRecordLinksTable,
+      AppDatabase.roomContactLinksTable,
+    });
     expect(await migrated.rawQuery('PRAGMA foreign_key_check'), isEmpty);
   });
 

@@ -85,6 +85,7 @@ void main() {
     expect(controller.state.reviewDraft?.hasUnreviewedConfidence, isTrue);
 
     controller.confirmField(ReceiptReviewFieldKey.date);
+    controller.applyComponentToAll(CostComponent.material);
     controller.confirmItem(controller.state.reviewDraft!.items[0].id);
     controller.confirmItem(controller.state.reviewDraft!.items[1].id);
     await controller.saveReviewed();
@@ -282,6 +283,7 @@ ReceiptScanSession _reviewableSession({
 }
 
 void _confirmAllItems(ReceiptScanController controller) {
+  controller.applyComponentToAll(CostComponent.material);
   for (final item in controller.state.reviewDraft!.items) {
     controller.confirmItem(item.id);
   }

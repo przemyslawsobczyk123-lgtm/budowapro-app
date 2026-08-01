@@ -194,6 +194,12 @@ CostCsvLabels _labels() {
       CostEntryType.offer: 'Oferta',
       CostEntryType.planned: 'Plan',
     },
+    components: const <CostComponent, String>{
+      CostComponent.material: 'Materiał',
+      CostComponent.labor: 'Robocizna',
+      CostComponent.mixed: 'Materiał + robocizna',
+      CostComponent.unassigned: 'Nieprzypisane',
+    },
     statuses: const <CostStatus, String>{
       CostStatus.planned: 'Planowany',
       CostStatus.ordered: 'Zamówiony',

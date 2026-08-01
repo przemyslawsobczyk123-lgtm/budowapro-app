@@ -43,7 +43,7 @@ szerokiego importu ksiazki adresowej. Android nie ma uprawnien
 
 ```text
 flutter analyze                 No issues found
-flutter test                    473 tests passed
+flutter test                    477 tests passed
 flutter build apk --debug       Built build/app/outputs/flutter-apk/app-debug.apk
 ```
 
@@ -76,6 +76,10 @@ Konfiguracja podpisu, Bundle ID w Apple Developer, App Store Connect,
 uprawnienia zespolu, privacy manifest/review oraz finalne metadane sklepu
 pozostaja operacjami wydawniczymi poza kodem. Build iOS musi zostac sprawdzony
 na macOS, a kazdy upload do App Store Connect wymaga unikalnego numeru builda.
+Workflow TestFlight wymaga dodatkowo sekretow GitHub Actions:
+`BUDOWAPRO_PUBLISHER_NAME`, `BUDOWAPRO_PRIVACY_CONTACT_EMAIL`,
+`BUDOWAPRO_PRIVACY_POLICY_URL` i `BUDOWAPRO_SUPPORT_URL`, aby IPA mial te same
+dane prawne co Android.
 
 ## Zrodla
 

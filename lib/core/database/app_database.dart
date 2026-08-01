@@ -18,7 +18,7 @@ final class AppDatabase {
 
   AppDatabase._(this._factory, this._path);
 
-  static const int schemaVersion = 11;
+  static const int schemaVersion = 18;
   static const String databaseFileName = 'budowapro.db';
   static const String metadataTable = 'app_metadata';
   static const String projectsTable = 'projects';
@@ -49,6 +49,31 @@ final class AppDatabase {
   static const String captureDraftsTable = 'capture_drafts';
   static const String captureDraftAttachmentsTable =
       'capture_draft_attachments';
+  static const String journalEntriesTable = 'journal_entries';
+  static const String journalEntryAttachmentsTable =
+      'journal_entry_attachments';
+  static const String journalEntryLinksTable = 'journal_entry_links';
+  static const String journalEntryRevisionsTable = 'journal_entry_revisions';
+  static const String technicalAlbumsTable = 'technical_albums';
+  static const String technicalPhotosTable = 'technical_photos';
+  static const String technicalPhotoTagsTable = 'technical_photo_tags';
+  static const String technicalPhotoLinksTable = 'technical_photo_links';
+  static const String defectResolutionAttachmentsTable =
+      'defect_resolution_attachments';
+  static const String acceptanceProtocolsTable = 'acceptance_protocols';
+  static const String acceptanceProtocolDefectsTable =
+      'acceptance_protocol_defects';
+  static const String acceptanceProtocolAttachmentsTable =
+      'acceptance_protocol_attachments';
+  static const String roomsTable = 'rooms';
+  static const String roomChoicesTable = 'room_choices';
+  static const String roomChoiceVariantsTable = 'room_choice_variants';
+  static const String roomChoiceOutputsTable = 'room_choice_outputs';
+  static const String roomRecordLinksTable = 'room_record_links';
+  static const String roomContactLinksTable = 'room_contact_links';
+  static const String materialsTable = 'materials';
+  static const String materialDeliveriesTable = 'material_deliveries';
+  static const String materialReturnsTable = 'material_returns';
   static const String schemaVersionKey = 'schema_version';
   static const Set<String> requiredTableNames = <String>{
     metadataTable,
@@ -77,6 +102,27 @@ final class AppDatabase {
     receiptImportsTable,
     captureDraftsTable,
     captureDraftAttachmentsTable,
+    journalEntriesTable,
+    journalEntryAttachmentsTable,
+    journalEntryLinksTable,
+    journalEntryRevisionsTable,
+    technicalAlbumsTable,
+    technicalPhotosTable,
+    technicalPhotoTagsTable,
+    technicalPhotoLinksTable,
+    defectResolutionAttachmentsTable,
+    acceptanceProtocolsTable,
+    acceptanceProtocolDefectsTable,
+    acceptanceProtocolAttachmentsTable,
+    roomsTable,
+    roomChoicesTable,
+    roomChoiceVariantsTable,
+    roomChoiceOutputsTable,
+    roomRecordLinksTable,
+    roomContactLinksTable,
+    materialsTable,
+    materialDeliveriesTable,
+    materialReturnsTable,
   };
 
   final DatabaseFactory _factory;
@@ -1513,6 +1559,839 @@ final class AppDatabase {
       ''');
     }
 
+    if (fromVersion < 12 && toVersion >= 12) {
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $journalEntriesTable (
+          id TEXT PRIMARY KEY NOT NULL,
+          project_id TEXT NOT NULL,
+          entry_type TEXT NOT NULL CHECK (
+            entry_type IN ('daily', 'note', 'decision', 'defect', 'scope_change')
+          ),
+          status TEXT NOT NULL CHECK (
+            status IN (
+              'draft', 'open', 'in_progress', 'proposal', 'pending',
+              'approved', 'rejected', 'implemented', 'recheck', 'fixed', 'closed'
+            )
+          ),
+          title TEXT NOT NULL,
+          body TEXT,
+          weather TEXT,
+          people TEXT,
+          work_performed TEXT,
+          deliveries TEXT,
+          delays TEXT,
+          next_steps TEXT,
+          problem TEXT,
+          variants TEXT,
+          selected_option TEXT,
+          rationale TEXT,
+          stage_id TEXT,
+          responsible_contact_id TEXT,
+          decision_maker_contact_id TEXT,
+          due_at_utc_ms INTEGER,
+          cost_delta_minor_units INTEGER,
+          schedule_delta_days INTEGER,
+          source_capture_id TEXT,
+          occurred_at_utc_ms INTEGER NOT NULL,
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          revision INTEGER NOT NULL CHECK (revision >= 1),
+          UNIQUE (id, project_id),
+          FOREIGN KEY (project_id) REFERENCES $projectsTable(id)
+            ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS journal_entries_project_date_idx
+        ON $journalEntriesTable (
+          project_id,
+          occurred_at_utc_ms DESC,
+          id DESC
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS journal_entries_project_type_status_idx
+        ON $journalEntriesTable (project_id, entry_type, status)
+      ''');
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $journalEntryAttachmentsTable (
+          project_id TEXT NOT NULL,
+          journal_entry_id TEXT NOT NULL,
+          attachment_id TEXT NOT NULL,
+          sort_order INTEGER NOT NULL CHECK (sort_order >= 0),
+          PRIMARY KEY (project_id, journal_entry_id, attachment_id),
+          UNIQUE (project_id, journal_entry_id, sort_order),
+          FOREIGN KEY (journal_entry_id, project_id)
+            REFERENCES $journalEntriesTable(id, project_id) ON DELETE CASCADE,
+          FOREIGN KEY (attachment_id, project_id)
+            REFERENCES $costAttachmentsTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS journal_entry_attachments_attachment_idx
+        ON $journalEntryAttachmentsTable (project_id, attachment_id)
+      ''');
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $journalEntryLinksTable (
+          project_id TEXT NOT NULL,
+          journal_entry_id TEXT NOT NULL,
+          relation_type TEXT NOT NULL CHECK (
+            relation_type IN ('stage', 'contact', 'checklist', 'schedule', 'cost', 'capture')
+          ),
+          target_id TEXT NOT NULL,
+          label TEXT,
+          sort_order INTEGER NOT NULL CHECK (sort_order >= 0),
+          PRIMARY KEY (project_id, journal_entry_id, relation_type, target_id),
+          UNIQUE (project_id, journal_entry_id, sort_order),
+          FOREIGN KEY (journal_entry_id, project_id)
+            REFERENCES $journalEntriesTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS journal_entry_links_target_idx
+        ON $journalEntryLinksTable (project_id, relation_type, target_id)
+      ''');
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $journalEntryRevisionsTable (
+          id TEXT PRIMARY KEY NOT NULL,
+          project_id TEXT NOT NULL,
+          journal_entry_id TEXT NOT NULL,
+          revision INTEGER NOT NULL CHECK (revision >= 1),
+          action TEXT NOT NULL CHECK (action IN ('created', 'updated', 'status_changed')),
+          snapshot_json TEXT NOT NULL,
+          created_at_utc_ms INTEGER NOT NULL,
+          UNIQUE (project_id, journal_entry_id, revision),
+          FOREIGN KEY (journal_entry_id, project_id)
+            REFERENCES $journalEntriesTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS journal_entry_revisions_entry_idx
+        ON $journalEntryRevisionsTable (
+          project_id,
+          journal_entry_id,
+          revision DESC
+        )
+      ''');
+    }
+
+    if (fromVersion < 13 && toVersion >= 13) {
+      final journalColumns = await database.rawQuery(
+        'PRAGMA table_info($journalEntriesTable)',
+      );
+      final journalColumnNames = journalColumns
+          .map((column) => column['name'])
+          .toSet();
+      if (!journalColumnNames.contains('approved_by_contact_id')) {
+        await database.execute('''
+          ALTER TABLE $journalEntriesTable
+          ADD COLUMN approved_by_contact_id TEXT
+        ''');
+      }
+      if (!journalColumnNames.contains('approved_at_utc_ms')) {
+        await database.execute('''
+          ALTER TABLE $journalEntriesTable
+          ADD COLUMN approved_at_utc_ms INTEGER
+        ''');
+      }
+      final linkColumns = await database.rawQuery(
+        'PRAGMA table_info($journalEntryLinksTable)',
+      );
+      if (!linkColumns.any((column) => column['name'] == 'relation_purpose')) {
+        await database.execute('''
+          ALTER TABLE $journalEntryLinksTable
+          ADD COLUMN relation_purpose TEXT NOT NULL DEFAULT 'context'
+            CHECK (relation_purpose IN ('context', 'blocks'))
+        ''');
+      }
+      await database.execute('''
+        UPDATE $journalEntriesTable
+        SET status = 'pending'
+        WHERE entry_type IN ('decision', 'scope_change')
+          AND status IN ('approved', 'implemented')
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS journal_entries_project_approval_idx
+        ON $journalEntriesTable (
+          project_id,
+          approved_at_utc_ms,
+          status
+        )
+      ''');
+    }
+
+    if (fromVersion < 14 && toVersion >= 14) {
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $technicalAlbumsTable (
+          project_id TEXT NOT NULL,
+          id TEXT NOT NULL,
+          title TEXT NOT NULL,
+          album_kind TEXT NOT NULL CHECK (
+            album_kind IN (
+              'beforeConcrete',
+              'beforeBackfill',
+              'beforePlaster',
+              'beforeScreed',
+              'beforeTiles',
+              'asBuilt',
+              'custom'
+            )
+          ),
+          stage_id TEXT,
+          description TEXT,
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          PRIMARY KEY (project_id, id),
+          CHECK (length(trim(title)) BETWEEN 1 AND 120),
+          CHECK (description IS NULL OR length(trim(description)) <= 1000),
+          CHECK (updated_at_utc_ms >= created_at_utc_ms),
+          FOREIGN KEY (project_id) REFERENCES $projectsTable(id)
+            ON DELETE CASCADE,
+          FOREIGN KEY (project_id, stage_id)
+            REFERENCES $projectStagesTable(project_id, id) ON DELETE RESTRICT
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS technical_albums_project_stage_idx
+        ON $technicalAlbumsTable (
+          project_id,
+          stage_id,
+          updated_at_utc_ms DESC,
+          id
+        )
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $technicalPhotosTable (
+          project_id TEXT NOT NULL,
+          attachment_id TEXT NOT NULL,
+          album_id TEXT NOT NULL,
+          title TEXT NOT NULL,
+          captured_at_utc_ms INTEGER NOT NULL,
+          installation_type TEXT NOT NULL CHECK (
+            installation_type IN (
+              'structure',
+              'electrical',
+              'water',
+              'sewage',
+              'heating',
+              'ventilation',
+              'waterproofing',
+              'insulation',
+              'grounding',
+              'other'
+            )
+          ),
+          stage_id TEXT,
+          zone_label TEXT,
+          contractor_contact_id TEXT,
+          checklist_item_id TEXT,
+          description TEXT,
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          PRIMARY KEY (project_id, attachment_id),
+          CHECK (length(trim(title)) BETWEEN 1 AND 160),
+          CHECK (zone_label IS NULL OR length(trim(zone_label)) <= 120),
+          CHECK (description IS NULL OR length(trim(description)) <= 2000),
+          CHECK (updated_at_utc_ms >= created_at_utc_ms),
+          FOREIGN KEY (attachment_id, project_id)
+            REFERENCES $costAttachmentsTable(id, project_id) ON DELETE CASCADE,
+          FOREIGN KEY (project_id, album_id)
+            REFERENCES $technicalAlbumsTable(project_id, id) ON DELETE RESTRICT,
+          FOREIGN KEY (project_id, stage_id)
+            REFERENCES $projectStagesTable(project_id, id) ON DELETE RESTRICT,
+          FOREIGN KEY (project_id, contractor_contact_id)
+            REFERENCES $contactsTable(project_id, id) ON DELETE RESTRICT,
+          FOREIGN KEY (project_id, checklist_item_id)
+            REFERENCES $checklistItemsTable(project_id, id) ON DELETE RESTRICT
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS technical_photos_project_album_date_idx
+        ON $technicalPhotosTable (
+          project_id,
+          album_id,
+          captured_at_utc_ms DESC,
+          attachment_id
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS technical_photos_project_context_idx
+        ON $technicalPhotosTable (
+          project_id,
+          stage_id,
+          installation_type,
+          captured_at_utc_ms DESC,
+          attachment_id
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS technical_photos_checklist_idx
+        ON $technicalPhotosTable (
+          project_id,
+          checklist_item_id,
+          attachment_id
+        )
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $technicalPhotoTagsTable (
+          project_id TEXT NOT NULL,
+          attachment_id TEXT NOT NULL,
+          tag TEXT NOT NULL,
+          PRIMARY KEY (project_id, attachment_id, tag),
+          CHECK (length(trim(tag)) BETWEEN 1 AND 32),
+          FOREIGN KEY (project_id, attachment_id)
+            REFERENCES $technicalPhotosTable(project_id, attachment_id)
+              ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS technical_photo_tags_project_tag_idx
+        ON $technicalPhotoTagsTable (project_id, tag, attachment_id)
+      ''');
+    }
+
+    if (fromVersion < 15 && toVersion >= 15) {
+      final journalColumns = await database.rawQuery(
+        'PRAGMA table_info($journalEntriesTable)',
+      );
+      final journalColumnNames = journalColumns
+          .map((column) => column['name'])
+          .toSet();
+      if (!journalColumnNames.contains('defect_severity')) {
+        await database.execute('''
+          ALTER TABLE $journalEntriesTable
+          ADD COLUMN defect_severity TEXT CHECK (
+            defect_severity IS NULL OR
+            defect_severity IN ('low', 'medium', 'high', 'critical')
+          )
+        ''');
+      }
+      if (!journalColumnNames.contains('defect_room_label')) {
+        await database.execute('''
+          ALTER TABLE $journalEntriesTable
+          ADD COLUMN defect_room_label TEXT
+        ''');
+      }
+      if (!journalColumnNames.contains('requires_resolution_photo')) {
+        await database.execute('''
+          ALTER TABLE $journalEntriesTable
+          ADD COLUMN requires_resolution_photo INTEGER NOT NULL DEFAULT 0
+            CHECK (requires_resolution_photo IN (0, 1))
+        ''');
+      }
+      if (!journalColumnNames.contains('requires_signed_protocol')) {
+        await database.execute('''
+          ALTER TABLE $journalEntriesTable
+          ADD COLUMN requires_signed_protocol INTEGER NOT NULL DEFAULT 0
+            CHECK (requires_signed_protocol IN (0, 1))
+        ''');
+      }
+      await database.execute('''
+        UPDATE $journalEntriesTable
+        SET defect_severity = 'medium'
+        WHERE entry_type = 'defect' AND defect_severity IS NULL
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS journal_entries_project_defect_filter_idx
+        ON $journalEntriesTable (
+          project_id,
+          entry_type,
+          defect_severity,
+          due_at_utc_ms,
+          status
+        )
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $defectResolutionAttachmentsTable (
+          project_id TEXT NOT NULL,
+          defect_id TEXT NOT NULL,
+          attachment_id TEXT NOT NULL,
+          sort_order INTEGER NOT NULL CHECK (sort_order >= 0),
+          PRIMARY KEY (project_id, defect_id, attachment_id),
+          UNIQUE (project_id, defect_id, sort_order),
+          FOREIGN KEY (defect_id, project_id)
+            REFERENCES $journalEntriesTable(id, project_id) ON DELETE CASCADE,
+          FOREIGN KEY (attachment_id, project_id)
+            REFERENCES $costAttachmentsTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS defect_resolution_attachment_idx
+        ON $defectResolutionAttachmentsTable (project_id, attachment_id)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $acceptanceProtocolsTable (
+          id TEXT NOT NULL,
+          project_id TEXT NOT NULL,
+          title TEXT NOT NULL,
+          status TEXT NOT NULL CHECK (
+            status IN ('draft', 'finalized', 'signed')
+          ),
+          inspected_at_utc_ms INTEGER NOT NULL,
+          stage_id TEXT,
+          room_label TEXT,
+          contractor_contact_id TEXT,
+          notes TEXT,
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          PRIMARY KEY (project_id, id),
+          UNIQUE (id, project_id),
+          CHECK (length(trim(title)) BETWEEN 1 AND 160),
+          CHECK (room_label IS NULL OR length(trim(room_label)) <= 160),
+          CHECK (notes IS NULL OR length(trim(notes)) <= 4000),
+          CHECK (updated_at_utc_ms >= created_at_utc_ms),
+          FOREIGN KEY (project_id) REFERENCES $projectsTable(id)
+            ON DELETE CASCADE,
+          FOREIGN KEY (project_id, stage_id)
+            REFERENCES $projectStagesTable(project_id, id) ON DELETE RESTRICT,
+          FOREIGN KEY (project_id, contractor_contact_id)
+            REFERENCES $contactsTable(project_id, id) ON DELETE RESTRICT
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS acceptance_protocols_project_date_idx
+        ON $acceptanceProtocolsTable (
+          project_id,
+          inspected_at_utc_ms DESC,
+          id
+        )
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $acceptanceProtocolDefectsTable (
+          project_id TEXT NOT NULL,
+          protocol_id TEXT NOT NULL,
+          defect_id TEXT NOT NULL,
+          sort_order INTEGER NOT NULL CHECK (sort_order >= 0),
+          PRIMARY KEY (project_id, protocol_id, defect_id),
+          UNIQUE (project_id, protocol_id, sort_order),
+          FOREIGN KEY (project_id, protocol_id)
+            REFERENCES $acceptanceProtocolsTable(project_id, id)
+              ON DELETE CASCADE,
+          FOREIGN KEY (defect_id, project_id)
+            REFERENCES $journalEntriesTable(id, project_id) ON DELETE RESTRICT
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS acceptance_protocol_defects_defect_idx
+        ON $acceptanceProtocolDefectsTable (project_id, defect_id, protocol_id)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $acceptanceProtocolAttachmentsTable (
+          project_id TEXT NOT NULL,
+          protocol_id TEXT NOT NULL,
+          attachment_id TEXT NOT NULL,
+          sort_order INTEGER NOT NULL CHECK (sort_order >= 0),
+          PRIMARY KEY (project_id, protocol_id, attachment_id),
+          UNIQUE (project_id, protocol_id, sort_order),
+          FOREIGN KEY (project_id, protocol_id)
+            REFERENCES $acceptanceProtocolsTable(project_id, id)
+              ON DELETE CASCADE,
+          FOREIGN KEY (attachment_id, project_id)
+            REFERENCES $costAttachmentsTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS acceptance_protocol_attachment_idx
+        ON $acceptanceProtocolAttachmentsTable (project_id, attachment_id)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $technicalPhotoLinksTable (
+          project_id TEXT NOT NULL,
+          attachment_id TEXT NOT NULL,
+          relation_type TEXT NOT NULL CHECK (
+            relation_type IN ('cost', 'decision', 'defect', 'acceptance_protocol')
+          ),
+          target_id TEXT NOT NULL,
+          created_at_utc_ms INTEGER NOT NULL,
+          PRIMARY KEY (
+            project_id,
+            attachment_id,
+            relation_type,
+            target_id
+          ),
+          FOREIGN KEY (project_id, attachment_id)
+            REFERENCES $technicalPhotosTable(project_id, attachment_id)
+              ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS technical_photo_links_target_idx
+        ON $technicalPhotoLinksTable (
+          project_id,
+          relation_type,
+          target_id,
+          attachment_id
+        )
+      ''');
+    }
+
+    if (fromVersion < 16 && toVersion >= 16) {
+      final costTables = await database.query(
+        'sqlite_master',
+        columns: const <String>['name'],
+        where: 'type = ? AND name = ?',
+        whereArgs: const <Object?>['table', costEntriesTable],
+        limit: 1,
+      );
+      if (costTables.isNotEmpty) {
+        final costColumns = await database.rawQuery(
+          'PRAGMA table_info($costEntriesTable)',
+        );
+        final costColumnNames = costColumns
+            .map((column) => column['name'])
+            .toSet();
+        if (!costColumnNames.contains('cost_component')) {
+          await database.execute('''
+            ALTER TABLE $costEntriesTable
+            ADD COLUMN cost_component TEXT NOT NULL DEFAULT 'unassigned'
+              CHECK (
+                cost_component IN ('material', 'labor', 'mixed', 'unassigned')
+              )
+          ''');
+        }
+        await database.execute('''
+          CREATE INDEX IF NOT EXISTS cost_entries_project_component_idx
+          ON $costEntriesTable (
+            project_id,
+            cost_component,
+            entry_type,
+            lifecycle,
+            entry_date_utc_ms DESC,
+            id
+          )
+        ''');
+      }
+    }
+
+    if (fromVersion < 17 && toVersion >= 17) {
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $roomsTable (
+          id TEXT PRIMARY KEY NOT NULL,
+          project_id TEXT NOT NULL,
+          name TEXT NOT NULL COLLATE NOCASE,
+          floor_label TEXT NOT NULL DEFAULT '' COLLATE NOCASE,
+          standard TEXT NOT NULL CHECK (
+            standard IN ('basic', 'standard', 'elevated', 'custom')
+          ),
+          length_mm INTEGER CHECK (length_mm > 0),
+          width_mm INTEGER CHECK (width_mm > 0),
+          height_mm INTEGER CHECK (height_mm > 0),
+          planned_budget_minor_units INTEGER CHECK (
+            planned_budget_minor_units >= 0
+          ),
+          currency_code TEXT CHECK (
+            currency_code IS NULL OR (
+              length(currency_code) = 3 AND
+              currency_code GLOB '[A-Z][A-Z][A-Z]'
+            )
+          ),
+          note TEXT,
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          CHECK (
+            (planned_budget_minor_units IS NULL AND currency_code IS NULL) OR
+            (planned_budget_minor_units IS NOT NULL AND currency_code IS NOT NULL)
+          ),
+          UNIQUE (id, project_id),
+          UNIQUE (project_id, floor_label, name),
+          FOREIGN KEY (project_id) REFERENCES $projectsTable(id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS rooms_project_updated_idx
+        ON $roomsTable (project_id, updated_at_utc_ms DESC, id)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $roomChoicesTable (
+          id TEXT PRIMARY KEY NOT NULL,
+          project_id TEXT NOT NULL,
+          room_id TEXT NOT NULL,
+          title TEXT NOT NULL,
+          status TEXT NOT NULL CHECK (
+            status IN ('open', 'selected', 'cancelled')
+          ),
+          quantity_unscaled INTEGER CHECK (quantity_unscaled > 0),
+          quantity_scale INTEGER CHECK (quantity_scale BETWEEN 0 AND 6),
+          unit TEXT,
+          waste_basis_points INTEGER NOT NULL DEFAULT 0 CHECK (
+            waste_basis_points BETWEEN 0 AND 10000
+          ),
+          order_due_utc_ms INTEGER,
+          note TEXT,
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          CHECK (
+            (quantity_unscaled IS NULL AND quantity_scale IS NULL AND unit IS NULL)
+            OR
+            (quantity_unscaled IS NOT NULL AND quantity_scale IS NOT NULL AND unit IS NOT NULL)
+          ),
+          UNIQUE (id, project_id),
+          FOREIGN KEY (room_id, project_id)
+            REFERENCES $roomsTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS room_choices_room_status_idx
+        ON $roomChoicesTable (project_id, room_id, status, updated_at_utc_ms DESC, id)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $roomChoiceVariantsTable (
+          id TEXT PRIMARY KEY NOT NULL,
+          project_id TEXT NOT NULL,
+          choice_id TEXT NOT NULL,
+          label TEXT NOT NULL,
+          supplier TEXT,
+          product_code TEXT,
+          unit_gross_minor_units INTEGER NOT NULL CHECK (
+            unit_gross_minor_units >= 0
+          ),
+          currency_code TEXT NOT NULL CHECK (
+            length(currency_code) = 3 AND
+            currency_code GLOB '[A-Z][A-Z][A-Z]'
+          ),
+          is_selected INTEGER NOT NULL DEFAULT 0 CHECK (is_selected IN (0, 1)),
+          note TEXT,
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          UNIQUE (id, project_id),
+          FOREIGN KEY (choice_id, project_id)
+            REFERENCES $roomChoicesTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS room_choice_variants_choice_idx
+        ON $roomChoiceVariantsTable (project_id, choice_id, created_at_utc_ms, id)
+      ''');
+      await database.execute('''
+        CREATE UNIQUE INDEX IF NOT EXISTS room_choice_variants_selected_idx
+        ON $roomChoiceVariantsTable (project_id, choice_id)
+        WHERE is_selected = 1
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $roomChoiceOutputsTable (
+          project_id TEXT NOT NULL,
+          choice_id TEXT NOT NULL,
+          output_type TEXT NOT NULL CHECK (
+            output_type IN ('planned_cost', 'decision', 'material')
+          ),
+          record_id TEXT NOT NULL,
+          created_at_utc_ms INTEGER NOT NULL,
+          PRIMARY KEY (project_id, choice_id, output_type),
+          UNIQUE (project_id, output_type, record_id),
+          FOREIGN KEY (choice_id, project_id)
+            REFERENCES $roomChoicesTable(id, project_id) ON DELETE CASCADE
+        ) WITHOUT ROWID
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS room_choice_outputs_record_idx
+        ON $roomChoiceOutputsTable (project_id, output_type, record_id)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $roomRecordLinksTable (
+          project_id TEXT NOT NULL,
+          room_id TEXT NOT NULL,
+          record_type TEXT NOT NULL CHECK (
+            record_type IN ('cost', 'journal', 'technical_photo')
+          ),
+          record_id TEXT NOT NULL,
+          linked_at_utc_ms INTEGER NOT NULL,
+          PRIMARY KEY (project_id, record_type, record_id),
+          FOREIGN KEY (room_id, project_id)
+            REFERENCES $roomsTable(id, project_id) ON DELETE CASCADE
+        ) WITHOUT ROWID
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS room_record_links_room_idx
+        ON $roomRecordLinksTable (project_id, room_id, record_type, record_id)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $roomContactLinksTable (
+          project_id TEXT NOT NULL,
+          room_id TEXT NOT NULL,
+          contact_id TEXT NOT NULL,
+          linked_at_utc_ms INTEGER NOT NULL,
+          PRIMARY KEY (project_id, room_id, contact_id),
+          FOREIGN KEY (room_id, project_id)
+            REFERENCES $roomsTable(id, project_id) ON DELETE CASCADE,
+          FOREIGN KEY (contact_id, project_id)
+            REFERENCES $contactsTable(id, project_id) ON DELETE CASCADE
+        ) WITHOUT ROWID
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS room_contact_links_contact_idx
+        ON $roomContactLinksTable (project_id, contact_id, room_id)
+      ''');
+    }
+
+    if (fromVersion < 18 && toVersion >= 18) {
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $materialsTable (
+          id TEXT PRIMARY KEY NOT NULL,
+          project_id TEXT NOT NULL,
+          name TEXT NOT NULL COLLATE NOCASE,
+          ordered_quantity_microunits INTEGER NOT NULL CHECK (
+            ordered_quantity_microunits > 0
+          ),
+          unit TEXT NOT NULL,
+          stage_id TEXT,
+          room_id TEXT,
+          supplier_contact_id TEXT,
+          cost_entry_id TEXT,
+          receipt_document_id TEXT,
+          ordered_gross_minor_units INTEGER CHECK (
+            ordered_gross_minor_units >= 0
+          ),
+          currency_code TEXT CHECK (
+            currency_code IS NULL OR (
+              length(currency_code) = 3 AND
+              currency_code GLOB '[A-Z][A-Z][A-Z]'
+            )
+          ),
+          storage_location TEXT,
+          ordered_at_utc_ms INTEGER,
+          expected_delivery_at_utc_ms INTEGER,
+          delivery_reminder_enabled INTEGER NOT NULL DEFAULT 0 CHECK (
+            delivery_reminder_enabled IN (0, 1)
+          ),
+          note TEXT,
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          CHECK (
+            (ordered_gross_minor_units IS NULL AND currency_code IS NULL) OR
+            (ordered_gross_minor_units IS NOT NULL AND currency_code IS NOT NULL)
+          ),
+          UNIQUE (id, project_id),
+          FOREIGN KEY (project_id)
+            REFERENCES $projectsTable(id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS materials_project_updated_idx
+        ON $materialsTable (project_id, updated_at_utc_ms DESC, id)
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS materials_project_stage_idx
+        ON $materialsTable (project_id, stage_id, updated_at_utc_ms DESC, id)
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS materials_project_room_idx
+        ON $materialsTable (project_id, room_id, updated_at_utc_ms DESC, id)
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $materialDeliveriesTable (
+          id TEXT PRIMARY KEY NOT NULL,
+          project_id TEXT NOT NULL,
+          material_id TEXT NOT NULL,
+          expected_quantity_microunits INTEGER NOT NULL CHECK (
+            expected_quantity_microunits > 0
+          ),
+          due_at_utc_ms INTEGER NOT NULL,
+          delivered_quantity_microunits INTEGER CHECK (
+            delivered_quantity_microunits > 0
+          ),
+          received_at_utc_ms INTEGER,
+          document_id TEXT,
+          contact_id TEXT,
+          shortage_note TEXT,
+          damage_note TEXT,
+          over_delivery_confirmed INTEGER NOT NULL DEFAULT 0 CHECK (
+            over_delivery_confirmed IN (0, 1)
+          ),
+          reminder_enabled INTEGER NOT NULL DEFAULT 0 CHECK (
+            reminder_enabled IN (0, 1)
+          ),
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          CHECK (
+            (delivered_quantity_microunits IS NULL AND received_at_utc_ms IS NULL)
+            OR
+            (delivered_quantity_microunits IS NOT NULL AND received_at_utc_ms IS NOT NULL)
+          ),
+          UNIQUE (id, project_id),
+          FOREIGN KEY (material_id, project_id)
+            REFERENCES $materialsTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS material_deliveries_material_due_idx
+        ON $materialDeliveriesTable (
+          project_id,
+          material_id,
+          received_at_utc_ms,
+          due_at_utc_ms,
+          id
+        )
+      ''');
+
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $materialReturnsTable (
+          id TEXT PRIMARY KEY NOT NULL,
+          project_id TEXT NOT NULL,
+          material_id TEXT NOT NULL,
+          quantity_microunits INTEGER NOT NULL CHECK (
+            quantity_microunits > 0
+          ),
+          deadline_utc_ms INTEGER NOT NULL,
+          expected_refund_minor_units INTEGER CHECK (
+            expected_refund_minor_units >= 0
+          ),
+          currency_code TEXT CHECK (
+            currency_code IS NULL OR (
+              length(currency_code) = 3 AND
+              currency_code GLOB '[A-Z][A-Z][A-Z]'
+            )
+          ),
+          receipt_required INTEGER NOT NULL CHECK (
+            receipt_required IN (0, 1)
+          ),
+          receipt_document_id TEXT,
+          completed_at_utc_ms INTEGER,
+          actual_refund_minor_units INTEGER CHECK (
+            actual_refund_minor_units >= 0
+          ),
+          reminder_enabled INTEGER NOT NULL DEFAULT 0 CHECK (
+            reminder_enabled IN (0, 1)
+          ),
+          note TEXT,
+          created_at_utc_ms INTEGER NOT NULL,
+          updated_at_utc_ms INTEGER NOT NULL,
+          CHECK (
+            (expected_refund_minor_units IS NULL AND currency_code IS NULL) OR
+            (expected_refund_minor_units IS NOT NULL AND currency_code IS NOT NULL)
+          ),
+          CHECK (
+            actual_refund_minor_units IS NULL OR completed_at_utc_ms IS NOT NULL
+          ),
+          UNIQUE (id, project_id),
+          FOREIGN KEY (material_id, project_id)
+            REFERENCES $materialsTable(id, project_id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS material_returns_material_deadline_idx
+        ON $materialReturnsTable (
+          project_id,
+          material_id,
+          completed_at_utc_ms,
+          deadline_utc_ms,
+          id
+        )
+      ''');
+    }
+
     if (fromVersion < toVersion) {
       await database.insert(metadataTable, <String, Object?>{
         'key': schemaVersionKey,
@@ -1597,7 +2476,7 @@ final class AppDatabase {
 
   static Future<void> _configureConnection(Database database) async {
     await database.execute('PRAGMA foreign_keys = ON');
-    await database.execute('PRAGMA secure_delete = ON');
+    await database.rawQuery('PRAGMA secure_delete = ON');
   }
 }
 

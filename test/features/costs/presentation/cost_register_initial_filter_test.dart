@@ -8,6 +8,7 @@ void main() {
     final filter = CostRegisterInitialFilter.fromQueryParameters({
       'type': 'cost',
       'status': 'paid',
+      'component': 'labor',
       'stageId': 'stage-zero',
       'from': '2026-01-01',
       'to': '2026-01-31',
@@ -15,6 +16,7 @@ void main() {
 
     expect(filter.types, {CostEntryType.cost});
     expect(filter.statuses, {CostStatus.paid});
+    expect(filter.components, {CostComponent.labor});
     expect(filter.stageId, 'stage-zero');
     expect(filter.fromDate, DateTime(2026));
     expect(filter.toDate, DateTime(2026, 1, 31));

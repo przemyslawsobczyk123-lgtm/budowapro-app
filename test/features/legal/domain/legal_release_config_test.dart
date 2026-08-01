@@ -7,6 +7,7 @@ void main() {
       publisherName: 'BudowaPRO Sp. z o.o.',
       contactEmail: 'privacy@budowapro.pl',
       privacyPolicyUrl: 'https://budowapro.pl/privacy',
+      supportUrl: 'https://budowapro.pl/support',
     );
 
     expect(config.hasCompleteLegalMetadata, isTrue);
@@ -15,6 +16,7 @@ void main() {
       config.publicPrivacyPolicyUri,
       Uri.parse('https://budowapro.pl/privacy'),
     );
+    expect(config.publicSupportUri, Uri.parse('https://budowapro.pl/support'));
   });
 
   test('reports every missing release requirement', () {
@@ -22,6 +24,7 @@ void main() {
       publisherName: ' ',
       contactEmail: 'invalid',
       privacyPolicyUrl: 'http://localhost/privacy.pdf',
+      supportUrl: '',
     );
 
     expect(config.hasCompleteLegalMetadata, isFalse);
@@ -29,6 +32,7 @@ void main() {
       LegalReleaseRequirement.publisherName,
       LegalReleaseRequirement.contactEmail,
       LegalReleaseRequirement.publicPrivacyPolicyUrl,
+      LegalReleaseRequirement.supportUrl,
     ]);
   });
 
@@ -37,6 +41,7 @@ void main() {
       publisherName: 'BudowaPRO',
       contactEmail: 'privacy@example.pl',
       privacyPolicyUrl: 'https://example.pl/polityka.PDF?version=1',
+      supportUrl: 'https://example.pl/support',
     );
 
     expect(config.publicPrivacyPolicyUri, isNull);
@@ -48,11 +53,13 @@ void main() {
       publisherName: 'BudowaPRO',
       contactEmail: 'privacy@example.pl',
       privacyPolicyUrl: 'https://localhost/privacy',
+      supportUrl: 'https://example.pl/support',
     );
     const privateIp = LegalReleaseConfig(
       publisherName: 'BudowaPRO',
       contactEmail: 'privacy@example.pl',
       privacyPolicyUrl: 'https://192.168.1.10/privacy',
+      supportUrl: 'https://example.pl/support',
     );
 
     expect(local.publicPrivacyPolicyUri, isNull);

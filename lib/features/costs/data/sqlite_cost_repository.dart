@@ -431,6 +431,30 @@ final class SqliteCostRepository implements CostRepository {
         WHERE ${predicate.sql}
           AND e.entry_type = 'cost'
       ''', predicate.arguments);
+    final componentRows = await database.rawQuery('''
+        SELECT
+          e.cost_component,
+          COALESCE(SUM(
+            CASE
+              WHEN e.entry_type = 'planned' THEN e.gross_minor_units
+              ELSE 0
+            END
+          ), 0) AS planned,
+          COALESCE(SUM(
+            CASE
+              WHEN e.entry_type = 'cost' THEN e.gross_minor_units + COALESCE((
+                SELECT SUM(c.gross_delta_minor_units)
+                FROM ${AppDatabase.costCorrectionsTable} c
+                WHERE c.project_id = e.project_id
+                  AND c.cost_entry_id = e.id
+              ), 0)
+              ELSE 0
+            END
+          ), 0) AS actual
+        FROM ${AppDatabase.costEntriesTable} e
+        WHERE ${predicate.sql}
+        GROUP BY e.cost_component
+      ''', predicate.arguments);
     final plannedMinorUnits = entryTotals.single['planned']! as int;
     final actualMinorUnits =
         BigInt.from(entryTotals.single['actual']! as int) +
@@ -440,6 +464,19 @@ final class SqliteCostRepository implements CostRepository {
       actual: Money.fromBigInt(
         minorUnits: actualMinorUnits,
         currencyCode: currencyCode,
+      ),
+      componentTotals: componentRows.map(
+        (row) => CostComponentTotals(
+          component: _componentFromStorage(row['cost_component']! as String),
+          planned: Money(
+            minorUnits: row['planned']! as int,
+            currencyCode: currencyCode,
+          ),
+          actual: Money(
+            minorUnits: row['actual']! as int,
+            currencyCode: currencyCode,
+          ),
+        ),
       ),
     );
   }
@@ -778,6 +815,7 @@ final class SqliteCostRepository implements CostRepository {
       'project_id': input.projectId,
       'name': input.name,
       'entry_type': _typeToStorage(input.type),
+      'cost_component': _componentToStorage(input.component),
       'financial_status': _statusToStorage(input.status),
       'lifecycle': _lifecycleToStorage(entry.lifecycle),
       'entry_date_utc_ms': DatabaseValueCodec.dateTimeToUtcMilliseconds(
@@ -836,6 +874,7 @@ final class SqliteCostRepository implements CostRepository {
         projectId: row['project_id']! as String,
         name: row['name']! as String,
         type: _typeFromStorage(row['entry_type']! as String),
+        component: _componentFromStorage(row['cost_component']! as String),
         status: _statusFromStorage(row['financial_status']! as String),
         amount: amount,
         entryDate: DatabaseValueCodec.utcMillisecondsToDateTime(
@@ -906,6 +945,7 @@ CostEntryInput _copyInput(CostEntryInput input, {required CostStatus status}) {
     projectId: input.projectId,
     name: input.name,
     type: input.type,
+    component: input.component,
     status: status,
     amount: input.amount,
     entryDate: input.entryDate,
@@ -929,6 +969,7 @@ CostEntryInput _copyDetails(
     projectId: original.projectId,
     name: details.name,
     type: original.type,
+    component: details.component,
     status: original.status,
     amount: original.amount,
     entryDate: details.entryDate,
@@ -977,6 +1018,12 @@ _SqlPredicate _costPredicate(CostQuery query, {required String tableAlias}) {
     arguments,
     column('entry_type'),
     query.types.map(_typeToStorage),
+  );
+  _addInClause(
+    clauses,
+    arguments,
+    column('cost_component'),
+    query.components.map(_componentToStorage),
   );
   _addInClause(
     clauses,
@@ -1108,6 +1155,16 @@ CostEntryType _typeFromStorage(String value) => switch (value) {
   'offer' => CostEntryType.offer,
   'planned' => CostEntryType.planned,
   _ => throw const FormatException('Unsupported cost entry type'),
+};
+
+String _componentToStorage(CostComponent value) => value.name;
+
+CostComponent _componentFromStorage(String value) => switch (value) {
+  'material' => CostComponent.material,
+  'labor' => CostComponent.labor,
+  'mixed' => CostComponent.mixed,
+  'unassigned' => CostComponent.unassigned,
+  _ => throw const FormatException('Unsupported cost component'),
 };
 
 String _statusToStorage(CostStatus value) => value.name;

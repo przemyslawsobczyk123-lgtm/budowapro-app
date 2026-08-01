@@ -4,6 +4,9 @@ import 'package:budowapro/features/costs/data/sqlite_cost_repository.dart';
 import 'package:budowapro/features/documents/data/document_providers.dart';
 import 'package:budowapro/features/projects/data/project_providers.dart';
 import 'package:budowapro/features/projects/domain/project_repository.dart';
+import 'package:budowapro/features/projects/domain/project_template.dart';
+import 'package:budowapro/features/stages/data/stage_providers.dart';
+import 'package:budowapro/features/stages/domain/stage_plan.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_financial.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_scan.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,10 +58,15 @@ final receiptScanDependenciesProvider =
       final projects = await ref.watch(projectRepositoryProvider.future);
       final project = await projects.findById(projectId);
       if (project == null) throw const ProjectNotFoundException();
+      final stages = await (await ref.watch(
+        stageRepositoryProvider.future,
+      )).listStages(projectId: project.id, template: project.template);
       return ReceiptScanDependencies(
         gateway: gateway,
         financialRepository: financialRepository,
         currencyCode: project.currencyCode,
+        stages: stages,
+        defaultStageId: _stageStorageId(project.currentStage),
       );
     });
 
@@ -67,12 +75,30 @@ final class ReceiptScanDependencies {
     required this.gateway,
     required this.financialRepository,
     required this.currencyCode,
+    this.stages = const <ProjectStage>[],
+    this.defaultStageId,
   });
 
   final ReceiptScanGateway gateway;
   final ReceiptFinancialRepository financialRepository;
   final String currencyCode;
+  final List<ProjectStage> stages;
+  final String? defaultStageId;
 }
+
+String _stageStorageId(ProjectStageKey value) => switch (value) {
+  ProjectStageKey.planning => 'planning',
+  ProjectStageKey.formalities => 'formalities',
+  ProjectStageKey.sitePreparation => 'site_preparation',
+  ProjectStageKey.stateZero => 'state_zero',
+  ProjectStageKey.shellOpen => 'shell_open',
+  ProjectStageKey.shellClosed => 'shell_closed',
+  ProjectStageKey.demolition => 'demolition',
+  ProjectStageKey.installations => 'installations',
+  ProjectStageKey.plaster => 'plaster',
+  ProjectStageKey.finishing => 'finishing',
+  ProjectStageKey.handover => 'handover',
+};
 
 String _secureReceiptId() {
   const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789';

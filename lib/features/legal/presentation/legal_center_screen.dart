@@ -124,6 +124,13 @@ class LegalCenterScreen extends ConsumerWidget {
               value: uri.host,
               onTap: () => _open(context, ref, uri),
             ),
+          if (config.publicSupportUri case final uri?)
+            _ValueTile(
+              icon: Icons.support_agent_rounded,
+              label: l10n.legalSupportUrlLabel,
+              value: uri.host,
+              onTap: () => _open(context, ref, uri),
+            ),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
             child: Text(
@@ -240,6 +247,7 @@ String _requirementLabel(
   LegalReleaseRequirement.contactEmail => l10n.legalMissingEmailRequirement,
   LegalReleaseRequirement.publicPrivacyPolicyUrl =>
     l10n.legalMissingPublicUrlRequirement,
+  LegalReleaseRequirement.supportUrl => l10n.legalMissingSupportUrlRequirement,
 };
 
 Future<void> _open(BuildContext context, WidgetRef ref, Uri uri) async {

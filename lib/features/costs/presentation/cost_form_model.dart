@@ -29,6 +29,7 @@ final class CostFormSubmission {
   CostFormSubmission({
     required this.name,
     required this.type,
+    required this.component,
     required this.status,
     required this.grossAmount,
     required this.vatRate,
@@ -45,6 +46,7 @@ final class CostFormSubmission {
 
   final String name;
   final CostEntryType type;
+  final CostComponent component;
   final CostStatus status;
   final String grossAmount;
   final VatRate vatRate;
@@ -93,6 +95,7 @@ CostEntryInput parseCostForm(
     projectId: projectId,
     name: name,
     type: submission.type,
+    component: submission.component,
     status: submission.status,
     amount: amount,
     entryDate: submission.entryDate,

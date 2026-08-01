@@ -30,6 +30,9 @@ void main() {
       committed: _pln(15100000),
       paid: _pln(9000000),
       costRecordCount: 4,
+      approvedDecisionDelta: _pln(125000),
+      approvedScheduleDeltaDays: 2,
+      approvedDecisionCount: 1,
       breakdowns: {
         BudgetBreakdownDimension.stage: [
           BudgetReportSlice(
@@ -52,11 +55,16 @@ void main() {
 
     expect(find.byKey(const ValueKey('budgetReportContent')), findsOneWidget);
     expect(find.text('420\u00A0000,00 PLN'), findsOneWidget);
-    expect(find.text('269\u00A0000,00 PLN'), findsWidgets);
+    expect(find.text('+1\u00A0250,00 PLN'), findsOneWidget);
+    expect(find.text('421\u00A0250,00 PLN'), findsOneWidget);
+    expect(find.text('270\u00A0250,00 PLN'), findsWidgets);
+    expect(find.text('1 zatwierdzona decyzja · termin +2 dni'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
-    await tester.ensureVisible(
+    await tester.scrollUntilVisible(
       find.byKey(const ValueKey('budgetReportSlice-stage-stage-zero')),
+      240,
+      scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(
       find.byKey(const ValueKey('budgetReportSlice-stage-stage-zero')),

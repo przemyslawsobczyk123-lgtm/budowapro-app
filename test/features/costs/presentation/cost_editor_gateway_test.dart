@@ -5,6 +5,7 @@ import 'package:budowapro/core/files/project_file_store.dart';
 import 'package:budowapro/features/costs/data/cost_attachment_picker.dart';
 import 'package:budowapro/features/costs/data/cost_attachment_stager.dart';
 import 'package:budowapro/features/costs/data/sqlite_cost_repository.dart';
+import 'package:budowapro/features/costs/data/sqlite_cost_relation_reader.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
 import 'package:budowapro/features/costs/domain/cost_repository.dart';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
@@ -65,6 +66,7 @@ void main() {
     gateway = LocalCostEditorGateway(
       projectRepository: projectRepository,
       costRepository: costRepository,
+      relationReader: SqliteCostRelationReader(database),
       attachmentStager: attachmentStager,
       attachmentPicker: _FakeAttachmentPicker(),
       utcNow: () => DateTime.utc(2026, 7, 20),
@@ -239,6 +241,7 @@ CostFormSubmission _submission({
   return CostFormSubmission(
     name: name,
     type: CostEntryType.cost,
+    component: CostComponent.material,
     status: status,
     grossAmount: grossAmount,
     vatRate: VatRate.standard23,

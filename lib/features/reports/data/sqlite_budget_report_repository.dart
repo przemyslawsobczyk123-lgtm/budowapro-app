@@ -72,6 +72,13 @@ final class SqliteBudgetReportRepository implements BudgetReportRepository {
               COUNT(*)
             FROM corrected_costs GROUP BY supplier_id
             UNION ALL
+            SELECT 'component', cost_component,
+              SUM(corrected_gross),
+              SUM(CASE WHEN financial_status = 'paid'
+                THEN corrected_gross ELSE 0 END),
+              COUNT(*)
+            FROM corrected_costs GROUP BY cost_component
+            UNION ALL
             SELECT 'month',
               strftime(
                 '%Y-%m', entry_date_utc_ms / 1000, 'unixepoch', 'localtime'
@@ -87,6 +94,23 @@ final class SqliteBudgetReportRepository implements BudgetReportRepository {
           )
           SELECT * FROM breakdown
           ORDER BY dimension, committed_minor_units DESC, group_key
+        ''',
+        <Object?>[normalizedProjectId],
+      );
+      final decisionImpactRows = await transaction.rawQuery(
+        '''
+          SELECT
+            COUNT(*) AS decision_count,
+            COALESCE(SUM(cost_delta_minor_units), 0)
+              AS cost_delta_minor_units,
+            COALESCE(SUM(schedule_delta_days), 0)
+              AS schedule_delta_days
+          FROM ${AppDatabase.journalEntriesTable}
+          WHERE project_id = ?
+            AND entry_type IN ('decision', 'scope_change')
+            AND status IN ('approved', 'implemented')
+            AND approved_at_utc_ms IS NOT NULL
+            AND approved_by_contact_id IS NOT NULL
         ''',
         <Object?>[normalizedProjectId],
       );
@@ -107,6 +131,7 @@ final class SqliteBudgetReportRepository implements BudgetReportRepository {
       }
 
       final total = totals.single;
+      final decisionImpact = decisionImpactRows.single;
       return BudgetReport(
         projectId: normalizedProjectId,
         currencyCode: currencyCode,
@@ -116,6 +141,13 @@ final class SqliteBudgetReportRepository implements BudgetReportRepository {
         committed: _money(total['committed_minor_units']!, currencyCode),
         paid: _money(total['paid_minor_units']!, currencyCode),
         costRecordCount: total['record_count']! as int,
+        approvedDecisionDelta: _money(
+          decisionImpact['cost_delta_minor_units']!,
+          currencyCode,
+        ),
+        approvedScheduleDeltaDays:
+            decisionImpact['schedule_delta_days']! as int,
+        approvedDecisionCount: decisionImpact['decision_count']! as int,
         breakdowns: breakdowns,
       );
     });
@@ -128,6 +160,7 @@ const _correctedCostsSelect =
     entry.stage_id,
     entry.category_id,
     entry.supplier_id,
+    entry.cost_component,
     entry.financial_status,
     entry.entry_date_utc_ms,
     entry.gross_minor_units + COALESCE((
@@ -150,6 +183,7 @@ BudgetBreakdownDimension _dimensionFromDatabase(String value) =>
       'stage' => BudgetBreakdownDimension.stage,
       'category' => BudgetBreakdownDimension.category,
       'supplier' => BudgetBreakdownDimension.supplier,
+      'component' => BudgetBreakdownDimension.component,
       'month' => BudgetBreakdownDimension.month,
       _ => throw FormatException('Unsupported report dimension: $value'),
     };

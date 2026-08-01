@@ -64,6 +64,32 @@ void main() {
 
     expect(report.remaining, _pln(-2500));
   });
+
+  test('rejects decision deltas without an approved decision', () {
+    expect(
+      () => BudgetReport(
+        projectId: 'project-1',
+        currencyCode: 'PLN',
+        plan: _pln(10000),
+        committed: _pln(0),
+        paid: _pln(0),
+        costRecordCount: 0,
+        approvedDecisionDelta: _pln(500),
+      ),
+      throwsArgumentError,
+    );
+    expect(
+      () => BudgetReport(
+        projectId: 'project-1',
+        currencyCode: 'PLN',
+        committed: _pln(0),
+        paid: _pln(0),
+        costRecordCount: 0,
+        approvedScheduleDeltaDays: 2,
+      ),
+      throwsArgumentError,
+    );
+  });
 }
 
 Money _pln(int minorUnits) =>

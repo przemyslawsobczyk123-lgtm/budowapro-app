@@ -1,7 +1,7 @@
 name: budowapro
 description: "Local-first manager for home construction and renovation."
 publish_to: 'none'
-version: 0.1.0+1
+version: 1.0.0+1
 
 environment:
   sdk: ^3.12.2
@@ -26,6 +26,7 @@ dependencies:
   package_info_plus: ^9.0.1
   path: ^1.9.1
   path_provider: ^2.1.6
+  pdf: 3.13.0
   pdfrx: ^2.4.7
   share_plus: ^12.0.2
   sqflite: ^2.4.3
@@ -36,8 +37,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  integration_test:
+    sdk: flutter
   sqflite_common_ffi: ^2.4.2
 
 flutter:
   generate: true
   uses-material-design: true
+  assets:
+    - assets/fonts/Roboto-Regular.ttf
+    - assets/fonts/Roboto-LICENSE.txt

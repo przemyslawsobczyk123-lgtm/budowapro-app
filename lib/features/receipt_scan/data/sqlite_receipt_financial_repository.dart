@@ -99,6 +99,7 @@ final class SqliteReceiptFinancialRepository
                 projectId: batch.projectId,
                 name: line.name,
                 type: CostEntryType.cost,
+                component: line.component,
                 status: CostStatus.planned,
                 amount: VatBreakdown.fromGross(
                   Money(
@@ -108,6 +109,7 @@ final class SqliteReceiptFinancialRepository
                   line.vatRate,
                 ),
                 entryDate: batch.purchaseDate,
+                stageId: batch.stageId,
                 source: CostSource.receiptOcr,
                 attachmentIds: <String>[batch.attachmentId],
               ),

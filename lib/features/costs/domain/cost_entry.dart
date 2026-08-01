@@ -5,6 +5,8 @@ import 'vat_breakdown.dart';
 
 enum CostEntryType { cost, offer, planned }
 
+enum CostComponent { material, labor, mixed, unassigned }
+
 enum CostStatus { planned, ordered, due, paid, returned, disputed }
 
 enum CostLifecycle { draft, confirmed }
@@ -58,6 +60,7 @@ final class CostEntryInput {
     required String projectId,
     required String name,
     required CostEntryType type,
+    CostComponent component = CostComponent.unassigned,
     required CostStatus status,
     required VatBreakdown amount,
     required DateTime entryDate,
@@ -83,6 +86,7 @@ final class CostEntryInput {
       projectId: _requiredText(projectId, 'projectId', maximumLength: 64),
       name: _requiredText(name, 'name', maximumLength: 120),
       type: type,
+      component: component,
       status: status,
       amount: amount,
       entryDate: entryDate.toUtc(),
@@ -102,6 +106,7 @@ final class CostEntryInput {
     required this.projectId,
     required this.name,
     required this.type,
+    required this.component,
     required this.status,
     required this.amount,
     required this.entryDate,
@@ -119,6 +124,7 @@ final class CostEntryInput {
   final String projectId;
   final String name;
   final CostEntryType type;
+  final CostComponent component;
   final CostStatus status;
   final VatBreakdown amount;
   final DateTime entryDate;
@@ -165,6 +171,7 @@ final class ConfirmedCostEntryInput {
 final class ConfirmedCostDetailsInput {
   factory ConfirmedCostDetailsInput({
     required String name,
+    required CostComponent component,
     required DateTime entryDate,
     String? stageId,
     String? categoryId,
@@ -180,6 +187,7 @@ final class ConfirmedCostDetailsInput {
     }
     return ConfirmedCostDetailsInput._(
       name: _requiredText(name, 'name', maximumLength: 120),
+      component: component,
       entryDate: entryDate.toUtc(),
       stageId: _optionalText(stageId, 'stageId', maximumLength: 64),
       categoryId: _optionalText(categoryId, 'categoryId', maximumLength: 64),
@@ -194,6 +202,7 @@ final class ConfirmedCostDetailsInput {
 
   const ConfirmedCostDetailsInput._({
     required this.name,
+    required this.component,
     required this.entryDate,
     required this.stageId,
     required this.categoryId,
@@ -206,6 +215,7 @@ final class ConfirmedCostDetailsInput {
   });
 
   final String name;
+  final CostComponent component;
   final DateTime entryDate;
   final String? stageId;
   final String? categoryId;
@@ -268,6 +278,7 @@ final class CostEntry {
   String get projectId => input.projectId;
   String get name => input.name;
   CostEntryType get type => input.type;
+  CostComponent get component => input.component;
   CostStatus get status => input.status;
   VatBreakdown get amount => input.amount;
   DateTime get entryDate => input.entryDate;

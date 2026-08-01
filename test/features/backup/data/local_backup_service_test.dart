@@ -568,6 +568,122 @@ Future<File> _rewriteAsPreviousSchemaBackup({
     options: OpenDatabaseOptions(singleInstance: false),
   );
   try {
+    if (schemaVersion < 18) {
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.materialReturnsTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.materialDeliveriesTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.materialsTable}',
+      );
+    }
+    if (schemaVersion < 17) {
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.roomContactLinksTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.roomRecordLinksTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.roomChoiceOutputsTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.roomChoiceVariantsTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.roomChoicesTable}',
+      );
+      await previousDatabase.execute('DROP TABLE ${AppDatabase.roomsTable}');
+    }
+    if (schemaVersion < 16) {
+      await previousDatabase.execute(
+        'DROP INDEX cost_entries_project_component_idx',
+      );
+      await previousDatabase.execute(
+        'ALTER TABLE ${AppDatabase.costEntriesTable} '
+        'DROP COLUMN cost_component',
+      );
+    }
+    if (schemaVersion < 15) {
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.technicalPhotoLinksTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.acceptanceProtocolAttachmentsTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.acceptanceProtocolDefectsTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.acceptanceProtocolsTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.defectResolutionAttachmentsTable}',
+      );
+      await previousDatabase.execute(
+        'DROP INDEX journal_entries_project_defect_filter_idx',
+      );
+      await previousDatabase.execute(
+        'ALTER TABLE ${AppDatabase.journalEntriesTable} '
+        'DROP COLUMN defect_severity',
+      );
+      await previousDatabase.execute(
+        'ALTER TABLE ${AppDatabase.journalEntriesTable} '
+        'DROP COLUMN defect_room_label',
+      );
+      await previousDatabase.execute(
+        'ALTER TABLE ${AppDatabase.journalEntriesTable} '
+        'DROP COLUMN requires_resolution_photo',
+      );
+      await previousDatabase.execute(
+        'ALTER TABLE ${AppDatabase.journalEntriesTable} '
+        'DROP COLUMN requires_signed_protocol',
+      );
+    }
+    if (schemaVersion < 14) {
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.technicalPhotoTagsTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.technicalPhotosTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.technicalAlbumsTable}',
+      );
+    }
+    if (schemaVersion < 13) {
+      await previousDatabase.execute(
+        'DROP INDEX journal_entries_project_approval_idx',
+      );
+      await previousDatabase.execute(
+        'ALTER TABLE ${AppDatabase.journalEntriesTable} '
+        'DROP COLUMN approved_by_contact_id',
+      );
+      await previousDatabase.execute(
+        'ALTER TABLE ${AppDatabase.journalEntriesTable} '
+        'DROP COLUMN approved_at_utc_ms',
+      );
+      await previousDatabase.execute(
+        'ALTER TABLE ${AppDatabase.journalEntryLinksTable} '
+        'DROP COLUMN relation_purpose',
+      );
+    }
+    if (schemaVersion < 12) {
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.journalEntryRevisionsTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.journalEntryLinksTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.journalEntryAttachmentsTable}',
+      );
+      await previousDatabase.execute(
+        'DROP TABLE ${AppDatabase.journalEntriesTable}',
+      );
+    }
     if (schemaVersion < 11) {
       await previousDatabase.execute(
         'DROP TABLE ${AppDatabase.captureDraftAttachmentsTable}',

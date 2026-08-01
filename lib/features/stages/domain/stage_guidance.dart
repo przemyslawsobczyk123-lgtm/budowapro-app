@@ -3,12 +3,14 @@ import 'package:budowapro/features/projects/domain/project_template.dart';
 import 'stage_plan.dart';
 
 enum StageGuidanceKey {
+  planningScopeAndSurvey,
   planningAndGroundConditions,
   designUtilitiesAndApprovals,
   legalConstructionStart,
   siteLogisticsAndAccess,
   temporaryUtilitiesAndFacilities,
   siteSafetyAndEvidence,
+  demolitionSafetyAndUtilities,
   servicePenetrations,
   foundationGrounding,
   foundationWaterproofing,
@@ -21,8 +23,10 @@ enum StageGuidanceKey {
   closedShellMoistureControl,
   installationRoutesAndAccess,
   installationTestsAndEvidence,
+  plasterAndScreedExecution,
   finishSubstratesAndHeating,
   wetAreaWaterproofing,
+  handoverAndOccupancy,
 }
 
 enum StageGuidanceSourceType {
@@ -104,8 +108,8 @@ final class StageGuidanceDefinition {
 }
 
 abstract final class StageGuidanceCatalog {
-  static const int contentVersion = 4;
-  static const String verifiedOnIso = '2026-07-26';
+  static const int contentVersion = 5;
+  static const String verifiedOnIso = '2026-07-30';
 
   static List<StageGuidanceDefinition> forStage(ProjectStageKey? stageKey) {
     if (stageKey == null) return const <StageGuidanceDefinition>[];
@@ -115,6 +119,19 @@ abstract final class StageGuidanceCatalog {
   }
 
   static const List<StageGuidanceDefinition> _items = [
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.planningScopeAndSurvey,
+      stageKey: ProjectStageKey.planning,
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.planningScopeAndBudget,
+        ChecklistTemplateKey.existingBuildingSurvey,
+        ChecklistTemplateKey.designDecisionsRegister,
+      ],
+      sources: <StageGuidanceSourceReference>[
+        _constructionLaw,
+        _geodeticGuidance,
+      ],
+    ),
     StageGuidanceDefinition(
       key: StageGuidanceKey.planningAndGroundConditions,
       stageKey: ProjectStageKey.formalities,
@@ -212,6 +229,22 @@ abstract final class StageGuidanceCatalog {
       ],
     ),
     StageGuidanceDefinition(
+      key: StageGuidanceKey.demolitionSafetyAndUtilities,
+      stageKey: ProjectStageKey.demolition,
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.demolitionHazardSurvey,
+        ChecklistTemplateKey.utilityDisconnectionAndProtection,
+        ChecklistTemplateKey.demolitionPlanAndWaste,
+        ChecklistTemplateKey.neighborAndCommonAreaProtection,
+        ChecklistTemplateKey.demolitionCompletionInspection,
+      ],
+      sources: <StageGuidanceSourceReference>[
+        _constructionLaw,
+        _constructionSafetyRegulation,
+        _pipConstructionChecklist,
+      ],
+    ),
+    StageGuidanceDefinition(
       key: StageGuidanceKey.servicePenetrations,
       stageKey: ProjectStageKey.stateZero,
       relatedChecklistKeys: <ChecklistTemplateKey>[
@@ -288,7 +321,9 @@ abstract final class StageGuidanceCatalog {
     StageGuidanceDefinition(
       key: StageGuidanceKey.structuralShellChecks,
       stageKey: ProjectStageKey.shellOpen,
-      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.shellStructuralAcceptance,
+      ],
       sources: <StageGuidanceSourceReference>[
         _constructionLaw,
         _concreteExecutionStandard,
@@ -298,7 +333,9 @@ abstract final class StageGuidanceCatalog {
     StageGuidanceDefinition(
       key: StageGuidanceKey.roofAndWeatherProtection,
       stageKey: ProjectStageKey.shellOpen,
-      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.roofWeatherProtection,
+      ],
       sources: <StageGuidanceSourceReference>[
         _technicalConditions,
         _itbRoofCoverings,
@@ -307,13 +344,17 @@ abstract final class StageGuidanceCatalog {
     StageGuidanceDefinition(
       key: StageGuidanceKey.windowShadingPreparation,
       stageKey: ProjectStageKey.shellOpen,
-      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.openingAndShadingPreparation,
+      ],
       sources: <StageGuidanceSourceReference>[_aluprofShadingSystems],
     ),
     StageGuidanceDefinition(
       key: StageGuidanceKey.windowDoorInstallation,
       stageKey: ProjectStageKey.shellClosed,
-      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.windowDoorAcceptance,
+      ],
       sources: <StageGuidanceSourceReference>[
         _technicalConditions,
         _windowPerformanceStandard,
@@ -323,7 +364,10 @@ abstract final class StageGuidanceCatalog {
     StageGuidanceDefinition(
       key: StageGuidanceKey.closedShellMoistureControl,
       stageKey: ProjectStageKey.shellClosed,
-      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.weatherTightnessAndMoisture,
+        ChecklistTemplateKey.temporaryVentilationAndHeating,
+      ],
       sources: <StageGuidanceSourceReference>[
         _technicalConditions,
         _itbRoofCoverings,
@@ -332,7 +376,12 @@ abstract final class StageGuidanceCatalog {
     StageGuidanceDefinition(
       key: StageGuidanceKey.installationRoutesAndAccess,
       stageKey: ProjectStageKey.installations,
-      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.installationCoordination,
+        ChecklistTemplateKey.electricalInstallationRoutes,
+        ChecklistTemplateKey.waterSewerHeatingRoutes,
+        ChecklistTemplateKey.ventilationAndLowVoltageRoutes,
+      ],
       sources: <StageGuidanceSourceReference>[
         _technicalConditions,
         _waterInstallationStandard,
@@ -341,7 +390,10 @@ abstract final class StageGuidanceCatalog {
     StageGuidanceDefinition(
       key: StageGuidanceKey.installationTestsAndEvidence,
       stageKey: ProjectStageKey.installations,
-      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.installationTests,
+        ChecklistTemplateKey.concealedInstallationPhotos,
+      ],
       sources: <StageGuidanceSourceReference>[
         _waterInstallationStandard,
         _electricalVerificationStandard,
@@ -350,9 +402,28 @@ abstract final class StageGuidanceCatalog {
       ],
     ),
     StageGuidanceDefinition(
+      key: StageGuidanceKey.plasterAndScreedExecution,
+      stageKey: ProjectStageKey.plaster,
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.substrateInspection,
+        ChecklistTemplateKey.plasterAndScreedExecution,
+        ChecklistTemplateKey.floorHeatingCommissioning,
+        ChecklistTemplateKey.plasterScreedAcceptance,
+      ],
+      sources: <StageGuidanceSourceReference>[
+        _surfaceHeatingInstallationStandard,
+        _itbTileFinishes,
+        _technicalConditions,
+      ],
+    ),
+    StageGuidanceDefinition(
       key: StageGuidanceKey.finishSubstratesAndHeating,
       stageKey: ProjectStageKey.finishing,
-      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.finishMaterialsAndSamples,
+        ChecklistTemplateKey.floorsWallsCeilings,
+        ChecklistTemplateKey.joineryAndPainting,
+      ],
       sources: <StageGuidanceSourceReference>[
         _surfaceHeatingInstallationStandard,
         _itbTileFinishes,
@@ -361,12 +432,33 @@ abstract final class StageGuidanceCatalog {
     StageGuidanceDefinition(
       key: StageGuidanceKey.wetAreaWaterproofing,
       stageKey: ProjectStageKey.finishing,
-      relatedChecklistKeys: <ChecklistTemplateKey>[],
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.wetAreaWaterproofing,
+        ChecklistTemplateKey.systemsCommissioning,
+        ChecklistTemplateKey.warrantiesAndManuals,
+      ],
       sources: <StageGuidanceSourceReference>[
         _technicalConditions,
         _itbTileFinishes,
         _liquidWaterproofingStandard,
         _itbWetAreaWaterproofing,
+      ],
+    ),
+    StageGuidanceDefinition(
+      key: StageGuidanceKey.handoverAndOccupancy,
+      stageKey: ProjectStageKey.handover,
+      relatedChecklistKeys: <ChecklistTemplateKey>[
+        ChecklistTemplateKey.asBuiltDocumentation,
+        ChecklistTemplateKey.asBuiltSurvey,
+        ChecklistTemplateKey.testsCertificates,
+        ChecklistTemplateKey.constructionCompletionNotice,
+        ChecklistTemplateKey.defectsAndHandover,
+      ],
+      sources: <StageGuidanceSourceReference>[
+        _constructionLaw,
+        _gunbProcedures,
+        _gunbForms,
+        _geodeticGuidance,
       ],
     ),
   ];

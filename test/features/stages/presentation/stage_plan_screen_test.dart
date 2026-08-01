@@ -73,7 +73,7 @@ void main() {
     expect(find.text('Źródła i podstawa'), findsOneWidget);
   });
 
-  testWidgets('switches to shell open informational guidance', (tester) async {
+  testWidgets('switches to shell open guidance and checklist', (tester) async {
     await tester.pumpWidget(_testApp());
     await tester.pumpAndSettle();
 
@@ -86,15 +86,44 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Stan surowy otwarty'), findsWidgets);
-    await tester.ensureVisible(find.text('Ten etap nie ma jeszcze checklisty'));
-    await tester.pumpAndSettle();
-    expect(find.text('Ten etap nie ma jeszcze checklisty'), findsOneWidget);
+    expect(find.text('0 z 4'), findsOneWidget);
     await tester.ensureVisible(find.text('Wskazówki dla tego etapu'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Wskazówki dla tego etapu'));
     await tester.pumpAndSettle();
     expect(find.text('Detal nadproża pod rolety lub żaluzje'), findsOneWidget);
   });
+
+  testWidgets(
+    'sets the current stage and confirms completion with open items',
+    (tester) async {
+      await tester.pumpWidget(_testApp());
+      await tester.pumpAndSettle();
+
+      await tester.drag(
+        find.byKey(const ValueKey('stage-tab-state_zero')),
+        const Offset(-400, 0),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('stage-tab-shell_open')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('stage-set-current')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('stage-set-current')), findsNothing);
+
+      await tester.tap(find.byKey(const ValueKey('stage-toggle-completed')));
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('stage-complete-confirm')),
+        findsOneWidget,
+      );
+      await tester.tap(find.byKey(const ValueKey('stage-complete-confirm')));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.replay_rounded), findsOneWidget);
+    },
+  );
 
   testWidgets('shows source-backed guidance in later construction stages', (
     tester,
@@ -168,6 +197,8 @@ void main() {
     await tester.pumpWidget(_testApp(textScale: 2));
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -420));
+    await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('Wskazówki dla tego etapu'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Wskazówki dla tego etapu'));
@@ -259,13 +290,16 @@ void main() {
 Widget _testApp({
   double textScale = 1,
   _FakeStageRepository? stageRepository,
+  FakeProjectRepository? projectRepository,
   ProjectStageKey currentStage = ProjectStageKey.stateZero,
 }) {
   final project = _project(currentStage: currentStage);
-  final projects = FakeProjectRepository(
-    projects: <Project>[project],
-    selectedProjectId: project.id,
-  );
+  final projects =
+      projectRepository ??
+      FakeProjectRepository(
+        projects: <Project>[project],
+        selectedProjectId: project.id,
+      );
   final stages = stageRepository ?? _FakeStageRepository(project.id);
   return ProviderScope(
     key: ValueKey<ProjectStageKey>(currentStage),
@@ -477,7 +511,25 @@ final class _FakeStageRepository implements StageRepository {
     required String projectId,
     required String stageId,
     required StageDetailsInput input,
-  }) => throw UnimplementedError();
+  }) async {
+    final current = stages.singleWhere((stage) => stage.id == stageId);
+    final updated = ProjectStage(
+      id: current.id,
+      projectId: current.projectId,
+      templateKey: current.templateKey,
+      customName: current.customName,
+      status: input.status,
+      sortOrder: current.sortOrder,
+      plannedStart: input.plannedStart,
+      plannedEnd: input.plannedEnd,
+      plannedBudgetMinorUnits: input.plannedBudgetMinorUnits,
+      progress: current.progress,
+      createdAt: current.createdAtUtc,
+      updatedAt: current.updatedAtUtc.add(const Duration(minutes: 1)),
+    );
+    stages[stages.indexOf(current)] = updated;
+    return updated;
+  }
 }
 
 String _stageId(ProjectStageKey key) => switch (key) {

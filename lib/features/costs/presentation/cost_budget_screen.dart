@@ -156,6 +156,7 @@ class _CostRegisterState extends State<_CostRegister> {
     CostCsvColumn.entryDate,
     CostCsvColumn.name,
     CostCsvColumn.type,
+    CostCsvColumn.component,
     CostCsvColumn.status,
     CostCsvColumn.effectiveGross,
     CostCsvColumn.vatRate,
@@ -184,6 +185,7 @@ class _CostRegisterState extends State<_CostRegister> {
   var _isLoadingMore = false;
   var _isExportingCsv = false;
   var _types = <CostEntryType>{};
+  var _components = <CostComponent>{};
   var _statuses = <CostStatus>{};
   var _missingAssignments = <CostMissingAssignment>{};
   String? _stageId;
@@ -230,6 +232,7 @@ class _CostRegisterState extends State<_CostRegister> {
     projectId: widget.project.id,
     searchText: _searchController.text,
     types: _types,
+    components: _components,
     statuses: _statuses,
     missingAssignments: _missingAssignments,
     stageIds: _stageId == null ? const <String>{} : <String>{_stageId!},
@@ -360,6 +363,7 @@ class _CostRegisterState extends State<_CostRegister> {
     if (result == null || !mounted) return;
     setState(() {
       _types = result.types;
+      _components = result.components;
       _statuses = result.statuses;
       _missingAssignments = <CostMissingAssignment>{
         for (final missing in _missingAssignments)
@@ -387,6 +391,7 @@ class _CostRegisterState extends State<_CostRegister> {
 
   _CostFilterSelection get _selection => _CostFilterSelection(
     types: _types,
+    components: _components,
     statuses: _statuses,
     stageId: _stageId,
     categoryId: _categoryId,
@@ -404,6 +409,7 @@ class _CostRegisterState extends State<_CostRegister> {
     _searchDebounce?.cancel();
     _searchController.clear();
     _types = <CostEntryType>{};
+    _components = <CostComponent>{};
     _statuses = <CostStatus>{};
     _missingAssignments = <CostMissingAssignment>{};
     _stageId = null;
@@ -422,6 +428,7 @@ class _CostRegisterState extends State<_CostRegister> {
     _resetSessionFilters();
     final filter = widget.initialFilter;
     _types = Set<CostEntryType>.of(filter.types);
+    _components = Set<CostComponent>.of(filter.components);
     _statuses = Set<CostStatus>.of(filter.statuses);
     _missingAssignments = Set<CostMissingAssignment>.of(
       filter.missingAssignments,
@@ -828,6 +835,11 @@ class _BudgetSummary extends StatelessWidget {
         value: _money(summary.difference, project.currencyCode),
       ),
     ];
+    final componentValues = CostComponent.values
+        .map((component) => summary.componentTotals[component])
+        .whereType<CostComponentTotals>()
+        .where((totals) => !totals.planned.isZero || !totals.actual.isZero)
+        .toList(growable: false);
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerLowest,
@@ -836,30 +848,176 @@ class _BudgetSummary extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(14),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            if (constraints.maxWidth < 440) {
-              return Column(
-                children: values
-                    .map(
-                      (value) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: value,
-                      ),
-                    )
-                    .toList(growable: false),
-              );
-            }
-            return Row(
-              children: values
-                  .map((value) => Expanded(child: value))
-                  .toList(growable: false),
-            );
-          },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxWidth < 440) {
+                  return Column(
+                    children: values
+                        .map(
+                          (value) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: value,
+                          ),
+                        )
+                        .toList(growable: false),
+                  );
+                }
+                return Row(
+                  children: values
+                      .map((value) => Expanded(child: value))
+                      .toList(growable: false),
+                );
+              },
+            ),
+            if (componentValues.isNotEmpty) ...[
+              const Divider(height: 24),
+              _ComponentSummaryHeader(localizations: localizations),
+              const SizedBox(height: 4),
+              ...componentValues.map(
+                (totals) => _ComponentSummaryRow(
+                  label: _componentLabel(localizations, totals.component),
+                  planned: _money(totals.planned, project.currencyCode),
+                  actual: _money(totals.actual, project.currencyCode),
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );
   }
+}
+
+class _ComponentSummaryHeader extends StatelessWidget {
+  const _ComponentSummaryHeader({required this.localizations});
+
+  final AppLocalizations localizations;
+
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final title = Text(
+        localizations.costRegisterComponentSection,
+        style: Theme.of(context).textTheme.labelMedium,
+      );
+      if (constraints.maxWidth < 360) return title;
+      return Row(
+        children: [
+          Expanded(child: title),
+          SizedBox(
+            width: 94,
+            child: Text(
+              localizations.costBudgetPlannedLabel,
+              textAlign: TextAlign.end,
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
+          ),
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 94,
+            child: Text(
+              localizations.costBudgetActualLabel,
+              textAlign: TextAlign.end,
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+class _ComponentSummaryRow extends StatelessWidget {
+  const _ComponentSummaryRow({
+    required this.label,
+    required this.planned,
+    required this.actual,
+  });
+
+  final String label;
+  final String planned;
+  final String actual;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 3),
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 360) {
+          final localizations = AppLocalizations.of(context);
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label),
+              const SizedBox(height: 2),
+              Row(
+                children: [
+                  Expanded(
+                    child: _LabeledComponentAmount(
+                      label: localizations.costBudgetPlannedLabel,
+                      value: planned,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _LabeledComponentAmount(
+                      label: localizations.costBudgetActualLabel,
+                      value: actual,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        }
+        return Row(
+          children: [
+            Expanded(child: Text(label, overflow: TextOverflow.ellipsis)),
+            _ComponentAmount(value: planned),
+            const SizedBox(width: 8),
+            _ComponentAmount(value: actual),
+          ],
+        );
+      },
+    ),
+  );
+}
+
+class _LabeledComponentAmount extends StatelessWidget {
+  const _LabeledComponentAmount({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) => FittedBox(
+    fit: BoxFit.scaleDown,
+    alignment: Alignment.centerLeft,
+    child: Text(
+      '$label: $value',
+      maxLines: 1,
+      style: Theme.of(context).textTheme.bodySmall,
+    ),
+  );
+}
+
+class _ComponentAmount extends StatelessWidget {
+  const _ComponentAmount({required this.value});
+
+  final String value;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: 94,
+    child: FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerRight,
+      child: Text(value, style: Theme.of(context).textTheme.bodySmall),
+    ),
+  );
 }
 
 class _SummaryValue extends StatelessWidget {
@@ -1078,6 +1236,7 @@ class _WarningLabel extends StatelessWidget {
 class _CostFilterSelection {
   _CostFilterSelection({
     required Set<CostEntryType> types,
+    required Set<CostComponent> components,
     required Set<CostStatus> statuses,
     required this.stageId,
     required this.categoryId,
@@ -1090,12 +1249,14 @@ class _CostFilterSelection {
     required this.includeDrafts,
     required this.sort,
   }) : types = Set<CostEntryType>.unmodifiable(types),
+       components = Set<CostComponent>.unmodifiable(components),
        statuses = Set<CostStatus>.unmodifiable(statuses),
        paymentMethods = Set<CostPaymentMethod>.unmodifiable(paymentMethods),
        sources = Set<CostSource>.unmodifiable(sources),
        warnings = Set<CostWarning>.unmodifiable(warnings);
 
   final Set<CostEntryType> types;
+  final Set<CostComponent> components;
   final Set<CostStatus> statuses;
   final String? stageId;
   final String? categoryId;
@@ -1128,6 +1289,7 @@ class _CostFilterSheet extends StatefulWidget {
 
 class _CostFilterSheetState extends State<_CostFilterSheet> {
   late Set<CostEntryType> _types;
+  late Set<CostComponent> _components;
   late Set<CostStatus> _statuses;
   String? _stageId;
   String? _categoryId;
@@ -1148,6 +1310,7 @@ class _CostFilterSheetState extends State<_CostFilterSheet> {
 
   void _load(_CostFilterSelection value) {
     _types = Set<CostEntryType>.of(value.types);
+    _components = Set<CostComponent>.of(value.components);
     _statuses = Set<CostStatus>.of(value.statuses);
     _stageId = value.stageId;
     _categoryId = value.categoryId;
@@ -1205,6 +1368,27 @@ class _CostFilterSheetState extends State<_CostFilterSheet> {
                               selected
                                   ? _types.add(value)
                                   : _types.remove(value);
+                            }),
+                          ),
+                        )
+                        .toList(growable: false),
+                  ),
+                ),
+                _FilterSection(
+                  title: localizations.costRegisterComponentSection,
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 6,
+                    children: CostComponent.values
+                        .map(
+                          (value) => FilterChip(
+                            key: ValueKey('costFilterComponent-${value.name}'),
+                            label: Text(_componentLabel(localizations, value)),
+                            selected: _components.contains(value),
+                            onSelected: (selected) => setState(() {
+                              selected
+                                  ? _components.add(value)
+                                  : _components.remove(value);
                             }),
                           ),
                         )
@@ -1406,6 +1590,7 @@ class _CostFilterSheetState extends State<_CostFilterSheet> {
                           _load(
                             _CostFilterSelection(
                               types: const <CostEntryType>{},
+                              components: const <CostComponent>{},
                               statuses: const <CostStatus>{},
                               stageId: null,
                               categoryId: null,
@@ -1431,6 +1616,7 @@ class _CostFilterSheetState extends State<_CostFilterSheet> {
                           context,
                           _CostFilterSelection(
                             types: _types,
+                            components: _components,
                             statuses: _statuses,
                             stageId: _stageId,
                             categoryId: _categoryId,
@@ -1614,6 +1800,7 @@ String _entryContext(
         ? l10n.costDraftLabel
         : _statusLabel(l10n, entry.status),
     _sourceLabel(l10n, entry.input.source),
+    _componentLabel(l10n, entry.component),
     if (entry.input.stageId case final stageId?)
       _stageLabel(l10n, stageId, stages),
     ?entry.input.categoryId,
@@ -1628,6 +1815,14 @@ String _typeLabel(AppLocalizations l10n, CostEntryType value) =>
       CostEntryType.cost => l10n.costTypeCost,
       CostEntryType.offer => l10n.costTypeOffer,
       CostEntryType.planned => l10n.costTypePlanned,
+    };
+
+String _componentLabel(AppLocalizations l10n, CostComponent value) =>
+    switch (value) {
+      CostComponent.material => l10n.costComponentMaterial,
+      CostComponent.labor => l10n.costComponentLabor,
+      CostComponent.mixed => l10n.costComponentMixed,
+      CostComponent.unassigned => l10n.costComponentUnassigned,
     };
 
 String _statusLabel(AppLocalizations l10n, CostStatus value) => switch (value) {
@@ -1664,6 +1859,7 @@ CostCsvLabels _csvLabels(
     CostCsvColumn.entryDate: l10n.costDateLabel,
     CostCsvColumn.name: l10n.costNameLabel,
     CostCsvColumn.type: l10n.costTypeLabel,
+    CostCsvColumn.component: l10n.costCsvComponentColumn,
     CostCsvColumn.status: l10n.costStatusLabel,
     CostCsvColumn.lifecycle: l10n.costCsvLifecycleColumn,
     CostCsvColumn.effectiveGross: l10n.costCsvEffectiveGrossColumn,
@@ -1683,6 +1879,10 @@ CostCsvLabels _csvLabels(
   },
   types: <CostEntryType, String>{
     for (final value in CostEntryType.values) value: _typeLabel(l10n, value),
+  },
+  components: <CostComponent, String>{
+    for (final value in CostComponent.values)
+      value: _componentLabel(l10n, value),
   },
   statuses: <CostStatus, String>{
     for (final value in CostStatus.values) value: _statusLabel(l10n, value),

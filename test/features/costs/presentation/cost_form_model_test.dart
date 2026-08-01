@@ -16,6 +16,7 @@ void main() {
     expect(input.amount.gross.minorUnits, 1234567);
     expect(input.amount.net.minorUnits, 1003713);
     expect(input.amount.vat.minorUnits, 230854);
+    expect(input.component, CostComponent.material);
     expect(input.quantity?.unscaledValue, 18500);
     expect(input.quantity?.scale, 3);
     expect(input.unit, 'm3');
@@ -103,6 +104,7 @@ CostFormSubmission _submission({
   return CostFormSubmission(
     name: 'Beton',
     type: CostEntryType.cost,
+    component: CostComponent.material,
     status: status,
     grossAmount: grossAmount,
     vatRate: VatRate.standard23,

@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:budowapro/features/costs/domain/money.dart';
+import 'package:budowapro/features/costs/domain/cost_entry.dart';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 
 import 'receipt_ocr.dart';
@@ -24,6 +25,7 @@ enum ReceiptReviewIssue {
   itemTotalTooLarge,
   lowConfidenceReviewRequired,
   vatReviewRequired,
+  componentRequired,
   totalMismatchReviewRequired,
 }
 
@@ -74,6 +76,7 @@ final class ReceiptReviewItem {
     required this.name,
     required this.grossAmountText,
     required this.vatRate,
+    required this.component,
     required this.confidence,
     required this.reviewed,
     required this.vatReviewed,
@@ -83,6 +86,7 @@ final class ReceiptReviewItem {
   final String name;
   final String grossAmountText;
   final VatRate vatRate;
+  final CostComponent component;
   final double confidence;
   final bool reviewed;
   final bool vatReviewed;
@@ -98,12 +102,14 @@ final class ReceiptReviewItem {
     String? name,
     String? grossAmountText,
     VatRate? vatRate,
+    CostComponent? component,
   }) {
     return ReceiptReviewItem._(
       id: id,
       name: name ?? this.name,
       grossAmountText: grossAmountText ?? this.grossAmountText,
       vatRate: vatRate ?? this.vatRate,
+      component: component ?? this.component,
       confidence: 1,
       reviewed: name != null || grossAmountText != null ? true : reviewed,
       vatReviewed: vatRate != null ? true : vatReviewed,
@@ -116,6 +122,7 @@ final class ReceiptReviewItem {
       name: name,
       grossAmountText: grossAmountText,
       vatRate: vatRate,
+      component: component,
       confidence: confidence,
       reviewed: true,
       vatReviewed: true,
@@ -124,7 +131,10 @@ final class ReceiptReviewItem {
 }
 
 final class ReceiptReviewDraft {
-  factory ReceiptReviewDraft.fromCandidates(ReceiptOcrCandidates candidates) {
+  factory ReceiptReviewDraft.fromCandidates(
+    ReceiptOcrCandidates candidates, {
+    String? initialStageId,
+  }) {
     final items = <ReceiptReviewItem>[];
     var itemNumber = 0;
     for (final candidate in candidates.itemLines) {
@@ -136,6 +146,7 @@ final class ReceiptReviewDraft {
           name: parsed.name,
           grossAmountText: parsed.grossAmountText,
           vatRate: VatRate.standard23,
+          component: CostComponent.unassigned,
           confidence: candidate.confidence,
           reviewed: false,
           vatReviewed: false,
@@ -150,6 +161,7 @@ final class ReceiptReviewDraft {
       ),
       total: ReceiptReviewField.fromCandidate(candidates.totalText),
       items: items,
+      stageId: _optionalId(initialStageId),
       totalMismatchAccepted: false,
       nextItemNumber: itemNumber + 1,
     );
@@ -161,6 +173,7 @@ final class ReceiptReviewDraft {
     required this.documentNumber,
     required this.total,
     required Iterable<ReceiptReviewItem> items,
+    required this.stageId,
     required this.totalMismatchAccepted,
     required this._nextItemNumber,
   }) : items = UnmodifiableListView<ReceiptReviewItem>(
@@ -172,6 +185,7 @@ final class ReceiptReviewDraft {
   final ReceiptReviewField documentNumber;
   final ReceiptReviewField total;
   final UnmodifiableListView<ReceiptReviewItem> items;
+  final String? stageId;
   final bool totalMismatchAccepted;
   final int _nextItemNumber;
 
@@ -258,6 +272,9 @@ final class ReceiptReviewDraft {
     if (hasUnreviewedVat) {
       issues.add(ReceiptReviewIssue.vatReviewRequired);
     }
+    if (items.any((item) => item.component == CostComponent.unassigned)) {
+      issues.add(ReceiptReviewIssue.componentRequired);
+    }
     if (hasTotalMismatch && !totalMismatchAccepted) {
       issues.add(ReceiptReviewIssue.totalMismatchReviewRequired);
     }
@@ -294,6 +311,7 @@ final class ReceiptReviewDraft {
     String? name,
     String? grossAmountText,
     VatRate? vatRate,
+    CostComponent? component,
   }) {
     var found = false;
     final updated = items
@@ -304,11 +322,25 @@ final class ReceiptReviewDraft {
             name: name,
             grossAmountText: grossAmountText,
             vatRate: vatRate,
+            component: component,
           );
         })
         .toList(growable: false);
     if (!found) throw ArgumentError.value(itemId, 'itemId');
     return _copyWith(items: updated, resetTotalMismatch: true);
+  }
+
+  ReceiptReviewDraft updateStage(String? stageId) {
+    return _copyWith(stageId: _optionalId(stageId), replaceStage: true);
+  }
+
+  ReceiptReviewDraft applyComponentToAll(CostComponent component) {
+    if (component == CostComponent.unassigned) return this;
+    return _copyWith(
+      items: items
+          .map((item) => item.update(component: component))
+          .toList(growable: false),
+    );
   }
 
   ReceiptReviewDraft confirmItem(String itemId) {
@@ -334,6 +366,7 @@ final class ReceiptReviewDraft {
       name: name,
       grossAmountText: grossAmountText,
       vatRate: vatRate,
+      component: CostComponent.unassigned,
       confidence: 1,
       reviewed: true,
       vatReviewed: false,
@@ -366,6 +399,7 @@ final class ReceiptReviewDraft {
       name: name,
       grossAmountText: formatReceiptMinorUnits(value),
       vatRate: VatRate.standard23,
+      component: CostComponent.unassigned,
       confidence: 1,
       reviewed: true,
       vatReviewed: false,
@@ -403,6 +437,9 @@ final class ReceiptReviewDraft {
       name: '${first.name.trim()} + ${second.name.trim()}'.trim(),
       grossAmountText: mergedAmount,
       vatRate: first.vatRate,
+      component: first.component == second.component
+          ? first.component
+          : CostComponent.mixed,
       confidence: 1,
       reviewed: true,
       vatReviewed:
@@ -434,6 +471,7 @@ final class ReceiptReviewDraft {
       name: firstName,
       grossAmountText: firstGrossAmountText,
       vatRate: source.vatRate,
+      component: source.component,
       confidence: 1,
       reviewed: true,
       vatReviewed: source.vatReviewed,
@@ -443,6 +481,7 @@ final class ReceiptReviewDraft {
       name: secondName,
       grossAmountText: secondGrossAmountText,
       vatRate: source.vatRate,
+      component: source.component,
       confidence: 1,
       reviewed: true,
       vatReviewed: source.vatReviewed,
@@ -469,6 +508,8 @@ final class ReceiptReviewDraft {
     ReceiptReviewField? documentNumber,
     ReceiptReviewField? total,
     Iterable<ReceiptReviewItem>? items,
+    String? stageId,
+    bool replaceStage = false,
     bool? totalMismatchAccepted,
     int? nextItemNumber,
     bool resetTotalMismatch = false,
@@ -479,12 +520,20 @@ final class ReceiptReviewDraft {
       documentNumber: documentNumber ?? this.documentNumber,
       total: total ?? this.total,
       items: items ?? this.items,
+      stageId: replaceStage ? stageId : this.stageId,
       totalMismatchAccepted: resetTotalMismatch
           ? false
           : totalMismatchAccepted ?? this.totalMismatchAccepted,
       nextItemNumber: nextItemNumber ?? _nextItemNumber,
     );
   }
+}
+
+String? _optionalId(String? value) {
+  final normalized = value?.trim();
+  if (normalized == null || normalized.isEmpty) return null;
+  if (normalized.length > 64) throw ArgumentError.value(value, 'stageId');
+  return normalized;
 }
 
 int? parseReceiptMinorUnits(String rawValue) {

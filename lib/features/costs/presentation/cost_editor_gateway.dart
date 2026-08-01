@@ -2,6 +2,7 @@ import 'package:budowapro/features/costs/data/cost_attachment_picker.dart';
 import 'package:budowapro/features/costs/data/cost_attachment_stager.dart';
 import 'package:budowapro/features/costs/data/cost_providers.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
+import 'package:budowapro/features/costs/domain/cost_relation.dart';
 import 'package:budowapro/features/costs/domain/cost_repository.dart';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 import 'package:budowapro/features/projects/data/project_providers.dart';
@@ -21,6 +22,7 @@ final costEditorGatewayProvider = FutureProvider<CostEditorGateway>((
   return LocalCostEditorGateway(
     projectRepository: await ref.watch(projectRepositoryProvider.future),
     costRepository: await ref.watch(costRepositoryProvider.future),
+    relationReader: await ref.watch(costRelationReaderProvider.future),
     attachmentStager: await ref.watch(costAttachmentStagerProvider.future),
     attachmentPicker: ref.watch(costAttachmentPickerProvider),
     stageRepository: await ref.watch(stageRepositoryProvider.future),
@@ -72,6 +74,7 @@ final class CostEditorData {
     Iterable<String> categoryOptions = const <String>[],
     Iterable<String> supplierOptions = const <String>[],
     Iterable<ProjectStage> stageOptions = const <ProjectStage>[],
+    this.relations = const CostRelations.empty(),
   }) : attachments = List<StagedCostAttachment>.unmodifiable(attachments),
        categoryOptions = List<String>.unmodifiable(categoryOptions),
        supplierOptions = List<String>.unmodifiable(supplierOptions),
@@ -83,6 +86,7 @@ final class CostEditorData {
   final List<String> categoryOptions;
   final List<String> supplierOptions;
   final List<ProjectStage> stageOptions;
+  final CostRelations relations;
 }
 
 final class CostEditorNotFoundException implements Exception {
@@ -93,6 +97,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
   factory LocalCostEditorGateway({
     required ProjectRepository projectRepository,
     required CostRepository costRepository,
+    required CostRelationReader relationReader,
     required CostAttachmentStager attachmentStager,
     required CostAttachmentPicker attachmentPicker,
     required DateTime Function() utcNow,
@@ -101,6 +106,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
     return LocalCostEditorGateway._(
       projectRepository,
       costRepository,
+      relationReader,
       attachmentStager,
       attachmentPicker,
       stageRepository,
@@ -111,6 +117,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
   const LocalCostEditorGateway._(
     this._projectRepository,
     this._costRepository,
+    this._relationReader,
     this._attachmentStager,
     this._attachmentPicker,
     this._stageRepository,
@@ -119,6 +126,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
 
   final ProjectRepository _projectRepository;
   final CostRepository _costRepository;
+  final CostRelationReader _relationReader;
   final CostAttachmentStager _attachmentStager;
   final CostAttachmentPicker _attachmentPicker;
   final StageRepository? _stageRepository;
@@ -135,6 +143,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
     }
     CostEntry? entry;
     var attachments = const <StagedCostAttachment>[];
+    var relations = const CostRelations.empty();
     if (costEntryId != null) {
       entry = await _costRepository.findById(
         projectId: projectId,
@@ -144,6 +153,10 @@ final class LocalCostEditorGateway implements CostEditorGateway {
         throw const CostEditorNotFoundException();
       }
       attachments = await _attachmentStager.listForCost(
+        projectId: projectId,
+        costEntryId: costEntryId,
+      );
+      relations = await _relationReader.load(
         projectId: projectId,
         costEntryId: costEntryId,
       );
@@ -167,6 +180,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
         projectEntries.items.map((item) => item.input.supplierId),
       ),
       stageOptions: stageOptions ?? const <ProjectStage>[],
+      relations: relations,
     );
   }
 
@@ -233,6 +247,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
       costEntryId: entry.id,
       input: ConfirmedCostDetailsInput(
         name: confirmedInput.name,
+        component: confirmedInput.component,
         entryDate: confirmedInput.entryDate,
         stageId: confirmedInput.stageId,
         categoryId: confirmedInput.categoryId,
@@ -285,6 +300,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
           projectId: input.projectId,
           name: input.name,
           type: input.type,
+          component: input.component,
           status: input.status,
           amount: input.amount,
           entryDate: _utcNow(),

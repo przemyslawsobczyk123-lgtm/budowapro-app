@@ -1,6 +1,6 @@
 # Stage guidance source register
 
-Status: content version `4`, verified on `2026-07-26`.
+Status: content version `5`, verified on `2026-07-30`.
 
 The in-app guidance is an offline decision checklist. It does not replace a
 construction design, geotechnical assessment, product system specification or
@@ -31,12 +31,16 @@ the decisions of the designer and site manager.
 - Store each source with a stable key, type, title, revision, URL and
   verification date.
 - Preserve user notes and checklist state when the built-in catalog changes.
+- Give every built-in workflow stage both a source-backed guidance card and an
+  operational checklist. The checklist is a planning aid; it is not a record
+  that a statutory inspection or professional acceptance has occurred.
 
 ## Primary and official references
 
 | Area | Reference | Use in BudowaPRO |
 | --- | --- | --- |
 | Construction start | [Construction Law, consolidated text Dz.U. 2026 item 524](https://api.sejm.gov.pl/eli/acts/DU/2026/524/text.pdf) | Separates document preparation from preparatory work that can legally start construction, including site development, temporary objects, connections and surveying. |
+| Completion and use | [GUNB: construction procedures](https://www.gunb.gov.pl/strona/procedury-budowlane), [Budowlane ABC: handover](https://budowlaneabc.gov.pl/praktyczny-przewodnik-inwestora/wnioski-elektroniczne/rozpoczecie-robot-budowlanych-i-oddanie-obiektu-do-uzytkowania/oddanie-do-uzytkowania/) | Keeps the handover stage conditional: completion notification or occupancy permit depends on the type and scope of the investment. The renovation workflow must not inherit the new-build procedure automatically. |
 | Procedures and current forms | [GUNB procedures](https://www.gunb.gov.pl/strona/procedury-budowlane) and [GUNB forms](https://www.gov.pl/web/gunb/wzory-wnioskow-zgloszen-i-zawiadomien) | Keeps permit, notification and commencement prompts tied to current official procedures instead of embedding a fixed form version. |
 | Spatial planning | [MRiT: spatial-planning reform](https://www.gov.pl/web/rozwoj-technologia/reforma-planowania-przestrzennego-2) | Prompts the investor to confirm the current MPZP/WZ route with the municipality; the app does not predict local planning status. |
 | Surveying | [Budowlane ABC: geodetic activities and studies](https://budowlaneabc.gov.pl/praktyczny-przewodnik-inwestora/wnioski-elektroniczne/czynnosci-i-opracowania-geodezyjne/) | Supports commissioning the design map and construction setting-out to qualified professionals. |
@@ -66,6 +70,7 @@ the decisions of the designer and site manager.
 | Ceramic finishes | [ITB: Okladziny i posadzki z plytek ceramicznych, part B, booklet 5, 2023](https://www.itb.pl/aktualnosci/okladziny-i-posadzki-z-plytek-ceramicznych/) | Supports checking project documentation, substrates, materials and hidden work before accepting ceramic finishes. |
 | Liquid-applied waterproofing below tiles | [PN-EN 14891:2017-03 scope at PKN](https://sklep.pkn.pl/pn-en-14891-2017-03p.html) | Identifies the product family and declared performance. It does not replace design or installation instructions for corners, drains and penetrations. |
 | Wet-area waterproofing execution | [ITB WTWiORB C6/2023](https://www.itb.pl/aktualnosci/zabezpieczenia-wodochronne-pomieszczen-mokrych/) | Supports execution and acceptance prompts for waterproofing layers in wet rooms, including system details and documentation. |
+| Renovation planning and demolition | [GUNB explanations of construction law](https://www.gunb.gov.pl/strona/wyjasnienia-przepisow-prawa-budowlanego) and [PIP construction checklist](https://www.pip.gov.pl/publikacje/publikacje-dla-pracodawcow/bezpiecznie-i-zgodnie-z-prawem-lista-kontrolna-z-komentarezem) | Keeps the renovation prompts focused on existing-condition survey, media isolation, structural assessment, common-area protection, safe sequence and waste handling. The app does not classify a wall or material without a professional assessment. |
 
 ## System and execution references
 

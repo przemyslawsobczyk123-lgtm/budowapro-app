@@ -57,6 +57,7 @@ void main() {
           publisherName: '',
           contactEmail: '',
           privacyPolicyUrl: '',
+          supportUrl: '',
         ),
         textScaler: const TextScaler.linear(2),
       ),
@@ -80,6 +81,7 @@ void main() {
       publisherName: publisher,
       contactEmail: email,
       privacyPolicyUrl: 'https://budowapro.pl/privacy',
+      supportUrl: 'https://budowapro.pl/support',
     );
 
     await tester.pumpWidget(
@@ -175,14 +177,14 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Treści projektu pozostają lokalnie'), findsOneWidget);
     await tester.dragUntilVisible(
-      find.text('Automatyczny backup Androida wyłączony'),
+      find.text('Kopie systemowe urządzenia'),
       find.descendant(
         of: find.byKey(const ValueKey('privacySettingsContent')),
         matching: find.byType(Scrollable),
       ),
       const Offset(0, -240),
     );
-    expect(find.text('Automatyczny backup Androida wyłączony'), findsOneWidget);
+    expect(find.text('Kopie systemowe urządzenia'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -242,6 +244,7 @@ const _configuredRelease = LegalReleaseConfig(
   publisherName: 'BudowaPRO Sp. z o.o.',
   contactEmail: 'privacy@budowapro.pl',
   privacyPolicyUrl: 'https://budowapro.pl/privacy',
+  supportUrl: 'https://budowapro.pl/support',
 );
 
 void _compactView(WidgetTester tester) {

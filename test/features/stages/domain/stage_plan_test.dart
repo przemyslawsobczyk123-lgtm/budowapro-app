@@ -27,11 +27,13 @@ void main() {
         expect(
           template
               .expand((stage) => stage.checklistItems)
-              .map((item) => item.key)
-              .toSet(),
-          ChecklistTemplateKey.values
-              .where((key) => key != ChecklistTemplateKey.siteRoadPowerWater)
-              .toSet(),
+              .map((item) => item.key),
+          containsAll(<ChecklistTemplateKey>{
+            ChecklistTemplateKey.shellStructuralAcceptance,
+            ChecklistTemplateKey.installationTests,
+            ChecklistTemplateKey.wetAreaWaterproofing,
+            ChecklistTemplateKey.asBuiltDocumentation,
+          }),
         );
         expect(
           template.expand((stage) => stage.checklistItems),
@@ -78,7 +80,7 @@ void main() {
         final shellOpen = template.singleWhere(
           (stage) => stage.stageKey == ProjectStageKey.shellOpen,
         );
-        expect(shellOpen.checklistItems, isEmpty);
+        expect(shellOpen.checklistItems, hasLength(4));
       },
     );
 
@@ -91,7 +93,32 @@ void main() {
         template.map((stage) => stage.stageKey),
         ProjectTemplate.renovation.definition.stages,
       );
-      expect(template.expand((stage) => stage.checklistItems), isEmpty);
+      expect(
+        template
+            .expand((stage) => stage.checklistItems)
+            .map((item) => item.key),
+        containsAll(<ChecklistTemplateKey>{
+          ChecklistTemplateKey.planningScopeAndBudget,
+          ChecklistTemplateKey.demolitionHazardSurvey,
+          ChecklistTemplateKey.installationTests,
+          ChecklistTemplateKey.substrateInspection,
+          ChecklistTemplateKey.asBuiltDocumentation,
+        }),
+      );
+    });
+
+    test('gives every template stage an operational checklist', () {
+      for (final template in ProjectTemplate.values) {
+        final definitions = StageTemplateCatalog.forProject(template);
+        expect(definitions, isNotEmpty);
+        expect(
+          definitions.every(
+            (definition) => definition.checklistItems.isNotEmpty,
+          ),
+          isTrue,
+          reason: 'Missing checklist in $template',
+        );
+      }
     });
   });
 

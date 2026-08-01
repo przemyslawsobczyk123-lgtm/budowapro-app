@@ -128,7 +128,7 @@ Globalny wybor projektu jest dostepny z kazdego glownego ekranu. Zmiana projektu
 | DASH-001 | P0 | Start pokazuje aktualny etap, budzet wykorzystany i pozostaly budzet. |
 | DASH-002 | P0 | Wskazniki pokazuja: wydano, plan na 30 dni i nieoplacone pozycje. |
 | DASH-003 | P1 | Pasek kondycji pokazuje poziom i konkretne przyczyny, bez ukrytego wyniku. |
-| DASH-004 | P0 | Szybkie akcje otwieraja: dodanie kosztu, OCR, checklisty, zdjecia etapow, usterke i asystenta. |
+| DASH-004 | P0 | Szybkie akcje otwieraja: dodanie kosztu, OCR, checklisty, zdjecia etapow i dodanie usterki. Asystent jest akcja P1 dopiero po wdrozeniu `AST-*`. |
 | DASH-005 | P1 | Start pokazuje licznik szkicow szybkiego zapisu. |
 | DASH-006 | P0 | Sekcja krytyczna pokazuje zadania konieczne przed najblizsza praca nieodwracalna. |
 | DASH-007 | P0 | Osi czasu pokazuje zakonczone, aktywne i przyszle etapy. |
@@ -146,10 +146,10 @@ Globalny wybor projektu jest dostepny z kazdego glownego ekranu. Zmiana projektu
 | COST-003 | P0 | Statusy finansowe to: planowany, zamowiony, do zaplaty, oplacony, zwrocony i sporny. |
 | COST-004 | P0 | Kwota netto, VAT i brutto sa liczone wedlug jednej testowanej reguly zaokraglen. |
 | COST-005 | P0 | Lista pokazuje nazwe, kontekst, zrodlo/status i kwote. |
-| COST-006 | P0 | Uzytkownik wyszukuje po nazwie, wykonawcy, opisie i tagu. |
-| COST-007 | P0 | Filtry obejmuja date, etap, kategorie, wykonawce, status, metode platnosci, zrodlo, gwarancje i tagi. |
+| COST-006 | P0 | Uzytkownik wyszukuje po nazwie, wykonawcy i opisie. Tagi sa rozszerzeniem P1. |
+| COST-007 | P0 | Filtry obejmuja date, etap, kategorie, wykonawce, status, metode platnosci i zrodlo. Gwarancje i tagi sa rozszerzeniem P1. |
 | COST-008 | P0 | Podsumowanie filtrow pokazuje plan, wykonanie i roznice. |
-| COST-009 | P0 | Szczegoly kosztu pokazuja powiazany dokument, decyzje, material, pomieszczenie i historie zmian. |
+| COST-009 | P0 | Szczegoly kosztu pokazuja powiazany dokument, material, pomieszczenie i historie zmian. |
 | COST-010 | P0 | Uzytkownik moze utworzyc, edytowac, skopiowac, oznaczyc platnosc, zapisac szkic i usunac pozycje. |
 | COST-011 | P0 | Brakujacy dokument, niepelny opis albo podejrzany VAT sa widocznym ostrzezeniem. |
 | COST-012 | P1 | Powiazana decyzja zapisuje delte kosztu bez kasowania pierwotnego planu. |
@@ -163,6 +163,7 @@ Globalny wybor projektu jest dostepny z kazdego glownego ekranu. Zmiana projektu
 | COST-015 | P0 | Zalacznik moze pochodzic ze skanera, aparatu lub systemowego wyboru pliku. |
 | COST-016 | P0 | `Zapisz szkic` nie wlicza pozycji do podsumowan. |
 | COST-017 | P0 | `Zapisz koszt` wykonuje zapis kosztu i zalacznikow atomowo. |
+| COST-018 | P1 | Szczegoly kosztu pokazuja typowane powiazanie z decyzja i otwieraja jej rekord zrodlowy. |
 
 ## 10. Skan paragonu i OCR
 
@@ -263,11 +264,12 @@ potwierdzenia w projekcie, pomiarach i instrukcji kompletnego systemu.
 | CNT-002 | P0 | Kontakt moze byc przypisany do wielu etapow, pomieszczen i zakresow. |
 | CNT-003 | P0 | Uzytkownik dzwoni albo otwiera wiadomosc z poziomu kontaktu po potwierdzeniu akcji systemowej. |
 | CNT-004 | P0 | Wizyta ma date, cel, etap, oczekiwany rezultat, przypomnienie i status. |
-| CNT-005 | P0 | Po wizycie mozna dodac notatke, zdjecia, ustalenia i nowe zadania. |
+| CNT-005 | P0 | Po wizycie mozna zapisac wynik, notatke i ustalenia. Zdjecia oraz tworzenie nowych zadan sa rozszerzeniem P1. |
 | CNT-006 | P0 | Status wizyty to: planowana, wykonana, odwolana albo wykonawca nie przyjechal. |
 | CNT-007 | P0 | Oferta zawiera zakres, kwote, wariant, termin waznosci, zalaczniki i wykluczenia. |
 | CNT-008 | P1 | Porownanie ofert zestawia ceny oraz zakres, aby najtansza nie byla automatycznie oznaczona jako najlepsza. |
 | CNT-009 | P0 | Przy tworzeniu kontaktu uzytkownik moze wybrac pojedynczy numer z systemowej ksiazki kontaktow; aplikacja uzupelnia nazwe i telefon bez dostepu do calej ksiazki i bez automatycznego zapisu. |
+| CNT-010 | P1 | Po wizycie mozna dolaczyc zdjecia oraz utworzyc powiazane zadania bez kopiowania danych wizyty. |
 
 ## 13. Dokumenty i zalaczniki
 
@@ -275,12 +277,13 @@ potwierdzenia w projekcie, pomiarach i instrukcji kompletnego systemu.
 | --- | --- | --- |
 | DOC-001 | P0 | Aplikacja importuje lokalnie PDF, obrazy i inne wspierane dokumenty przez systemowy picker. |
 | DOC-002 | P0 | Typy dokumentow obejmuja paragon, fakture, oferte, umowe, WZ, protokol, gwarancje, instrukcje i mape. |
-| DOC-003 | P0 | Dokument moze byc powiazany z kosztem, etapem, checklista, kontaktem, pomieszczeniem, decyzja, usterka i urzadzeniem. |
+| DOC-003 | P0 | Dokument moze byc powiazany z kosztem, etapem, checklista, kontaktem i pomieszczeniem. Decyzja, usterka i urzadzenie sa rozszerzeniem P1. |
 | DOC-004 | P0 | Lista ma wyszukiwanie oraz filtry typu, etapu, pomieszczenia, daty i waznosci gwarancji. |
 | DOC-005 | P0 | Podglad pokazuje metadane, wszystkie powiazania i akcje: otworz, zmien opis, eksportuj, usun. |
 | DOC-006 | P0 | Import zachowuje oryginal i tworzy osobna miniature/podglad. |
 | DOC-007 | P1 | Aplikacja wykrywa potencjalny duplikat pliku po hashu. |
 | DOC-008 | P1 | Gwarancja ma date rozpoczecia/zakonczenia i moze utworzyc przypomnienie. |
+| DOC-009 | P1 | Dokument ma typowane powiazanie z decyzja, usterka albo urzadzeniem i otwiera rekord zrodlowy. |
 
 ## 14. Dokumentacja techniczna i plan instalacji
 
@@ -415,7 +418,7 @@ potwierdzenia w projekcie, pomiarach i instrukcji kompletnego systemu.
 | --- | --- | --- |
 | SET-001 | P0 | Ekran jasno pokazuje, ze dane sa lokalne oraz ze konto i backend nie sa wymagane. |
 | SET-002 | P0 | Aparat, mikrofon i wybor pliku sa uruchamiane dopiero po akcji uzytkownika. |
-| SET-003 | P0 | Uzytkownik moze zmienic szablon projektu, walute, format daty i ustawienia przypomnien. |
+| SET-003 | P1 | Uzytkownik moze bezpiecznie zmienic szablon projektu, walute, format daty i globalne ustawienia przypomnien z kontrola skutkow dla istniejacych danych. |
 | SET-004 | P1 | Asystent offline moze byc wlaczony lub wylaczony bez utraty danych. |
 | SET-005 | P2 | Opcjonalny AI ma oddzielny przelacznik, ekran zgody i historie cofniecia zgody. |
 | SET-006 | P0 | Backup ZIP zawiera wersjonowany manifest, baze, pliki i sumy kontrolne. |
@@ -429,7 +432,7 @@ potwierdzenia w projekcie, pomiarach i instrukcji kompletnego systemu.
 | NOTIF-001 | P0 | Lokalne przypomnienia obejmuja wizyty, zadania i platnosci. |
 | NOTIF-002 | P1 | Przypomnienia obejmuja decyzje blokujace, dostawy, zwroty, usterki, serwisy i koniec gwarancji. |
 | NOTIF-003 | P0 | Kazde powiadomienie otwiera rekord zrodlowy. |
-| NOTIF-004 | P0 | Uzytkownik ustawia typy, godziny i wyprzedzenie; brak zgody systemowej nie blokuje aplikacji. |
+| NOTIF-004 | P0 | Dla zdarzenia uzytkownik wlacza przypomnienie i ustawia wyprzedzenie; brak zgody systemowej nie blokuje zapisu ani pozostalych funkcji aplikacji. Globalne typy i godziny sa rozszerzeniem P1. |
 
 ## 25. Model danych
 
