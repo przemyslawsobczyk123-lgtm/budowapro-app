@@ -6,6 +6,7 @@ import 'package:budowapro/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import 'helpers/fake_project_repository.dart';
 import 'helpers/fake_schedule_services.dart';
@@ -21,14 +22,13 @@ void main() {
     expect(find.text('Start'), findsOneWidget);
     expect(find.text('Plan'), findsOneWidget);
     expect(find.text('Budżet'), findsOneWidget);
-    expect(find.text('Budowa'), findsOneWidget);
+    expect(find.text('Etapy'), findsOneWidget);
     expect(find.text('Więcej'), findsOneWidget);
     expect(find.text('Brak aktywnego projektu'), findsOneWidget);
 
     const destinations = <String, String>{
-      'Plan': 'Najpierw utwórz projekt',
+      'Plan': 'Plan budowy',
       'Budżet': 'Budżet inwestycji',
-      'Budowa': 'Dokumenty',
       'Więcej': 'Narzędzia projektu',
       'Start': 'Brak aktywnego projektu',
     };
@@ -39,6 +39,12 @@ void main() {
 
       expect(find.text(entry.value), findsOneWidget);
     }
+
+    await tester.tap(find.text('Etapy'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('stage-plan-screen')), findsOneWidget);
+    expect(find.text('Dokumenty'), findsNothing);
   });
 
   testWidgets('fits navigation on a compact Android viewport', (
@@ -66,6 +72,36 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Ekipy i kontakty'), findsOneWidget);
+    expect(find.text('Wybierz projekt'), findsOneWidget);
+  });
+
+  testWidgets('opens construction documents from the More tools branch', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_testApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Więcej'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const ValueKey('moreDocumentsTile')));
+    await tester.tap(find.byKey(const ValueKey('moreDocumentsTile')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Dokumenty'), findsOneWidget);
+    expect(find.text('Wybierz projekt'), findsOneWidget);
+    expect(find.byType(BackButton), findsOneWidget);
+  });
+
+  testWidgets('keeps the legacy build route pointing to documents', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_testApp());
+    await tester.pumpAndSettle();
+
+    GoRouter.of(tester.element(find.byType(NavigationBar))).go('/build');
+    await tester.pumpAndSettle();
+
+    expect(find.text('Dokumenty'), findsOneWidget);
     expect(find.text('Wybierz projekt'), findsOneWidget);
   });
 

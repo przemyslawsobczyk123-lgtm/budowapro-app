@@ -21,7 +21,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get navBudget => 'Budżet';
 
   @override
-  String get navBuild => 'Budowa';
+  String get navStages => 'Etapy';
 
   @override
   String get navMore => 'Więcej';
@@ -36,7 +36,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get planTitle => 'Plan budowy';
 
   @override
-  String get planSubtitle => 'Brak etapów dla aktywnego projektu.';
+  String get planSubtitle => 'Brak terminów dla aktywnego projektu.';
 
   @override
   String get budgetTitle => 'Budżet inwestycji';
@@ -788,6 +788,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get stagePlanEyebrow => 'Etapy i checklisty';
+
+  @override
+  String get stagesTitle => 'Etapy budowy';
 
   @override
   String get stageAddAction => 'Dodaj etap';
@@ -2370,12 +2373,6 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get guidanceWetAreaWaterproofingQuestions =>
       'Jakie obciążenie wodą przewidziano w tej strefie?\nCzy produkt jest przeznaczony pod płytki i zgodny z podłożem oraz ogrzewaniem?\nJak rozwiązano odpływ, spadki, narożniki i przejścia rurowe?\nKto odbierze hydroizolację przed jej zakryciem?';
-
-  @override
-  String get scheduleWeekTab => '7 dni';
-
-  @override
-  String get scheduleStagesTab => 'Etapy';
 
   @override
   String get scheduleLoading => 'Wczytywanie planu na 7 dni';

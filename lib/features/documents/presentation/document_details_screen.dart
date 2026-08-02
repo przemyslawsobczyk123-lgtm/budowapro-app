@@ -518,7 +518,7 @@ String? _relationPath(ProjectDocument document, DocumentRelation relation) =>
         '/projects/${Uri.encodeComponent(document.projectId)}'
             '/contacts/${Uri.encodeComponent(relation.targetId)}',
       DocumentRelationType.stage ||
-      DocumentRelationType.checklistItem => '/plan?tab=stages',
+      DocumentRelationType.checklistItem => '/stages',
       _ => null,
     };
 

@@ -118,11 +118,11 @@ abstract class AppLocalizations {
   /// **'Budżet'**
   String get navBudget;
 
-  /// Etykieta glownej zakladki Budowa.
+  /// Etykieta glownej zakladki Etapy.
   ///
   /// In pl, this message translates to:
-  /// **'Budowa'**
-  String get navBuild;
+  /// **'Etapy'**
+  String get navStages;
 
   /// Etykieta glownej zakladki Wiecej.
   ///
@@ -151,7 +151,7 @@ abstract class AppLocalizations {
   /// Opis pustego ekranu Plan podczas pierwszego przyrostu.
   ///
   /// In pl, this message translates to:
-  /// **'Brak etapów dla aktywnego projektu.'**
+  /// **'Brak terminów dla aktywnego projektu.'**
   String get planSubtitle;
 
   /// Tytul ekranu Budzet.
@@ -1581,6 +1581,12 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Etapy i checklisty'**
   String get stagePlanEyebrow;
+
+  /// No description provided for @stagesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Etapy budowy'**
+  String get stagesTitle;
 
   /// No description provided for @stageAddAction.
   ///
@@ -4071,18 +4077,6 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Jakie obciążenie wodą przewidziano w tej strefie?\nCzy produkt jest przeznaczony pod płytki i zgodny z podłożem oraz ogrzewaniem?\nJak rozwiązano odpływ, spadki, narożniki i przejścia rurowe?\nKto odbierze hydroizolację przed jej zakryciem?'**
   String get guidanceWetAreaWaterproofingQuestions;
-
-  /// No description provided for @scheduleWeekTab.
-  ///
-  /// In pl, this message translates to:
-  /// **'7 dni'**
-  String get scheduleWeekTab;
-
-  /// No description provided for @scheduleStagesTab.
-  ///
-  /// In pl, this message translates to:
-  /// **'Etapy'**
-  String get scheduleStagesTab;
 
   /// No description provided for @scheduleLoading.
   ///

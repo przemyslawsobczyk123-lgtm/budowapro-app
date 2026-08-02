@@ -45,6 +45,7 @@ import 'package:budowapro/features/schedule/presentation/schedule_event_form_scr
 import 'package:budowapro/features/schedule/presentation/schedule_plan_screen.dart';
 import 'package:budowapro/features/shell/presentation/app_shell.dart';
 import 'package:budowapro/features/shell/presentation/more_tools_screen.dart';
+import 'package:budowapro/features/stages/presentation/stage_plan_screen.dart';
 import 'package:budowapro/features/technical_photos/presentation/technical_photo_details_screen.dart';
 import 'package:budowapro/features/technical_photos/presentation/technical_photo_form_screen.dart';
 import 'package:budowapro/features/technical_photos/presentation/technical_photos_screen.dart';
@@ -135,6 +136,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/contacts',
         builder: (context, state) => const ContactsScreen(),
       ),
+      GoRoute(
+        path: '/documents',
+        builder: (context, state) => const DocumentsScreen(),
+      ),
+      GoRoute(path: '/build', redirect: (context, state) => '/documents'),
       GoRoute(
         path: '/quotes',
         builder: (context, state) => const QuotesScreen(),
@@ -410,10 +416,8 @@ StatefulShellBranch _branchFor(AppSection section) {
           key: state.pageKey,
           child: switch (section) {
             AppSection.start => const DashboardScreen(),
-            AppSection.plan => SchedulePlanScreen(
-              initialTab: state.uri.queryParameters['tab'] == 'stages' ? 1 : 0,
-            ),
-            AppSection.build => const DocumentsScreen(),
+            AppSection.plan => const SchedulePlanScreen(),
+            AppSection.stages => const StagePlanScreen(),
             AppSection.more => const MoreToolsScreen(),
             AppSection.budget => CostBudgetScreen(
               initialFilter: CostRegisterInitialFilter.fromQueryParameters(

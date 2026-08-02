@@ -519,7 +519,7 @@ class _JournalDetailsBody extends ConsumerWidget {
                   '/contacts/${Uri.encodeComponent(link.targetId)}',
                 );
               } else if (link.type == JournalRelationType.stage) {
-                context.go('/plan?tab=stages');
+                context.go('/stages');
               }
             },
           ),

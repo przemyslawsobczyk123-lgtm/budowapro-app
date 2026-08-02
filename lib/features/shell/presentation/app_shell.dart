@@ -121,7 +121,7 @@ enum AppSection {
     Icons.account_balance_wallet_outlined,
     Icons.account_balance_wallet,
   ),
-  build('/build', Icons.construction_outlined, Icons.construction_rounded),
+  stages('/stages', Icons.account_tree_outlined, Icons.account_tree_rounded),
   more('/more', Icons.more_horiz_rounded, Icons.more_horiz_rounded);
 
   const AppSection(this.path, this.icon, this.selectedIcon);
@@ -134,7 +134,7 @@ enum AppSection {
     AppSection.start => localizations.navStart,
     AppSection.plan => localizations.navPlan,
     AppSection.budget => localizations.navBudget,
-    AppSection.build => localizations.navBuild,
+    AppSection.stages => localizations.navStages,
     AppSection.more => localizations.navMore,
   };
 
@@ -142,7 +142,7 @@ enum AppSection {
     AppSection.start => localizations.startTitle,
     AppSection.plan => localizations.planTitle,
     AppSection.budget => localizations.budgetTitle,
-    AppSection.build => localizations.buildTitle,
+    AppSection.stages => localizations.stagesTitle,
     AppSection.more => localizations.moreTitle,
   };
 
@@ -150,7 +150,7 @@ enum AppSection {
     AppSection.start => localizations.startSubtitle,
     AppSection.plan => localizations.planSubtitle,
     AppSection.budget => localizations.budgetSubtitle,
-    AppSection.build => localizations.buildSubtitle,
+    AppSection.stages => localizations.stagePlanNoProjectMessage,
     AppSection.more => localizations.moreSubtitle,
   };
 }

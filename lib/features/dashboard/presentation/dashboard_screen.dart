@@ -523,7 +523,7 @@ class _QuickActions extends ConsumerWidget {
               ),
             ),
             OutlinedButton.icon(
-              onPressed: () => context.go('/plan?tab=stages'),
+              onPressed: () => context.go('/stages'),
               icon: const Icon(Icons.checklist_outlined),
               label: Text(
                 l10n.dashboardOpenChecklists,
@@ -603,7 +603,7 @@ class _CriticalRow extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final risk = checklistRisk(l10n, record.item);
     return InkWell(
-      onTap: () => context.go('/plan?tab=stages'),
+      onTap: () => context.go('/stages'),
       borderRadius: BorderRadius.circular(8),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
@@ -692,7 +692,7 @@ class _StagePoint extends StatelessWidget {
           '${stageName(l10n, stage)}, ${stageStatusLabel(l10n, stage.status)}',
       value: l10n.dashboardStageProgress(stage.progress.percent),
       child: InkWell(
-        onTap: () => context.go('/plan?tab=stages'),
+        onTap: () => context.go('/stages'),
         borderRadius: BorderRadius.circular(8),
         child: SizedBox(
           width: 82,

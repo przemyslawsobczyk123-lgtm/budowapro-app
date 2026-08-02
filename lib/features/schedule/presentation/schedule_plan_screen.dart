@@ -3,7 +3,6 @@ import 'package:budowapro/features/schedule/domain/schedule_event.dart';
 import 'package:budowapro/features/schedule/domain/schedule_notification_gateway.dart';
 import 'package:budowapro/features/schedule/presentation/schedule_plan_controller.dart';
 import 'package:budowapro/features/schedule/presentation/schedule_ui_text.dart';
-import 'package:budowapro/features/stages/presentation/stage_plan_screen.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:budowapro/shared/widgets/app_content_states.dart';
 import 'package:flutter/material.dart';
@@ -12,38 +11,17 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class SchedulePlanScreen extends StatelessWidget {
-  const SchedulePlanScreen({this.initialTab = 0, super.key})
-    : assert(initialTab == 0 || initialTab == 1);
-
-  final int initialTab;
+  const SchedulePlanScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return DefaultTabController(
-      length: 2,
-      initialIndex: initialTab,
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text(l10n.planTitle),
-          bottom: TabBar(
-            tabs: [
-              Tab(
-                icon: const Icon(Icons.date_range_outlined),
-                text: l10n.scheduleWeekTab,
-              ),
-              Tab(
-                icon: const Icon(Icons.account_tree_outlined),
-                text: l10n.scheduleStagesTab,
-              ),
-            ],
-          ),
-        ),
-        body: const TabBarView(
-          children: [_ScheduleWeekView(), StagePlanScreen(embedded: true)],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text(l10n.planTitle),
       ),
+      body: const _ScheduleWeekView(),
     );
   }
 }

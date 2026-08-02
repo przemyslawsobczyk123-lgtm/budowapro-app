@@ -14,9 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class StagePlanScreen extends ConsumerStatefulWidget {
-  const StagePlanScreen({this.embedded = false, super.key});
-
-  final bool embedded;
+  const StagePlanScreen({super.key});
 
   @override
   ConsumerState<StagePlanScreen> createState() => _StagePlanScreenState();
@@ -53,7 +51,6 @@ class _StagePlanScreenState extends ConsumerState<StagePlanScreen> {
             }
             return _StagePlanContent(
               state: state,
-              showHeader: !widget.embedded,
               onBulkModeChanged: _setBulkMode,
             );
           },
@@ -81,12 +78,10 @@ class _StagePlanScreenState extends ConsumerState<StagePlanScreen> {
 class _StagePlanContent extends ConsumerStatefulWidget {
   const _StagePlanContent({
     required this.state,
-    required this.showHeader,
     required this.onBulkModeChanged,
   });
 
   final StagePlanState state;
-  final bool showHeader;
   final ValueChanged<bool> onBulkModeChanged;
 
   @override
@@ -132,7 +127,6 @@ class _StagePlanContentState extends ConsumerState<_StagePlanContent> {
   @override
   Widget build(BuildContext context) {
     final state = widget.state;
-    final showHeader = widget.showHeader;
     final l10n = AppLocalizations.of(context);
     final selectedStage = state.selectedStage;
     return Column(
@@ -140,45 +134,27 @@ class _StagePlanContentState extends ConsumerState<_StagePlanContent> {
         Expanded(
           child: CustomScrollView(
             slivers: [
-              if (showHeader)
-                SliverAppBar(
-                  pinned: true,
-                  automaticallyImplyLeading: false,
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.stagePlanEyebrow,
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                      Text(l10n.planTitle),
-                    ],
-                  ),
-                  actions: _stageActions(context, ref, l10n),
-                  bottom: state.isSaving
-                      ? const PreferredSize(
-                          preferredSize: Size.fromHeight(2),
-                          child: LinearProgressIndicator(minHeight: 2),
-                        )
-                      : null,
-                )
-              else
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 12, 8, 4),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            l10n.stagePlanEyebrow,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                        ),
-                        ..._stageActions(context, ref, l10n),
-                      ],
+              SliverAppBar(
+                pinned: true,
+                automaticallyImplyLeading: false,
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.stagePlanEyebrow,
+                      style: Theme.of(context).textTheme.labelMedium,
                     ),
-                  ),
+                    Text(l10n.stagesTitle),
+                  ],
                 ),
+                actions: _stageActions(context, ref, l10n),
+                bottom: state.isSaving
+                    ? const PreferredSize(
+                        preferredSize: Size.fromHeight(2),
+                        child: LinearProgressIndicator(minHeight: 2),
+                      )
+                    : null,
+              ),
               SliverToBoxAdapter(child: _StageTabs(state: state)),
               if (selectedStage != null)
                 SliverToBoxAdapter(

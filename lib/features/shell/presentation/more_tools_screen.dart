@@ -70,7 +70,7 @@ class MoreToolsScreen extends ConsumerWidget {
             leading: const Icon(Icons.folder_copy_outlined),
             title: Text(l10n.documentsTitle),
             trailing: const Icon(Icons.chevron_right_rounded),
-            onTap: () => context.go('/build'),
+            onTap: () => context.push('/documents'),
           ),
           ListTile(
             key: const ValueKey('moreBudgetReportTile'),

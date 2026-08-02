@@ -88,6 +88,26 @@ void main() {
     expect(find.text('technical-photos'), findsOneWidget);
   });
 
+  testWidgets('opens the separate stages section from quick actions', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final project = _project();
+    await tester.pumpWidget(
+      _testApp(project: project, snapshot: _emptySnapshot(project)),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Checklisty etapów'));
+    await tester.tap(find.text('Checklisty etapów'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('stages'), findsOneWidget);
+  });
+
   testWidgets('fits populated dashboard at 320 px and opens agenda source', (
     tester,
   ) async {
@@ -172,6 +192,10 @@ Widget _testApp({Project? project, DashboardSnapshot? snapshot}) {
       GoRoute(
         path: '/plan',
         builder: (context, state) => const Scaffold(body: Text('plan')),
+      ),
+      GoRoute(
+        path: '/stages',
+        builder: (context, state) => const Scaffold(body: Text('stages')),
       ),
       GoRoute(
         path: '/technical',

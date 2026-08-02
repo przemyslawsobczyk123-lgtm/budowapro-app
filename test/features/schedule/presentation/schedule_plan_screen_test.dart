@@ -5,9 +5,6 @@ import 'package:budowapro/features/schedule/data/schedule_providers.dart';
 import 'package:budowapro/features/schedule/domain/schedule_event.dart';
 import 'package:budowapro/features/schedule/domain/schedule_notification_gateway.dart';
 import 'package:budowapro/features/schedule/presentation/schedule_plan_screen.dart';
-import 'package:budowapro/features/stages/data/stage_providers.dart';
-import 'package:budowapro/features/stages/domain/stage_plan.dart';
-import 'package:budowapro/features/stages/domain/stage_repository.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +22,9 @@ void main() {
     await tester.pumpWidget(_testApp(services));
     await tester.pumpAndSettle();
 
-    expect(find.text('7 dni'), findsOneWidget);
+    expect(find.text('Plan budowy'), findsOneWidget);
+    expect(find.byType(TabBar), findsNothing);
+    expect(find.text('Etapy'), findsNothing);
     expect(find.text('Odbiór zbrojenia'), findsOneWidget);
     expect(find.text('Blokuje: Decyzja o przepuście'), findsOneWidget);
     expect(find.text('Przypomnienia są wyłączone'), findsOneWidget);
@@ -57,14 +56,6 @@ void main() {
 
     expect(find.text('Typy terminów'), findsOneWidget);
     expect(tester.takeException(), isNull);
-  });
-
-  testWidgets('can open directly on the stages tab', (tester) async {
-    await tester.pumpWidget(_testApp(_services(), initialTab: 1));
-    await tester.pumpAndSettle();
-
-    final tabContext = tester.element(find.byType(TabBar));
-    expect(DefaultTabController.of(tabContext).index, 1);
   });
 }
 
@@ -123,9 +114,8 @@ Widget _testApp(
     FakeScheduleRepository repository,
     FakeScheduleNotificationGateway notifications,
   })
-  services, {
-  int initialTab = 0,
-}) {
+  services,
+) {
   final projects = FakeProjectRepository(
     projects: <Project>[services.project],
     selectedProjectId: services.project.id,
@@ -134,7 +124,7 @@ Widget _testApp(
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => SchedulePlanScreen(initialTab: initialTab),
+        builder: (context, state) => const SchedulePlanScreen(),
       ),
       GoRoute(
         path: '/projects/:projectId/schedule/:eventId',
@@ -156,7 +146,6 @@ Widget _testApp(
       scheduleUtcNowProvider.overrideWithValue(
         () => DateTime.utc(2026, 7, 20, 5),
       ),
-      stageRepositoryProvider.overrideWith((ref) async => _EmptyStages()),
     ],
     child: MaterialApp.router(
       debugShowCheckedModeBanner: false,
@@ -187,76 +176,3 @@ ScheduleEvent _event({
   createdAt: DateTime.utc(2026, 7, 18),
   updatedAt: DateTime.utc(2026, 7, 18),
 );
-
-final class _EmptyStages implements StageRepository {
-  @override
-  Future<List<ProjectStage>> listStages({
-    required String projectId,
-    required ProjectTemplate template,
-  }) async => const <ProjectStage>[];
-
-  @override
-  Future<List<ChecklistItem>> listChecklistItems({
-    required String projectId,
-    required String stageId,
-  }) async => const <ChecklistItem>[];
-
-  @override
-  Future<List<ChecklistItem>> listProjectChecklistItems({
-    required String projectId,
-  }) async => const <ChecklistItem>[];
-
-  @override
-  Future<List<ChecklistItem>> completeChecklistItems({
-    required String projectId,
-    required List<String> checklistItemIds,
-  }) => throw UnimplementedError();
-
-  @override
-  Future<ProjectStage> addCustomStage({
-    required String projectId,
-    required String name,
-  }) => throw UnimplementedError();
-  @override
-  Future<ChecklistItem> addChecklistItem({
-    required String projectId,
-    required String stageId,
-    required String title,
-    required ChecklistItemDetailsInput input,
-  }) => throw UnimplementedError();
-  @override
-  Future<ChecklistItem> attachEvidence({
-    required String projectId,
-    required String checklistItemId,
-    required String attachmentId,
-  }) => throw UnimplementedError();
-  @override
-  Future<ChecklistItem> detachEvidence({
-    required String projectId,
-    required String checklistItemId,
-    required String attachmentId,
-  }) => throw UnimplementedError();
-  @override
-  Future<void> reorderStages({
-    required String projectId,
-    required List<String> stageIds,
-  }) => throw UnimplementedError();
-  @override
-  Future<ProjectStage> renameStage({
-    required String projectId,
-    required String stageId,
-    required String name,
-  }) => throw UnimplementedError();
-  @override
-  Future<ProjectStage> updateStage({
-    required String projectId,
-    required String stageId,
-    required StageDetailsInput input,
-  }) => throw UnimplementedError();
-  @override
-  Future<ChecklistItem> updateChecklistItem({
-    required String projectId,
-    required String checklistItemId,
-    required ChecklistItemDetailsInput input,
-  }) => throw UnimplementedError();
-}

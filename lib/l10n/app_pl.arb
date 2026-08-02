@@ -16,9 +16,9 @@
   "@navBudget": {
     "description": "Etykieta glownej zakladki Budzet."
   },
-  "navBuild": "Budowa",
-  "@navBuild": {
-    "description": "Etykieta glownej zakladki Budowa."
+  "navStages": "Etapy",
+  "@navStages": {
+    "description": "Etykieta glownej zakladki Etapy."
   },
   "navMore": "Więcej",
   "@navMore": {
@@ -36,7 +36,7 @@
   "@planTitle": {
     "description": "Tytul ekranu Plan."
   },
-  "planSubtitle": "Brak etapów dla aktywnego projektu.",
+  "planSubtitle": "Brak terminów dla aktywnego projektu.",
   "@planSubtitle": {
     "description": "Opis pustego ekranu Plan podczas pierwszego przyrostu."
   },
@@ -566,6 +566,7 @@
   "stagePlanNoProjectTitle": "Najpierw utwórz projekt",
   "stagePlanNoProjectMessage": "Etapy i checklisty zostaną dopasowane do budowy domu albo remontu.",
   "stagePlanEyebrow": "Etapy i checklisty",
+  "stagesTitle": "Etapy budowy",
   "stageAddAction": "Dodaj etap",
   "stageReorderAction": "Zmień kolejność etapów",
   "stageEditAction": "Edytuj etap",
@@ -1015,8 +1016,6 @@
   "guidanceWetAreaWaterproofingSummary": "Płytki i fuga nie są samodzielną hydroizolacją. Dobierz kompletny, kompatybilny system do podłoża i przewidywanego obciążenia wodą; sama nazwa „folia w płynie” nie potwierdza przydatności w każdym miejscu.",
   "guidanceWetAreaWaterproofingChecks": "Określ strefy narażone na wodę, rodzaj podłoża, ogrzewanie i wymagany zakres hydroizolacji.\nSprawdź deklarowane zastosowanie wyrobu, przygotowanie podłoża, wymaganą liczbę warstw, zużycie i czas schnięcia.\nWykonaj systemowe uszczelnienia narożników, dylatacji, odpływów, progów i wszystkich przejść instalacyjnych.\nUżyj kompatybilnych gruntów, taśm, manszet, hydroizolacji, kleju i fugi bez mieszania przypadkowych systemów.\nOdbierz i sfotografuj ciągłość izolacji przed ułożeniem płytek; wymagane próby wykonaj zgodnie z projektem i systemem.",
   "guidanceWetAreaWaterproofingQuestions": "Jakie obciążenie wodą przewidziano w tej strefie?\nCzy produkt jest przeznaczony pod płytki i zgodny z podłożem oraz ogrzewaniem?\nJak rozwiązano odpływ, spadki, narożniki i przejścia rurowe?\nKto odbierze hydroizolację przed jej zakryciem?",
-  "scheduleWeekTab": "7 dni",
-  "scheduleStagesTab": "Etapy",
   "scheduleLoading": "Wczytywanie planu na 7 dni",
   "scheduleLoadError": "Nie udało się wczytać terminów.",
   "scheduleEyebrow": "Terminy i blokady",

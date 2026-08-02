@@ -36,5 +36,8 @@
   28 and 36, plus an Xcode 26 unsigned iOS gate.
 - Added deployable privacy, terms and support pages, Polish store listings,
   privacy declaration worksheets and final-size Google Play artwork.
+- Separated the seven-day `Plan` from project `Etapy`, promoted stages and
+  checklists to the primary navigation, and moved construction documents to
+  `Więcej` while preserving the legacy `/build` route.
 - Fixed fresh-install SQLite configuration on native Android and prevented an
   asynchronous dashboard refresh from updating a disposed controller.
