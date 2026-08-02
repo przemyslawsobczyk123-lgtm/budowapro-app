@@ -8,6 +8,7 @@ import 'package:budowapro/shared/widgets/app_content_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class AppShell extends ConsumerWidget {
   const AppShell({required this.navigationShell, super.key});
@@ -46,7 +47,7 @@ class AppShell extends ConsumerWidget {
                         key: const ValueKey('globalCaptureButton'),
                         tooltip: localizations.captureAddTooltip,
                         onPressed: () => showCaptureComposer(context, ref),
-                        icon: const Icon(Icons.add_box_outlined),
+                        icon: const Icon(LucideIcons.inbox300),
                       ),
                   ],
                 ),
@@ -70,8 +71,8 @@ class AppShell extends ConsumerWidget {
         destinations: AppSection.values
             .map(
               (section) => NavigationDestination(
-                icon: Icon(section.icon),
-                selectedIcon: Icon(section.selectedIcon),
+                icon: Icon(section.icon, size: 24),
+                selectedIcon: Icon(section.selectedIcon, size: 26),
                 label: section.navigationLabel(localizations),
               ),
             )
@@ -114,15 +115,11 @@ class ProjectSectionScreen extends StatelessWidget {
 }
 
 enum AppSection {
-  start('/', Icons.home_outlined, Icons.home_rounded),
-  plan('/plan', Icons.checklist_outlined, Icons.checklist_rounded),
-  budget(
-    '/budget',
-    Icons.account_balance_wallet_outlined,
-    Icons.account_balance_wallet,
-  ),
-  stages('/stages', Icons.account_tree_outlined, Icons.account_tree_rounded),
-  more('/more', Icons.more_horiz_rounded, Icons.more_horiz_rounded);
+  start('/', LucideIcons.house300, LucideIcons.house300),
+  plan('/plan', LucideIcons.listChecks300, LucideIcons.listChecks300),
+  budget('/budget', LucideIcons.walletCards300, LucideIcons.walletCards300),
+  stages('/stages', Icons.handyman_outlined, Icons.handyman_outlined),
+  more('/more', LucideIcons.ellipsis300, LucideIcons.ellipsis300);
 
   const AppSection(this.path, this.icon, this.selectedIcon);
 

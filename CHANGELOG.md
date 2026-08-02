@@ -39,5 +39,7 @@
 - Separated the seven-day `Plan` from project `Etapy`, promoted stages and
   checklists to the primary navigation, and moved construction documents to
   `Więcej` while preserving the legacy `/build` route.
+- Replaced primary navigation, project tools and dashboard quick-action icons
+  with a consistent scalable line set based on the approved BudowaPRO mockup.
 - Fixed fresh-install SQLite configuration on native Android and prevented an
   asynchronous dashboard refresh from updating a disposed controller.

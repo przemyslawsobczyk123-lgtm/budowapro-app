@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../helpers/fake_project_repository.dart';
 import '../../../helpers/fake_schedule_services.dart';
@@ -106,6 +107,38 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('stages'), findsOneWidget);
+  });
+
+  testWidgets('uses matching line icons for project quick actions', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(800, 1200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final project = _project();
+    await tester.pumpWidget(
+      _testApp(project: project, snapshot: _emptySnapshot(project)),
+    );
+    await tester.pumpAndSettle();
+
+    const expected = <String, IconData>{
+      'quickActionAddCost': LucideIcons.walletCards300,
+      'quickActionScanReceipt': LucideIcons.receiptText300,
+      'quickActionStages': LucideIcons.listChecks300,
+      'quickActionSchedule': LucideIcons.calendarPlus300,
+      'quickActionDefect': LucideIcons.wrench300,
+      'quickActionPhotos': LucideIcons.images300,
+    };
+
+    for (final entry in expected.entries) {
+      final action = find.byKey(ValueKey(entry.key));
+      expect(action, findsOneWidget);
+      final baseIcon = tester.widget<Icon>(
+        find.descendant(of: action, matching: find.byType(Icon)).first,
+      );
+      expect(baseIcon.icon, entry.value, reason: entry.key);
+    }
   });
 
   testWidgets('fits populated dashboard at 320 px and opens agenda source', (

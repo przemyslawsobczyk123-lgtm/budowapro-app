@@ -9,10 +9,12 @@ import 'package:budowapro/features/schedule/presentation/schedule_ui_text.dart';
 import 'package:budowapro/features/stages/domain/stage_plan.dart';
 import 'package:budowapro/features/stages/presentation/stage_ui_text.dart';
 import 'package:budowapro/l10n/app_localizations.dart';
+import 'package:budowapro/shared/widgets/app_feature_icon.dart';
 import 'package:budowapro/shared/widgets/app_content_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:intl/intl.dart';
 
 import 'dashboard_controller.dart';
@@ -507,48 +509,72 @@ class _QuickActions extends ConsumerWidget {
           childAspectRatio: 2.15,
           children: [
             OutlinedButton.icon(
+              key: const ValueKey('quickActionAddCost'),
               onPressed: () => _openCost(context, ref, project),
-              icon: const Icon(Icons.add_card_outlined),
+              icon: const AppQuickActionIcon(
+                icon: LucideIcons.walletCards300,
+                accentIcon: LucideIcons.circlePlus300,
+              ),
               label: Text(l10n.dashboardAddCost, textAlign: TextAlign.center),
             ),
             OutlinedButton.icon(
+              key: const ValueKey('quickActionScanReceipt'),
               onPressed: () => context.push(
                 '/projects/${Uri.encodeComponent(project.id)}'
                 '/receipt-scans/new',
               ),
-              icon: const Icon(Icons.document_scanner_outlined),
+              icon: const AppQuickActionIcon(
+                icon: LucideIcons.receiptText300,
+                accentIcon: LucideIcons.scanLine300,
+              ),
               label: Text(
                 l10n.dashboardScanReceipt,
                 textAlign: TextAlign.center,
               ),
             ),
             OutlinedButton.icon(
+              key: const ValueKey('quickActionStages'),
               onPressed: () => context.go('/stages'),
-              icon: const Icon(Icons.checklist_outlined),
+              icon: const AppQuickActionIcon(
+                icon: LucideIcons.listChecks300,
+                accentIcon: LucideIcons.house300,
+              ),
               label: Text(
                 l10n.dashboardOpenChecklists,
                 textAlign: TextAlign.center,
               ),
             ),
             OutlinedButton.icon(
+              key: const ValueKey('quickActionSchedule'),
               onPressed: () => _openSchedule(context, ref, project),
-              icon: const Icon(Icons.event_available_outlined),
+              icon: const AppQuickActionIcon(
+                icon: LucideIcons.calendarPlus300,
+                accentIcon: LucideIcons.circlePlus300,
+              ),
               label: Text(
                 l10n.dashboardAddSchedule,
                 textAlign: TextAlign.center,
               ),
             ),
             OutlinedButton.icon(
+              key: const ValueKey('quickActionDefect'),
               onPressed: () => context.push(
                 '/projects/${Uri.encodeComponent(project.id)}'
                 '/punch/defects/new',
               ),
-              icon: const Icon(Icons.add_task_rounded),
+              icon: const AppQuickActionIcon(
+                icon: LucideIcons.wrench300,
+                accentIcon: LucideIcons.triangleAlert300,
+              ),
               label: Text(l10n.dashboardAddDefect, textAlign: TextAlign.center),
             ),
             OutlinedButton.icon(
+              key: const ValueKey('quickActionPhotos'),
               onPressed: () => context.push('/technical'),
-              icon: const Icon(Icons.photo_library_outlined),
+              icon: const AppQuickActionIcon(
+                icon: LucideIcons.images300,
+                accentIcon: LucideIcons.house300,
+              ),
               label: Text(
                 l10n.dashboardOpenTechnicalPhotos,
                 textAlign: TextAlign.center,

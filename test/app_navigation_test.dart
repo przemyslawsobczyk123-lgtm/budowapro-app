@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'helpers/fake_project_repository.dart';
 import 'helpers/fake_schedule_services.dart';
@@ -60,6 +61,60 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.byType(NavigationBar), findsOneWidget);
+  });
+
+  testWidgets('uses the reference icons in primary navigation', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(_testApp());
+    await tester.pumpAndSettle();
+
+    final destinations = tester.widgetList<NavigationDestination>(
+      find.byType(NavigationDestination),
+    );
+    final icons = destinations
+        .map((destination) => (destination.icon as Icon).icon)
+        .toList(growable: false);
+
+    expect(icons, const [
+      LucideIcons.house300,
+      LucideIcons.listChecks300,
+      LucideIcons.walletCards300,
+      Icons.handyman_outlined,
+      LucideIcons.ellipsis300,
+    ]);
+  });
+
+  testWidgets('uses matching line icons for More tools', (tester) async {
+    tester.view.physicalSize = const Size(800, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(_testApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(NavigationDestination).at(4));
+    await tester.pumpAndSettle();
+
+    const expected = <String, IconData>{
+      'moreCapturesTile': LucideIcons.inbox300,
+      'moreContactsTile': LucideIcons.users300,
+      'moreRoomsTile': LucideIcons.panelsTopLeft300,
+      'moreMaterialsTile': LucideIcons.package300,
+      'moreQuotesTile': LucideIcons.fileCheck300,
+      'moreDocumentsTile': LucideIcons.folder300,
+      'moreBudgetReportTile': LucideIcons.chartNoAxesCombined300,
+      'moreBackupTile': LucideIcons.shieldCheck300,
+      'moreLegalTile': LucideIcons.shield300,
+    };
+
+    for (final entry in expected.entries) {
+      final tile = find.byKey(ValueKey(entry.key));
+      final leadingIcon = tester.widget<Icon>(
+        find.descendant(of: tile, matching: find.byType(Icon)).first,
+      );
+      expect(leadingIcon.icon, entry.value, reason: entry.key);
+    }
   });
 
   testWidgets('opens contacts from the More tools branch', (tester) async {
