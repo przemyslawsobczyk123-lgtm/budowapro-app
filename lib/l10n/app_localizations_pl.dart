@@ -457,6 +457,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get costCsvExportError => 'Nie udało się utworzyć pliku CSV.';
 
   @override
+  String get costCsvShareTitle => 'BudowaPRO - eksport kosztów';
+
+  @override
   String get costCsvLifecycleColumn => 'Tryb wpisu';
 
   @override
@@ -3806,7 +3809,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get receiptScanIdleMessage =>
-      'Zeskanuj paragon lub jednostronicową fakturę albo wybierz plik.';
+      'Zeskanuj paragon lub fakturę wielostronicową albo wybierz plik.';
 
   @override
   String get receiptScanLocalOnly =>
@@ -3874,6 +3877,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get receiptRetryOcrAction => 'Ponów odczyt';
 
   @override
+  String get receiptManualEntryAction => 'Wpisz dane ręcznie';
+
+  @override
   String get receiptScannerUnavailableTitle => 'Skaner jest niedostępny';
 
   @override
@@ -3892,7 +3898,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get receiptEmptyTextMessage =>
-      'Spróbuj ponownie lub użyj wyraźniejszego zdjęcia.';
+      'Ponów odczyt albo wpisz dane ręcznie. Oryginał pozostanie dołączony do kosztu.';
 
   @override
   String get receiptStorageErrorTitle => 'Nie udało się zabezpieczyć skanu';
@@ -4345,13 +4351,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get legalPublisherLabel => 'Wydawca aplikacji';
 
   @override
-  String get legalContactLabel => 'Kontakt w sprawach prywatności';
+  String get legalContactLabel => 'Skontaktuj się z nami';
 
   @override
   String get legalNotConfiguredValue => 'Nie skonfigurowano do wydania';
 
   @override
-  String get legalEmailSubject => 'BudowaPRO — prywatność';
+  String get legalEmailSubject => 'BudowaPRO - kontakt';
 
   @override
   String get legalPublicPolicyLabel => 'Publiczna kopia polityki';
@@ -4360,7 +4366,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get legalSupportUrlLabel => 'Publiczna strona wsparcia';
 
   @override
-  String get legalDocumentVersion => 'Wersja 1.0 · obowiązuje od 28.07.2026';
+  String get legalDocumentVersion => 'Wersja 1.1 · obowiązuje od 06.08.2026';
 
   @override
   String get legalIntroTitle => 'Prywatność dostępna w aplikacji';
@@ -4455,7 +4461,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get privacySectionSharingBody =>
-      'Poza technicznymi metrykami ML Kit BudowaPRO nie udostępnia danych automatycznie. Eksport CSV, kopia ZIP, telefon, e-mail albo systemowe udostępnianie uruchamiają się dopiero po Twojej akcji i przekazują wybraną zawartość do wskazanej przez Ciebie aplikacji lub dostawcy. Ręczna kopia ZIP nie jest szyfrowana i może zawierać dokumenty, kontakty oraz zdjęcia. Dalsze przetwarzanie podlega zasadom wybranego odbiorcy.';
+      'Poza technicznymi metrykami ML Kit BudowaPRO nie udostępnia danych automatycznie. Eksport CSV, kopia ZIP, telefon, e-mail albo systemowe udostępnianie uruchamiają się dopiero po Twojej akcji i przekazują wybraną zawartość do wskazanej przez Ciebie aplikacji lub dostawcy. Otwarcie publicznej polityki lub strony wsparcia łączy przeglądarkę z hostingiem GitHub Pages, który może przetwarzać standardowe dane techniczne połączenia. Ręczna kopia ZIP nie jest szyfrowana i może zawierać dokumenty, kontakty oraz zdjęcia. Dalsze przetwarzanie podlega zasadom wybranego odbiorcy.';
 
   @override
   String get privacySectionRetentionTitle =>
@@ -4463,7 +4469,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get privacySectionRetentionBody =>
-      'Dane pozostają w aplikacji do czasu usunięcia rekordu lub projektu, wyczyszczenia danych aplikacji albo jej odinstalowania. Ręcznie wyeksportowane pliki pozostają w wybranej lokalizacji do czasu, aż usuniesz je osobno. Android wyklucza prywatne pliki BudowaPRO z kopii chmurowej i transferu urządzenie–urządzenie. Na iOS systemowa kopia urządzenia może objąć dane aplikacji zgodnie z ustawieniami i zasadami Apple.';
+      'Dane pozostają w aplikacji do czasu usunięcia rekordu lub projektu, wyczyszczenia danych aplikacji albo jej odinstalowania. Ręcznie wyeksportowane pliki pozostają w wybranej lokalizacji do czasu, aż usuniesz je osobno. Android wyklucza prywatne pliki BudowaPRO z kopii chmurowej i transferu urządzenie–urządzenie. Na iOS prywatny katalog danych BudowaPRO jest oznaczony jako wyłączony z kopii iCloud.';
 
   @override
   String get privacySectionRightsTitle => '7. Kontrola danych i prawa';
@@ -4617,7 +4623,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get privacyAutomaticBackupSubtitle =>
-      'Android wyklucza prywatne pliki BudowaPRO z kopii chmurowej i transferu na nowe urządzenie. Na iOS systemowa kopia urządzenia może objąć dane aplikacji zgodnie z ustawieniami Apple. Ręczna kopia ZIP nie jest szyfrowana.';
+      'Android wyklucza prywatne pliki BudowaPRO z kopii chmurowej i transferu na nowe urządzenie. Na iOS prywatny katalog danych BudowaPRO jest wyłączony z kopii iCloud. Ręczna kopia ZIP nie jest szyfrowana.';
 
   @override
   String get privacyDataControlSection => 'Kontrola danych';
@@ -6119,10 +6125,14 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get materialDeleteMessage =>
-      'Usunięte zostaną także jego dostawy i zwroty. Koszt, dokumenty i kontakty pozostaną bez zmian.';
+      'Materiał zostanie usunięty. Powiązane koszty, dokumenty i kontakty pozostaną bez zmian. Materiału z historią dostaw lub zwrotów nie można usunąć.';
 
   @override
   String get materialDeleteAction => 'Usuń';
+
+  @override
+  String get materialDeleteInUseError =>
+      'Najpierw usuń powiązane dostawy i zwroty. Chroni to historię przed przypadkową utratą.';
 
   @override
   String get materialDeleteError => 'Nie udało się usunąć materiału.';
@@ -6244,6 +6254,13 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get materialRecordDeleteTooltip => 'Usuń wpis';
+
+  @override
+  String get materialRecordDeleteTitle => 'Usunąć ten wpis?';
+
+  @override
+  String get materialRecordDeleteMessage =>
+      'Tej operacji nie można cofnąć. Dostawa albo zwrot zniknie z historii materiału.';
 
   @override
   String get materialInvalidQuantity =>

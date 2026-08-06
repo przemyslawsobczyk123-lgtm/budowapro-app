@@ -398,6 +398,7 @@ class _TechnicalPhotoTile extends StatelessWidget {
                   : Image.file(
                       previewFile!,
                       fit: BoxFit.cover,
+                      cacheWidth: 480,
                       errorBuilder: (context, error, stackTrace) =>
                           _MissingPreview(
                             label: l10n.technicalPhotosMissingPreview,

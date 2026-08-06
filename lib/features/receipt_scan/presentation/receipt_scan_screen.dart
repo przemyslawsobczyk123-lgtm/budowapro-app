@@ -112,6 +112,7 @@ class _ReceiptScanScreenState extends ConsumerState<ReceiptScanScreen> {
             ReceiptScanViewStatus.error => _ReceiptScanError(
               state: state,
               onRetryRecognition: controller.retryRecognition,
+              onContinueManually: controller.continueManually,
               onScan: () => controller.start(ReceiptCaptureMethod.scanner),
               onImport: () => controller.start(ReceiptCaptureMethod.fileImport),
               onDiscard: controller.discard,
@@ -1288,6 +1289,7 @@ class _ReceiptScanError extends StatelessWidget {
   const _ReceiptScanError({
     required this.state,
     required this.onRetryRecognition,
+    required this.onContinueManually,
     required this.onScan,
     required this.onImport,
     required this.onDiscard,
@@ -1295,6 +1297,7 @@ class _ReceiptScanError extends StatelessWidget {
 
   final ReceiptScanViewState state;
   final VoidCallback onRetryRecognition;
+  final VoidCallback onContinueManually;
   final VoidCallback onScan;
   final VoidCallback onImport;
   final Future<void> Function() onDiscard;
@@ -1335,6 +1338,16 @@ class _ReceiptScanError extends StatelessWidget {
             icon: const Icon(Icons.document_scanner_outlined),
             label: Text(l10n.receiptScanAction),
           ),
+        if (state.source != null &&
+            failure == ReceiptScanFailureKind.emptyText) ...[
+          const SizedBox(height: 10),
+          OutlinedButton.icon(
+            key: const ValueKey('receiptManualEntryButton'),
+            onPressed: onContinueManually,
+            icon: const Icon(Icons.edit_note_outlined),
+            label: Text(l10n.receiptManualEntryAction),
+          ),
+        ],
         const SizedBox(height: 10),
         OutlinedButton.icon(
           key: const ValueKey('receiptFallbackImportButton'),
@@ -1376,6 +1389,7 @@ class _ReceiptPreview extends StatelessWidget {
       child: Image.file(
         File.fromUri(uri),
         fit: BoxFit.contain,
+        cacheWidth: 1200,
         errorBuilder: (_, _, _) => Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,

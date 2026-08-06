@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:budowapro/core/storage/local_restore_journal.dart';
+import 'package:budowapro/core/storage/local_data_wipe_journal.dart';
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -18,7 +19,7 @@ final class AppDatabase {
 
   AppDatabase._(this._factory, this._path);
 
-  static const int schemaVersion = 18;
+  static const int schemaVersion = 19;
   static const String databaseFileName = 'budowapro.db';
   static const String metadataTable = 'app_metadata';
   static const String projectsTable = 'projects';
@@ -136,6 +137,10 @@ final class AppDatabase {
   static Future<AppDatabase> onDevice() async {
     final supportDirectory = await getApplicationSupportDirectory();
     await supportDirectory.create(recursive: true);
+    await LocalDataWipeJournal.recover(
+      rootDirectory: supportDirectory,
+      databaseFileName: databaseFileName,
+    );
     await LocalRestoreJournal.recover(
       rootDirectory: supportDirectory,
       databaseFileName: databaseFileName,
@@ -540,6 +545,15 @@ final class AppDatabase {
     required int fromVersion,
     required int toVersion,
   }) async {
+    if (fromVersion < 18 && toVersion >= 18) {
+      await database.execute(
+        'DROP TRIGGER IF EXISTS materials_stage_delete_clear',
+      );
+      await database.execute(
+        'DROP TRIGGER IF EXISTS materials_document_delete_clear',
+      );
+    }
+
     if (fromVersion < 1 && toVersion >= 1) {
       await database.execute('''
         CREATE TABLE IF NOT EXISTS $metadataTable (
@@ -2392,6 +2406,10 @@ final class AppDatabase {
       ''');
     }
 
+    if (fromVersion < 19 && toVersion >= 19) {
+      await _rebuildMaterialRelations(database);
+    }
+
     if (fromVersion < toVersion) {
       await database.insert(metadataTable, <String, Object?>{
         'key': schemaVersionKey,
@@ -2399,6 +2417,358 @@ final class AppDatabase {
         'updated_at_utc_ms': 0,
       }, conflictAlgorithm: ConflictAlgorithm.replace);
     }
+  }
+
+  static Future<void> _rebuildMaterialRelations(Database database) async {
+    await database.execute(
+      'DROP TRIGGER IF EXISTS materials_stage_delete_clear',
+    );
+    await database.execute(
+      'DROP TRIGGER IF EXISTS materials_document_delete_clear',
+    );
+    await database.execute(
+      'ALTER TABLE $materialReturnsTable RENAME TO material_returns_v18',
+    );
+    await database.execute(
+      'ALTER TABLE $materialDeliveriesTable RENAME TO material_deliveries_v18',
+    );
+    await database.execute(
+      'ALTER TABLE $materialsTable RENAME TO materials_v18',
+    );
+    final hasMaterialRows =
+        Sqflite.firstIntValue(
+          await database.rawQuery('SELECT COUNT(*) FROM materials_v18'),
+        ) !=
+        0;
+    final hasDeliveryRows =
+        Sqflite.firstIntValue(
+          await database.rawQuery(
+            'SELECT COUNT(*) FROM material_deliveries_v18',
+          ),
+        ) !=
+        0;
+    final hasReturnRows =
+        Sqflite.firstIntValue(
+          await database.rawQuery('SELECT COUNT(*) FROM material_returns_v18'),
+        ) !=
+        0;
+
+    await database.execute('''
+      CREATE TABLE IF NOT EXISTS $materialsTable (
+        id TEXT PRIMARY KEY NOT NULL,
+        project_id TEXT NOT NULL,
+        name TEXT NOT NULL COLLATE NOCASE,
+        ordered_quantity_microunits INTEGER NOT NULL CHECK (
+          ordered_quantity_microunits > 0
+        ),
+        unit TEXT NOT NULL,
+        stage_id TEXT,
+        room_id TEXT,
+        supplier_contact_id TEXT,
+        cost_entry_id TEXT,
+        receipt_document_id TEXT,
+        ordered_gross_minor_units INTEGER CHECK (
+          ordered_gross_minor_units >= 0
+        ),
+        currency_code TEXT CHECK (
+          currency_code IS NULL OR (
+            length(currency_code) = 3 AND
+            currency_code GLOB '[A-Z][A-Z][A-Z]'
+          )
+        ),
+        storage_location TEXT,
+        ordered_at_utc_ms INTEGER,
+        expected_delivery_at_utc_ms INTEGER,
+        delivery_reminder_enabled INTEGER NOT NULL DEFAULT 0 CHECK (
+          delivery_reminder_enabled IN (0, 1)
+        ),
+        note TEXT,
+        created_at_utc_ms INTEGER NOT NULL,
+        updated_at_utc_ms INTEGER NOT NULL,
+        CHECK (
+          (ordered_gross_minor_units IS NULL AND currency_code IS NULL) OR
+          (ordered_gross_minor_units IS NOT NULL AND currency_code IS NOT NULL)
+        ),
+        UNIQUE (id, project_id),
+        FOREIGN KEY (project_id)
+          REFERENCES $projectsTable(id) ON DELETE CASCADE,
+        FOREIGN KEY (room_id)
+          REFERENCES $roomsTable(id) ON DELETE SET NULL,
+        FOREIGN KEY (supplier_contact_id)
+          REFERENCES $contactsTable(id) ON DELETE SET NULL,
+        FOREIGN KEY (cost_entry_id)
+          REFERENCES $costEntriesTable(id) ON DELETE SET NULL,
+        FOREIGN KEY (project_id, receipt_document_id)
+          REFERENCES $documentMetadataTable(project_id, attachment_id)
+      )
+    ''');
+    if (hasMaterialRows) {
+      await database.execute('''
+        INSERT INTO $materialsTable
+        SELECT
+          material.id,
+          material.project_id,
+          material.name,
+          material.ordered_quantity_microunits,
+          material.unit,
+          CASE WHEN material.stage_id IS NULL OR EXISTS (
+            SELECT 1 FROM $projectStagesTable stage
+            WHERE stage.project_id = material.project_id
+              AND stage.id = material.stage_id
+          ) THEN material.stage_id ELSE NULL END,
+          CASE WHEN material.room_id IS NULL OR EXISTS (
+            SELECT 1 FROM $roomsTable room WHERE room.id = material.room_id
+          ) THEN material.room_id ELSE NULL END,
+          CASE WHEN material.supplier_contact_id IS NULL OR EXISTS (
+            SELECT 1 FROM $contactsTable contact
+            WHERE contact.id = material.supplier_contact_id
+          ) THEN material.supplier_contact_id ELSE NULL END,
+          CASE WHEN material.cost_entry_id IS NULL OR EXISTS (
+            SELECT 1 FROM $costEntriesTable cost
+            WHERE cost.id = material.cost_entry_id
+          ) THEN material.cost_entry_id ELSE NULL END,
+          CASE WHEN material.receipt_document_id IS NULL OR EXISTS (
+            SELECT 1 FROM $documentMetadataTable document
+            WHERE document.project_id = material.project_id
+              AND document.attachment_id = material.receipt_document_id
+          ) THEN material.receipt_document_id ELSE NULL END,
+          material.ordered_gross_minor_units,
+          material.currency_code,
+          material.storage_location,
+          material.ordered_at_utc_ms,
+          material.expected_delivery_at_utc_ms,
+          material.delivery_reminder_enabled,
+          material.note,
+          material.created_at_utc_ms,
+          material.updated_at_utc_ms
+        FROM materials_v18 material
+      ''');
+    }
+
+    await database.execute('''
+      CREATE TABLE IF NOT EXISTS $materialDeliveriesTable (
+        id TEXT PRIMARY KEY NOT NULL,
+        project_id TEXT NOT NULL,
+        material_id TEXT NOT NULL,
+        expected_quantity_microunits INTEGER NOT NULL CHECK (
+          expected_quantity_microunits > 0
+        ),
+        due_at_utc_ms INTEGER NOT NULL,
+        delivered_quantity_microunits INTEGER CHECK (
+          delivered_quantity_microunits > 0
+        ),
+        received_at_utc_ms INTEGER,
+        document_id TEXT,
+        contact_id TEXT,
+        shortage_note TEXT,
+        damage_note TEXT,
+        over_delivery_confirmed INTEGER NOT NULL DEFAULT 0 CHECK (
+          over_delivery_confirmed IN (0, 1)
+        ),
+        reminder_enabled INTEGER NOT NULL DEFAULT 0 CHECK (
+          reminder_enabled IN (0, 1)
+        ),
+        created_at_utc_ms INTEGER NOT NULL,
+        updated_at_utc_ms INTEGER NOT NULL,
+        CHECK (
+          (delivered_quantity_microunits IS NULL AND received_at_utc_ms IS NULL)
+          OR
+          (delivered_quantity_microunits IS NOT NULL AND received_at_utc_ms IS NOT NULL)
+        ),
+        UNIQUE (id, project_id),
+        FOREIGN KEY (material_id, project_id)
+          REFERENCES $materialsTable(id, project_id) ON DELETE CASCADE,
+        FOREIGN KEY (project_id, document_id)
+          REFERENCES $documentMetadataTable(project_id, attachment_id),
+        FOREIGN KEY (contact_id)
+          REFERENCES $contactsTable(id) ON DELETE SET NULL
+      )
+    ''');
+    if (hasDeliveryRows) {
+      await database.execute('''
+        INSERT INTO $materialDeliveriesTable
+        SELECT
+          delivery.id,
+          delivery.project_id,
+          delivery.material_id,
+          delivery.expected_quantity_microunits,
+          delivery.due_at_utc_ms,
+          delivery.delivered_quantity_microunits,
+          delivery.received_at_utc_ms,
+          CASE WHEN delivery.document_id IS NULL OR EXISTS (
+            SELECT 1 FROM $documentMetadataTable document
+            WHERE document.project_id = delivery.project_id
+              AND document.attachment_id = delivery.document_id
+          ) THEN delivery.document_id ELSE NULL END,
+          CASE WHEN delivery.contact_id IS NULL OR EXISTS (
+            SELECT 1 FROM $contactsTable contact
+            WHERE contact.id = delivery.contact_id
+          ) THEN delivery.contact_id ELSE NULL END,
+          delivery.shortage_note,
+          delivery.damage_note,
+          delivery.over_delivery_confirmed,
+          delivery.reminder_enabled,
+          delivery.created_at_utc_ms,
+          delivery.updated_at_utc_ms
+        FROM material_deliveries_v18 delivery
+      ''');
+    }
+
+    await database.execute('''
+      CREATE TABLE IF NOT EXISTS $materialReturnsTable (
+        id TEXT PRIMARY KEY NOT NULL,
+        project_id TEXT NOT NULL,
+        material_id TEXT NOT NULL,
+        quantity_microunits INTEGER NOT NULL CHECK (
+          quantity_microunits > 0
+        ),
+        deadline_utc_ms INTEGER NOT NULL,
+        expected_refund_minor_units INTEGER CHECK (
+          expected_refund_minor_units >= 0
+        ),
+        currency_code TEXT CHECK (
+          currency_code IS NULL OR (
+            length(currency_code) = 3 AND
+            currency_code GLOB '[A-Z][A-Z][A-Z]'
+          )
+        ),
+        receipt_required INTEGER NOT NULL CHECK (
+          receipt_required IN (0, 1)
+        ),
+        receipt_document_id TEXT,
+        completed_at_utc_ms INTEGER,
+        actual_refund_minor_units INTEGER CHECK (
+          actual_refund_minor_units >= 0
+        ),
+        reminder_enabled INTEGER NOT NULL DEFAULT 0 CHECK (
+          reminder_enabled IN (0, 1)
+        ),
+        note TEXT,
+        created_at_utc_ms INTEGER NOT NULL,
+        updated_at_utc_ms INTEGER NOT NULL,
+        CHECK (
+          (expected_refund_minor_units IS NULL AND currency_code IS NULL) OR
+          (expected_refund_minor_units IS NOT NULL AND currency_code IS NOT NULL)
+        ),
+        CHECK (
+          actual_refund_minor_units IS NULL OR completed_at_utc_ms IS NOT NULL
+        ),
+        UNIQUE (id, project_id),
+        FOREIGN KEY (material_id, project_id)
+          REFERENCES $materialsTable(id, project_id) ON DELETE CASCADE,
+        FOREIGN KEY (project_id, receipt_document_id)
+          REFERENCES $documentMetadataTable(project_id, attachment_id)
+      )
+    ''');
+    if (hasReturnRows) {
+      await database.execute('''
+        INSERT INTO $materialReturnsTable
+        SELECT
+          material_return.id,
+          material_return.project_id,
+          material_return.material_id,
+          material_return.quantity_microunits,
+          material_return.deadline_utc_ms,
+          material_return.expected_refund_minor_units,
+          material_return.currency_code,
+          material_return.receipt_required,
+          CASE WHEN material_return.receipt_document_id IS NULL OR EXISTS (
+            SELECT 1 FROM $documentMetadataTable document
+            WHERE document.project_id = material_return.project_id
+              AND document.attachment_id = material_return.receipt_document_id
+          ) THEN material_return.receipt_document_id ELSE NULL END,
+          material_return.completed_at_utc_ms,
+          material_return.actual_refund_minor_units,
+          material_return.reminder_enabled,
+          material_return.note,
+          material_return.created_at_utc_ms,
+          material_return.updated_at_utc_ms
+        FROM material_returns_v18 material_return
+      ''');
+    }
+
+    await database.execute('DROP TABLE material_returns_v18');
+    await database.execute('DROP TABLE material_deliveries_v18');
+    await database.execute('DROP TABLE materials_v18');
+    await database.execute('''
+      CREATE INDEX IF NOT EXISTS materials_project_updated_idx
+      ON $materialsTable (project_id, updated_at_utc_ms DESC, id)
+    ''');
+    await database.execute('''
+      CREATE INDEX IF NOT EXISTS materials_project_stage_idx
+      ON $materialsTable (project_id, stage_id, updated_at_utc_ms DESC, id)
+    ''');
+    await database.execute('''
+      CREATE INDEX IF NOT EXISTS materials_project_room_idx
+      ON $materialsTable (project_id, room_id, updated_at_utc_ms DESC, id)
+    ''');
+    await database.execute('''
+      CREATE INDEX IF NOT EXISTS material_deliveries_material_due_idx
+      ON $materialDeliveriesTable (
+        project_id,
+        material_id,
+        received_at_utc_ms,
+        due_at_utc_ms,
+        id
+      )
+    ''');
+    await database.execute('''
+      CREATE INDEX IF NOT EXISTS material_returns_material_deadline_idx
+      ON $materialReturnsTable (
+        project_id,
+        material_id,
+        completed_at_utc_ms,
+        deadline_utc_ms,
+        id
+      )
+    ''');
+    await _createMaterialRelationCleanupTriggers(database);
+  }
+
+  static Future<void> _createMaterialRelationCleanupTriggers(
+    Database database,
+  ) async {
+    if (await _tableExists(database, projectStagesTable)) {
+      await database.execute('''
+        CREATE TRIGGER IF NOT EXISTS materials_stage_delete_clear
+        BEFORE DELETE ON $projectStagesTable
+        BEGIN
+          UPDATE $materialsTable
+          SET stage_id = NULL
+          WHERE project_id = OLD.project_id AND stage_id = OLD.id;
+        END
+      ''');
+    }
+    if (await _tableExists(database, documentMetadataTable)) {
+      await database.execute('''
+        CREATE TRIGGER IF NOT EXISTS materials_document_delete_clear
+        BEFORE DELETE ON $documentMetadataTable
+        BEGIN
+          UPDATE $materialsTable
+          SET receipt_document_id = NULL
+          WHERE project_id = OLD.project_id
+            AND receipt_document_id = OLD.attachment_id;
+          UPDATE $materialDeliveriesTable
+          SET document_id = NULL
+          WHERE project_id = OLD.project_id AND document_id = OLD.attachment_id;
+          UPDATE $materialReturnsTable
+          SET receipt_document_id = NULL
+          WHERE project_id = OLD.project_id
+            AND receipt_document_id = OLD.attachment_id;
+        END
+      ''');
+    }
+  }
+
+  static Future<bool> _tableExists(Database database, String table) async {
+    final rows = await database.query(
+      'sqlite_master',
+      columns: const <String>['name'],
+      where: 'type = ? AND name = ?',
+      whereArgs: <Object?>['table', table],
+      limit: 1,
+    );
+    return rows.isNotEmpty;
   }
 
   static bool _isSafePathSegment(String value) {
@@ -2471,7 +2841,18 @@ final class AppDatabase {
         AND name NOT LIKE 'sqlite_%'
       ORDER BY type ASC, name ASC
     ''');
-    return sha256.convert(utf8.encode(jsonEncode(rows))).toString();
+    final normalizedRows = rows
+        .map(
+          (row) => <String, Object?>{
+            ...row,
+            'sql': switch (row['sql']) {
+              final String sql => sql.replaceAll(RegExp(r'\s+'), ' ').trim(),
+              final value => value,
+            },
+          },
+        )
+        .toList(growable: false);
+    return sha256.convert(utf8.encode(jsonEncode(normalizedRows))).toString();
   }
 
   static Future<void> _configureConnection(Database database) async {

@@ -105,39 +105,45 @@ final class JournalController extends AsyncNotifier<JournalState> {
       return;
     }
     state = const AsyncLoading<JournalState>();
-    state = await AsyncValue.guard(
+    final refreshed = await AsyncValue.guard(
       () => _load(
         project: current!.project!,
         type: current.typeFilter,
         searchTerm: current.searchTerm,
       ),
     );
+    if (!ref.mounted) return;
+    state = refreshed;
   }
 
   Future<void> setTypeFilter(JournalEntryType? type) async {
     final current = state.requireValue;
     if (current.project == null) return;
     state = const AsyncLoading<JournalState>();
-    state = await AsyncValue.guard(
+    final filtered = await AsyncValue.guard(
       () => _load(
         project: current.project!,
         type: type,
         searchTerm: current.searchTerm,
       ),
     );
+    if (!ref.mounted) return;
+    state = filtered;
   }
 
   Future<void> setSearchTerm(String searchTerm) async {
     final current = state.requireValue;
     if (current.project == null) return;
     state = const AsyncLoading<JournalState>();
-    state = await AsyncValue.guard(
+    final searched = await AsyncValue.guard(
       () => _load(
         project: current.project!,
         type: current.typeFilter,
         searchTerm: searchTerm,
       ),
     );
+    if (!ref.mounted) return;
+    state = searched;
   }
 
   Future<void> loadNext() async {
@@ -148,6 +154,7 @@ final class JournalController extends AsyncNotifier<JournalState> {
     state = AsyncData<JournalState>(current.copyWith(isLoadingMore: true));
     try {
       final repository = await ref.read(journalRepositoryProvider.future);
+      if (!ref.mounted) return;
       final page = await repository.list(
         JournalEntryQuery(
           projectId: project.id,
@@ -158,6 +165,7 @@ final class JournalController extends AsyncNotifier<JournalState> {
         ),
         request,
       );
+      if (!ref.mounted) return;
       state = AsyncData<JournalState>(
         current.copyWith(
           entries: <JournalEntry>[...current.entries, ...page.items],
@@ -167,6 +175,7 @@ final class JournalController extends AsyncNotifier<JournalState> {
         ),
       );
     } on Object catch (error, stackTrace) {
+      if (!ref.mounted) return;
       state = AsyncError<JournalState>(error, stackTrace);
     }
   }
@@ -311,18 +320,21 @@ final class JournalController extends AsyncNotifier<JournalState> {
       state = AsyncData<JournalState>(current.copyWith(isMutating: true));
       try {
         result = await action();
+        if (!ref.mounted) return;
         final project = current.project;
-        state = AsyncData<JournalState>(
-          project == null
-              ? JournalState.noProject()
-              : await _load(
-                  project: project,
-                  type: current.typeFilter,
-                  searchTerm: current.searchTerm,
-                ),
-        );
+        final refreshed = project == null
+            ? JournalState.noProject()
+            : await _load(
+                project: project,
+                type: current.typeFilter,
+                searchTerm: current.searchTerm,
+              );
+        if (!ref.mounted) return;
+        state = AsyncData<JournalState>(refreshed);
       } on Object catch (error, stackTrace) {
-        state = AsyncData<JournalState>(current);
+        if (ref.mounted) {
+          state = AsyncData<JournalState>(current);
+        }
         Error.throwWithStackTrace(error, stackTrace);
       }
     });

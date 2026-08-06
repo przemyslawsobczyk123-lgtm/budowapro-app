@@ -18,6 +18,8 @@ class AppShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final localizations = AppLocalizations.of(context);
+    final textScale = MediaQuery.textScalerOf(context).scale(1);
+    final navigationHeight = 80.0 + ((textScale - 1).clamp(0.0, 1.0) * 16.0);
     final selectedProject = ref
         .watch(projectsControllerProvider)
         .value
@@ -58,6 +60,7 @@ class AppShell extends ConsumerWidget {
         ],
       ),
       bottomNavigationBar: NavigationBar(
+        height: navigationHeight,
         selectedIndex: navigationShell.currentIndex,
         onDestinationSelected: (index) {
           if (index == AppSection.start.index) {

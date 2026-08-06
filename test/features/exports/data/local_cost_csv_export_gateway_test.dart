@@ -23,6 +23,7 @@ void main() {
   late SqliteCostRepository costs;
   late File sharedFile;
   late List<int> sharedBytes;
+  late String sharedTitle;
   var id = 0;
 
   setUp(() async {
@@ -84,9 +85,10 @@ void main() {
       final gateway = LocalCostCsvExportGateway(
         repository: costs,
         directoryProvider: () async => temporaryDirectory,
-        shareFile: (file) async {
+        shareFile: (file, title) async {
           sharedFile = file;
           sharedBytes = await file.readAsBytes();
+          sharedTitle = title;
         },
         utcNow: () => DateTime.utc(2026, 7, 20, 8, 30),
       );
@@ -111,6 +113,7 @@ void main() {
       expect(csv, startsWith('Nazwa;Brutto po korektach;Notatka\r\n'));
       expect(csv, contains("'=2+2;123,00;\"A;\"\"B\"\"\nC\"\r\n"));
       expect(sharedFile.path, endsWith('.csv'));
+      expect(sharedTitle, 'BudowaPRO - eksport kosztów');
       expect(await sharedFile.exists(), isFalse);
     },
   );
@@ -132,9 +135,10 @@ void main() {
       final gateway = LocalCostCsvExportGateway(
         repository: costs,
         directoryProvider: () async => temporaryDirectory,
-        shareFile: (file) async {
+        shareFile: (file, title) async {
           sharedFile = file;
           sharedBytes = await file.readAsBytes();
+          sharedTitle = title;
         },
         utcNow: () => DateTime.utc(2026, 7, 20, 8, 30),
       );
@@ -226,6 +230,7 @@ CostCsvLabels _labels() {
       CostSource.imported: 'Import',
       CostSource.offerConversion: 'Z oferty',
     },
+    shareTitle: 'BudowaPRO - eksport kosztów',
     emptyValue: '',
   );
 }

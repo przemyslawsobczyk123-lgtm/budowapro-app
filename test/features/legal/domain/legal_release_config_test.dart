@@ -2,21 +2,40 @@ import 'package:budowapro/features/legal/domain/legal_release_config.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('ships complete BudowaPRO production legal defaults', () {
+    const config = LegalReleaseConfig.fromEnvironment();
+
+    expect(config.hasCompleteLegalMetadata, isTrue);
+    expect(config.publisherName, LegalReleaseConfig.productionPublisherName);
+    expect(config.contactEmail, 'kontakt@budowaproapp.pl');
+    expect(
+      config.publicPrivacyPolicyUri,
+      Uri.parse('https://budowaproapp.pl/privacy/'),
+    );
+    expect(
+      config.publicSupportUri,
+      Uri.parse('https://budowaproapp.pl/support/'),
+    );
+  });
+
   test('accepts a complete Google Play legal configuration', () {
     const config = LegalReleaseConfig(
-      publisherName: 'BudowaPRO Sp. z o.o.',
-      contactEmail: 'privacy@budowapro.pl',
-      privacyPolicyUrl: 'https://budowapro.pl/privacy',
-      supportUrl: 'https://budowapro.pl/support',
+      publisherName: 'Przemysław Sobczyk',
+      contactEmail: 'kontakt@budowaproapp.pl',
+      privacyPolicyUrl: 'https://budowaproapp.pl/privacy/',
+      supportUrl: 'https://budowaproapp.pl/support/',
     );
 
     expect(config.hasCompleteLegalMetadata, isTrue);
     expect(config.missingRequirements, isEmpty);
     expect(
       config.publicPrivacyPolicyUri,
-      Uri.parse('https://budowapro.pl/privacy'),
+      Uri.parse('https://budowaproapp.pl/privacy/'),
     );
-    expect(config.publicSupportUri, Uri.parse('https://budowapro.pl/support'));
+    expect(
+      config.publicSupportUri,
+      Uri.parse('https://budowaproapp.pl/support/'),
+    );
   });
 
   test('reports every missing release requirement', () {

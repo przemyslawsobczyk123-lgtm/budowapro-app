@@ -139,7 +139,11 @@ final class DocumentsController extends AsyncNotifier<DocumentsState> {
       ref.invalidateSelf();
       return;
     }
-    state = await AsyncValue.guard(() => _load(project, current!.filters));
+    final refreshed = await AsyncValue.guard(
+      () => _load(project, current!.filters),
+    );
+    if (!ref.mounted) return;
+    state = refreshed;
   }
 
   Future<void> applyFilters(DocumentLibraryFilters filters) async {
@@ -147,7 +151,9 @@ final class DocumentsController extends AsyncNotifier<DocumentsState> {
     final project = current.project;
     if (project == null) return;
     state = const AsyncLoading<DocumentsState>();
-    state = await AsyncValue.guard(() => _load(project, filters));
+    final filtered = await AsyncValue.guard(() => _load(project, filters));
+    if (!ref.mounted) return;
+    state = filtered;
   }
 
   Future<void> loadNext() async {
@@ -158,15 +164,18 @@ final class DocumentsController extends AsyncNotifier<DocumentsState> {
     state = AsyncData<DocumentsState>(current.copyWith(isLoadingMore: true));
     try {
       final repository = await ref.read(documentRepositoryProvider.future);
+      if (!ref.mounted) return;
       final page = await repository.list(
         current.filters.query(project.id),
         request,
       );
+      if (!ref.mounted) return;
       final stager = await ref.read(localAttachmentStagerProvider.future);
       final newPreviews = await stager.previewFiles(
         projectId: project.id,
         attachmentIds: page.items.map((document) => document.id),
       );
+      if (!ref.mounted) return;
       state = AsyncData<DocumentsState>(
         current.copyWith(
           documents: <ProjectDocument>[...current.documents, ...page.items],
@@ -178,6 +187,7 @@ final class DocumentsController extends AsyncNotifier<DocumentsState> {
         ),
       );
     } on Object catch (error, stackTrace) {
+      if (!ref.mounted) return;
       state = AsyncError<DocumentsState>(error, stackTrace);
     }
   }
@@ -194,7 +204,7 @@ final class DocumentsController extends AsyncNotifier<DocumentsState> {
         localAttachmentStagerProvider.future,
       )).stage(projectId: project.id, pickedFile: selected);
     } finally {
-      if (state.hasValue) {
+      if (ref.mounted && state.hasValue) {
         state = AsyncData<DocumentsState>(
           state.requireValue.copyWith(isImporting: false),
         );

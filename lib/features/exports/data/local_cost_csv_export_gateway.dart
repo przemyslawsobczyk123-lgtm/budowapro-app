@@ -13,7 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 typedef CsvDirectoryProvider = Future<Directory> Function();
-typedef ShareCsvFile = Future<void> Function(File file);
+typedef ShareCsvFile = Future<void> Function(File file, String title);
 
 final class LocalCostCsvExportGateway implements CostCsvExportGateway {
   factory LocalCostCsvExportGateway.forDevice({
@@ -98,7 +98,7 @@ final class LocalCostCsvExportGateway implements CostCsvExportGateway {
       await sink.flush();
       await sink.close();
       completed = true;
-      await _shareFile(file);
+      await _shareFile(file, request.labels.shareTitle);
       await _deleteIfPresent(file);
       return CostCsvExportResult(recordCount: recordCount);
     } on Object catch (error, stackTrace) {
@@ -157,12 +157,12 @@ final class LocalCostCsvExportGateway implements CostCsvExportGateway {
   }
 }
 
-Future<void> _shareCsvFile(File file) async {
+Future<void> _shareCsvFile(File file, String title) async {
   try {
     await SharePlus.instance.share(
       ShareParams(
         files: <XFile>[XFile(file.path, mimeType: 'text/csv')],
-        title: 'BudowaPRO - eksport kosztów',
+        title: title,
       ),
     );
   } finally {

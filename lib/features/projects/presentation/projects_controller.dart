@@ -30,8 +30,11 @@ final class ProjectsController extends AsyncNotifier<ProjectsState> {
 
   Future<void> refresh() async {
     final repository = await ref.read(projectRepositoryProvider.future);
+    if (!ref.mounted) return;
     state = const AsyncLoading<ProjectsState>();
-    state = await AsyncValue.guard(() => _load(repository));
+    final refreshed = await AsyncValue.guard(() => _load(repository));
+    if (!ref.mounted) return;
+    state = refreshed;
   }
 
   Future<void> create(ProjectDraft draft) {
@@ -87,13 +90,20 @@ final class ProjectsController extends AsyncNotifier<ProjectsState> {
     Future<Object?> Function(ProjectRepository repository) action,
   ) {
     final mutation = _mutationQueue.then<void>((_) async {
+      if (!ref.mounted) return;
       final previousState = state;
       try {
         final repository = await ref.read(projectRepositoryProvider.future);
+        if (!ref.mounted) return;
         await action(repository);
-        state = AsyncData<ProjectsState>(await _load(repository));
+        if (!ref.mounted) return;
+        final refreshed = await _load(repository);
+        if (!ref.mounted) return;
+        state = AsyncData<ProjectsState>(refreshed);
       } on Object catch (error, stackTrace) {
-        state = previousState;
+        if (ref.mounted) {
+          state = previousState;
+        }
         Error.throwWithStackTrace(error, stackTrace);
       }
     });

@@ -95,6 +95,7 @@ class TechnicalPhotoDetailsScreen extends ConsumerWidget {
                       : Image.file(
                           value.originalFile!,
                           fit: BoxFit.contain,
+                          cacheWidth: 1440,
                           errorBuilder: (context, error, stackTrace) =>
                               _MissingFile(
                                 label: l10n.technicalPhotosMissingPreview,

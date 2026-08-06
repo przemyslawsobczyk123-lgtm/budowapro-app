@@ -10,27 +10,35 @@ abstract interface class CaptureAttachmentPicker {
   Future<PickedLocalAttachment?> pick(CaptureDraftType type);
 }
 
+typedef PickCaptureAttachment = Future<FilePickerResult?> Function();
+
 final class FilePickerCaptureAttachmentPicker
     implements CaptureAttachmentPicker {
+  FilePickerCaptureAttachmentPicker({
+    PickCaptureAttachment? pickPhoto,
+    PickCaptureAttachment? pickVoice,
+    PickCaptureAttachment? pickDocument,
+  }) : _pickPhoto = pickPhoto ?? _pickPhotoFile,
+       _pickVoice = pickVoice ?? _pickVoiceFile,
+       _pickDocument = pickDocument ?? _pickDocumentFile;
+
+  static const List<String> photoExtensions = <String>[
+    'jpg',
+    'jpeg',
+    'png',
+    'webp',
+  ];
+
+  final PickCaptureAttachment _pickPhoto;
+  final PickCaptureAttachment _pickVoice;
+  final PickCaptureAttachment _pickDocument;
+
   @override
   Future<PickedLocalAttachment?> pick(CaptureDraftType type) async {
     final result = await switch (type) {
-      CaptureDraftType.photo => FilePicker.pickFiles(
-        allowMultiple: false,
-        withData: false,
-        type: FileType.image,
-      ),
-      CaptureDraftType.voice => FilePicker.pickFiles(
-        allowMultiple: false,
-        withData: false,
-        type: FileType.audio,
-      ),
-      CaptureDraftType.document => FilePicker.pickFiles(
-        allowMultiple: false,
-        withData: false,
-        type: FileType.custom,
-        allowedExtensions: _documentExtensions,
-      ),
+      CaptureDraftType.photo => _pickPhoto(),
+      CaptureDraftType.voice => _pickVoice(),
+      CaptureDraftType.document => _pickDocument(),
       _ => throw ArgumentError.value(type, 'type'),
     };
     if (result == null) return null;
@@ -39,11 +47,45 @@ final class FilePickerCaptureAttachmentPicker
     if (sourcePath == null) {
       throw const FileSystemException('Selected file has no local path');
     }
+    final extension = p
+        .extension(selected.name)
+        .toLowerCase()
+        .replaceFirst('.', '');
+    if (type == CaptureDraftType.photo &&
+        !photoExtensions.contains(extension)) {
+      throw const FileSystemException('Selected photo format is unsupported');
+    }
     return PickedLocalAttachment(
       sourceUri: Uri.file(sourcePath),
       displayName: selected.name,
       reportedByteSize: selected.size,
       mediaType: _mediaTypeFor(selected.name),
+    );
+  }
+
+  static Future<FilePickerResult?> _pickPhotoFile() {
+    return FilePicker.pickFiles(
+      allowMultiple: false,
+      withData: false,
+      type: FileType.custom,
+      allowedExtensions: photoExtensions,
+    );
+  }
+
+  static Future<FilePickerResult?> _pickVoiceFile() {
+    return FilePicker.pickFiles(
+      allowMultiple: false,
+      withData: false,
+      type: FileType.audio,
+    );
+  }
+
+  static Future<FilePickerResult?> _pickDocumentFile() {
+    return FilePicker.pickFiles(
+      allowMultiple: false,
+      withData: false,
+      type: FileType.custom,
+      allowedExtensions: _documentExtensions,
     );
   }
 }

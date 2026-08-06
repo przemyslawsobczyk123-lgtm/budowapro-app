@@ -32,8 +32,6 @@
 	<string>BudowaPRO pozwala wybrać wskazany kontakt jako wykonawcę lub osobę na budowie.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>BudowaPRO pozwala dołączyć zdjęcia i dokumenty do etapów budowy.</string>
-	<key>NSUserNotificationsUsageDescription</key>
-	<string>BudowaPRO wysyła lokalne przypomnienia o terminach, dostawach i płatnościach.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>UIApplicationSceneManifest</key>

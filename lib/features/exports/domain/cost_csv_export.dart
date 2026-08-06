@@ -36,6 +36,7 @@ final class CostCsvLabels {
     required Map<CostPaymentMethod, String> paymentMethods,
     required Map<CostSource, String> sources,
     Map<String, String> stageLabels = const <String, String>{},
+    required this.shareTitle,
     required this.emptyValue,
   }) : headers = UnmodifiableMapView<CostCsvColumn, String>(
          Map<CostCsvColumn, String>.of(headers),
@@ -81,6 +82,7 @@ final class CostCsvLabels {
   final UnmodifiableMapView<CostPaymentMethod, String> paymentMethods;
   final UnmodifiableMapView<CostSource, String> sources;
   final UnmodifiableMapView<String, String> stageLabels;
+  final String shareTitle;
   final String emptyValue;
 }
 

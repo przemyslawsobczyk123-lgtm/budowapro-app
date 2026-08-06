@@ -166,13 +166,18 @@ final class LocalReceiptScanGateway implements ReceiptScanGateway {
 
   @override
   Future<ReceiptScanSession> recognize(StagedReceiptSource source) async {
-    PreparedReceiptImage? prepared;
+    PreparedReceiptImages? prepared;
     try {
       prepared = await _imagePreparer.prepare(
         originalUri: source.originalUri,
         mediaType: source.mediaType,
       );
-      final recognizedText = await _textRecognizer.recognize(prepared.imageUri);
+      final lines = <RecognizedReceiptLine>[];
+      for (final imageUri in prepared.imageUris) {
+        final pageText = await _textRecognizer.recognize(imageUri);
+        lines.addAll(pageText.lineDetails);
+      }
+      final recognizedText = RecognizedReceiptText.fromLines(lines);
       if (recognizedText.isEmpty) {
         throw const ReceiptScanException(ReceiptScanFailureKind.emptyText);
       }

@@ -1,6 +1,6 @@
-# BudowaPRO 1.0 - raport kandydata do wydania
+# BudowaPRO 1.0.0 - raport kandydata do wydania
 
-Stan: 2026-08-01.
+Stan dokumentacji prawnej: 2026-08-06.
 
 ## Werdykt
 
@@ -16,21 +16,29 @@ sekretów albo zgody właściciela.
 | ------------------------------------ | ---------------------------------------------------------------------- |
 | Wersja                               | `1.0.0+1`                                                              |
 | `flutter analyze --no-pub`           | bez uwag                                                               |
-| `flutter test --concurrency=1`       | 560/560 zaliczonych                                                    |
+| `flutter test`                       | 587/587 zaliczonych lokalnie 2026-08-06                               |
 | `flutter build apk --debug --no-pub` | zaliczony                                                              |
 | Android integration smoke            | zaliczony na emulatorze API 34                                         |
 | GitHub mobile CI                     | zaliczone dla commita `545377b`: testy, APK, iOS 26, Android API 28/36 |
 | Scenariusz smoke                     | świeża baza → projekt → koszt materiału → Budżet                       |
 | Render stron prawnych                | Chromium desktop i mobilne 390 px                                      |
-| Publiczne strony HTTPS               | opublikowane przez GitHub Pages, wszystkie adresy zwracają HTTP 200    |
+| Publiczne strony HTTPS               | DNS gotowy; oczekiwanie na prawidłowy certyfikat GitHub Pages          |
 | Google Play icon                     | 512 x 512                                                              |
 | Google Play feature graphic          | 1024 x 500                                                             |
+| Google Play screenshots              | 4 x Android 1080 x 2337, fikcyjne dane, API 34                         |
 | Walidacyjny AAB                      | 89 798 971 B, podpis/manifest/16 KB zaliczone                          |
+| Świeży build AAB release             | 91 285 689 B, obfuskacja i podpis testowy zaliczone                    |
 
 Walidacyjny AAB ma SHA-256
 `8ec731de02fffc402171b938282b44416d38b56586c8593f14738015c3ec7ba4`.
 Powstał z jednorazowym kluczem, testowymi URL-ami i `sourceWasDirty=true`, więc
 jest dowodem pipeline'u, a nie plikiem do przesłania do Google Play.
+
+Po końcowych poprawkach wykonano również świeży build release z obfuskacją i
+jednorazowym kluczem testowym. AAB ma SHA-256
+`2685b4a37bd19aec6eb69cad56aee0e795446446afe823f45ea196a4cfe3b345`;
+`jarsigner` potwierdził integralność podpisu. Klucz został usunięty, a ten AAB
+również nie jest przeznaczony do wysłania do Google Play.
 
 Test urządzeniowy wykrył i zamknął trzy błędy, których same widget testy nie
 ujawniły:
@@ -53,23 +61,26 @@ ujawniły:
 ## Materiały gotowe
 
 - publiczna polityka:
-  `https://przemyslawsobczyk123-lgtm.github.io/budowapro-app/privacy/`;
+  `https://budowaproapp.pl/privacy/`;
 - publiczne warunki:
-  `https://przemyslawsobczyk123-lgtm.github.io/budowapro-app/terms/`;
+  `https://budowaproapp.pl/terms/`;
 - publiczne wsparcie:
-  `https://przemyslawsobczyk123-lgtm.github.io/budowapro-app/support/`;
+  `https://budowaproapp.pl/support/`;
+- instrukcja usuwania danych:
+  `https://budowaproapp.pl/data-deletion/`;
 - listing Google Play: `store/google-play/listing-pl.md`;
 - listing App Store: `store/app-store/listing-pl.md`;
 - Data safety i App Privacy: `store/privacy/store-declarations.md`;
 - checklista i kadry zrzutów: `store/RELEASE_ASSETS_CHECKLIST.md`;
+- zrzuty Android: `store/google-play/screenshots/`;
 - grafika promocyjna: `store/google-play/feature-graphic-1024x500.png`.
 
 ## Pozostałe blokady właściciela
 
 Jedynym źródłem prawdy jest `OWNER_RELEASE_ACTIONS.md`. Najważniejsze blokady
 to potwierdzenie danych prawnych wydawcy, konfiguracja kluczy podpisu, testy na
-fizycznym Androidzie i iPhonie, finalne zrzuty z builda release, wypełnienie
-formularzy sklepów oraz uruchomienie bety i rollout.
+fizycznym Androidzie i iPhonie, wypełnienie formularzy sklepów oraz uruchomienie
+bety i rollout.
 
 ## Kontrolowany dług po R1
 

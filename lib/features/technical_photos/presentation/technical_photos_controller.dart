@@ -176,14 +176,20 @@ final class TechnicalPhotosController
       return;
     }
     state = const AsyncLoading<TechnicalPhotosState>();
-    state = await AsyncValue.guard(() => _load(project, current!.filters));
+    final refreshed = await AsyncValue.guard(
+      () => _load(project, current!.filters),
+    );
+    if (!ref.mounted) return;
+    state = refreshed;
   }
 
   Future<void> applyFilters(TechnicalPhotoFilters filters) async {
     final project = state.requireValue.project;
     if (project == null) return;
     state = const AsyncLoading<TechnicalPhotosState>();
-    state = await AsyncValue.guard(() => _load(project, filters));
+    final filtered = await AsyncValue.guard(() => _load(project, filters));
+    if (!ref.mounted) return;
+    state = filtered;
   }
 
   Future<void> loadNext() async {
@@ -198,11 +204,14 @@ final class TechnicalPhotosController
       final repository = await ref.read(
         technicalPhotoRepositoryProvider.future,
       );
+      if (!ref.mounted) return;
       final page = await repository.listPhotos(
         current.filters.query(project.id),
         request,
       );
+      if (!ref.mounted) return;
       final previews = await _previews(project.id, page.items);
+      if (!ref.mounted) return;
       state = AsyncData<TechnicalPhotosState>(
         current.copyWith(
           photos: <TechnicalPhoto>[...current.photos, ...page.items],
@@ -214,6 +223,7 @@ final class TechnicalPhotosController
         ),
       );
     } on Object catch (error, stackTrace) {
+      if (!ref.mounted) return;
       state = AsyncError<TechnicalPhotosState>(error, stackTrace);
     }
   }
@@ -225,6 +235,7 @@ final class TechnicalPhotosController
     final album = await (await ref.read(
       technicalPhotoRepositoryProvider.future,
     )).createAlbum(input);
+    if (!ref.mounted) return album;
     await refresh();
     return album;
   }
@@ -254,7 +265,7 @@ final class TechnicalPhotosController
       }
       return attachment;
     } finally {
-      if (state.hasValue) {
+      if (ref.mounted && state.hasValue) {
         state = AsyncData<TechnicalPhotosState>(
           state.requireValue.copyWith(isImporting: false),
         );

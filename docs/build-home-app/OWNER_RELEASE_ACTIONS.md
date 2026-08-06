@@ -5,13 +5,20 @@ tozsamosci, zgody, platnego konta albo sekretu nalezacego do wydawcy.
 
 ## Google Play
 
+- potwierdzic właściwy typ konta: organizacja tylko dla prawdziwej firmy z
+  numerem D-U-N-S i dokumentami; w przeciwnym razie konto osobiste;
 - zalozyc lub wskazac konto Play Console i potwierdzic dane prawne wydawcy;
 - zaakceptowac umowy i uzupelnic wymagane informacje konta;
 - wlaczyc Play App Signing i bezpiecznie zachowac docelowy klucz upload;
-- podac prawdziwa nazwe wydawcy, e-mail prywatnosci, URL polityki i wsparcia;
+- potwierdzic w Play Console nazwe wydawcy `Przemyslaw Sobczyk`, e-mail
+  `kontakt@budowaproapp.pl` oraz adresy `budowaproapp.pl`;
 - zatwierdzic Data safety, grupe docelowa, klasyfikacje tresci i deklaracje
   reklam dla konkretnego AAB;
-- zapewnic 12 testerow przez 14 dni, jezeli wymaga tego typ i data konta;
+- zarejestrowac pakiet `pl.budowapro` po weryfikacji tozsamosci;
+- zdecydowac przed pierwsza publikacja, czy pobranie pozostaje bezplatne;
+- zapewnic 12 testerow przez 14 kolejnych dni, jezeli jest to nowe konto
+  osobiste objete tym wymaganiem;
+- sprawdzic odbior i odpowiedz ze skrzynki `kontakt@budowaproapp.pl`;
 - zatwierdzic rozpoczecie publicznego staged rollout.
 
 ## Apple
@@ -27,11 +34,12 @@ tozsamosci, zgody, platnego konta albo sekretu nalezacego do wydawcy.
 ## Prawo i marka
 
 - wskazac prawna nazwe wydawcy i monitorowany adres kontaktowy;
-- potwierdzic, ze `Przemyslaw Sobczyk` i
-  `przemyslawsobczyk123@gmail.com` sa wlasciwymi danymi do publicznej polityki;
+- potwierdzic, ze `Przemyslaw Sobczyk` jest wlasciwa nazwa prawna do publicznej
+  polityki;
 - sprawdzic tresc opublikowanych adresow
-  `https://przemyslawsobczyk123-lgtm.github.io/budowapro-app/privacy/` i
-  `https://przemyslawsobczyk123-lgtm.github.io/budowapro-app/support/`;
+  `https://budowaproapp.pl/privacy/`, `https://budowaproapp.pl/terms/`,
+  `https://budowaproapp.pl/support/` i
+  `https://budowaproapp.pl/data-deletion/`;
 - zlecic finalny przeglad prawny polityki, warunkow i porad budowlanych;
 - potwierdzic prawa do nazwy BudowaPRO, ikon, zrzutow i pozostalych materialow;
 - zatwierdzic finalny zakres R1, opis sklepu, kraje dystrybucji i date wydania.

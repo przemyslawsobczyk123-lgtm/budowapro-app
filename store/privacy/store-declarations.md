@@ -1,4 +1,4 @@
-# BudowaPRO 1.1 - robocza deklaracja prywatności sklepów
+# BudowaPRO 1.0.0 - robocza deklaracja prywatności sklepów
 
 Stan: 2026-08-06. Deklarację trzeba porównać z raportem finalnego podpisanego
 AAB/IPA. Zmiana SDK, uprawnień albo backendu unieważnia ten arkusz.

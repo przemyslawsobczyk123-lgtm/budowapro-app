@@ -1,4 +1,9 @@
 final class LegalReleaseConfig {
+  static const productionPublisherName = 'Przemysław Sobczyk';
+  static const productionContactEmail = 'kontakt@budowaproapp.pl';
+  static const productionPrivacyPolicyUrl = 'https://budowaproapp.pl/privacy/';
+  static const productionSupportUrl = 'https://budowaproapp.pl/support/';
+
   const LegalReleaseConfig({
     required this.publisherName,
     required this.contactEmail,
@@ -7,14 +12,22 @@ final class LegalReleaseConfig {
   });
 
   const LegalReleaseConfig.fromEnvironment()
-    : publisherName = const String.fromEnvironment('BUDOWAPRO_PUBLISHER_NAME'),
+    : publisherName = const String.fromEnvironment(
+        'BUDOWAPRO_PUBLISHER_NAME',
+        defaultValue: productionPublisherName,
+      ),
       contactEmail = const String.fromEnvironment(
         'BUDOWAPRO_PRIVACY_CONTACT_EMAIL',
+        defaultValue: productionContactEmail,
       ),
       privacyPolicyUrl = const String.fromEnvironment(
         'BUDOWAPRO_PRIVACY_POLICY_URL',
+        defaultValue: productionPrivacyPolicyUrl,
       ),
-      supportUrl = const String.fromEnvironment('BUDOWAPRO_SUPPORT_URL');
+      supportUrl = const String.fromEnvironment(
+        'BUDOWAPRO_SUPPORT_URL',
+        defaultValue: productionSupportUrl,
+      );
 
   final String publisherName;
   final String contactEmail;

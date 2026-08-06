@@ -94,6 +94,16 @@ final class MaterialNotFoundException implements Exception {
   const MaterialNotFoundException();
 }
 
+final class MaterialInUseException implements Exception {
+  const MaterialInUseException({
+    required this.deliveryCount,
+    required this.returnCount,
+  });
+
+  final int deliveryCount;
+  final int returnCount;
+}
+
 final class MaterialDeliveryNotFoundException implements Exception {
   const MaterialDeliveryNotFoundException();
 }

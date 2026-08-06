@@ -32,6 +32,8 @@ final class MlKitReceiptDocumentScanner implements ReceiptSourcePicker {
 
   final ScanReceiptDocument _scanDocument;
 
+  static const int maximumPages = 20;
+
   @override
   Future<PickedReceiptSource?> pick() async {
     final Uri? sourceUri;
@@ -60,12 +62,18 @@ final class MlKitReceiptDocumentScanner implements ReceiptSourcePicker {
     if (!await file.exists() || await file.length() == 0) {
       throw const ReceiptScanException(ReceiptScanFailureKind.unsupportedInput);
     }
+    final extension = p.extension(file.path).toLowerCase();
+    final isPdf = extension == '.pdf';
+    if (!isPdf &&
+        !const <String>{'.jpg', '.jpeg', '.png', '.webp'}.contains(extension)) {
+      throw const ReceiptScanException(ReceiptScanFailureKind.unsupportedInput);
+    }
     return PickedReceiptSource(
       attachment: PickedLocalAttachment(
         sourceUri: sourceUri,
-        displayName: 'paragon-skan.jpg',
+        displayName: isPdf ? 'dokument-skan.pdf' : 'dokument-skan$extension',
         reportedByteSize: await file.length(),
-        mediaType: 'image/jpeg',
+        mediaType: _receiptMediaType(extension),
         source: LocalAttachmentSource.scanner,
       ),
       captureMethod: ReceiptCaptureMethod.scanner,
@@ -83,21 +91,21 @@ final class MlKitReceiptDocumentScanner implements ReceiptSourcePicker {
     }
     final scanner = DocumentScanner(
       options: DocumentScannerOptions(
-        documentFormats: const <DocumentFormat>{DocumentFormat.jpeg},
-        pageLimit: 1,
+        documentFormats: const <DocumentFormat>{DocumentFormat.pdf},
+        pageLimit: maximumPages,
         mode: ScannerMode.full,
         isGalleryImport: true,
       ),
     );
     try {
       final result = await scanner.scanDocument();
-      final images = result.images;
-      if (images == null || images.isEmpty) {
+      final pdf = result.pdf;
+      if (pdf == null || pdf.pageCount <= 0 || pdf.pageCount > maximumPages) {
         throw const ReceiptScanException(
           ReceiptScanFailureKind.unsupportedInput,
         );
       }
-      final path = images.first;
+      final path = pdf.uri;
       return path.startsWith('file:') ? Uri.parse(path) : Uri.file(path);
     } finally {
       try {

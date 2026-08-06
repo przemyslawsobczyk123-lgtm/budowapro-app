@@ -112,9 +112,11 @@ final class SchedulePlanController extends AsyncNotifier<SchedulePlanState> {
       return;
     }
     state = const AsyncLoading<SchedulePlanState>();
-    state = await AsyncValue.guard(
+    final refreshed = await AsyncValue.guard(
       () => _load(current!.project!, current.window, current.timeZoneId),
     );
+    if (!ref.mounted) return;
+    state = refreshed;
   }
 
   Future<void> moveWindow(int calendarDays) async {
@@ -137,9 +139,11 @@ final class SchedulePlanController extends AsyncNotifier<SchedulePlanState> {
       nextWallDay,
     );
     state = const AsyncLoading<SchedulePlanState>();
-    state = await AsyncValue.guard(
+    final moved = await AsyncValue.guard(
       () => _load(project, window, current.timeZoneId),
     );
+    if (!ref.mounted) return;
+    state = moved;
   }
 
   Future<void> requestNotificationPermission({
@@ -209,21 +213,21 @@ final class SchedulePlanController extends AsyncNotifier<SchedulePlanState> {
     bool reload = true,
   }) {
     final mutation = _mutationQueue.then<void>((_) async {
+      if (!ref.mounted) return;
       final current = state.requireValue;
       state = AsyncData<SchedulePlanState>(current.copyWith(isSaving: true));
       try {
         final changed = await action(current);
-        state = AsyncData<SchedulePlanState>(
-          reload && changed.project != null
-              ? await _load(
-                  changed.project!,
-                  changed.window,
-                  changed.timeZoneId,
-                )
-              : changed.copyWith(isSaving: false),
-        );
+        if (!ref.mounted) return;
+        final refreshed = reload && changed.project != null
+            ? await _load(changed.project!, changed.window, changed.timeZoneId)
+            : changed.copyWith(isSaving: false);
+        if (!ref.mounted) return;
+        state = AsyncData<SchedulePlanState>(refreshed);
       } on Object catch (error, stackTrace) {
-        state = AsyncData<SchedulePlanState>(current);
+        if (ref.mounted) {
+          state = AsyncData<SchedulePlanState>(current);
+        }
         Error.throwWithStackTrace(error, stackTrace);
       }
     });

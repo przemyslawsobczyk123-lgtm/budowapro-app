@@ -45,6 +45,15 @@ BUDOWAPRO_PRIVACY_POLICY_URL
 BUDOWAPRO_SUPPORT_URL
 ```
 
+Aktualne wartosci BudowaPRO:
+
+```text
+BUDOWAPRO_PUBLISHER_NAME=Przemyslaw Sobczyk
+BUDOWAPRO_PRIVACY_CONTACT_EMAIL=kontakt@budowaproapp.pl
+BUDOWAPRO_PRIVACY_POLICY_URL=https://budowaproapp.pl/privacy/
+BUDOWAPRO_SUPPORT_URL=https://budowaproapp.pl/support/
+```
+
 Adres polityki musi:
 
 - uzywac HTTPS;
@@ -213,7 +222,7 @@ odinstalowanie. Reczne kopie i eksporty trzeba usunac osobno.
 - Android 16 KB page sizes:
   https://developer.android.com/guide/practices/page-sizes
 - Google Play User Data:
-  https://support.google.com/googleplay/android-developer/answer/17105854
+  https://support.google.com/googleplay/android-developer/answer/10144311
 - Google Play Data safety:
   https://support.google.com/googleplay/android-developer/answer/10787469
 - Google Play pre-launch report:

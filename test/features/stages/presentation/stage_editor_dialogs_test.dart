@@ -184,6 +184,43 @@ void main() {
     await tester.pumpAndSettle();
     expect(result?.riskIfSkipped, isNull);
   });
+
+  testWidgets('keeps the stage save action above the keyboard', (tester) async {
+    tester.view.physicalSize = const Size(320, 720);
+    tester.view.devicePixelRatio = 1;
+    tester.view.viewInsets = const FakeViewPadding(bottom: 280);
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.view.resetViewInsets);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: AppTheme.light,
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: FilledButton(
+              onPressed: () => showStageEditorSheet(
+                context,
+                project: _project(),
+                stage: _stage(),
+              ),
+              child: const Text('Otwórz'),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Otwórz'));
+    await tester.pumpAndSettle();
+
+    final saveButton = find.byKey(const ValueKey('editorSheetSaveButton'));
+    expect(saveButton, findsOneWidget);
+    expect(tester.getBottomLeft(saveButton).dy, lessThanOrEqualTo(440));
+    expect(tester.takeException(), isNull);
+  });
 }
 
 Project _project() {
@@ -214,6 +251,25 @@ ChecklistItem _designMapItem({String? riskIfSkipped}) {
     riskIfSkipped: riskIfSkipped,
     evidenceIds: const <String>[],
     sortOrder: 0,
+    createdAt: now,
+    updatedAt: now,
+  );
+}
+
+ProjectStage _stage() {
+  final now = DateTime.utc(2026, 7, 26);
+  return ProjectStage(
+    id: 'stage-formalities',
+    projectId: 'project-1',
+    templateKey: ProjectStageKey.formalities,
+    status: StageStatus.inProgress,
+    sortOrder: 0,
+    progress: StageProgress.fromCounts(
+      totalItems: 1,
+      completedItems: 0,
+      skippedItems: 0,
+      blockedItems: 0,
+    ),
     createdAt: now,
     updatedAt: now,
   );

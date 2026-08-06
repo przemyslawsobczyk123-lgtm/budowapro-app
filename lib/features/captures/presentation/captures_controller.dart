@@ -92,7 +92,9 @@ final class CapturesController extends AsyncNotifier<CapturesState> {
       return;
     }
     state = const AsyncLoading<CapturesState>();
-    state = await AsyncValue.guard(() => _load(project));
+    final refreshed = await AsyncValue.guard(() => _load(project));
+    if (!ref.mounted) return;
+    state = refreshed;
   }
 
   Future<void> loadNext({required bool history}) async {
@@ -108,6 +110,7 @@ final class CapturesController extends AsyncNotifier<CapturesState> {
     state = AsyncData<CapturesState>(current.copyWith(isLoadingMore: true));
     try {
       final repository = await ref.read(captureRepositoryProvider.future);
+      if (!ref.mounted) return;
       final page = await repository.list(
         CaptureDraftQuery(
           projectId: project.id,
@@ -120,6 +123,7 @@ final class CapturesController extends AsyncNotifier<CapturesState> {
         ),
         request,
       );
+      if (!ref.mounted) return;
       state = AsyncData<CapturesState>(
         current.copyWith(
           open: history
@@ -136,6 +140,7 @@ final class CapturesController extends AsyncNotifier<CapturesState> {
         ),
       );
     } on Object catch (error, stackTrace) {
+      if (!ref.mounted) return;
       state = AsyncError<CapturesState>(error, stackTrace);
     }
   }
@@ -245,13 +250,18 @@ final class CapturesController extends AsyncNotifier<CapturesState> {
       state = AsyncData<CapturesState>(current.copyWith(isMutating: true));
       try {
         result = await action();
+        if (!ref.mounted) return;
         ref.invalidate(dashboardControllerProvider);
         final project = current.project;
-        state = AsyncData<CapturesState>(
-          project == null ? CapturesState.noProject() : await _load(project),
-        );
+        final refreshed = project == null
+            ? CapturesState.noProject()
+            : await _load(project);
+        if (!ref.mounted) return;
+        state = AsyncData<CapturesState>(refreshed);
       } on Object catch (error, stackTrace) {
-        state = AsyncData<CapturesState>(current);
+        if (ref.mounted) {
+          state = AsyncData<CapturesState>(current);
+        }
         Error.throwWithStackTrace(error, stackTrace);
       }
     });

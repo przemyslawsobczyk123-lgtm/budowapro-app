@@ -218,6 +218,22 @@ void main() {
     },
   );
 
+  test('opens a manual draft with the source after empty OCR', () async {
+    gateway.captureResult = _source;
+    gateway.failure = const ReceiptScanException(
+      ReceiptScanFailureKind.emptyText,
+    );
+    await controller.start(ReceiptCaptureMethod.scanner);
+
+    controller.continueManually();
+
+    expect(controller.state.status, ReceiptScanViewStatus.result);
+    expect(controller.state.source, same(_source));
+    expect(controller.state.session?.candidates.isEmpty, isTrue);
+    expect(controller.state.reviewDraft?.items, isEmpty);
+    expect(gateway.discardCalls, 0);
+  });
+
   test('discard removes the source and resets the screen', () async {
     gateway.captureResult = _source;
     gateway.failure = const ReceiptScanException(

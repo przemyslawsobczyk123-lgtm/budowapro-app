@@ -319,6 +319,8 @@ class _MaterialDetailsScreenState extends ConsumerState<MaterialDetailsScreen> {
       );
       ref.invalidate(materialsControllerProvider);
       if (mounted) Navigator.of(context).pop(true);
+    } on MaterialInUseException {
+      if (mounted) _snack(l10n.materialDeleteInUseError);
     } on Object {
       if (mounted) _snack(l10n.materialDeleteError);
     }
@@ -402,6 +404,7 @@ class _MaterialDetailsScreenState extends ConsumerState<MaterialDetailsScreen> {
   }
 
   Future<void> _deleteDelivery(MaterialRepository repository, String id) async {
+    if (!await _confirmRecordDeletion()) return;
     try {
       await repository.deleteDelivery(
         projectId: widget.projectId,
@@ -417,6 +420,7 @@ class _MaterialDetailsScreenState extends ConsumerState<MaterialDetailsScreen> {
   }
 
   Future<void> _deleteReturn(MaterialRepository repository, String id) async {
+    if (!await _confirmRecordDeletion()) return;
     try {
       await repository.deleteReturn(
         projectId: widget.projectId,
@@ -427,6 +431,28 @@ class _MaterialDetailsScreenState extends ConsumerState<MaterialDetailsScreen> {
     } on Object {
       if (mounted) _snack(AppLocalizations.of(context).materialReturnSaveError);
     }
+  }
+
+  Future<bool> _confirmRecordDeletion() async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.materialRecordDeleteTitle),
+        content: Text(l10n.materialRecordDeleteMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.cancelAction),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.materialDeleteAction),
+          ),
+        ],
+      ),
+    );
+    return confirmed == true;
   }
 
   void _snack(String value) {

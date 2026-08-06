@@ -280,6 +280,78 @@ void main() {
     }
   });
 
+  test('migrates version 18 material links and preserves records', () async {
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final projects = SqliteProjectRepository(
+      database: appDatabase!,
+      fileStore: ProjectFileStore(rootDirectory: temporaryDirectory),
+      idGenerator: () => 'project-v18',
+      utcNow: () => DateTime.utc(2026, 8, 2),
+    );
+    await projects.create(
+      ProjectDraft(
+        name: 'Dom',
+        type: ProjectType.houseBuild,
+        template: ProjectTemplate.houseConstruction,
+      ),
+    );
+    final versionEighteen = await appDatabase!.open();
+    await versionEighteen.insert(AppDatabase.materialsTable, <String, Object?>{
+      'id': 'material-v18',
+      'project_id': 'project-v18',
+      'name': 'Bloczek',
+      'ordered_quantity_microunits': 1000000,
+      'unit': 'szt.',
+      'delivery_reminder_enabled': 0,
+      'created_at_utc_ms': 1,
+      'updated_at_utc_ms': 1,
+    });
+    await versionEighteen.update(
+      AppDatabase.metadataTable,
+      const <String, Object?>{'value': '18'},
+      where: 'key = ?',
+      whereArgs: const <Object?>[AppDatabase.schemaVersionKey],
+    );
+    await versionEighteen.setVersion(18);
+    await appDatabase!.close();
+
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final migrated = await appDatabase!.open();
+
+    expect(await migrated.getVersion(), AppDatabase.schemaVersion);
+    expect(
+      await migrated.query(
+        AppDatabase.materialsTable,
+        where: 'id = ?',
+        whereArgs: const <Object?>['material-v18'],
+      ),
+      hasLength(1),
+    );
+    final foreignKeys = await migrated.rawQuery(
+      'PRAGMA foreign_key_list(${AppDatabase.materialsTable})',
+    );
+    expect(
+      foreignKeys.map((row) => row['table']),
+      containsAll(<String>[
+        AppDatabase.projectsTable,
+        AppDatabase.roomsTable,
+        AppDatabase.contactsTable,
+        AppDatabase.costEntriesTable,
+        AppDatabase.documentMetadataTable,
+      ]),
+    );
+    expect(await migrated.rawQuery('PRAGMA foreign_key_check'), isEmpty);
+
+    final freshOwner = AppDatabase(
+      factory: databaseFactoryFfi,
+      path: p.join(temporaryDirectory.path, 'fresh-v19.db'),
+    );
+    addTearDown(freshOwner.close);
+    final fresh = await freshOwner.open();
+    expect(await _schemaRows(migrated), await _schemaRows(fresh));
+    await freshOwner.close();
+  });
+
   test('migrates version 10 and adds the project capture inbox', () async {
     appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
     await appDatabase!.writeMetadata(
@@ -1035,4 +1107,25 @@ void main() {
 
     expect(await File(databasePath).readAsBytes(), corruptBytes);
   });
+}
+
+Future<List<Map<String, Object?>>> _schemaRows(Database database) async {
+  final rows = await database.rawQuery('''
+    SELECT type, name, tbl_name, sql
+    FROM sqlite_master
+    WHERE type IN ('table', 'index', 'trigger', 'view')
+      AND name NOT LIKE 'sqlite_%'
+    ORDER BY type ASC, name ASC
+  ''');
+  return rows
+      .map(
+        (row) => <String, Object?>{
+          ...row,
+          'sql': switch (row['sql']) {
+            final String sql => sql.replaceAll(RegExp(r'\s+'), ' ').trim(),
+            final value => value,
+          },
+        },
+      )
+      .toList(growable: false);
 }

@@ -1,6 +1,6 @@
 # BudowaPRO - implementation status
 
-Last updated: 2026-08-01
+Last updated: 2026-08-06
 
 ## Current release
 
@@ -605,6 +605,48 @@ Last updated: 2026-08-01
   manifest, 10 native 64-bit libraries and universal APK passed, and bundletool reported `PAGE_ALIGNMENT_16K`.
   It is evidence of the pipeline only and must not be uploaded to Play.
 
+### Independent code review remediation
+
+- Confirmed findings from `CLAUDE_CODE_REVIEW.md` are tracked in
+  `CODE_REVIEW_REMEDIATION_PLAN.md`; claims contradicted by framework behavior
+  or existing safeguards were documented as rejected instead of implemented.
+- Receipt and invoice capture supports up to 20 pages as one PDF on Android and
+  iOS. OCR processes pages in order, scales oversized images before ML Kit and
+  keeps the source attachment available for manual entry when no text is found.
+- Receipt amounts accept normal and non-breaking spaces; negative rebate or
+  reversal rows remain negative for explicit review.
+- Async Riverpod controllers avoid state access after disposal and include a
+  delayed-repository regression test.
+- Deleting all local data uses a durable wipe journal and completes an
+  interrupted reset on the next launch.
+- Schema `v19` hardens material, contact, cost, document, delivery and return
+  relations. Migration and backup restore are covered from historical v8 and
+  v18 schemas, including exact comparison with a fresh v19 schema.
+- Materials with any delivery or return history cannot be cascade-deleted;
+  removing an individual historical record requires explicit confirmation.
+- iOS multi-page scanning, Application Support backup exclusion and privacy
+  configuration have source-level regression tests. An actual iOS build still
+  requires macOS and Xcode.
+- Stage editing remains usable above the keyboard, primary navigation adapts to
+  200% text at 320 dp, image previews use bounded decode sizes and the CSV share
+  title comes from localization resources.
+
+### Custom domain and user support
+
+- The app ships complete legal defaults for `Przemyslaw Sobczyk`,
+  `kontakt@budowaproapp.pl`, `https://budowaproapp.pl/privacy/` and
+  `https://budowaproapp.pl/support/`; controlled release builds can still
+  override and validate these values through Dart defines.
+- The legal center exposes a tested `Skontaktuj sie z nami` action that opens a
+  pre-addressed message in the system mail application.
+- `site/` contains canonical privacy, terms, support and local-data deletion
+  pages, plus `CNAME`, `robots.txt` and `sitemap.xml`. Static source tests reject
+  a stale support email or missing required policy sections.
+- The legal pages were rendered with Playwright at desktop and 390 px mobile
+  viewports without overflow. GitHub Pages DNS is configured for the custom
+  domain; certificate issuance and the final `Enforce HTTPS` switch are still
+  pending and tracked in `CUSTOM_DOMAIN_RELEASE.md`.
+
 ## Verified baseline
 
 ```text
@@ -647,7 +689,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-08-01. The full suite contains 560 passing tests. Debug APK:
+All commands passed on 2026-08-06. The full suite contains 587 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -661,10 +703,12 @@ gap summary in `PRODUCTION_GAP_AUDIT.md`. Version `1.0.0+1` is a technical R1
 release candidate. The frozen P0 scope is complete, an Android integration
 smoke passed on API 34, and CI passed it on API 28 and 36. The same workflow
 also passed 560 tests, debug APK and unsigned iOS 26 compilation. Public legal
-pages are live through GitHub Pages; store copy, privacy worksheets, icon and
-Google Play feature graphic are ready. Store account declarations, signed
-current artifacts, final screenshots and physical-device evidence remain owner
-release gates.
+page sources are ready for GitHub Pages, while `budowaproapp.pl` still requires
+GitHub Pages certificate issuance and the final `Enforce HTTPS` switch described
+in `CUSTOM_DOMAIN_RELEASE.md`. Store copy, privacy worksheets, icon, Google Play
+feature graphic and four Android screenshots are ready. Store account
+declarations, signed current artifacts and physical-device evidence remain
+owner release gates.
 
 ## Next task
 

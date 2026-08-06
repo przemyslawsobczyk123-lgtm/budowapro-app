@@ -72,9 +72,11 @@ final class RoomsController extends AsyncNotifier<RoomsState> {
       return;
     }
     state = const AsyncLoading<RoomsState>();
-    state = await AsyncValue.guard(
+    final refreshed = await AsyncValue.guard(
       () => _load(project: current!.project!, searchText: current.searchText),
     );
+    if (!ref.mounted) return;
+    state = refreshed;
   }
 
   Future<void> search(String value) async {
@@ -83,9 +85,11 @@ final class RoomsController extends AsyncNotifier<RoomsState> {
     if (project == null) return;
     final normalized = value.trim();
     state = const AsyncLoading<RoomsState>();
-    state = await AsyncValue.guard(
+    final searched = await AsyncValue.guard(
       () => _load(project: project, searchText: normalized),
     );
+    if (!ref.mounted) return;
+    state = searched;
   }
 
   Future<void> loadMore() async {
@@ -95,10 +99,12 @@ final class RoomsController extends AsyncNotifier<RoomsState> {
     state = AsyncData<RoomsState>(current.copyWith(isLoadingMore: true));
     try {
       final repository = await ref.read(roomRepositoryProvider.future);
+      if (!ref.mounted) return;
       final page = await repository.listRooms(
         RoomQuery(projectId: project.id, searchText: current.searchText),
         PageRequest(offset: current.rooms.length, limit: _pageSize),
       );
+      if (!ref.mounted) return;
       state = AsyncData<RoomsState>(
         current.copyWith(
           rooms: <RoomOverview>[...current.rooms, ...page.items],
@@ -107,7 +113,9 @@ final class RoomsController extends AsyncNotifier<RoomsState> {
         ),
       );
     } on Object catch (error, stackTrace) {
-      state = AsyncData<RoomsState>(current.copyWith(isLoadingMore: false));
+      if (ref.mounted) {
+        state = AsyncData<RoomsState>(current.copyWith(isLoadingMore: false));
+      }
       Error.throwWithStackTrace(error, stackTrace);
     }
   }

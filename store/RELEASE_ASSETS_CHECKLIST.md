@@ -1,4 +1,4 @@
-# BudowaPRO 1.0 - checklista materiałów sklepowych
+# BudowaPRO 1.0.0 - checklista materiałów sklepowych
 
 ## Gotowe w repozytorium
 
@@ -10,10 +10,15 @@
 - polityka prywatności, warunki i wsparcie jako statyczny HTML;
 - workflow publikacji GitHub Pages;
 - robocza macierz Data safety i App Privacy.
+- cztery pionowe zrzuty Android 1080 x 2337, wygenerowane automatycznie na
+  emulatorze API 34 wyłącznie z fikcyjnymi danymi:
+  - `store/google-play/screenshots/01-dashboard.png`;
+  - `store/google-play/screenshots/02-budget.png`;
+  - `store/google-play/screenshots/03-stages.png`;
+  - `store/google-play/screenshots/04-more.png`.
 
 ## Wymaga finalnego urządzenia lub konta właściciela
 
-- zrzuty ekranu Android z builda release, bez danych prywatnych;
 - zrzuty dla wymaganych rozmiarów iPhone/iPad, jeśli iPad pozostanie wspierany;
 - zatwierdzenie komunikatu marki na przygotowanej grafice promocyjnej;
 - finalna kategoria, kraje, klasyfikacja wieku, grupa docelowa i status tradera;
@@ -25,10 +30,10 @@
 1. Dashboard projektu z postępem i szybkimi akcjami.
 2. Budżet z podziałem na etapy i materiał/robociznę.
 3. Lista etapów i checklista bez rozwiniętej ściany tekstu.
-4. Ekran przeglądu OCR z widocznym obowiązkowym potwierdzeniem.
-5. Dokumentacja techniczna robót przed zakryciem.
-6. Materiały, dostawy i zwroty.
-7. Dziennik decyzji lub lista usterek.
+4. Opcjonalnie: ekran przeglądu OCR z widocznym obowiązkowym potwierdzeniem.
+5. Opcjonalnie: dokumentacja techniczna robót przed zakryciem.
+6. Opcjonalnie: materiały, dostawy i zwroty.
+7. Opcjonalnie: dziennik decyzji lub lista usterek.
 
 Na zrzutach używać wyłącznie fikcyjnego projektu, wykonawców, adresów,
 dokumentów i kwot.

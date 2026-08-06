@@ -34,20 +34,24 @@ void main() {
       mediaType: 'image/jpeg',
     );
 
-    expect(prepared.imageUri, original.uri);
+    expect(prepared.imageUris, <Uri>[original.uri]);
     await prepared.dispose();
     expect(await original.exists(), isTrue);
   });
 
   test(
-    'renders a PDF first page and deletes the temporary derivative',
+    'renders every PDF page and deletes all temporary derivatives',
     () async {
       final original = File(p.join(temporaryDirectory.path, 'receipt.pdf'));
       await original.writeAsString('%PDF-1.7\nfixture', flush: true);
       final preparer = LocalReceiptOcrImagePreparer(
-        renderPdfFirstPage: (source, target) async {
+        renderPdfPages: (source, targetDirectory) async {
           expect(source.uri, original.uri);
-          await target.writeAsBytes(<int>[9, 8, 7], flush: true);
+          final first = File(p.join(targetDirectory.path, 'page-001.jpg'));
+          final second = File(p.join(targetDirectory.path, 'page-002.jpg'));
+          await first.writeAsBytes(<int>[9, 8, 7], flush: true);
+          await second.writeAsBytes(<int>[6, 5, 4], flush: true);
+          return <Uri>[first.uri, second.uri];
         },
       );
 
@@ -55,9 +59,38 @@ void main() {
         originalUri: original.uri,
         mediaType: 'application/pdf',
       );
-      final derivative = File.fromUri(prepared.imageUri);
+      final derivatives = prepared.imageUris.map(File.fromUri).toList();
 
-      expect(await derivative.readAsBytes(), <int>[9, 8, 7]);
+      expect(prepared.imageUris, hasLength(2));
+      expect(await derivatives.first.readAsBytes(), <int>[9, 8, 7]);
+      expect(await derivatives.last.readAsBytes(), <int>[6, 5, 4]);
+      await prepared.dispose();
+      expect(await derivatives.first.exists(), isFalse);
+      expect(await derivatives.last.exists(), isFalse);
+      expect(await original.exists(), isTrue);
+    },
+  );
+
+  test(
+    'downscales a large image before OCR and removes the derivative',
+    () async {
+      final original = File(p.join(temporaryDirectory.path, 'large.jpg'));
+      await original.writeAsBytes(
+        image.encodeJpg(image.Image(width: 2400, height: 1800)),
+        flush: true,
+      );
+
+      final prepared = await LocalReceiptOcrImagePreparer().prepare(
+        originalUri: original.uri,
+        mediaType: 'image/jpeg',
+      );
+      final derivative = File.fromUri(prepared.imageUris.single);
+      final decoded = image.decodeImage(await derivative.readAsBytes());
+
+      expect(prepared.imageUris.single, isNot(original.uri));
+      expect(decoded, isNotNull);
+      expect(decoded!.width, lessThanOrEqualTo(1600));
+      expect(decoded.height, lessThanOrEqualTo(2400));
       await prepared.dispose();
       expect(await derivative.exists(), isFalse);
       expect(await original.exists(), isTrue);

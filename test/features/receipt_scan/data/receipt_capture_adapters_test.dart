@@ -44,6 +44,24 @@ void main() {
       },
     );
 
+    test(
+      'returns a multi-page PDF with matching attachment metadata',
+      () async {
+        final file = File(p.join(temporaryDirectory.path, 'scan.pdf'));
+        await file.writeAsBytes(<int>[0x25, 0x50, 0x44, 0x46], flush: true);
+        final scanner = MlKitReceiptDocumentScanner(
+          scanDocument: () async => file.uri,
+        );
+
+        final result = await scanner.pick();
+
+        expect(result, isNotNull);
+        expect(result!.attachment.displayName, 'dokument-skan.pdf');
+        expect(result.attachment.mediaType, 'application/pdf');
+        expect(result.attachment.reportedByteSize, 4);
+      },
+    );
+
     test('maps the native cancellation to no result', () async {
       final scanner = MlKitReceiptDocumentScanner(
         scanDocument: () => throw PlatformException(

@@ -1,5 +1,6 @@
 import ContactsUI
 import Flutter
+import PDFKit
 import UIKit
 import UserNotifications
 import VisionKit
@@ -15,6 +16,7 @@ import VisionKit
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
+    guard excludeApplicationSupportFromBackup() else { return false }
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
@@ -41,6 +43,25 @@ import VisionKit
       controller = presented
     }
     return controller
+  }
+
+  private func excludeApplicationSupportFromBackup() -> Bool {
+    guard var supportURL = FileManager.default.urls(
+      for: .applicationSupportDirectory,
+      in: .userDomainMask
+    ).first else { return false }
+    do {
+      try FileManager.default.createDirectory(
+        at: supportURL,
+        withIntermediateDirectories: true
+      )
+      var values = URLResourceValues()
+      values.isExcludedFromBackup = true
+      try supportURL.setResourceValues(values)
+      return true
+    } catch {
+      return false
+    }
   }
 }
 
@@ -186,18 +207,35 @@ private final class ReceiptDocumentScannerHandler: NSObject, VNDocumentCameraVie
   ) {
     let result = pendingResult
     pendingResult = nil
-    let image = scan.imageOfPage(at: 0)
+    let pageCount = min(scan.pageCount, 20)
     let fileURL = FileManager.default.temporaryDirectory
-      .appendingPathComponent("budowapro-receipt-\(UUID().uuidString).jpg")
+      .appendingPathComponent("budowapro-receipt-\(UUID().uuidString).pdf")
     do {
-      guard let data = image.jpegData(compressionQuality: 0.9) else {
+      guard pageCount > 0 else {
         throw NSError(
           domain: "BudowaPRO",
           code: 1,
-          userInfo: [NSLocalizedDescriptionKey: "Could not encode the scanned page"]
+          userInfo: [NSLocalizedDescriptionKey: "The scan has no pages"]
         )
       }
-      try data.write(to: fileURL, options: .atomic)
+      let document = PDFDocument()
+      for index in 0..<pageCount {
+        guard let page = PDFPage(image: scan.imageOfPage(at: index)) else {
+          throw NSError(
+            domain: "BudowaPRO",
+            code: 2,
+            userInfo: [NSLocalizedDescriptionKey: "Could not encode a scanned page"]
+          )
+        }
+        document.insert(page, at: index)
+      }
+      guard document.write(to: fileURL) else {
+        throw NSError(
+          domain: "BudowaPRO",
+          code: 3,
+          userInfo: [NSLocalizedDescriptionKey: "Could not save the scanned document"]
+        )
+      }
       controller.dismiss(animated: true) { result?(fileURL.path) }
     } catch {
       controller.dismiss(animated: true) {

@@ -79,13 +79,20 @@ final class StagePlanController extends AsyncNotifier<StagePlanState> {
       return;
     }
     final repository = await ref.read(stageRepositoryProvider.future);
+    if (!ref.mounted) return;
     state = AsyncData<StagePlanState>(current.copyWith(isSaving: true));
     try {
-      state = AsyncData<StagePlanState>(
-        await _load(repository, project, selectedStageId: stageId),
+      final selected = await _load(
+        repository,
+        project,
+        selectedStageId: stageId,
       );
+      if (!ref.mounted) return;
+      state = AsyncData<StagePlanState>(selected);
     } on Object catch (error, stackTrace) {
-      state = AsyncData<StagePlanState>(current);
+      if (ref.mounted) {
+        state = AsyncData<StagePlanState>(current);
+      }
       Error.throwWithStackTrace(error, stackTrace);
     }
   }
@@ -193,6 +200,7 @@ final class StagePlanController extends AsyncNotifier<StagePlanState> {
     action,
   ) {
     final mutation = _mutationQueue.then<void>((_) async {
+      if (!ref.mounted) return;
       final current = state.requireValue;
       final project = current.project;
       if (project == null) {
@@ -201,12 +209,20 @@ final class StagePlanController extends AsyncNotifier<StagePlanState> {
       state = AsyncData<StagePlanState>(current.copyWith(isSaving: true));
       try {
         final repository = await ref.read(stageRepositoryProvider.future);
+        if (!ref.mounted) return;
         final selectedStageId = await action(repository, current);
-        state = AsyncData<StagePlanState>(
-          await _load(repository, project, selectedStageId: selectedStageId),
+        if (!ref.mounted) return;
+        final refreshed = await _load(
+          repository,
+          project,
+          selectedStageId: selectedStageId,
         );
+        if (!ref.mounted) return;
+        state = AsyncData<StagePlanState>(refreshed);
       } on Object catch (error, stackTrace) {
-        state = AsyncData<StagePlanState>(current);
+        if (ref.mounted) {
+          state = AsyncData<StagePlanState>(current);
+        }
         Error.throwWithStackTrace(error, stackTrace);
       }
     });

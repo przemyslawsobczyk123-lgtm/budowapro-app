@@ -167,7 +167,10 @@ final RegExp _invoiceNumberPattern = RegExp(
   caseSensitive: false,
 );
 final RegExp _moneyPattern = RegExp(
-  r'(?<!\d)(?:\d{1,3}(?:[ .]\d{3})*|\d+)[,.]\d{2}(?!\d)',
+  r'(?<!\d)[-\u2212]?(?:\d{1,3}(?:[ .\u00A0]\d{3})*|\d+)[,.]\d{2}(?!\d)',
+);
+final RegExp _negativeMoneyPattern = RegExp(
+  r'[-\u2212](?:\d{1,3}(?:[ .\u00A0]\d{3})*|\d+)[,.]\d{2}(?!\d)',
 );
 
 bool _isSellerCandidate(String line) {
@@ -390,6 +393,12 @@ bool _isStandaloneAmountLine(String value) {
 Iterable<ReceiptOcrField> _itemLines(List<RecognizedReceiptLine> lines) sync* {
   for (var index = 0; index < lines.length; index += 1) {
     final line = lines[index];
+    if (_letter.hasMatch(line.text) &&
+        _negativeMoneyPattern.hasMatch(line.text) &&
+        !_isStandaloneAmountLine(line.text)) {
+      yield _wholeLineField(line);
+      continue;
+    }
     if (index > 0 &&
         _looksLikeQuantityPriceLine(line.text) &&
         _isProductNameOnly(lines[index - 1].text)) {

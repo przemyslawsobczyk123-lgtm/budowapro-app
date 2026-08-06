@@ -84,13 +84,15 @@ final class QuotesController extends AsyncNotifier<QuotesState> {
       return;
     }
     state = const AsyncLoading<QuotesState>();
-    state = await AsyncValue.guard(
+    final refreshed = await AsyncValue.guard(
       () => _load(
         project: current!.project!,
         searchTerm: current.searchTerm,
         status: current.statusFilter,
       ),
     );
+    if (!ref.mounted) return;
+    state = refreshed;
   }
 
   Future<void> setFilters({
@@ -101,9 +103,11 @@ final class QuotesController extends AsyncNotifier<QuotesState> {
     final project = current.project;
     if (project == null) return;
     state = const AsyncLoading<QuotesState>();
-    state = await AsyncValue.guard(
+    final filtered = await AsyncValue.guard(
       () => _load(project: project, searchTerm: searchTerm, status: status),
     );
+    if (!ref.mounted) return;
+    state = filtered;
   }
 
   bool toggleComparison(String quoteId) {
@@ -155,14 +159,18 @@ final class QuotesController extends AsyncNotifier<QuotesState> {
       try {
         final repository = await ref.read(quoteRepositoryProvider.future);
         result = await action(repository, project.id);
+        if (!ref.mounted) return;
         final loaded = await _load(
           project: project,
           searchTerm: current.searchTerm,
           status: current.statusFilter,
         );
+        if (!ref.mounted) return;
         state = AsyncData<QuotesState>(loaded);
       } on Object catch (error, stackTrace) {
-        state = AsyncData<QuotesState>(current);
+        if (ref.mounted) {
+          state = AsyncData<QuotesState>(current);
+        }
         Error.throwWithStackTrace(error, stackTrace);
       }
     });

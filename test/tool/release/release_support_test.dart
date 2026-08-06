@@ -72,26 +72,23 @@ void main() {
       final environment = validateReleaseEnvironment(
         _validEnvironment(
           publisherName: '  BudowaPRO sp. z o.o.  ',
-          privacyEmail: '  prywatnosc@budowapro.pl  ',
-          privacyUrl: '  https://budowapro.pl/polityka-prywatnosci  ',
+          privacyEmail: '  kontakt@budowaproapp.pl  ',
+          privacyUrl: '  https://budowaproapp.pl/privacy/  ',
         ),
       );
 
       expect(environment.publisherName, 'BudowaPRO sp. z o.o.');
-      expect(environment.privacyContactEmail, 'prywatnosc@budowapro.pl');
-      expect(
-        environment.privacyPolicyUrl,
-        'https://budowapro.pl/polityka-prywatnosci',
-      );
-      expect(environment.supportUrl, 'https://budowapro.pl/support');
+      expect(environment.privacyContactEmail, 'kontakt@budowaproapp.pl');
+      expect(environment.privacyPolicyUrl, 'https://budowaproapp.pl/privacy/');
+      expect(environment.supportUrl, 'https://budowaproapp.pl/support/');
     });
 
     test('rejects non-public or PDF privacy policy URLs', () {
       for (final url in <String>[
-        'http://budowapro.pl/privacy',
+        'http://budowaproapp.pl/privacy',
         'https://localhost/privacy',
         'https://192.168.1.2/privacy',
-        'https://budowapro.pl/privacy.pdf',
+        'https://budowaproapp.pl/privacy.pdf',
       ]) {
         expect(
           () => validateReleaseEnvironment(_validEnvironment(privacyUrl: url)),
@@ -153,7 +150,7 @@ void main() {
       }
       expect(
         () => validateReleaseEnvironment(
-          _validEnvironment(supportUrl: 'http://budowapro.pl/support'),
+          _validEnvironment(supportUrl: 'http://budowaproapp.pl/support'),
         ),
         throwsA(isA<ReleaseFailure>()),
       );
@@ -395,9 +392,9 @@ void main() {
 
 Map<String, String> _validEnvironment({
   String publisherName = 'BudowaPRO',
-  String privacyEmail = 'privacy@budowapro.pl',
-  String privacyUrl = 'https://budowapro.pl/privacy',
-  String supportUrl = 'https://budowapro.pl/support',
+  String privacyEmail = 'kontakt@budowaproapp.pl',
+  String privacyUrl = 'https://budowaproapp.pl/privacy/',
+  String supportUrl = 'https://budowaproapp.pl/support/',
 }) {
   return <String, String>{
     'BUDOWAPRO_UPLOAD_STORE_FILE': 'upload.jks',

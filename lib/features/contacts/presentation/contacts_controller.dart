@@ -71,7 +71,7 @@ final class ContactsController extends AsyncNotifier<ContactsState> {
       return;
     }
     state = const AsyncLoading<ContactsState>();
-    state = await AsyncValue.guard(
+    final refreshed = await AsyncValue.guard(
       () => _load(
         project: current!.project!,
         searchTerm: current.searchTerm,
@@ -79,6 +79,8 @@ final class ContactsController extends AsyncNotifier<ContactsState> {
         stageId: current.stageFilter,
       ),
     );
+    if (!ref.mounted) return;
+    state = refreshed;
   }
 
   Future<void> setSearchTerm(String value) {
@@ -146,7 +148,7 @@ final class ContactsController extends AsyncNotifier<ContactsState> {
     final project = current.project;
     if (project == null) return;
     state = const AsyncLoading<ContactsState>();
-    state = await AsyncValue.guard(
+    final filtered = await AsyncValue.guard(
       () => _load(
         project: project,
         searchTerm: searchTerm,
@@ -154,6 +156,8 @@ final class ContactsController extends AsyncNotifier<ContactsState> {
         stageId: stageId,
       ),
     );
+    if (!ref.mounted) return;
+    state = filtered;
   }
 
   Future<void> _mutate(
@@ -161,23 +165,28 @@ final class ContactsController extends AsyncNotifier<ContactsState> {
     action,
   ) {
     final mutation = _mutationQueue.then<void>((_) async {
+      if (!ref.mounted) return;
       final current = state.requireValue;
       final project = current.project;
       if (project == null) return;
       state = AsyncData<ContactsState>(current.copyWith(isSaving: true));
       try {
         final repository = await ref.read(contactRepositoryProvider.future);
+        if (!ref.mounted) return;
         await action(repository, project.id);
-        state = AsyncData<ContactsState>(
-          await _load(
-            project: project,
-            searchTerm: current.searchTerm,
-            role: current.roleFilter,
-            stageId: current.stageFilter,
-          ),
+        if (!ref.mounted) return;
+        final refreshed = await _load(
+          project: project,
+          searchTerm: current.searchTerm,
+          role: current.roleFilter,
+          stageId: current.stageFilter,
         );
+        if (!ref.mounted) return;
+        state = AsyncData<ContactsState>(refreshed);
       } on Object catch (error, stackTrace) {
-        state = AsyncData<ContactsState>(current);
+        if (ref.mounted) {
+          state = AsyncData<ContactsState>(current);
+        }
         Error.throwWithStackTrace(error, stackTrace);
       }
     });

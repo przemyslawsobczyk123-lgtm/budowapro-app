@@ -48,7 +48,7 @@ void main() {
     expect(find.text('Dokumenty'), findsNothing);
   });
 
-  testWidgets('fits navigation on a compact Android viewport', (
+  testWidgets('fits navigation on a compact viewport at 200 percent text', (
     WidgetTester tester,
   ) async {
     tester.view.physicalSize = const Size(320, 480);
@@ -56,11 +56,20 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(_testApp());
+    await tester.pumpWidget(
+      MediaQuery(
+        data: const MediaQueryData(
+          size: Size(320, 480),
+          textScaler: TextScaler.linear(2),
+        ),
+        child: _testApp(),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);
     expect(find.byType(NavigationBar), findsOneWidget);
+    expect(tester.getSize(find.byType(NavigationBar)).height, 96);
   });
 
   testWidgets('uses the reference icons in primary navigation', (

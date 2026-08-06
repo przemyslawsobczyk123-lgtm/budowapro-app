@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:budowapro/features/contacts/data/contact_providers.dart';
 import 'package:budowapro/features/contacts/domain/contact.dart';
 import 'package:budowapro/features/contacts/domain/contact_repository.dart';
@@ -65,16 +67,48 @@ void main() {
     expect(state.project, isNull);
     expect(contacts.loadCount, 0);
   });
+
+  test('ignores a completed refresh after provider invalidation', () async {
+    final project = _project();
+    final contacts = _ContactRepository();
+    final container = ProviderContainer(
+      overrides: [
+        projectRepositoryProvider.overrideWith(
+          (ref) async => FakeProjectRepository(
+            projects: [project],
+            selectedProjectId: project.id,
+          ),
+        ),
+        contactRepositoryProvider.overrideWith((ref) async => contacts),
+        stageRepositoryProvider.overrideWith((ref) async => _StageRepository()),
+      ],
+    );
+    addTearDown(container.dispose);
+    await container.read(contactsControllerProvider.future);
+    final gate = Completer<void>();
+    contacts.listGate = gate;
+
+    final refresh = container
+        .read(contactsControllerProvider.notifier)
+        .refresh();
+    await Future<void>.delayed(Duration.zero);
+    container.invalidate(contactsControllerProvider);
+    gate.complete();
+
+    await expectLater(refresh, completes);
+  });
 }
 
 final class _ContactRepository implements ContactRepository {
   int loadCount = 0;
   ContactQuery? lastQuery;
+  Completer<void>? listGate;
 
   @override
   Future<Page<Contact>> list(ContactQuery query, PageRequest request) async {
     loadCount++;
     lastQuery = query;
+    await listGate?.future;
     return Page<Contact>(items: const [], totalCount: 0, request: request);
   }
 

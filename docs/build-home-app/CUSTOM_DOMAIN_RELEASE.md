@@ -11,11 +11,10 @@ opublikuje:
 - `https://budowaproapp.pl/support/`;
 - `https://budowaproapp.pl/data-deletion/`.
 
-## Jednorazowa konfiguracja DNS
+## Konfiguracja DNS
 
-Aktualny rekord apex `budowaproapp.pl` wskazuje `213.186.33.5`, czyli adres
-parkingowy operatora. W panelu DNS domeny trzeba usunac ten rekord i ustawic
-cztery rekordy `A` dla hosta `@`:
+Rekord apex `budowaproapp.pl` ma skonfigurowane cztery rekordy `A` GitHub
+Pages:
 
 ```text
 185.199.108.153
@@ -24,21 +23,22 @@ cztery rekordy `A` dla hosta `@`:
 185.199.111.153
 ```
 
-Dla hosta `www` ustaw rekord `CNAME`:
+Dla hosta `www` jest skonfigurowany rekord `CNAME`:
 
 ```text
 przemyslawsobczyk123-lgtm.github.io
 ```
 
-Nie dopisuj nazwy repozytorium do wartosci CNAME. Nie ustawiaj rekordu
-wildcard `*`.
+DNS nie wymaga dalszych zmian. Nie dopisuj nazwy repozytorium do wartosci
+CNAME i nie ustawiaj rekordu wildcard `*`.
 
 ## GitHub Pages
 
-W repozytorium `przemyslawsobczyk123-lgtm/budowapro-app` otworz
-`Settings -> Pages`, ustaw `Custom domain` na `budowaproapp.pl` i po
-wystawieniu certyfikatu wlacz `Enforce HTTPS`. Konto GitHub CLI na tym
-komputerze nie jest zalogowane, wiec tego kroku nie wykonano automatycznie.
+W repozytorium `przemyslawsobczyk123-lgtm/budowapro-app` domena niestandardowa
+jest ustawiona na `budowaproapp.pl`. Treść stron odpowiada przez GitHub Pages,
+ale 2026-08-06 certyfikat nie obejmuje jeszcze domeny i zwykła walidacja HTTPS
+kończy się błędem nazwy. Po wystawieniu certyfikatu trzeba włączyć
+`Settings -> Pages -> Enforce HTTPS` i ponownie sprawdzić wszystkie adresy.
 
 ## Kontrola przed Play Console
 

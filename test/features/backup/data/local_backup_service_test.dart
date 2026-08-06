@@ -433,6 +433,17 @@ void main() {
 
   test('migrates a previous-schema backup before restoring it', () async {
     const previousSchemaVersion = AppDatabase.schemaVersion - 1;
+    final sourceDatabase = await database.open();
+    await sourceDatabase.insert(AppDatabase.materialsTable, <String, Object?>{
+      'id': 'material-from-v18',
+      'project_id': 'project-1',
+      'name': 'Bloczek z kopii v18',
+      'ordered_quantity_microunits': 1000000,
+      'unit': 'szt.',
+      'delivery_reminder_enabled': 0,
+      'created_at_utc_ms': 1,
+      'updated_at_utc_ms': 1,
+    });
     final artifact = await service.createBackup();
     final previousSchemaArchive = await _rewriteAsPreviousSchemaBackup(
       sourceArchive: artifact.file,
@@ -479,6 +490,14 @@ void main() {
     )).map((row) => row['name']).toSet();
     expect(restoredTables, contains(AppDatabase.captureDraftsTable));
     expect(restoredTables, contains(AppDatabase.captureDraftAttachmentsTable));
+    expect(
+      await restored.query(
+        AppDatabase.materialsTable,
+        where: 'id = ?',
+        whereArgs: const <Object?>['material-from-v18'],
+      ),
+      hasLength(1),
+    );
   });
 
   test('migrates an exact-schema v8 backup through every step', () async {
@@ -568,7 +587,16 @@ Future<File> _rewriteAsPreviousSchemaBackup({
     options: OpenDatabaseOptions(singleInstance: false),
   );
   try {
+    if (schemaVersion == 18) {
+      await _downgradeMaterialSchemaToV18(previousDatabase);
+    }
     if (schemaVersion < 18) {
+      await previousDatabase.execute(
+        'DROP TRIGGER IF EXISTS materials_stage_delete_clear',
+      );
+      await previousDatabase.execute(
+        'DROP TRIGGER IF EXISTS materials_document_delete_clear',
+      );
       await previousDatabase.execute(
         'DROP TABLE ${AppDatabase.materialReturnsTable}',
       );
@@ -759,6 +787,206 @@ Future<File> _rewriteAsPreviousSchemaBackup({
   );
   await output.writeAsBytes(ZipEncoder().encode(archive), flush: true);
   return output;
+}
+
+Future<void> _downgradeMaterialSchemaToV18(Database database) async {
+  await database.execute('DROP TRIGGER IF EXISTS materials_stage_delete_clear');
+  await database.execute(
+    'DROP TRIGGER IF EXISTS materials_document_delete_clear',
+  );
+  for (final index in <String>[
+    'material_returns_material_deadline_idx',
+    'material_deliveries_material_due_idx',
+    'materials_project_room_idx',
+    'materials_project_stage_idx',
+    'materials_project_updated_idx',
+  ]) {
+    await database.execute('DROP INDEX IF EXISTS $index');
+  }
+  await database.execute(
+    'ALTER TABLE ${AppDatabase.materialReturnsTable} '
+    'RENAME TO material_returns_v19',
+  );
+  await database.execute(
+    'ALTER TABLE ${AppDatabase.materialDeliveriesTable} '
+    'RENAME TO material_deliveries_v19',
+  );
+  await database.execute(
+    'ALTER TABLE ${AppDatabase.materialsTable} RENAME TO materials_v19',
+  );
+
+  await database.execute('''
+    CREATE TABLE ${AppDatabase.materialsTable} (
+      id TEXT PRIMARY KEY NOT NULL,
+      project_id TEXT NOT NULL,
+      name TEXT NOT NULL COLLATE NOCASE,
+      ordered_quantity_microunits INTEGER NOT NULL CHECK (
+        ordered_quantity_microunits > 0
+      ),
+      unit TEXT NOT NULL,
+      stage_id TEXT,
+      room_id TEXT,
+      supplier_contact_id TEXT,
+      cost_entry_id TEXT,
+      receipt_document_id TEXT,
+      ordered_gross_minor_units INTEGER CHECK (
+        ordered_gross_minor_units >= 0
+      ),
+      currency_code TEXT CHECK (
+        currency_code IS NULL OR (
+          length(currency_code) = 3 AND
+          currency_code GLOB '[A-Z][A-Z][A-Z]'
+        )
+      ),
+      storage_location TEXT,
+      ordered_at_utc_ms INTEGER,
+      expected_delivery_at_utc_ms INTEGER,
+      delivery_reminder_enabled INTEGER NOT NULL DEFAULT 0 CHECK (
+        delivery_reminder_enabled IN (0, 1)
+      ),
+      note TEXT,
+      created_at_utc_ms INTEGER NOT NULL,
+      updated_at_utc_ms INTEGER NOT NULL,
+      CHECK (
+        (ordered_gross_minor_units IS NULL AND currency_code IS NULL) OR
+        (ordered_gross_minor_units IS NOT NULL AND currency_code IS NOT NULL)
+      ),
+      UNIQUE (id, project_id),
+      FOREIGN KEY (project_id)
+        REFERENCES ${AppDatabase.projectsTable}(id) ON DELETE CASCADE
+    )
+  ''');
+  await database.execute('''
+    INSERT INTO ${AppDatabase.materialsTable}
+    SELECT * FROM materials_v19
+  ''');
+
+  await database.execute('''
+    CREATE TABLE ${AppDatabase.materialDeliveriesTable} (
+      id TEXT PRIMARY KEY NOT NULL,
+      project_id TEXT NOT NULL,
+      material_id TEXT NOT NULL,
+      expected_quantity_microunits INTEGER NOT NULL CHECK (
+        expected_quantity_microunits > 0
+      ),
+      due_at_utc_ms INTEGER NOT NULL,
+      delivered_quantity_microunits INTEGER CHECK (
+        delivered_quantity_microunits > 0
+      ),
+      received_at_utc_ms INTEGER,
+      document_id TEXT,
+      contact_id TEXT,
+      shortage_note TEXT,
+      damage_note TEXT,
+      over_delivery_confirmed INTEGER NOT NULL DEFAULT 0 CHECK (
+        over_delivery_confirmed IN (0, 1)
+      ),
+      reminder_enabled INTEGER NOT NULL DEFAULT 0 CHECK (
+        reminder_enabled IN (0, 1)
+      ),
+      created_at_utc_ms INTEGER NOT NULL,
+      updated_at_utc_ms INTEGER NOT NULL,
+      CHECK (
+        (delivered_quantity_microunits IS NULL AND received_at_utc_ms IS NULL)
+        OR
+        (delivered_quantity_microunits IS NOT NULL AND received_at_utc_ms IS NOT NULL)
+      ),
+      UNIQUE (id, project_id),
+      FOREIGN KEY (material_id, project_id)
+        REFERENCES ${AppDatabase.materialsTable}(id, project_id)
+        ON DELETE CASCADE
+    )
+  ''');
+  await database.execute('''
+    INSERT INTO ${AppDatabase.materialDeliveriesTable}
+    SELECT * FROM material_deliveries_v19
+  ''');
+
+  await database.execute('''
+    CREATE TABLE ${AppDatabase.materialReturnsTable} (
+      id TEXT PRIMARY KEY NOT NULL,
+      project_id TEXT NOT NULL,
+      material_id TEXT NOT NULL,
+      quantity_microunits INTEGER NOT NULL CHECK (
+        quantity_microunits > 0
+      ),
+      deadline_utc_ms INTEGER NOT NULL,
+      expected_refund_minor_units INTEGER CHECK (
+        expected_refund_minor_units >= 0
+      ),
+      currency_code TEXT CHECK (
+        currency_code IS NULL OR (
+          length(currency_code) = 3 AND
+          currency_code GLOB '[A-Z][A-Z][A-Z]'
+        )
+      ),
+      receipt_required INTEGER NOT NULL CHECK (
+        receipt_required IN (0, 1)
+      ),
+      receipt_document_id TEXT,
+      completed_at_utc_ms INTEGER,
+      actual_refund_minor_units INTEGER CHECK (
+        actual_refund_minor_units >= 0
+      ),
+      reminder_enabled INTEGER NOT NULL DEFAULT 0 CHECK (
+        reminder_enabled IN (0, 1)
+      ),
+      note TEXT,
+      created_at_utc_ms INTEGER NOT NULL,
+      updated_at_utc_ms INTEGER NOT NULL,
+      CHECK (
+        (expected_refund_minor_units IS NULL AND currency_code IS NULL) OR
+        (expected_refund_minor_units IS NOT NULL AND currency_code IS NOT NULL)
+      ),
+      CHECK (
+        actual_refund_minor_units IS NULL OR completed_at_utc_ms IS NOT NULL
+      ),
+      UNIQUE (id, project_id),
+      FOREIGN KEY (material_id, project_id)
+        REFERENCES ${AppDatabase.materialsTable}(id, project_id)
+        ON DELETE CASCADE
+    )
+  ''');
+  await database.execute('''
+    INSERT INTO ${AppDatabase.materialReturnsTable}
+    SELECT * FROM material_returns_v19
+  ''');
+
+  await database.execute('DROP TABLE material_returns_v19');
+  await database.execute('DROP TABLE material_deliveries_v19');
+  await database.execute('DROP TABLE materials_v19');
+  await database.execute('''
+    CREATE INDEX materials_project_updated_idx
+    ON ${AppDatabase.materialsTable} (project_id, updated_at_utc_ms DESC, id)
+  ''');
+  await database.execute('''
+    CREATE INDEX materials_project_stage_idx
+    ON ${AppDatabase.materialsTable} (project_id, stage_id, updated_at_utc_ms DESC, id)
+  ''');
+  await database.execute('''
+    CREATE INDEX materials_project_room_idx
+    ON ${AppDatabase.materialsTable} (project_id, room_id, updated_at_utc_ms DESC, id)
+  ''');
+  await database.execute('''
+    CREATE INDEX material_deliveries_material_due_idx
+    ON ${AppDatabase.materialDeliveriesTable} (
+      project_id,
+      material_id,
+      received_at_utc_ms,
+      due_at_utc_ms,
+      id
+    )
+  ''');
+  await database.execute('''
+    CREATE INDEX material_returns_material_deadline_idx
+    ON ${AppDatabase.materialReturnsTable} (
+      project_id,
+      material_id,
+      completed_at_utc_ms,
+      deadline_utc_ms,
+      id
+    )
+  ''');
 }
 
 Future<File> _sourceFile(

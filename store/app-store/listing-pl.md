@@ -49,4 +49,4 @@ budowa,remont,budżet,koszty,paragony,faktury,dziennik,wykonawcy,dom
 No account or review credentials are required. Create a local project to use
 the app. Receipt/invoice scanning is optional and every OCR result must be
 reviewed before it becomes a cost. The app has no backend, advertising or
-paid content in version 1.0.
+paid content in version 1.0.0.

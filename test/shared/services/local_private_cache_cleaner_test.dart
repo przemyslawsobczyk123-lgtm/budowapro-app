@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:budowapro/shared/services/local_private_cache_cleaner.dart';
@@ -129,24 +130,64 @@ void main() {
   test('a newer share cancels the previous cleanup timer', () async {
     final shareCache = Directory(p.join(temporary.path, 'share_plus'));
     await shareCache.create();
+    final timerFactory = _ManualTimerFactory();
     final cleaner = LocalPrivateCacheCleaner(
       temporaryDirectoryProvider: () async => temporary,
       applicationSupportDirectoryProvider: () async => support,
       systemTemporaryDirectory: systemTemporary,
       clearFilePickerTemporaryFiles: () async {},
+      timerFactory: timerFactory.call,
     );
 
     cleaner.scheduleShareCacheCleanup(delay: const Duration(milliseconds: 20));
-    await Future<void>.delayed(const Duration(milliseconds: 5));
     await File(p.join(shareCache.path, 'new-export.csv')).writeAsString('new');
     cleaner.scheduleShareCacheCleanup(delay: const Duration(milliseconds: 100));
 
-    await Future<void>.delayed(const Duration(milliseconds: 40));
+    expect(timerFactory.timers, hasLength(2));
+    expect(timerFactory.timers.first.isActive, isFalse);
+    timerFactory.timers.first.fire();
+    await Future<void>.delayed(Duration.zero);
     expect(await shareCache.exists(), isTrue);
 
-    await Future<void>.delayed(const Duration(milliseconds: 100));
+    timerFactory.timers.last.fire();
     await _waitUntilMissing(shareCache);
   });
+}
+
+final class _ManualTimerFactory {
+  final timers = <_ManualTimer>[];
+
+  Timer call(Duration delay, void Function() callback) {
+    final timer = _ManualTimer(callback);
+    timers.add(timer);
+    return timer;
+  }
+}
+
+final class _ManualTimer implements Timer {
+  _ManualTimer(this._callback);
+
+  final void Function() _callback;
+  var _isActive = true;
+  var _tick = 0;
+
+  @override
+  bool get isActive => _isActive;
+
+  @override
+  int get tick => _tick;
+
+  @override
+  void cancel() {
+    _isActive = false;
+  }
+
+  void fire() {
+    if (!_isActive) return;
+    _isActive = false;
+    _tick = 1;
+    _callback();
+  }
 }
 
 Future<void> _waitUntilMissing(Directory directory) async {

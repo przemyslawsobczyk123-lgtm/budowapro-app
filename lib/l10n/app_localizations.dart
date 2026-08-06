@@ -934,6 +934,12 @@ abstract class AppLocalizations {
   /// **'Nie udało się utworzyć pliku CSV.'**
   String get costCsvExportError;
 
+  /// No description provided for @costCsvShareTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'BudowaPRO - eksport kosztów'**
+  String get costCsvShareTitle;
+
   /// No description provided for @costCsvLifecycleColumn.
   ///
   /// In pl, this message translates to:
@@ -6697,7 +6703,7 @@ abstract class AppLocalizations {
   /// No description provided for @receiptScanIdleMessage.
   ///
   /// In pl, this message translates to:
-  /// **'Zeskanuj paragon lub jednostronicową fakturę albo wybierz plik.'**
+  /// **'Zeskanuj paragon lub fakturę wielostronicową albo wybierz plik.'**
   String get receiptScanIdleMessage;
 
   /// No description provided for @receiptScanLocalOnly.
@@ -6826,6 +6832,12 @@ abstract class AppLocalizations {
   /// **'Ponów odczyt'**
   String get receiptRetryOcrAction;
 
+  /// No description provided for @receiptManualEntryAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wpisz dane ręcznie'**
+  String get receiptManualEntryAction;
+
   /// No description provided for @receiptScannerUnavailableTitle.
   ///
   /// In pl, this message translates to:
@@ -6859,7 +6871,7 @@ abstract class AppLocalizations {
   /// No description provided for @receiptEmptyTextMessage.
   ///
   /// In pl, this message translates to:
-  /// **'Spróbuj ponownie lub użyj wyraźniejszego zdjęcia.'**
+  /// **'Ponów odczyt albo wpisz dane ręcznie. Oryginał pozostanie dołączony do kosztu.'**
   String get receiptEmptyTextMessage;
 
   /// No description provided for @receiptStorageErrorTitle.
@@ -7687,7 +7699,7 @@ abstract class AppLocalizations {
   /// No description provided for @legalContactLabel.
   ///
   /// In pl, this message translates to:
-  /// **'Kontakt w sprawach prywatności'**
+  /// **'Skontaktuj się z nami'**
   String get legalContactLabel;
 
   /// No description provided for @legalNotConfiguredValue.
@@ -7699,7 +7711,7 @@ abstract class AppLocalizations {
   /// No description provided for @legalEmailSubject.
   ///
   /// In pl, this message translates to:
-  /// **'BudowaPRO — prywatność'**
+  /// **'BudowaPRO - kontakt'**
   String get legalEmailSubject;
 
   /// No description provided for @legalPublicPolicyLabel.
@@ -7717,7 +7729,7 @@ abstract class AppLocalizations {
   /// No description provided for @legalDocumentVersion.
   ///
   /// In pl, this message translates to:
-  /// **'Wersja 1.0 · obowiązuje od 28.07.2026'**
+  /// **'Wersja 1.1 · obowiązuje od 06.08.2026'**
   String get legalDocumentVersion;
 
   /// No description provided for @legalIntroTitle.
@@ -7879,7 +7891,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacySectionSharingBody.
   ///
   /// In pl, this message translates to:
-  /// **'Poza technicznymi metrykami ML Kit BudowaPRO nie udostępnia danych automatycznie. Eksport CSV, kopia ZIP, telefon, e-mail albo systemowe udostępnianie uruchamiają się dopiero po Twojej akcji i przekazują wybraną zawartość do wskazanej przez Ciebie aplikacji lub dostawcy. Ręczna kopia ZIP nie jest szyfrowana i może zawierać dokumenty, kontakty oraz zdjęcia. Dalsze przetwarzanie podlega zasadom wybranego odbiorcy.'**
+  /// **'Poza technicznymi metrykami ML Kit BudowaPRO nie udostępnia danych automatycznie. Eksport CSV, kopia ZIP, telefon, e-mail albo systemowe udostępnianie uruchamiają się dopiero po Twojej akcji i przekazują wybraną zawartość do wskazanej przez Ciebie aplikacji lub dostawcy. Otwarcie publicznej polityki lub strony wsparcia łączy przeglądarkę z hostingiem GitHub Pages, który może przetwarzać standardowe dane techniczne połączenia. Ręczna kopia ZIP nie jest szyfrowana i może zawierać dokumenty, kontakty oraz zdjęcia. Dalsze przetwarzanie podlega zasadom wybranego odbiorcy.'**
   String get privacySectionSharingBody;
 
   /// No description provided for @privacySectionRetentionTitle.
@@ -7891,7 +7903,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacySectionRetentionBody.
   ///
   /// In pl, this message translates to:
-  /// **'Dane pozostają w aplikacji do czasu usunięcia rekordu lub projektu, wyczyszczenia danych aplikacji albo jej odinstalowania. Ręcznie wyeksportowane pliki pozostają w wybranej lokalizacji do czasu, aż usuniesz je osobno. Android wyklucza prywatne pliki BudowaPRO z kopii chmurowej i transferu urządzenie–urządzenie. Na iOS systemowa kopia urządzenia może objąć dane aplikacji zgodnie z ustawieniami i zasadami Apple.'**
+  /// **'Dane pozostają w aplikacji do czasu usunięcia rekordu lub projektu, wyczyszczenia danych aplikacji albo jej odinstalowania. Ręcznie wyeksportowane pliki pozostają w wybranej lokalizacji do czasu, aż usuniesz je osobno. Android wyklucza prywatne pliki BudowaPRO z kopii chmurowej i transferu urządzenie–urządzenie. Na iOS prywatny katalog danych BudowaPRO jest oznaczony jako wyłączony z kopii iCloud.'**
   String get privacySectionRetentionBody;
 
   /// No description provided for @privacySectionRightsTitle.
@@ -8149,7 +8161,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyAutomaticBackupSubtitle.
   ///
   /// In pl, this message translates to:
-  /// **'Android wyklucza prywatne pliki BudowaPRO z kopii chmurowej i transferu na nowe urządzenie. Na iOS systemowa kopia urządzenia może objąć dane aplikacji zgodnie z ustawieniami Apple. Ręczna kopia ZIP nie jest szyfrowana.'**
+  /// **'Android wyklucza prywatne pliki BudowaPRO z kopii chmurowej i transferu na nowe urządzenie. Na iOS prywatny katalog danych BudowaPRO jest wyłączony z kopii iCloud. Ręczna kopia ZIP nie jest szyfrowana.'**
   String get privacyAutomaticBackupSubtitle;
 
   /// No description provided for @privacyDataControlSection.
@@ -10981,7 +10993,7 @@ abstract class AppLocalizations {
   /// No description provided for @materialDeleteMessage.
   ///
   /// In pl, this message translates to:
-  /// **'Usunięte zostaną także jego dostawy i zwroty. Koszt, dokumenty i kontakty pozostaną bez zmian.'**
+  /// **'Materiał zostanie usunięty. Powiązane koszty, dokumenty i kontakty pozostaną bez zmian. Materiału z historią dostaw lub zwrotów nie można usunąć.'**
   String get materialDeleteMessage;
 
   /// No description provided for @materialDeleteAction.
@@ -10989,6 +11001,12 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Usuń'**
   String get materialDeleteAction;
+
+  /// No description provided for @materialDeleteInUseError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Najpierw usuń powiązane dostawy i zwroty. Chroni to historię przed przypadkową utratą.'**
+  String get materialDeleteInUseError;
 
   /// No description provided for @materialDeleteError.
   ///
@@ -11229,6 +11247,18 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Usuń wpis'**
   String get materialRecordDeleteTooltip;
+
+  /// No description provided for @materialRecordDeleteTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Usunąć ten wpis?'**
+  String get materialRecordDeleteTitle;
+
+  /// No description provided for @materialRecordDeleteMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Tej operacji nie można cofnąć. Dostawa albo zwrot zniknie z historii materiału.'**
+  String get materialRecordDeleteMessage;
 
   /// No description provided for @materialInvalidQuantity.
   ///

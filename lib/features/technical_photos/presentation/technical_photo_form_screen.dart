@@ -383,6 +383,7 @@ class _TechnicalPhotoFormState extends ConsumerState<_TechnicalPhotoForm> {
             : Image.file(
                 file,
                 fit: BoxFit.cover,
+                cacheWidth: 960,
                 errorBuilder: (context, error, stackTrace) =>
                     const Center(child: Icon(Icons.broken_image_outlined)),
               ),

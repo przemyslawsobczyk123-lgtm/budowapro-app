@@ -98,6 +98,7 @@ class LegalCenterScreen extends ConsumerWidget {
                 : l10n.legalNotConfiguredValue,
           ),
           _ValueTile(
+            key: const ValueKey('legalContactTile'),
             icon: Icons.alternate_email_rounded,
             label: l10n.legalContactLabel,
             value: config.hasValidContactEmail
@@ -214,6 +215,7 @@ class _SectionTitle extends StatelessWidget {
 
 class _ValueTile extends StatelessWidget {
   const _ValueTile({
+    super.key,
     required this.icon,
     required this.label,
     required this.value,

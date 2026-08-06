@@ -7,6 +7,12 @@ import 'package:path_provider/path_provider.dart';
 
 typedef PrivateDirectoryProvider = Future<Directory> Function();
 typedef ClearPlatformTemporaryFiles = Future<void> Function();
+typedef CleanupTimerFactory =
+    Timer Function(Duration delay, void Function() callback);
+
+Timer _createCleanupTimer(Duration delay, void Function() callback) {
+  return Timer(delay, callback);
+}
 
 final class PrivateCacheCleanupBatch {
   const PrivateCacheCleanupBatch(this.directories);
@@ -23,6 +29,7 @@ final class LocalPrivateCacheCleaner {
       clearFilePickerTemporaryFiles: () async {
         await FilePicker.clearTemporaryFiles();
       },
+      timerFactory: _createCleanupTimer,
     );
   }
 
@@ -31,12 +38,14 @@ final class LocalPrivateCacheCleaner {
     required PrivateDirectoryProvider applicationSupportDirectoryProvider,
     required Directory systemTemporaryDirectory,
     required ClearPlatformTemporaryFiles clearFilePickerTemporaryFiles,
+    CleanupTimerFactory timerFactory = _createCleanupTimer,
   }) {
     return LocalPrivateCacheCleaner._(
       temporaryDirectoryProvider,
       applicationSupportDirectoryProvider,
       systemTemporaryDirectory,
       clearFilePickerTemporaryFiles,
+      timerFactory,
     );
   }
 
@@ -45,12 +54,14 @@ final class LocalPrivateCacheCleaner {
     this._applicationSupportDirectoryProvider,
     this._systemTemporaryDirectory,
     this._clearFilePickerTemporaryFiles,
+    this._timerFactory,
   );
 
   final PrivateDirectoryProvider _temporaryDirectoryProvider;
   final PrivateDirectoryProvider _applicationSupportDirectoryProvider;
   final Directory _systemTemporaryDirectory;
   final ClearPlatformTemporaryFiles _clearFilePickerTemporaryFiles;
+  final CleanupTimerFactory _timerFactory;
   var _purgeSequence = 0;
   static Timer? _shareCacheCleanupTimer;
 
@@ -91,7 +102,7 @@ final class LocalPrivateCacheCleaner {
   }) {
     _shareCacheCleanupTimer?.cancel();
     late final Timer timer;
-    timer = Timer(delay, () {
+    timer = _timerFactory(delay, () {
       if (!identical(_shareCacheCleanupTimer, timer)) return;
       _shareCacheCleanupTimer = null;
       unawaited(() async {

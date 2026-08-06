@@ -97,6 +97,27 @@ DO ZAPŁATY: 100,00 PLN
       expect(result.totalText?.value, '100,00');
     });
 
+    test('accepts a non-breaking space in a document total', () {
+      final result = parser.parse(
+        RecognizedReceiptText.fromRaw('SKŁAD BUDOWLANY\nRAZEM 1\u00A0234,56'),
+      );
+
+      expect(result.totalText?.value, '1 234,56');
+    });
+
+    test('preserves a negative discount for explicit manual review', () {
+      final result = parser.parse(
+        RecognizedReceiptText.fromRaw(
+          'SKŁAD BUDOWLANY\nKlej 20,00\nRabat -5,00\nRAZEM 15,00',
+        ),
+      );
+
+      expect(result.itemLines.map((line) => line.value), <String>[
+        'Klej 20,00',
+        'Rabat -5,00',
+      ]);
+    });
+
     test('accepts dotted dates and common document number labels', () {
       final result = parser.parse(
         RecognizedReceiptText.fromRaw('''

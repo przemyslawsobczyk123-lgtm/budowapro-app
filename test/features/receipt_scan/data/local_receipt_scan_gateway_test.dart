@@ -128,12 +128,43 @@ void main() {
 
     final result = await gateway.recognize(source);
 
-    expect(recognizer.receivedUri, privateOriginal.uri);
+    expect(recognizer.receivedUris, <Uri>[privateOriginal.uri]);
     expect(result.source, same(source));
     expect(result.candidates.seller?.value, 'SKŁAD BUDOWLANY');
     expect(result.candidates.totalText?.value, '42,50');
     expect(preparer.disposeCalls, 1);
   });
+
+  test(
+    'combines OCR lines from every prepared page in document order',
+    () async {
+      final secondPage = File(p.join(temporaryDirectory.path, 'private-2.jpg'));
+      await secondPage.writeAsBytes(<int>[6, 7, 8], flush: true);
+      preparer.imageUris = <Uri>[privateOriginal.uri, secondPage.uri];
+      recognizer.results = <RecognizedReceiptText>[
+        RecognizedReceiptText.fromRaw('HURTOWNIA\nFAKTURA FV/1/2026'),
+        RecognizedReceiptText.fromRaw('KLEJ 50,00\nRAZEM 50,00'),
+      ];
+      final source = (await gateway.capture(
+        projectId: 'project-1',
+        method: ReceiptCaptureMethod.scanner,
+      ))!;
+
+      final result = await gateway.recognize(source);
+
+      expect(recognizer.receivedUris, <Uri>[
+        privateOriginal.uri,
+        secondPage.uri,
+      ]);
+      expect(
+        result.candidates.recognizedText.value,
+        contains('FAKTURA FV/1/2026'),
+      );
+      expect(result.candidates.recognizedText.value, contains('RAZEM 50,00'));
+      expect(result.candidates.totalText?.value, '50,00');
+      expect(preparer.disposeCalls, 1);
+    },
+  );
 
   test('keeps the staged source after a retryable OCR failure', () async {
     final source = (await gateway.capture(
@@ -225,27 +256,30 @@ final class _FakeRecognizer implements ReceiptTextRecognizer {
   _FakeRecognizer({required this.result});
 
   final RecognizedReceiptText result;
+  List<RecognizedReceiptText>? results;
   ReceiptScanException? failure;
-  Uri? receivedUri;
+  final List<Uri> receivedUris = <Uri>[];
 
   @override
   Future<RecognizedReceiptText> recognize(Uri imageUri) async {
-    receivedUri = imageUri;
+    receivedUris.add(imageUri);
     if (failure case final failure?) throw failure;
-    return result;
+    final configured = results;
+    return configured == null ? result : configured[receivedUris.length - 1];
   }
 }
 
 final class _FakePreparer implements ReceiptOcrImagePreparer {
   int disposeCalls = 0;
+  List<Uri>? imageUris;
 
   @override
-  Future<PreparedReceiptImage> prepare({
+  Future<PreparedReceiptImages> prepare({
     required Uri originalUri,
     required String mediaType,
   }) async {
-    return PreparedReceiptImage(
-      imageUri: originalUri,
+    return PreparedReceiptImages(
+      imageUris: imageUris ?? <Uri>[originalUri],
       disposeImage: () async {
         disposeCalls += 1;
       },

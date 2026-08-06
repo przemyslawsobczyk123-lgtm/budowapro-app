@@ -81,13 +81,15 @@ final class MaterialsController extends AsyncNotifier<MaterialsState> {
       return;
     }
     state = const AsyncLoading<MaterialsState>();
-    state = await AsyncValue.guard(
+    final refreshed = await AsyncValue.guard(
       () => _load(
         project: project,
         searchText: current!.searchText,
         statuses: current.statuses,
       ),
     );
+    if (!ref.mounted) return;
+    state = refreshed;
   }
 
   Future<void> search(String value) =>
@@ -105,13 +107,15 @@ final class MaterialsController extends AsyncNotifier<MaterialsState> {
     final project = current.project;
     if (project == null) return;
     state = const AsyncLoading<MaterialsState>();
-    state = await AsyncValue.guard(
+    final filtered = await AsyncValue.guard(
       () => _load(
         project: project,
         searchText: searchText ?? current.searchText,
         statuses: statuses ?? current.statuses,
       ),
     );
+    if (!ref.mounted) return;
+    state = filtered;
   }
 
   Future<void> loadMore() async {
@@ -121,6 +125,7 @@ final class MaterialsController extends AsyncNotifier<MaterialsState> {
     state = AsyncData<MaterialsState>(current.copyWith(isLoadingMore: true));
     try {
       final repository = await ref.read(materialRepositoryProvider.future);
+      if (!ref.mounted) return;
       final page = await repository.list(
         MaterialQuery(
           projectId: project.id,
@@ -130,6 +135,7 @@ final class MaterialsController extends AsyncNotifier<MaterialsState> {
         PageRequest(offset: current.materials.length, limit: _pageSize),
         now: ref.read(materialNowProvider)(),
       );
+      if (!ref.mounted) return;
       state = AsyncData<MaterialsState>(
         current.copyWith(
           materials: <MaterialItem>[...current.materials, ...page.items],
@@ -138,7 +144,11 @@ final class MaterialsController extends AsyncNotifier<MaterialsState> {
         ),
       );
     } on Object catch (error, stackTrace) {
-      state = AsyncData<MaterialsState>(current.copyWith(isLoadingMore: false));
+      if (ref.mounted) {
+        state = AsyncData<MaterialsState>(
+          current.copyWith(isLoadingMore: false),
+        );
+      }
       Error.throwWithStackTrace(error, stackTrace);
     }
   }

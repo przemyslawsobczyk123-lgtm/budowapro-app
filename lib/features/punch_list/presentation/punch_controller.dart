@@ -178,7 +178,11 @@ final class PunchController extends AsyncNotifier<PunchState> {
       return;
     }
     state = const AsyncLoading<PunchState>();
-    state = await AsyncValue.guard(() => _load(project, current!.filters));
+    final refreshed = await AsyncValue.guard(
+      () => _load(project, current!.filters),
+    );
+    if (!ref.mounted) return;
+    state = refreshed;
   }
 
   Future<void> applyFilters(PunchFilters filters) async {
@@ -186,7 +190,9 @@ final class PunchController extends AsyncNotifier<PunchState> {
     final project = current.project;
     if (project == null) return;
     state = const AsyncLoading<PunchState>();
-    state = await AsyncValue.guard(() => _load(project, filters));
+    final filtered = await AsyncValue.guard(() => _load(project, filters));
+    if (!ref.mounted) return;
+    state = filtered;
   }
 
   Future<DefectRecord> saveDefect(DefectInput input, {String? defectId}) async {
@@ -198,6 +204,7 @@ final class PunchController extends AsyncNotifier<PunchState> {
             defectId: defectId,
             input: input,
           );
+    if (!ref.mounted) return saved;
     ref.invalidate(
       defectProvider((projectId: input.projectId, defectId: saved.id)),
     );
@@ -216,6 +223,7 @@ final class PunchController extends AsyncNotifier<PunchState> {
           defectId: defectId,
           status: status,
         );
+    if (!ref.mounted) return saved;
     ref.invalidate(defectProvider((projectId: projectId, defectId: defectId)));
     await refresh();
     return saved;
@@ -233,6 +241,7 @@ final class PunchController extends AsyncNotifier<PunchState> {
             protocolId: protocolId,
             input: input,
           );
+    if (!ref.mounted) return saved;
     ref.invalidate(
       acceptanceProtocolProvider((
         projectId: input.projectId,
@@ -260,6 +269,7 @@ final class PunchController extends AsyncNotifier<PunchState> {
       final page = await (await ref.read(
         punchRepositoryProvider.future,
       )).listDefects(current.filters.defectQuery(project.id), request);
+      if (!ref.mounted) return;
       state = AsyncData(
         current.copyWith(
           defects: <DefectRecord>[...current.defects, ...page.items],
@@ -270,6 +280,7 @@ final class PunchController extends AsyncNotifier<PunchState> {
         ),
       );
     } on Object catch (error, stackTrace) {
+      if (!ref.mounted) return;
       state = AsyncError(error, stackTrace);
     }
   }
@@ -286,6 +297,7 @@ final class PunchController extends AsyncNotifier<PunchState> {
       final page = await (await ref.read(
         punchRepositoryProvider.future,
       )).listProtocols(current.filters.protocolQuery(project.id), request);
+      if (!ref.mounted) return;
       state = AsyncData(
         current.copyWith(
           protocols: <AcceptanceProtocol>[...current.protocols, ...page.items],
@@ -296,6 +308,7 @@ final class PunchController extends AsyncNotifier<PunchState> {
         ),
       );
     } on Object catch (error, stackTrace) {
+      if (!ref.mounted) return;
       state = AsyncError(error, stackTrace);
     }
   }

@@ -162,17 +162,36 @@ final class SqliteMaterialRepository implements MaterialRepository {
   }
 
   @override
-  Future<void> delete({
-    required String projectId,
-    required String materialId,
-  }) async {
-    final database = await _database.open();
-    final changed = await database.delete(
-      AppDatabase.materialsTable,
-      where: 'project_id = ? AND id = ?',
-      whereArgs: <Object?>[projectId, materialId],
-    );
-    if (changed == 0) throw const MaterialNotFoundException();
+  Future<void> delete({required String projectId, required String materialId}) {
+    return _database.transaction<void>((transaction) async {
+      await _findMaterialRow(transaction, projectId, materialId);
+      final deliveryCount = Sqflite.firstIntValue(
+        await transaction.rawQuery(
+          'SELECT COUNT(*) FROM ${AppDatabase.materialDeliveriesTable} '
+          'WHERE project_id = ? AND material_id = ?',
+          <Object?>[projectId, materialId],
+        ),
+      )!;
+      final returnCount = Sqflite.firstIntValue(
+        await transaction.rawQuery(
+          'SELECT COUNT(*) FROM ${AppDatabase.materialReturnsTable} '
+          'WHERE project_id = ? AND material_id = ?',
+          <Object?>[projectId, materialId],
+        ),
+      )!;
+      if (deliveryCount > 0 || returnCount > 0) {
+        throw MaterialInUseException(
+          deliveryCount: deliveryCount,
+          returnCount: returnCount,
+        );
+      }
+      final changed = await transaction.delete(
+        AppDatabase.materialsTable,
+        where: 'project_id = ? AND id = ?',
+        whereArgs: <Object?>[projectId, materialId],
+      );
+      if (changed == 0) throw const MaterialNotFoundException();
+    });
   }
 
   @override

@@ -1903,6 +1903,7 @@ CostCsvLabels _csvLabels(
       _stageStorageId(value): _stageLabel(l10n, _stageStorageId(value), stages),
     for (final stage in stages) stage.id: stageName(l10n, stage),
   },
+  shareTitle: l10n.costCsvShareTitle,
   emptyValue: l10n.costCsvEmptyValue,
 );
 

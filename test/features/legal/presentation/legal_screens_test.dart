@@ -36,13 +36,49 @@ void main() {
     expect(find.text('0.1.0 (1)'), findsOneWidget);
     expect(find.text('pl.budowapro'), findsOneWidget);
     await tester.dragUntilVisible(
-      find.text('privacy@budowapro.pl'),
+      find.text('kontakt@budowaproapp.pl'),
       scrollable,
       const Offset(0, -240),
     );
     await tester.pumpAndSettle();
-    expect(find.text('BudowaPRO Sp. z o.o.'), findsOneWidget);
-    expect(find.text('privacy@budowapro.pl'), findsOneWidget);
+    expect(find.text('Przemysław Sobczyk'), findsOneWidget);
+    expect(find.text('kontakt@budowaproapp.pl'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('contact tile opens a pre-addressed support email', (
+    tester,
+  ) async {
+    _compactView(tester);
+    final links = _FakeLegalLinkGateway();
+    await tester.pumpWidget(
+      _testApp(
+        const LegalCenterScreen(),
+        config: _configuredRelease,
+        linkGateway: links,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final contactTile = find.byKey(const ValueKey('legalContactTile'));
+    await tester.dragUntilVisible(
+      contactTile,
+      find.descendant(
+        of: find.byKey(const ValueKey('legalCenterContent')),
+        matching: find.byType(Scrollable),
+      ),
+      const Offset(0, -240),
+    );
+    await tester.tap(contactTile);
+    await tester.pumpAndSettle();
+
+    expect(links.opened, hasLength(1));
+    expect(links.opened.single.scheme, 'mailto');
+    expect(links.opened.single.path, 'kontakt@budowaproapp.pl');
+    expect(
+      links.opened.single.queryParameters['subject'],
+      'BudowaPRO - kontakt',
+    );
     expect(tester.takeException(), isNull);
   });
 
@@ -80,8 +116,8 @@ void main() {
     final config = LegalReleaseConfig(
       publisherName: publisher,
       contactEmail: email,
-      privacyPolicyUrl: 'https://budowapro.pl/privacy',
-      supportUrl: 'https://budowapro.pl/support',
+      privacyPolicyUrl: 'https://budowaproapp.pl/privacy/',
+      supportUrl: 'https://budowaproapp.pl/support/',
     );
 
     await tester.pumpWidget(
@@ -241,10 +277,10 @@ void main() {
 }
 
 const _configuredRelease = LegalReleaseConfig(
-  publisherName: 'BudowaPRO Sp. z o.o.',
-  contactEmail: 'privacy@budowapro.pl',
-  privacyPolicyUrl: 'https://budowapro.pl/privacy',
-  supportUrl: 'https://budowapro.pl/support',
+  publisherName: 'Przemysław Sobczyk',
+  contactEmail: 'kontakt@budowaproapp.pl',
+  privacyPolicyUrl: 'https://budowaproapp.pl/privacy/',
+  supportUrl: 'https://budowaproapp.pl/support/',
 );
 
 void _compactView(WidgetTester tester) {
@@ -259,11 +295,14 @@ Widget _testApp(
   required LegalReleaseConfig config,
   TextScaler textScaler = TextScaler.noScaling,
   LocalDataDeletion? deletion,
+  LegalLinkGateway? linkGateway,
 }) {
   return ProviderScope(
     overrides: [
       legalReleaseConfigProvider.overrideWithValue(config),
-      legalLinkGatewayProvider.overrideWithValue(_FakeLegalLinkGateway()),
+      legalLinkGatewayProvider.overrideWithValue(
+        linkGateway ?? _FakeLegalLinkGateway(),
+      ),
       localDataDeletionProvider.overrideWith(
         (ref) async => deletion ?? _FakeLocalDataDeletion(),
       ),
@@ -290,8 +329,13 @@ const _buildInfo = AppBuildInfo(
 );
 
 final class _FakeLegalLinkGateway implements LegalLinkGateway {
+  final opened = <Uri>[];
+
   @override
-  Future<bool> openExternal(Uri uri) async => true;
+  Future<bool> openExternal(Uri uri) async {
+    opened.add(uri);
+    return true;
+  }
 }
 
 final class _FakeLocalDataDeletion implements LocalDataDeletion {

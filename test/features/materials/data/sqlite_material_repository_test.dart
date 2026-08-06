@@ -171,6 +171,61 @@ void main() {
     expect(delayed.items, hasLength(1));
   });
 
+  test('does not delete a material with an open delivery', () async {
+    final material = await repository.create(materialInput());
+    await repository.saveDelivery(
+      input: MaterialDeliveryInput(
+        projectId: 'project-1',
+        materialId: material.id,
+        expectedQuantity: _quantity(10),
+        dueAt: DateTime.utc(2026, 8, 3),
+      ),
+    );
+
+    await expectLater(
+      repository.delete(projectId: 'project-1', materialId: material.id),
+      throwsA(
+        isA<MaterialInUseException>().having(
+          (error) => error.deliveryCount,
+          'deliveryCount',
+          1,
+        ),
+      ),
+    );
+    expect(
+      await repository.findById(
+        projectId: 'project-1',
+        materialId: material.id,
+      ),
+      isNotNull,
+    );
+  });
+
+  test('does not delete a material with completed delivery history', () async {
+    final material = await repository.create(materialInput());
+    await repository.saveDelivery(
+      input: deliveryInput(material.id, delivered: 10, suffix: 'odebrana'),
+    );
+
+    await expectLater(
+      repository.delete(projectId: 'project-1', materialId: material.id),
+      throwsA(
+        isA<MaterialInUseException>().having(
+          (error) => error.deliveryCount,
+          'deliveryCount',
+          1,
+        ),
+      ),
+    );
+    expect(
+      await repository.findById(
+        projectId: 'project-1',
+        materialId: material.id,
+      ),
+      isNotNull,
+    );
+  });
+
   test(
     'stores a completed return with only the actual refund entered',
     () async {

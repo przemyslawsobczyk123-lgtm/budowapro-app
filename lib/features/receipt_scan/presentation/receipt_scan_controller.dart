@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_financial.dart';
+import 'package:budowapro/features/receipt_scan/domain/receipt_ocr.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_review.dart';
 import 'package:budowapro/features/receipt_scan/domain/receipt_scan.dart';
 import 'package:flutter/foundation.dart';
@@ -122,6 +123,30 @@ final class ReceiptScanController extends ChangeNotifier {
     final source = _state.source;
     if (_state.isBusy || source == null) return;
     await _recognize(source);
+  }
+
+  void continueManually() {
+    final source = _state.source;
+    if (_state.status != ReceiptScanViewStatus.error ||
+        _state.failureKind != ReceiptScanFailureKind.emptyText ||
+        source == null) {
+      return;
+    }
+    final candidates = const ReceiptOcrCandidateParser().parse(
+      RecognizedReceiptText.fromRaw(''),
+    );
+    final session = ReceiptScanSession(source: source, candidates: candidates);
+    _setState(
+      ReceiptScanViewState(
+        status: ReceiptScanViewStatus.result,
+        source: source,
+        session: session,
+        reviewDraft: ReceiptReviewDraft.fromCandidates(
+          candidates,
+          initialStageId: _defaultStageId,
+        ),
+      ),
+    );
   }
 
   void updateField(ReceiptReviewFieldKey key, String value) {
