@@ -36,8 +36,10 @@ przepisów ani decyzji osób z wymaganymi uprawnieniami.
 - Konto: nie.
 - Dostęp ograniczony: nie.
 - Grupa docelowa: osoby dorosłe prowadzące budowę lub remont.
-- URL polityki: `https://przemyslawsobczyk123-lgtm.github.io/budowapro-app/privacy/`
-- URL wsparcia: `https://przemyslawsobczyk123-lgtm.github.io/budowapro-app/support/`
+- URL polityki: `https://budowaproapp.pl/privacy/`
+- URL wsparcia: `https://budowaproapp.pl/support/`
+- URL usuwania danych: `https://budowaproapp.pl/data-deletion/`
+- E-mail wsparcia: `kontakt@budowaproapp.pl`
 
 ## Uwagi dla recenzenta
 

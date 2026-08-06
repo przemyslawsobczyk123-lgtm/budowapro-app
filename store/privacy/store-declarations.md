@@ -1,6 +1,6 @@
-# BudowaPRO 1.0 - robocza deklaracja prywatności sklepów
+# BudowaPRO 1.1 - robocza deklaracja prywatności sklepów
 
-Stan: 2026-08-01. Deklarację trzeba porównać z raportem finalnego podpisanego
+Stan: 2026-08-06. Deklarację trzeba porównać z raportem finalnego podpisanego
 AAB/IPA. Zmiana SDK, uprawnień albo backendu unieważnia ten arkusz.
 
 ## Przepływy aplikacji
@@ -17,7 +17,7 @@ AAB/IPA. Zmiana SDK, uprawnień albo backendu unieważnia ten arkusz.
 | Google ML Kit | Możliwe zaszyfrowane metryki techniczne SDK |
 | Kontakty | Pojedynczy wynik systemowego selektora |
 | Powiadomienia | Lokalne przypomnienia |
-| Systemowy backup | Android: wykluczony; iOS: zależny od ustawień kopii Apple |
+| Systemowy backup | Android: wykluczony; iOS: prywatny katalog danych wyłączony z iCloud Backup |
 
 ## Google Play Data safety - rekomendowane odpowiedzi R1
 

@@ -40,9 +40,9 @@ budowa,remont,budżet,koszty,paragony,faktury,dziennik,wykonawcy,dom
 ## URLs
 
 - Privacy Policy URL:
-  `https://przemyslawsobczyk123-lgtm.github.io/budowapro-app/privacy/`
+  `https://budowaproapp.pl/privacy/`
 - Support URL:
-  `https://przemyslawsobczyk123-lgtm.github.io/budowapro-app/support/`
+  `https://budowaproapp.pl/support/`
 
 ## App Review notes
 
