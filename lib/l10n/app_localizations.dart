@@ -7687,14 +7687,8 @@ abstract class AppLocalizations {
   /// No description provided for @legalPublisherSection.
   ///
   /// In pl, this message translates to:
-  /// **'Wydawca i kontakt'**
+  /// **'Kontakt i pomoc'**
   String get legalPublisherSection;
-
-  /// No description provided for @legalPublisherLabel.
-  ///
-  /// In pl, this message translates to:
-  /// **'Wydawca aplikacji'**
-  String get legalPublisherLabel;
 
   /// No description provided for @legalContactLabel.
   ///
@@ -7729,7 +7723,7 @@ abstract class AppLocalizations {
   /// No description provided for @legalDocumentVersion.
   ///
   /// In pl, this message translates to:
-  /// **'Wersja 1.1 · obowiązuje od 06.08.2026'**
+  /// **'Wersja 1.2 · obowiązuje od 08.08.2026'**
   String get legalDocumentVersion;
 
   /// No description provided for @legalIntroTitle.
@@ -7761,6 +7755,12 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'nazwa wydawcy'**
   String get legalMissingPublisherRequirement;
+
+  /// No description provided for @legalMissingTaxIdRequirement.
+  ///
+  /// In pl, this message translates to:
+  /// **'prawidłowy NIP wydawcy'**
+  String get legalMissingTaxIdRequirement;
 
   /// No description provided for @legalMissingEmailRequirement.
   ///
@@ -7843,8 +7843,12 @@ abstract class AppLocalizations {
   /// No description provided for @privacySectionPublisherBody.
   ///
   /// In pl, this message translates to:
-  /// **'Podmiot wskazany jako wydawca BudowaPRO: {publisher}. Kontakt w sprawach prywatności: {contact}. Aplikacja nie wymaga konta i nie ma serwera BudowaPRO. Wydawca nie ma zdalnego dostępu do treści zapisanych wyłącznie w prywatnej pamięci aplikacji.'**
-  String privacySectionPublisherBody(String publisher, String contact);
+  /// **'Administratorem danych przekazanych podczas kontaktu z BudowaPRO jest {publisher}, NIP {taxId}. Kontakt w sprawach prywatności: {contact}. Aplikacja nie wymaga konta i nie ma serwera BudowaPRO. Wydawca nie otrzymuje i nie ma zdalnego dostępu do treści zapisanych wyłącznie w prywatnej pamięci aplikacji.'**
+  String privacySectionPublisherBody(
+    String publisher,
+    String taxId,
+    String contact,
+  );
 
   /// No description provided for @privacySectionLocalDataTitle.
   ///
@@ -7951,8 +7955,12 @@ abstract class AppLocalizations {
   /// No description provided for @termsSectionProviderBody.
   ///
   /// In pl, this message translates to:
-  /// **'BudowaPRO udostępnia: {publisher}. Kontakt: {contact}. Korzystanie z aplikacji nie wymaga utworzenia konta ani zawarcia odpłatnej subskrypcji w tej wersji.'**
-  String termsSectionProviderBody(String publisher, String contact);
+  /// **'Usługodawcą i wydawcą BudowaPRO jest {publisher}, NIP {taxId}. Kontakt: {contact}. Korzystanie z aplikacji nie wymaga utworzenia konta ani zawarcia odpłatnej subskrypcji w tej wersji.'**
+  String termsSectionProviderBody(
+    String publisher,
+    String taxId,
+    String contact,
+  );
 
   /// No description provided for @termsSectionPurposeTitle.
   ///

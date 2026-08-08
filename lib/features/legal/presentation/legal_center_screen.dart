@@ -91,13 +91,6 @@ class LegalCenterScreen extends ConsumerWidget {
           ),
           _SectionTitle(text: l10n.legalPublisherSection),
           _ValueTile(
-            icon: Icons.business_outlined,
-            label: l10n.legalPublisherLabel,
-            value: config.hasPublisherName
-                ? config.publisherName.trim()
-                : l10n.legalNotConfiguredValue,
-          ),
-          _ValueTile(
             key: const ValueKey('legalContactTile'),
             icon: Icons.alternate_email_rounded,
             label: l10n.legalContactLabel,
@@ -246,6 +239,7 @@ String _requirementLabel(
 ) => switch (requirement) {
   LegalReleaseRequirement.publisherName =>
     l10n.legalMissingPublisherRequirement,
+  LegalReleaseRequirement.publisherTaxId => l10n.legalMissingTaxIdRequirement,
   LegalReleaseRequirement.contactEmail => l10n.legalMissingEmailRequirement,
   LegalReleaseRequirement.publicPrivacyPolicyUrl =>
     l10n.legalMissingPublicUrlRequirement,

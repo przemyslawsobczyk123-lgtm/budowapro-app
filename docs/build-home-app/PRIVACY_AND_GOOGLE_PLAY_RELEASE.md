@@ -48,11 +48,22 @@ BUDOWAPRO_SUPPORT_URL
 Aktualne wartosci BudowaPRO:
 
 ```text
-BUDOWAPRO_PUBLISHER_NAME=Przemyslaw Sobczyk
+BUDOWAPRO_PUBLISHER_NAME=Przemysław Sobczyk
 BUDOWAPRO_PRIVACY_CONTACT_EMAIL=kontakt@budowaproapp.pl
 BUDOWAPRO_PRIVACY_POLICY_URL=https://budowaproapp.pl/privacy/
 BUDOWAPRO_SUPPORT_URL=https://budowaproapp.pl/support/
 ```
+
+Zweryfikowane dane prawne wydawcy to `PRZEMYSŁAW SOBCZYK`, NIP
+`6443558164`. Zwykly ekran kontaktowy aplikacji nie pokazuje nazwiska ani
+NIP-u. Dane te wystepuja tylko w polityce prywatnosci i warunkach uzytkowania,
+gdzie identyfikuja administratora i uslugodawce. Publiczna marka aplikacji i
+nazwa dewelopera w sklepie to `BudowaPRO`, a publiczny kontakt do aplikacji to
+wylacznie `kontakt@budowaproapp.pl`.
+
+Dane prawne zostaly sprawdzone 08.08.2026 w oficjalnym Wykazie podatnikow VAT
+Ministerstwa Finansow dla NIP `6443558164`. Przed publikacja trzeba je jeszcze
+porownac z dokumentami uzytymi do weryfikacji konta Google Play.
 
 Adres polityki musi:
 
@@ -174,10 +185,12 @@ jawnego audytu i aktualizacji allowlisty.
 
 ## 7. Play Console przed publikacja
 
-1. Potwierdz prawna nazwe, adres i dane konta dewelopera.
+1. Potwierdz prawna nazwe `PRZEMYSŁAW SOBCZYK`, NIP `6443558164`, adres i
+   pozostale dane konta dewelopera zgodnie z dokumentami firmy.
 2. Wlacz Play App Signing i zarejestruj certyfikat klucza upload.
-3. Wpisz publiczny URL polityki, publiczny URL wsparcia oraz zgodny e-mail
-   wsparcia.
+3. Ustaw publiczna nazwe dewelopera `BudowaPRO`, e-mail
+   `kontakt@budowaproapp.pl`, witryne `https://budowaproapp.pl`, publiczny URL
+   polityki i publiczny URL wsparcia.
 4. Wypelnij Data safety dla dokladnego AAB i wersji ML Kit.
 5. Ustaw deklaracje reklam na `Nie`.
 6. Wypelnij grupe docelowa, klasyfikacje tresci i dostep dla recenzenta.
@@ -187,6 +200,12 @@ jawnego audytu i aktualizacji allowlisty.
 9. Uruchom raport przedpremierowy na roznych wersjach Androida.
 10. Przejdz wymagany test zamkniety, jesli dotyczy typu konta.
 11. Opublikuj etapowo i zachowaj AAB, `release-metadata.json` oraz symbole.
+
+Pola prawnej nazwy i adresu weryfikuje Google na podstawie profilu platnosci
+lub danych organizacji. Nie wolno w nich wpisywac marki zamiast nazwy prawnej.
+Kod aplikacji nie steruje tym, ktore zweryfikowane dane konta Google Play
+pokazuje publicznie. Konto organizacji wymaga numeru D-U-N-S; sam NIP go nie
+zastepuje.
 
 Brak konta uzytkownika oznacza, ze URL usuwania konta nie jest wymagany.
 Lokalne dane mozna usunac w aplikacji, ustawieniach Androida lub przez
@@ -223,6 +242,12 @@ odinstalowanie. Reczne kopie i eksporty trzeba usunac osobno.
   https://developer.android.com/guide/practices/page-sizes
 - Google Play User Data:
   https://support.google.com/googleplay/android-developer/answer/10144311
+- Google Play developer identity verification:
+  https://support.google.com/googleplay/android-developer/answer/10841920
+- Google Play account information and public developer data:
+  https://support.google.com/googleplay/android-developer/answer/13634081
+- Google Play organization account and D-U-N-S:
+  https://support.google.com/android-developer-console/answer/16641046
 - Google Play Data safety:
   https://support.google.com/googleplay/android-developer/answer/10787469
 - Google Play pre-launch report:
@@ -235,3 +260,5 @@ odinstalowanie. Reczne kopie i eksporty trzeba usunac osobno.
   https://eur-lex.europa.eu/eli/reg/2016/679/oj
 - UODO:
   https://uodo.gov.pl/pl/138/155
+- Wykaz podatnikow VAT Ministerstwa Finansow:
+  https://wl-api.mf.gov.pl/api/search/nip/6443558164?date=2026-08-08

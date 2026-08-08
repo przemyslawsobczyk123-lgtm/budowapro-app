@@ -4345,10 +4345,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get legalAppVersionUnavailable => 'Wersja niedostępna';
 
   @override
-  String get legalPublisherSection => 'Wydawca i kontakt';
-
-  @override
-  String get legalPublisherLabel => 'Wydawca aplikacji';
+  String get legalPublisherSection => 'Kontakt i pomoc';
 
   @override
   String get legalContactLabel => 'Skontaktuj się z nami';
@@ -4366,7 +4363,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get legalSupportUrlLabel => 'Publiczna strona wsparcia';
 
   @override
-  String get legalDocumentVersion => 'Wersja 1.1 · obowiązuje od 06.08.2026';
+  String get legalDocumentVersion => 'Wersja 1.2 · obowiązuje od 08.08.2026';
 
   @override
   String get legalIntroTitle => 'Prywatność dostępna w aplikacji';
@@ -4385,6 +4382,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get legalMissingPublisherRequirement => 'nazwa wydawcy';
+
+  @override
+  String get legalMissingTaxIdRequirement => 'prawidłowy NIP wydawcy';
 
   @override
   String get legalMissingEmailRequirement => 'prawidłowy e-mail';
@@ -4431,8 +4431,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get privacySectionPublisherTitle => '1. Wydawca i zakres polityki';
 
   @override
-  String privacySectionPublisherBody(String publisher, String contact) {
-    return 'Podmiot wskazany jako wydawca BudowaPRO: $publisher. Kontakt w sprawach prywatności: $contact. Aplikacja nie wymaga konta i nie ma serwera BudowaPRO. Wydawca nie ma zdalnego dostępu do treści zapisanych wyłącznie w prywatnej pamięci aplikacji.';
+  String privacySectionPublisherBody(
+    String publisher,
+    String taxId,
+    String contact,
+  ) {
+    return 'Administratorem danych przekazanych podczas kontaktu z BudowaPRO jest $publisher, NIP $taxId. Kontakt w sprawach prywatności: $contact. Aplikacja nie wymaga konta i nie ma serwera BudowaPRO. Wydawca nie otrzymuje i nie ma zdalnego dostępu do treści zapisanych wyłącznie w prywatnej pamięci aplikacji.';
   }
 
   @override
@@ -4497,8 +4501,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get termsSectionProviderTitle => '1. Usługodawca';
 
   @override
-  String termsSectionProviderBody(String publisher, String contact) {
-    return 'BudowaPRO udostępnia: $publisher. Kontakt: $contact. Korzystanie z aplikacji nie wymaga utworzenia konta ani zawarcia odpłatnej subskrypcji w tej wersji.';
+  String termsSectionProviderBody(
+    String publisher,
+    String taxId,
+    String contact,
+  ) {
+    return 'Usługodawcą i wydawcą BudowaPRO jest $publisher, NIP $taxId. Kontakt: $contact. Korzystanie z aplikacji nie wymaga utworzenia konta ani zawarcia odpłatnej subskrypcji w tej wersji.';
   }
 
   @override

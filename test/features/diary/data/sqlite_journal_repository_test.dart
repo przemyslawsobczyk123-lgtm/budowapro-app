@@ -65,7 +65,7 @@ void main() {
             ).create(
               projectId: 'project-1',
               draft: ContactDraft(
-                displayName: 'Przemyslaw Sobczyk',
+                displayName: 'Jan Kowalski',
                 kind: ContactKind.person,
                 roles: const <ContactRole>{ContactRole.other},
               ),

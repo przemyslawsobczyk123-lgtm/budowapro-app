@@ -1667,14 +1667,13 @@
   "legalAppPackageLabel": "Identyfikator pakietu",
   "legalAppVersionLoading": "Odczytywanie wersji",
   "legalAppVersionUnavailable": "Wersja niedostępna",
-  "legalPublisherSection": "Wydawca i kontakt",
-  "legalPublisherLabel": "Wydawca aplikacji",
+  "legalPublisherSection": "Kontakt i pomoc",
   "legalContactLabel": "Skontaktuj się z nami",
   "legalNotConfiguredValue": "Nie skonfigurowano do wydania",
   "legalEmailSubject": "BudowaPRO - kontakt",
   "legalPublicPolicyLabel": "Publiczna kopia polityki",
   "legalSupportUrlLabel": "Publiczna strona wsparcia",
-  "legalDocumentVersion": "Wersja 1.1 · obowiązuje od 06.08.2026",
+  "legalDocumentVersion": "Wersja 1.2 · obowiązuje od 08.08.2026",
   "legalIntroTitle": "Prywatność dostępna w aplikacji",
   "legalIntroMessage": "W jednym miejscu sprawdzisz zasady, faktyczne przepływy danych i sposoby zarządzania lokalną zawartością.",
   "legalReleaseConfigMissingTitle": "Wydanie wymaga uzupełnienia",
@@ -1687,6 +1686,7 @@
     }
   },
   "legalMissingPublisherRequirement": "nazwa wydawcy",
+  "legalMissingTaxIdRequirement": "prawidłowy NIP wydawcy",
   "legalMissingEmailRequirement": "prawidłowy e-mail",
   "legalMissingPublicUrlRequirement": "publiczny adres HTTPS polityki",
   "legalMissingSupportUrlRequirement": "publiczny adres HTTPS wsparcia",
@@ -1700,10 +1700,13 @@
   "legalSourceGdpr": "RODO — rozporządzenie (UE) 2016/679",
   "legalSourceUodo": "UODO — prawo do złożenia skargi",
   "privacySectionPublisherTitle": "1. Wydawca i zakres polityki",
-  "privacySectionPublisherBody": "Podmiot wskazany jako wydawca BudowaPRO: {publisher}. Kontakt w sprawach prywatności: {contact}. Aplikacja nie wymaga konta i nie ma serwera BudowaPRO. Wydawca nie ma zdalnego dostępu do treści zapisanych wyłącznie w prywatnej pamięci aplikacji.",
+  "privacySectionPublisherBody": "Administratorem danych przekazanych podczas kontaktu z BudowaPRO jest {publisher}, NIP {taxId}. Kontakt w sprawach prywatności: {contact}. Aplikacja nie wymaga konta i nie ma serwera BudowaPRO. Wydawca nie otrzymuje i nie ma zdalnego dostępu do treści zapisanych wyłącznie w prywatnej pamięci aplikacji.",
   "@privacySectionPublisherBody": {
     "placeholders": {
       "publisher": {
+        "type": "String"
+      },
+      "taxId": {
         "type": "String"
       },
       "contact": {
@@ -1735,10 +1738,13 @@
   "privacySectionChangesTitle": "9. Zmiany polityki",
   "privacySectionChangesBody": "Istotna zmiana funkcji, dostawcy SDK lub przepływu danych wymaga aktualizacji tej polityki i sekcji Bezpieczeństwo danych w Google Play. Aktualna wersja pozostaje dostępna w aplikacji oraz pod publicznym adresem wskazanym w Google Play.",
   "termsSectionProviderTitle": "1. Usługodawca",
-  "termsSectionProviderBody": "BudowaPRO udostępnia: {publisher}. Kontakt: {contact}. Korzystanie z aplikacji nie wymaga utworzenia konta ani zawarcia odpłatnej subskrypcji w tej wersji.",
+  "termsSectionProviderBody": "Usługodawcą i wydawcą BudowaPRO jest {publisher}, NIP {taxId}. Kontakt: {contact}. Korzystanie z aplikacji nie wymaga utworzenia konta ani zawarcia odpłatnej subskrypcji w tej wersji.",
   "@termsSectionProviderBody": {
     "placeholders": {
       "publisher": {
+        "type": "String"
+      },
+      "taxId": {
         "type": "String"
       },
       "contact": {

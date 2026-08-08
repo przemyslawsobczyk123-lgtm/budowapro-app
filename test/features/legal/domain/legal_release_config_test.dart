@@ -7,6 +7,7 @@ void main() {
 
     expect(config.hasCompleteLegalMetadata, isTrue);
     expect(config.publisherName, LegalReleaseConfig.productionPublisherName);
+    expect(config.publisherTaxId, '6443558164');
     expect(config.contactEmail, 'kontakt@budowaproapp.pl');
     expect(
       config.publicPrivacyPolicyUri,
@@ -53,6 +54,22 @@ void main() {
       LegalReleaseRequirement.publicPrivacyPolicyUrl,
       LegalReleaseRequirement.supportUrl,
     ]);
+  });
+
+  test('rejects a publisher NIP with an invalid checksum', () {
+    const config = LegalReleaseConfig(
+      publisherName: 'BudowaPRO',
+      publisherTaxId: '6443558165',
+      contactEmail: 'privacy@example.pl',
+      privacyPolicyUrl: 'https://example.pl/privacy',
+      supportUrl: 'https://example.pl/support',
+    );
+
+    expect(config.hasValidPublisherTaxId, isFalse);
+    expect(
+      config.missingRequirements,
+      contains(LegalReleaseRequirement.publisherTaxId),
+    );
   });
 
   test('rejects a PDF even when it uses HTTPS', () {

@@ -41,7 +41,8 @@ void main() {
       const Offset(0, -240),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Przemysław Sobczyk'), findsOneWidget);
+    expect(find.text('Przemysław Sobczyk'), findsNothing);
+    expect(find.textContaining('6443558164'), findsNothing);
     expect(find.text('kontakt@budowaproapp.pl'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
@@ -129,7 +130,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     await tester.dragUntilVisible(
-      find.text(publisher),
+      find.text(email),
       find.descendant(
         of: find.byKey(const ValueKey('legalCenterContent')),
         matching: find.byType(Scrollable),
@@ -138,7 +139,8 @@ void main() {
     );
 
     expect(config.hasCompleteLegalMetadata, isTrue);
-    expect(find.text(publisher), findsOneWidget);
+    expect(find.text(publisher), findsNothing);
+    expect(find.text(email), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -173,6 +175,24 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('privacy policy identifies the controller only in the document', (
+    tester,
+  ) async {
+    _compactView(tester);
+    await tester.pumpWidget(
+      _testApp(
+        const LegalDocumentScreen(kind: LegalDocumentKind.privacyPolicy),
+        config: _configuredRelease,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Przemysław Sobczyk'), findsOneWidget);
+    expect(find.textContaining('NIP 6443558164'), findsOneWidget);
+    expect(find.textContaining('kontakt@budowaproapp.pl'), findsOneWidget);
+    expect(find.textContaining('@gmail.com'), findsNothing);
+  });
+
   testWidgets('terms expose the construction safety boundary', (tester) async {
     _compactView(tester);
     await tester.pumpWidget(
@@ -183,14 +203,42 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.ensureVisible(
+    await tester.dragUntilVisible(
       find.text('3. Informacje budowlane i bezpieczeństwo'),
+      find.descendant(
+        of: find.byKey(const ValueKey('legalDocument-termsOfUse')),
+        matching: find.byType(Scrollable),
+      ),
+      const Offset(0, -160),
     );
+    await Scrollable.ensureVisible(
+      tester.element(find.text('3. Informacje budowlane i bezpieczeństwo')),
+      alignment: 0.5,
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.text('3. Informacje budowlane i bezpieczeństwo'));
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Nie są projektem budowlanym'), findsOneWidget);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('terms identify the provider only in the legal document', (
+    tester,
+  ) async {
+    _compactView(tester);
+    await tester.pumpWidget(
+      _testApp(
+        const LegalDocumentScreen(kind: LegalDocumentKind.termsOfUse),
+        config: _configuredRelease,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Przemysław Sobczyk'), findsOneWidget);
+    expect(find.textContaining('NIP 6443558164'), findsOneWidget);
+    expect(find.textContaining('kontakt@budowaproapp.pl'), findsOneWidget);
+    expect(find.textContaining('@gmail.com'), findsNothing);
   });
 
   testWidgets('privacy settings show real local controls at 200 percent', (

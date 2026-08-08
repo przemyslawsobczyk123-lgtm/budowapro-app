@@ -23,7 +23,10 @@
 - zatwierdzenie komunikatu marki na przygotowanej grafice promocyjnej;
 - finalna kategoria, kraje, klasyfikacja wieku, grupa docelowa i status tradera;
 - wpisanie publicznych URL-i oraz formularzy prywatności w obu konsolach;
-- weryfikacja, że nazwa wydawcy na stronach zgadza się z kontami sklepowymi.
+- weryfikacja, że dokumenty prawne podają `PRZEMYSŁAW SOBCZYK`, NIP
+  `6443558164`, a publiczna nazwa dewelopera w sklepach to `BudowaPRO`;
+- weryfikacja, że publicznym kontaktem w obu sklepach jest wyłącznie
+  `kontakt@budowaproapp.pl`.
 
 ## Kadry do zrzutów
 

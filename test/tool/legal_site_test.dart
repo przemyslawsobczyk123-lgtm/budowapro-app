@@ -36,7 +36,7 @@ void main() {
       final html = _read(entry.key);
       expect(html, contains('rel="canonical" href="${entry.value}"'));
       expect(html, contains(contactEmail));
-      expect(html, isNot(contains('przemyslawsobczyk123@gmail.com')));
+      expect(html, isNot(contains('@gmail.com')));
     }
   });
 
@@ -45,7 +45,10 @@ void main() {
 
     for (final requiredText in <String>[
       'Polityka prywatności',
-      'Wydawca:',
+      'Wydawca i administrator korespondencji:',
+      'Przemysław Sobczyk',
+      'NIP 6443558164',
+      'administratorem danych',
       'Dane przechowywane lokalnie',
       'Google ML Kit',
       'Uprawnienia urządzenia',
@@ -55,6 +58,15 @@ void main() {
     ]) {
       expect(policy, contains(requiredText));
     }
+  });
+
+  test('terms identify the legal provider without a private email', () {
+    final terms = _read('site/terms/index.html');
+
+    expect(terms, contains('Przemysław Sobczyk'));
+    expect(terms, contains('NIP 6443558164'));
+    expect(terms, contains('kontakt@budowaproapp.pl'));
+    expect(terms, isNot(contains('@gmail.com')));
   });
 
   test('deletion page accurately explains the local no-account flow', () {

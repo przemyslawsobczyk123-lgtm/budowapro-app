@@ -153,10 +153,13 @@ List<_LegalSectionData> _privacySections(
   final contact = config.hasValidContactEmail
       ? config.contactEmail.trim()
       : l10n.legalNotConfiguredValue;
+  final taxId = config.hasValidPublisherTaxId
+      ? config.publisherTaxId.trim()
+      : l10n.legalNotConfiguredValue;
   return <_LegalSectionData>[
     _LegalSectionData(
       title: l10n.privacySectionPublisherTitle,
-      body: l10n.privacySectionPublisherBody(publisher, contact),
+      body: l10n.privacySectionPublisherBody(publisher, taxId, contact),
     ),
     _LegalSectionData(
       title: l10n.privacySectionLocalDataTitle,
@@ -203,10 +206,13 @@ List<_LegalSectionData> _termsSections(
   final contact = config.hasValidContactEmail
       ? config.contactEmail.trim()
       : l10n.legalNotConfiguredValue;
+  final taxId = config.hasValidPublisherTaxId
+      ? config.publisherTaxId.trim()
+      : l10n.legalNotConfiguredValue;
   return <_LegalSectionData>[
     _LegalSectionData(
       title: l10n.termsSectionProviderTitle,
-      body: l10n.termsSectionProviderBody(publisher, contact),
+      body: l10n.termsSectionProviderBody(publisher, taxId, contact),
     ),
     _LegalSectionData(
       title: l10n.termsSectionPurposeTitle,

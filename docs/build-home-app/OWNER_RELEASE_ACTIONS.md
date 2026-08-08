@@ -10,8 +10,12 @@ tozsamosci, zgody, platnego konta albo sekretu nalezacego do wydawcy.
 - zalozyc lub wskazac konto Play Console i potwierdzic dane prawne wydawcy;
 - zaakceptowac umowy i uzupelnic wymagane informacje konta;
 - wlaczyc Play App Signing i bezpiecznie zachowac docelowy klucz upload;
-- potwierdzic w Play Console nazwe wydawcy `Przemyslaw Sobczyk`, e-mail
-  `kontakt@budowaproapp.pl` oraz adresy `budowaproapp.pl`;
+- w danych prawnych Play Console wpisac dokladna nazwe `PRZEMYSŁAW SOBCZYK`,
+  NIP `6443558164` i adres zgodny z dokumentami firmy;
+- jako publiczna nazwe dewelopera ustawic `BudowaPRO`, publiczny e-mail
+  `kontakt@budowaproapp.pl`, witryne `https://budowaproapp.pl` oraz adresy
+  polityki i wsparcia w tej domenie;
+- nie wpisywac prywatnego Gmaila do informacji widocznych w Google Play;
 - zatwierdzic Data safety, grupe docelowa, klasyfikacje tresci i deklaracje
   reklam dla konkretnego AAB;
 - zarejestrowac pakiet `pl.budowapro` po weryfikacji tozsamosci;
@@ -33,9 +37,10 @@ tozsamosci, zgody, platnego konta albo sekretu nalezacego do wydawcy.
 
 ## Prawo i marka
 
-- wskazac prawna nazwe wydawcy i monitorowany adres kontaktowy;
-- potwierdzic, ze `Przemyslaw Sobczyk` jest wlasciwa nazwa prawna do publicznej
-  polityki;
+- utrzymywac prawna nazwe `PRZEMYSŁAW SOBCZYK` i NIP `6443558164` w polityce
+  oraz warunkach, ale nie w zwyklym ekranie kontaktowym aplikacji;
+- jako monitorowany kontakt publiczny utrzymywac
+  `kontakt@budowaproapp.pl`;
 - sprawdzic tresc opublikowanych adresow
   `https://budowaproapp.pl/privacy/`, `https://budowaproapp.pl/terms/`,
   `https://budowaproapp.pl/support/` i

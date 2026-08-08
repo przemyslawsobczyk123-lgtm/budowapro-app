@@ -633,10 +633,11 @@ Last updated: 2026-08-06
 
 ### Custom domain and user support
 
-- The app ships complete legal defaults for `Przemyslaw Sobczyk`,
+- The app ships complete legal defaults for the legal entity and NIP only in
+  legal documents, while ordinary UI uses `BudowaPRO`,
   `kontakt@budowaproapp.pl`, `https://budowaproapp.pl/privacy/` and
-  `https://budowaproapp.pl/support/`; controlled release builds can still
-  override and validate these values through Dart defines.
+  `https://budowaproapp.pl/support/`; controlled release builds validate the
+  NIP and can override the legal name, contact and URLs through Dart defines.
 - The legal center exposes a tested `Skontaktuj sie z nami` action that opens a
   pre-addressed message in the system mail application.
 - `site/` contains canonical privacy, terms, support and local-data deletion
