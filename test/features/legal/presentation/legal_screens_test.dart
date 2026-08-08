@@ -43,6 +43,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Przemysław Sobczyk'), findsNothing);
     expect(find.textContaining('6443558164'), findsNothing);
+    expect(find.textContaining('Przygraniczna 40'), findsNothing);
     expect(find.text('kontakt@budowaproapp.pl'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
@@ -189,8 +190,45 @@ void main() {
 
     expect(find.textContaining('Przemysław Sobczyk'), findsOneWidget);
     expect(find.textContaining('NIP 6443558164'), findsOneWidget);
+    expect(find.textContaining('Przygraniczna 40'), findsOneWidget);
     expect(find.textContaining('kontakt@budowaproapp.pl'), findsOneWidget);
     expect(find.textContaining('@gmail.com'), findsNothing);
+  });
+
+  testWidgets('privacy policy explains correspondence legal bases and rights', (
+    tester,
+  ) async {
+    _compactView(tester);
+    await tester.pumpWidget(
+      _testApp(
+        const LegalDocumentScreen(kind: LegalDocumentKind.privacyPolicy),
+        config: _configuredRelease,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final scrollable = find.descendant(
+      of: find.byKey(const ValueKey('legalDocument-privacyPolicy')),
+      matching: find.byType(Scrollable),
+    );
+    await tester.dragUntilVisible(
+      find.text('7. Korespondencja i podstawy prawne'),
+      scrollable,
+      const Offset(0, -240),
+    );
+    await tester.tap(find.text('7. Korespondencja i podstawy prawne'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('art. 6 ust. 1 lit. b RODO'), findsOneWidget);
+    await tester.dragUntilVisible(
+      find.text('9. Kontrola danych i prawa'),
+      scrollable,
+      const Offset(0, -240),
+    );
+    await tester.tap(find.text('9. Kontrola danych i prawa'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('ograniczenia przetwarzania'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('terms expose the construction safety boundary', (tester) async {
@@ -237,8 +275,37 @@ void main() {
 
     expect(find.textContaining('Przemysław Sobczyk'), findsOneWidget);
     expect(find.textContaining('NIP 6443558164'), findsOneWidget);
+    expect(find.textContaining('Przygraniczna 40'), findsOneWidget);
     expect(find.textContaining('kontakt@budowaproapp.pl'), findsOneWidget);
     expect(find.textContaining('@gmail.com'), findsNothing);
+  });
+
+  testWidgets('terms expose technical, termination and complaint rules', (
+    tester,
+  ) async {
+    _compactView(tester);
+    await tester.pumpWidget(
+      _testApp(
+        const LegalDocumentScreen(kind: LegalDocumentKind.termsOfUse),
+        config: _configuredRelease,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final scrollable = find.descendant(
+      of: find.byKey(const ValueKey('legalDocument-termsOfUse')),
+      matching: find.byType(Scrollable),
+    );
+    await tester.dragUntilVisible(
+      find.text('9. Reklamacje'),
+      scrollable,
+      const Offset(0, -240),
+    );
+    await tester.tap(find.text('9. Reklamacje'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('14 dni'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('privacy settings show real local controls at 200 percent', (

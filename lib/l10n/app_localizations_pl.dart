@@ -4327,7 +4327,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get legalSupportUrlLabel => 'Publiczna strona wsparcia';
 
   @override
-  String get legalDocumentVersion => 'Wersja 1.2 · obowiązuje od 08.08.2026';
+  String get legalDocumentVersion => 'Wersja 1.3 · obowiązuje od 08.08.2026';
 
   @override
   String get legalIntroTitle => 'Prywatność dostępna w aplikacji';
@@ -4348,6 +4348,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get legalMissingPublisherRequirement => 'nazwa wydawcy';
 
   @override
+  String get legalMissingPublisherAddressRequirement => 'adres usługodawcy';
+
+  @override
   String get legalMissingTaxIdRequirement => 'prawidłowy NIP wydawcy';
 
   @override
@@ -4362,7 +4365,49 @@ class AppLocalizationsPl extends AppLocalizations {
       'publiczny adres HTTPS wsparcia';
 
   @override
+  String get legalMissingTermsUrlRequirement =>
+      'publiczny adres HTTPS regulaminu';
+
+  @override
   String get legalOpenLinkError => 'Nie udało się otworzyć odnośnika.';
+
+  @override
+  String get legalAcceptanceTitle => 'Zanim zaczniesz';
+
+  @override
+  String get legalAcceptanceIntro =>
+      'BudowaPRO działa lokalnie i nie wymaga konta. Przed rozpoczęciem zapoznaj się z regulaminem oraz informacją o prywatności.';
+
+  @override
+  String get legalAcceptanceLocalNotice =>
+      'Potwierdzenie zostanie zapisane tylko na tym urządzeniu. Nie tworzy konta i nie jest wysyłane do wydawcy.';
+
+  @override
+  String get legalAcceptanceCheckbox =>
+      'Potwierdzam, że otrzymałem regulamin i akceptuję jego treść.';
+
+  @override
+  String get legalAcceptanceOpenTerms => 'Otwórz regulamin';
+
+  @override
+  String get legalAcceptanceOpenPrivacy => 'Polityka prywatności';
+
+  @override
+  String get legalAcceptanceContinue => 'Rozpocznij korzystanie';
+
+  @override
+  String get legalAcceptanceSaving => 'Zapisywanie potwierdzenia';
+
+  @override
+  String get legalAcceptanceLoadError =>
+      'Nie udało się sprawdzić potwierdzenia regulaminu.';
+
+  @override
+  String get legalAcceptanceSaveError =>
+      'Nie udało się zapisać potwierdzenia. Spróbuj ponownie.';
+
+  @override
+  String get legalAcceptanceRetry => 'Spróbuj ponownie';
 
   @override
   String get privacyPolicyIntro =>
@@ -4386,10 +4431,26 @@ class AppLocalizationsPl extends AppLocalizations {
   String get legalSourceGooglePrivacy => 'Google — polityka prywatności';
 
   @override
+  String get legalSourceGithubPrivacy =>
+      'GitHub — polityka prywatności i transfery';
+
+  @override
   String get legalSourceGdpr => 'RODO — rozporządzenie (UE) 2016/679';
 
   @override
   String get legalSourceUodo => 'UODO — prawo do złożenia skargi';
+
+  @override
+  String get legalSourceElectronicServicesAct =>
+      'ELI — ustawa o świadczeniu usług drogą elektroniczną';
+
+  @override
+  String get legalSourceConsumerRightsAct =>
+      'ELI — ustawa o prawach konsumenta';
+
+  @override
+  String get legalSourceTaxpayerList =>
+      'Ministerstwo Finansów — wykaz podatników VAT';
 
   @override
   String get privacySectionPublisherTitle => '1. Wydawca i zakres polityki';
@@ -4398,9 +4459,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String privacySectionPublisherBody(
     String publisher,
     String taxId,
+    String address,
     String contact,
   ) {
-    return 'Administratorem danych przekazanych podczas kontaktu z BudowaPRO jest $publisher, NIP $taxId. Kontakt w sprawach prywatności: $contact. Aplikacja nie wymaga konta i nie ma serwera BudowaPRO. Wydawca nie otrzymuje i nie ma zdalnego dostępu do treści zapisanych wyłącznie w prywatnej pamięci aplikacji.';
+    return 'Administratorem danych przekazanych podczas kontaktu z BudowaPRO jest $publisher, NIP $taxId, adres: $address. Kontakt w sprawach prywatności: $contact. Aplikacja nie wymaga konta i nie ma serwera BudowaPRO. Wydawca nie otrzymuje i nie ma zdalnego dostępu do treści zapisanych wyłącznie w prywatnej pamięci aplikacji.';
   }
 
   @override
@@ -4422,40 +4484,57 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get privacySectionOcrBody =>
-      'Rozpoznawanie obrazu i tekstu odbywa się na urządzeniu. Zgodnie z dokumentacją Google obrazy, tekst wejściowy i wynik OCR nie są wysyłane do serwerów Google. Biblioteki ML Kit mogą jednak kontaktować się z Google po aktualizacje i wysyłać zaszyfrowane metryki techniczne: informacje o urządzeniu i aplikacji, identyfikator instalacji, parametry i wydajność funkcji, typy zdarzeń oraz kody błędów. Google używa ich do diagnostyki i analityki wykorzystania ML Kit.';
+      'Rozpoznawanie obrazu i tekstu odbywa się na urządzeniu. Zgodnie z dokumentacją Google obrazy, tekst wejściowy i wynik OCR nie są wysyłane do serwerów Google. Po uruchomieniu skanera lub OCR biblioteki ML Kit zbierają jednak i wysyłają przez HTTPS metryki techniczne obejmujące informacje o urządzeniu i aplikacji, identyfikator instalacji, konfigurację API, rozmiar wejścia i wyjścia, wersję funkcji, metryki wydajności, typy zdarzeń oraz kody błędów. Google używa ich do diagnostyki i analityki wykorzystania ML Kit.';
 
   @override
-  String get privacySectionSharingTitle => '5. Odbiorcy i udostępnianie';
+  String get privacySectionPermissionsTitle => '5. Uprawnienia urządzenia';
+
+  @override
+  String get privacySectionPermissionsBody =>
+      'Skaner dokumentów i selektor plików uruchamiają się dopiero po działaniu użytkownika; aplikacja nie żąda szerokiego dostępu do pamięci. Systemowy selektor kontaktu przekazuje tylko kontakt wybrany przez użytkownika, bez szerokiego odczytu książki adresowej. Powiadomienia służą lokalnym przypomnieniom i wymagają zgody systemowej.';
+
+  @override
+  String get privacySectionSharingTitle =>
+      '6. Odbiorcy danych, logi strony i przekazywanie poza EOG';
 
   @override
   String get privacySectionSharingBody =>
-      'Poza technicznymi metrykami ML Kit BudowaPRO nie udostępnia danych automatycznie. Eksport CSV, kopia ZIP, telefon, e-mail albo systemowe udostępnianie uruchamiają się dopiero po Twojej akcji i przekazują wybraną zawartość do wskazanej przez Ciebie aplikacji lub dostawcy. Otwarcie publicznej polityki lub strony wsparcia łączy przeglądarkę z hostingiem GitHub Pages, który może przetwarzać standardowe dane techniczne połączenia. Ręczna kopia ZIP nie jest szyfrowana i może zawierać dokumenty, kontakty oraz zdjęcia. Dalsze przetwarzanie podlega zasadom wybranego odbiorcy.';
+      'Google jako niezależny administrator zbiera opisane metryki ML Kit do diagnostyki i analityki. GitHub, Inc. lub GitHub B.V. jako niezależny administrator hostingu strony automatycznie otrzymuje adres IP, informacje o urządzeniu i przeglądarce, datę i czas żądania, stronę odsyłającą, odwiedzone podstrony i kliknięte odnośniki; wydawca nie ma dostępu do tych logów i nie używa własnej analityki. Operator poczty działa jako dostawca obsługujący korespondencję na rzecz wydawcy. GitHub wskazuje standardowe klauzule umowne Komisji Europejskiej oraz EU-US Data Privacy Framework; Google stosuje mechanizmy opisane w swojej polityce transferów. Informację lub kopię zabezpieczeń transferu można uzyskać z podlinkowanych polityk dostawców albo pisząc do wydawcy. Eksport, kopia ZIP, telefon, e-mail i systemowe udostępnianie przekazują wybraną zawartość dopiero do odbiorcy wskazanego przez użytkownika. Ręczna kopia ZIP nie jest szyfrowana.';
+
+  @override
+  String get privacySectionCorrespondenceTitle =>
+      '7. Korespondencja i podstawy prawne';
+
+  @override
+  String privacySectionCorrespondenceBody(String contact) {
+    return 'Po napisaniu na $contact wydawca przetwarza adres e-mail, treść wiadomości, dane podane dobrowolnie i ewentualne załączniki, aby odpowiedzieć, obsłużyć zgłoszenie lub reklamację i chronić przed roszczeniami. Podstawą jest podjęcie działań na żądanie użytkownika lub wykonanie umowy (art. 6 ust. 1 lit. b RODO), obowiązek prawny, gdy ma zastosowanie (lit. c), oraz prawnie uzasadniony interes polegający na obsłudze, bezpieczeństwie i obronie roszczeń (lit. f). Podanie danych jest dobrowolne, ale bez adresu i treści zgłoszenia odpowiedź może być niemożliwa. Korespondencja jest przechowywana do zakończenia sprawy, a następnie do upływu właściwego okresu przedawnienia lub obowiązkowej retencji; dane zbędne są usuwane wcześniej.';
+  }
 
   @override
   String get privacySectionRetentionTitle =>
-      '6. Okres przechowywania i usuwanie';
+      '8. Okres przechowywania i usuwanie';
 
   @override
   String get privacySectionRetentionBody =>
       'Dane pozostają w aplikacji do czasu usunięcia rekordu lub projektu, wyczyszczenia danych aplikacji albo jej odinstalowania. Ręcznie wyeksportowane pliki pozostają w wybranej lokalizacji do czasu, aż usuniesz je osobno. Android wyklucza prywatne pliki BudowaPRO z kopii chmurowej i transferu urządzenie–urządzenie. Na iOS prywatny katalog danych BudowaPRO jest oznaczony jako wyłączony z kopii iCloud.';
 
   @override
-  String get privacySectionRightsTitle => '7. Kontrola danych i prawa';
+  String get privacySectionRightsTitle => '9. Kontrola danych i prawa';
 
   @override
   String privacySectionRightsBody(String contact) {
-    return 'Dane lokalne możesz przeglądać, poprawiać, eksportować i usuwać w aplikacji. Ponieważ wydawca nie posiada ich zdalnej kopii, nie może zwrócić ani usunąć jej za Ciebie. Pytania dotyczące działania aplikacji kieruj na: $contact. W zakresie objętym RODO możesz realizować prawa wobec właściwego administratora danych i złożyć skargę do Prezesa UODO.';
+    return 'Dane lokalne możesz przeglądać, poprawiać, eksportować i usuwać w aplikacji. Ponieważ wydawca nie posiada ich zdalnej kopii, nie może zwrócić ani usunąć jej za Ciebie. W odniesieniu do danych korespondencji, zależnie od podstawy i okoliczności, przysługuje prawo dostępu, sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia danych oraz wniesienia sprzeciwu. Żądanie wyślij na $contact. Możesz też złożyć skargę do Prezesa UODO. BudowaPRO nie podejmuje wobec użytkownika decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu.';
   }
 
   @override
-  String get privacySectionSecurityTitle => '8. Bezpieczeństwo';
+  String get privacySectionSecurityTitle => '10. Bezpieczeństwo';
 
   @override
   String get privacySectionSecurityBody =>
       'BudowaPRO używa prywatnych katalogów aplikacji, weryfikuje kopie i ogranicza uprawnienia systemowe. Chroń telefon blokadą ekranu i przechowuj ręczne kopie w zaufanym miejscu. Żadne zabezpieczenie nie usuwa ryzyka utraty danych po uszkodzeniu urządzenia, złośliwym oprogramowaniu lub udostępnieniu odblokowanego telefonu.';
 
   @override
-  String get privacySectionChangesTitle => '9. Zmiany polityki';
+  String get privacySectionChangesTitle => '11. Zmiany polityki';
 
   @override
   String get privacySectionChangesBody =>
@@ -4468,17 +4547,18 @@ class AppLocalizationsPl extends AppLocalizations {
   String termsSectionProviderBody(
     String publisher,
     String taxId,
+    String address,
     String contact,
   ) {
-    return 'Usługodawcą i wydawcą BudowaPRO jest $publisher, NIP $taxId. Kontakt: $contact. Korzystanie z aplikacji nie wymaga utworzenia konta ani zawarcia odpłatnej subskrypcji w tej wersji.';
+    return 'Usługodawcą i wydawcą BudowaPRO jest $publisher, NIP $taxId, adres: $address. Kontakt elektroniczny i adres do reklamacji: $contact. Świadczenie usługi nie wymaga zezwolenia. Korzystanie z aplikacji nie wymaga konta ani odpłatnej subskrypcji w tej wersji.';
   }
 
   @override
-  String get termsSectionPurposeTitle => '2. Przeznaczenie aplikacji';
+  String get termsSectionPurposeTitle => '2. Rodzaje i zakres usług';
 
   @override
   String get termsSectionPurposeBody =>
-      'Aplikacja służy do prywatnego organizowania budowy lub remontu: kosztów, etapów, kontaktów, dokumentów, terminów, zdjęć i notatek. Użytkownik może korzystać z niej wyłącznie zgodnie z prawem i prawami osób trzecich.';
+      'BudowaPRO świadczy lokalną usługę organizowania budowy lub remontu: prowadzenie etapów, kosztów, kontaktów, terminów, dokumentów, zdjęć, notatek, kopii zapasowych, OCR oraz generowanie lokalnych raportów. Strona wsparcia udostępnia dokumenty prawne i kontakt. Zakres konkretnej wersji wynika z opisu w sklepie i funkcji dostępnych w aplikacji.';
 
   @override
   String get termsSectionSafetyTitle =>
@@ -4489,46 +4569,79 @@ class AppLocalizationsPl extends AppLocalizations {
       'Checklisty i wskazówki mają charakter organizacyjny i informacyjny. Nie są projektem budowlanym, opinią techniczną ani indywidualnym doborem rozwiązania. Przed wykonaniem robót zweryfikuj aktualne przepisy, projekt, warunki gruntowe, instrukcje producenta i ustalenia z projektantem, kierownikiem budowy lub osobą z wymaganymi uprawnieniami.';
 
   @override
-  String get termsSectionUserDataTitle => '4. Dane użytkownika i kopie';
+  String get termsSectionTechnicalTitle =>
+      '4. Wymagania techniczne i zagrożenia';
+
+  @override
+  String get termsSectionTechnicalBody =>
+      'Potrzebne są: kompatybilne urządzenie i wersja Androida lub iOS wskazana w sklepie, wolna pamięć, legalne oprogramowanie systemowe oraz dostęp do internetu przy instalacji, aktualizacjach, pobieraniu składników ML Kit, otwieraniu stron lub wysyłaniu e-maila. Podstawowe dane projektu działają lokalnie. Zagrożenia obejmują utratę telefonu lub danych, złośliwe oprogramowanie, nieuprawniony dostęp do odblokowanego urządzenia, nieszyfrowany eksport ZIP i błędny OCR.';
+
+  @override
+  String get termsSectionContractTitle => '5. Zawarcie i rozwiązanie umowy';
+
+  @override
+  String get termsSectionContractBody =>
+      'Regulamin jest dostępny bezpłatnie przed rozpoczęciem korzystania na stronie BudowaPRO i przy pierwszym uruchomieniu aplikacji, w formie umożliwiającej zapisanie i odtworzenie. Umowa o nieodpłatne korzystanie zostaje zawarta na czas nieoznaczony po zaznaczeniu potwierdzenia i wybraniu „Rozpocznij korzystanie”. Użytkownik może zakończyć ją w każdej chwili przez zaprzestanie korzystania i odinstalowanie aplikacji; wcześniej może usunąć dane lub wykonać eksport. Brak konta oznacza brak osobnej procedury zamykania konta.';
+
+  @override
+  String get termsSectionUserDataTitle =>
+      '6. Dane użytkownika i dozwolone korzystanie';
 
   @override
   String get termsSectionUserDataBody =>
-      'Odpowiadasz za legalność wprowadzanych kontaktów, zdjęć i dokumentów oraz za posiadanie prawa do ich użycia. Dane są lokalne. Regularnie twórz ręczną kopię i sprawdzaj możliwość jej odtworzenia. Usunięcie projektu, wyczyszczenie pamięci lub utrata telefonu może być nieodwracalne bez poprawnej kopii.';
+      'Odpowiadasz za legalność wprowadzanych kontaktów, zdjęć i dokumentów oraz za posiadanie prawa do ich użycia. Zakazane jest dostarczanie treści o charakterze bezprawnym, naruszającym prawa osób trzecich lub bezpieczeństwo aplikacji. Dane są lokalne. Regularnie twórz ręczną kopię i sprawdzaj możliwość jej odtworzenia.';
 
   @override
-  String get termsSectionOcrTitle => '5. OCR i obliczenia';
+  String get termsSectionOcrTitle => '7. OCR i obliczenia';
 
   @override
   String get termsSectionOcrBody =>
       'OCR może błędnie odczytać nazwę, datę, pozycję, VAT lub kwotę. Każdy wynik trzeba sprawdzić przed zapisem i zatwierdzeniem kosztu. Podsumowania zależą od poprawności danych wprowadzonych lub zaakceptowanych przez użytkownika.';
 
   @override
-  String get termsSectionAvailabilityTitle => '6. Dostępność i aktualizacje';
+  String get termsSectionAvailabilityTitle =>
+      '8. Zgodność, dostępność i aktualizacje';
 
   @override
   String get termsSectionAvailabilityBody =>
-      'Nie gwarantuje się nieprzerwanego działania na każdym urządzeniu ani zgodności ze wszystkimi formatami dokumentów. Aktualizacje mogą poprawiać bezpieczeństwo, zgodność z Androidem i zakres funkcji, z zachowaniem lokalnych danych w ramach obsługiwanych migracji.';
+      'Wydawca dostarcza aplikację i wymagane aktualizacje zgodnie z bezwzględnie obowiązującym prawem, w tym ustawowymi prawami konsumenta dotyczącymi treści lub usług cyfrowych. Nie gwarantuje zgodności ze wszystkimi urządzeniami i formatami poza zadeklarowanym zakresem. Aktualizacje mogą poprawiać bezpieczeństwo, kompatybilność i funkcje; użytkownik powinien instalować aktualizacje udostępnione dla jego systemu.';
 
   @override
-  String get termsSectionLiabilityTitle => '7. Odpowiedzialność';
+  String get termsSectionComplaintsTitle => '9. Reklamacje';
+
+  @override
+  String termsSectionComplaintsBody(String contact) {
+    return 'Reklamację dotyczącą działania BudowaPRO można wysłać na $contact. Podaj dane umożliwiające odpowiedź, wersję aplikacji i systemu, opis problemu, oczekiwane rozwiązanie oraz — jeśli to bezpieczne — kroki odtworzenia błędu. Nie wysyłaj nieocenzurowanych dokumentów ani danych osób trzecich, jeśli nie są konieczne. Reklamacja zostanie rozpatrzona bez zbędnej zwłoki, nie później niż w 14 dni. Postępowanie reklamacyjne nie ogranicza ustawowych praw konsumenta.';
+  }
+
+  @override
+  String get termsSectionLicenseTitle =>
+      '10. Licencja i własność intelektualna';
+
+  @override
+  String get termsSectionLicenseBody =>
+      'Wydawca udziela użytkownikowi niewyłącznego, niezbywalnego prawa do korzystania z aplikacji na obsługiwanych urządzeniach zgodnie z regulaminem i zasadami sklepu. Prawa do aplikacji i jej treści należą do wydawcy lub licencjodawców. Użytkownik zachowuje prawa do własnych danych i materiałów.';
+
+  @override
+  String get termsSectionLiabilityTitle => '11. Odpowiedzialność';
 
   @override
   String get termsSectionLiabilityBody =>
       'Wydawca odpowiada w granicach bezwzględnie obowiązującego prawa. Warunki nie wyłączają ani nie ograniczają ustawowych praw konsumenta. Użytkownik odpowiada za decyzje budowlane podjęte bez wymaganej weryfikacji specjalisty oraz za skutki podania nieprawidłowych danych.';
 
   @override
-  String get termsSectionLawTitle => '8. Prawo i spory';
+  String get termsSectionLawTitle => '12. Prawo i spory';
 
   @override
   String get termsSectionLawBody =>
       'Stosuje się prawo polskie, bez uszczerbku dla bezwzględnie obowiązujących praw konsumenta wynikających z prawa miejsca jego zamieszkania. Spór można najpierw zgłosić wydawcy na podany adres kontaktowy.';
 
   @override
-  String get termsSectionChangesTitle => '9. Zmiany warunków';
+  String get termsSectionChangesTitle => '13. Zmiany regulaminu';
 
   @override
   String get termsSectionChangesBody =>
-      'Nowa wersja warunków powinna otrzymać nową datę i być dostępna przed publikacją aktualizacji, jeżeli zmiana wpływa na prawa użytkownika lub sposób działania aplikacji.';
+      'Regulamin może zostać zmieniony z ważnej przyczyny, takiej jak zmiana prawa, bezpieczeństwa, zakresu usługi, modelu płatności albo wykorzystywanego SDK. Nowa wersja otrzymuje datę i jest udostępniana przed wejściem w życie zmiany wpływającej na prawa użytkownika. Prawa nabyte i bezwzględnie obowiązujące prawa konsumenta pozostają nienaruszone.';
 
   @override
   String get privacySettingsIntro =>

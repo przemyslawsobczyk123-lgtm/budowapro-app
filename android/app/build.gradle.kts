@@ -123,6 +123,7 @@ val validateProductionReleaseConfig =
             "BUDOWAPRO_PUBLISHER_NAME",
             "BUDOWAPRO_PRIVACY_CONTACT_EMAIL",
             "BUDOWAPRO_PRIVACY_POLICY_URL",
+            "BUDOWAPRO_SUPPORT_URL",
         )
         val missingLegalDefines = requiredLegalDefines.filter {
             decodedDartDefines[it].isNullOrBlank()
@@ -136,27 +137,31 @@ val validateProductionReleaseConfig =
         require(publisherName.length <= 160) {
             "BUDOWAPRO_PUBLISHER_NAME must not exceed 160 characters."
         }
-        val privacyPolicyUrl = decodedDartDefines.getValue(
+        val publicLegalUrls = listOf(
             "BUDOWAPRO_PRIVACY_POLICY_URL",
+            "BUDOWAPRO_SUPPORT_URL",
         )
-        val privacyPolicyUri = runCatching { URI(privacyPolicyUrl) }.getOrNull()
-        val privacyHost = privacyPolicyUri?.host.orEmpty().lowercase()
-        val hasPublicHost =
-            privacyHost.contains('.') &&
-                privacyHost != "localhost" &&
-                !privacyHost.endsWith(".localhost") &&
-                !privacyHost.endsWith(".local") &&
-                !privacyHost.endsWith(".internal") &&
-                !Regex("^\\d{1,3}(?:\\.\\d{1,3}){3}\$").matches(privacyHost)
-        require(
-            privacyPolicyUri?.scheme == "https" &&
-                hasPublicHost &&
-                !privacyPolicyUri.path.orEmpty().endsWith(
-                    ".pdf",
-                    ignoreCase = true,
-                ),
-        ) {
-            "BUDOWAPRO_PRIVACY_POLICY_URL must be a public HTTPS, non-PDF URL."
+        publicLegalUrls.forEach { key ->
+            val value = decodedDartDefines.getValue(key)
+            val uri = runCatching { URI(value) }.getOrNull()
+            val host = uri?.host.orEmpty().lowercase()
+            val hasPublicHost =
+                host.contains('.') &&
+                    host != "localhost" &&
+                    !host.endsWith(".localhost") &&
+                    !host.endsWith(".local") &&
+                    !host.endsWith(".internal") &&
+                    !Regex("^\\d{1,3}(?:\\.\\d{1,3}){3}\$").matches(host)
+            require(
+                uri?.scheme == "https" &&
+                    hasPublicHost &&
+                    !uri.path.orEmpty().endsWith(
+                        ".pdf",
+                        ignoreCase = true,
+                    ),
+            ) {
+                "$key must be a public HTTPS, non-PDF URL."
+            }
         }
         val privacyContactEmail = decodedDartDefines.getValue(
             "BUDOWAPRO_PRIVACY_CONTACT_EMAIL",

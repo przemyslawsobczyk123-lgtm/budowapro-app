@@ -1657,7 +1657,7 @@
   "legalEmailSubject": "BudowaPRO - kontakt",
   "legalPublicPolicyLabel": "Publiczna kopia polityki",
   "legalSupportUrlLabel": "Publiczna strona wsparcia",
-  "legalDocumentVersion": "Wersja 1.2 · obowiązuje od 08.08.2026",
+  "legalDocumentVersion": "Wersja 1.3 · obowiązuje od 08.08.2026",
   "legalIntroTitle": "Prywatność dostępna w aplikacji",
   "legalIntroMessage": "W jednym miejscu sprawdzisz zasady, faktyczne przepływy danych i sposoby zarządzania lokalną zawartością.",
   "legalReleaseConfigMissingTitle": "Wydanie wymaga uzupełnienia",
@@ -1670,27 +1670,47 @@
     }
   },
   "legalMissingPublisherRequirement": "nazwa wydawcy",
+  "legalMissingPublisherAddressRequirement": "adres usługodawcy",
   "legalMissingTaxIdRequirement": "prawidłowy NIP wydawcy",
   "legalMissingEmailRequirement": "prawidłowy e-mail",
   "legalMissingPublicUrlRequirement": "publiczny adres HTTPS polityki",
   "legalMissingSupportUrlRequirement": "publiczny adres HTTPS wsparcia",
+  "legalMissingTermsUrlRequirement": "publiczny adres HTTPS regulaminu",
   "legalOpenLinkError": "Nie udało się otworzyć odnośnika.",
+  "legalAcceptanceTitle": "Zanim zaczniesz",
+  "legalAcceptanceIntro": "BudowaPRO działa lokalnie i nie wymaga konta. Przed rozpoczęciem zapoznaj się z regulaminem oraz informacją o prywatności.",
+  "legalAcceptanceLocalNotice": "Potwierdzenie zostanie zapisane tylko na tym urządzeniu. Nie tworzy konta i nie jest wysyłane do wydawcy.",
+  "legalAcceptanceCheckbox": "Potwierdzam, że otrzymałem regulamin i akceptuję jego treść.",
+  "legalAcceptanceOpenTerms": "Otwórz regulamin",
+  "legalAcceptanceOpenPrivacy": "Polityka prywatności",
+  "legalAcceptanceContinue": "Rozpocznij korzystanie",
+  "legalAcceptanceSaving": "Zapisywanie potwierdzenia",
+  "legalAcceptanceLoadError": "Nie udało się sprawdzić potwierdzenia regulaminu.",
+  "legalAcceptanceSaveError": "Nie udało się zapisać potwierdzenia. Spróbuj ponownie.",
+  "legalAcceptanceRetry": "Spróbuj ponownie",
   "privacyPolicyIntro": "Poniższe sekcje opisują rzeczywiste działanie BudowaPRO. Rozwiń temat, aby przeczytać szczegóły.",
   "termsOfUseIntro": "BudowaPRO pomaga organizować budowę lub remont, ale nie zastępuje projektu, kierownika budowy ani uprawnionego specjalisty.",
   "legalOfficialSourcesTitle": "Oficjalne źródła",
   "legalSourceMlKitTerms": "Google ML Kit — warunki i prywatność",
   "legalSourceMlKitDisclosure": "Google ML Kit — ujawnianie danych w Google Play",
   "legalSourceGooglePrivacy": "Google — polityka prywatności",
+  "legalSourceGithubPrivacy": "GitHub — polityka prywatności i transfery",
   "legalSourceGdpr": "RODO — rozporządzenie (UE) 2016/679",
   "legalSourceUodo": "UODO — prawo do złożenia skargi",
+  "legalSourceElectronicServicesAct": "ELI — ustawa o świadczeniu usług drogą elektroniczną",
+  "legalSourceConsumerRightsAct": "ELI — ustawa o prawach konsumenta",
+  "legalSourceTaxpayerList": "Ministerstwo Finansów — wykaz podatników VAT",
   "privacySectionPublisherTitle": "1. Wydawca i zakres polityki",
-  "privacySectionPublisherBody": "Administratorem danych przekazanych podczas kontaktu z BudowaPRO jest {publisher}, NIP {taxId}. Kontakt w sprawach prywatności: {contact}. Aplikacja nie wymaga konta i nie ma serwera BudowaPRO. Wydawca nie otrzymuje i nie ma zdalnego dostępu do treści zapisanych wyłącznie w prywatnej pamięci aplikacji.",
+  "privacySectionPublisherBody": "Administratorem danych przekazanych podczas kontaktu z BudowaPRO jest {publisher}, NIP {taxId}, adres: {address}. Kontakt w sprawach prywatności: {contact}. Aplikacja nie wymaga konta i nie ma serwera BudowaPRO. Wydawca nie otrzymuje i nie ma zdalnego dostępu do treści zapisanych wyłącznie w prywatnej pamięci aplikacji.",
   "@privacySectionPublisherBody": {
     "placeholders": {
       "publisher": {
         "type": "String"
       },
       "taxId": {
+        "type": "String"
+      },
+      "address": {
         "type": "String"
       },
       "contact": {
@@ -1703,13 +1723,24 @@
   "privacySectionPurposeTitle": "3. Cel i sposób przetwarzania",
   "privacySectionPurposeBody": "Lokalne operacje uruchamiasz samodzielnie, aby prowadzić projekt, liczyć koszty, planować prace, przechowywać dokumentację i tworzyć kopie. BudowaPRO nie używa danych do reklam, profilowania, sprzedaży danych ani marketingu. Nie ma automatycznych decyzji wywołujących skutki prawne.",
   "privacySectionOcrTitle": "4. Skaner i Google ML Kit",
-  "privacySectionOcrBody": "Rozpoznawanie obrazu i tekstu odbywa się na urządzeniu. Zgodnie z dokumentacją Google obrazy, tekst wejściowy i wynik OCR nie są wysyłane do serwerów Google. Biblioteki ML Kit mogą jednak kontaktować się z Google po aktualizacje i wysyłać zaszyfrowane metryki techniczne: informacje o urządzeniu i aplikacji, identyfikator instalacji, parametry i wydajność funkcji, typy zdarzeń oraz kody błędów. Google używa ich do diagnostyki i analityki wykorzystania ML Kit.",
-  "privacySectionSharingTitle": "5. Odbiorcy i udostępnianie",
-  "privacySectionSharingBody": "Poza technicznymi metrykami ML Kit BudowaPRO nie udostępnia danych automatycznie. Eksport CSV, kopia ZIP, telefon, e-mail albo systemowe udostępnianie uruchamiają się dopiero po Twojej akcji i przekazują wybraną zawartość do wskazanej przez Ciebie aplikacji lub dostawcy. Otwarcie publicznej polityki lub strony wsparcia łączy przeglądarkę z hostingiem GitHub Pages, który może przetwarzać standardowe dane techniczne połączenia. Ręczna kopia ZIP nie jest szyfrowana i może zawierać dokumenty, kontakty oraz zdjęcia. Dalsze przetwarzanie podlega zasadom wybranego odbiorcy.",
-  "privacySectionRetentionTitle": "6. Okres przechowywania i usuwanie",
+  "privacySectionOcrBody": "Rozpoznawanie obrazu i tekstu odbywa się na urządzeniu. Zgodnie z dokumentacją Google obrazy, tekst wejściowy i wynik OCR nie są wysyłane do serwerów Google. Po uruchomieniu skanera lub OCR biblioteki ML Kit zbierają jednak i wysyłają przez HTTPS metryki techniczne obejmujące informacje o urządzeniu i aplikacji, identyfikator instalacji, konfigurację API, rozmiar wejścia i wyjścia, wersję funkcji, metryki wydajności, typy zdarzeń oraz kody błędów. Google używa ich do diagnostyki i analityki wykorzystania ML Kit.",
+  "privacySectionPermissionsTitle": "5. Uprawnienia urządzenia",
+  "privacySectionPermissionsBody": "Skaner dokumentów i selektor plików uruchamiają się dopiero po działaniu użytkownika; aplikacja nie żąda szerokiego dostępu do pamięci. Systemowy selektor kontaktu przekazuje tylko kontakt wybrany przez użytkownika, bez szerokiego odczytu książki adresowej. Powiadomienia służą lokalnym przypomnieniom i wymagają zgody systemowej.",
+  "privacySectionSharingTitle": "6. Odbiorcy danych, logi strony i przekazywanie poza EOG",
+  "privacySectionSharingBody": "Google jako niezależny administrator zbiera opisane metryki ML Kit do diagnostyki i analityki. GitHub, Inc. lub GitHub B.V. jako niezależny administrator hostingu strony automatycznie otrzymuje adres IP, informacje o urządzeniu i przeglądarce, datę i czas żądania, stronę odsyłającą, odwiedzone podstrony i kliknięte odnośniki; wydawca nie ma dostępu do tych logów i nie używa własnej analityki. Operator poczty działa jako dostawca obsługujący korespondencję na rzecz wydawcy. GitHub wskazuje standardowe klauzule umowne Komisji Europejskiej oraz EU-US Data Privacy Framework; Google stosuje mechanizmy opisane w swojej polityce transferów. Informację lub kopię zabezpieczeń transferu można uzyskać z podlinkowanych polityk dostawców albo pisząc do wydawcy. Eksport, kopia ZIP, telefon, e-mail i systemowe udostępnianie przekazują wybraną zawartość dopiero do odbiorcy wskazanego przez użytkownika. Ręczna kopia ZIP nie jest szyfrowana.",
+  "privacySectionCorrespondenceTitle": "7. Korespondencja i podstawy prawne",
+  "privacySectionCorrespondenceBody": "Po napisaniu na {contact} wydawca przetwarza adres e-mail, treść wiadomości, dane podane dobrowolnie i ewentualne załączniki, aby odpowiedzieć, obsłużyć zgłoszenie lub reklamację i chronić przed roszczeniami. Podstawą jest podjęcie działań na żądanie użytkownika lub wykonanie umowy (art. 6 ust. 1 lit. b RODO), obowiązek prawny, gdy ma zastosowanie (lit. c), oraz prawnie uzasadniony interes polegający na obsłudze, bezpieczeństwie i obronie roszczeń (lit. f). Podanie danych jest dobrowolne, ale bez adresu i treści zgłoszenia odpowiedź może być niemożliwa. Korespondencja jest przechowywana do zakończenia sprawy, a następnie do upływu właściwego okresu przedawnienia lub obowiązkowej retencji; dane zbędne są usuwane wcześniej.",
+  "@privacySectionCorrespondenceBody": {
+    "placeholders": {
+      "contact": {
+        "type": "String"
+      }
+    }
+  },
+  "privacySectionRetentionTitle": "8. Okres przechowywania i usuwanie",
   "privacySectionRetentionBody": "Dane pozostają w aplikacji do czasu usunięcia rekordu lub projektu, wyczyszczenia danych aplikacji albo jej odinstalowania. Ręcznie wyeksportowane pliki pozostają w wybranej lokalizacji do czasu, aż usuniesz je osobno. Android wyklucza prywatne pliki BudowaPRO z kopii chmurowej i transferu urządzenie–urządzenie. Na iOS prywatny katalog danych BudowaPRO jest oznaczony jako wyłączony z kopii iCloud.",
-  "privacySectionRightsTitle": "7. Kontrola danych i prawa",
-  "privacySectionRightsBody": "Dane lokalne możesz przeglądać, poprawiać, eksportować i usuwać w aplikacji. Ponieważ wydawca nie posiada ich zdalnej kopii, nie może zwrócić ani usunąć jej za Ciebie. Pytania dotyczące działania aplikacji kieruj na: {contact}. W zakresie objętym RODO możesz realizować prawa wobec właściwego administratora danych i złożyć skargę do Prezesa UODO.",
+  "privacySectionRightsTitle": "9. Kontrola danych i prawa",
+  "privacySectionRightsBody": "Dane lokalne możesz przeglądać, poprawiać, eksportować i usuwać w aplikacji. Ponieważ wydawca nie posiada ich zdalnej kopii, nie może zwrócić ani usunąć jej za Ciebie. W odniesieniu do danych korespondencji, zależnie od podstawy i okoliczności, przysługuje prawo dostępu, sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia danych oraz wniesienia sprzeciwu. Żądanie wyślij na {contact}. Możesz też złożyć skargę do Prezesa UODO. BudowaPRO nie podejmuje wobec użytkownika decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu.",
   "@privacySectionRightsBody": {
     "placeholders": {
       "contact": {
@@ -1717,12 +1748,12 @@
       }
     }
   },
-  "privacySectionSecurityTitle": "8. Bezpieczeństwo",
+  "privacySectionSecurityTitle": "10. Bezpieczeństwo",
   "privacySectionSecurityBody": "BudowaPRO używa prywatnych katalogów aplikacji, weryfikuje kopie i ogranicza uprawnienia systemowe. Chroń telefon blokadą ekranu i przechowuj ręczne kopie w zaufanym miejscu. Żadne zabezpieczenie nie usuwa ryzyka utraty danych po uszkodzeniu urządzenia, złośliwym oprogramowaniu lub udostępnieniu odblokowanego telefonu.",
-  "privacySectionChangesTitle": "9. Zmiany polityki",
+  "privacySectionChangesTitle": "11. Zmiany polityki",
   "privacySectionChangesBody": "Istotna zmiana funkcji, dostawcy SDK lub przepływu danych wymaga aktualizacji tej polityki i sekcji Bezpieczeństwo danych w Google Play. Aktualna wersja pozostaje dostępna w aplikacji oraz pod publicznym adresem wskazanym w Google Play.",
   "termsSectionProviderTitle": "1. Usługodawca",
-  "termsSectionProviderBody": "Usługodawcą i wydawcą BudowaPRO jest {publisher}, NIP {taxId}. Kontakt: {contact}. Korzystanie z aplikacji nie wymaga utworzenia konta ani zawarcia odpłatnej subskrypcji w tej wersji.",
+  "termsSectionProviderBody": "Usługodawcą i wydawcą BudowaPRO jest {publisher}, NIP {taxId}, adres: {address}. Kontakt elektroniczny i adres do reklamacji: {contact}. Świadczenie usługi nie wymaga zezwolenia. Korzystanie z aplikacji nie wymaga konta ani odpłatnej subskrypcji w tej wersji.",
   "@termsSectionProviderBody": {
     "placeholders": {
       "publisher": {
@@ -1731,27 +1762,45 @@
       "taxId": {
         "type": "String"
       },
+      "address": {
+        "type": "String"
+      },
       "contact": {
         "type": "String"
       }
     }
   },
-  "termsSectionPurposeTitle": "2. Przeznaczenie aplikacji",
-  "termsSectionPurposeBody": "Aplikacja służy do prywatnego organizowania budowy lub remontu: kosztów, etapów, kontaktów, dokumentów, terminów, zdjęć i notatek. Użytkownik może korzystać z niej wyłącznie zgodnie z prawem i prawami osób trzecich.",
+  "termsSectionPurposeTitle": "2. Rodzaje i zakres usług",
+  "termsSectionPurposeBody": "BudowaPRO świadczy lokalną usługę organizowania budowy lub remontu: prowadzenie etapów, kosztów, kontaktów, terminów, dokumentów, zdjęć, notatek, kopii zapasowych, OCR oraz generowanie lokalnych raportów. Strona wsparcia udostępnia dokumenty prawne i kontakt. Zakres konkretnej wersji wynika z opisu w sklepie i funkcji dostępnych w aplikacji.",
   "termsSectionSafetyTitle": "3. Informacje budowlane i bezpieczeństwo",
   "termsSectionSafetyBody": "Checklisty i wskazówki mają charakter organizacyjny i informacyjny. Nie są projektem budowlanym, opinią techniczną ani indywidualnym doborem rozwiązania. Przed wykonaniem robót zweryfikuj aktualne przepisy, projekt, warunki gruntowe, instrukcje producenta i ustalenia z projektantem, kierownikiem budowy lub osobą z wymaganymi uprawnieniami.",
-  "termsSectionUserDataTitle": "4. Dane użytkownika i kopie",
-  "termsSectionUserDataBody": "Odpowiadasz za legalność wprowadzanych kontaktów, zdjęć i dokumentów oraz za posiadanie prawa do ich użycia. Dane są lokalne. Regularnie twórz ręczną kopię i sprawdzaj możliwość jej odtworzenia. Usunięcie projektu, wyczyszczenie pamięci lub utrata telefonu może być nieodwracalne bez poprawnej kopii.",
-  "termsSectionOcrTitle": "5. OCR i obliczenia",
+  "termsSectionTechnicalTitle": "4. Wymagania techniczne i zagrożenia",
+  "termsSectionTechnicalBody": "Potrzebne są: kompatybilne urządzenie i wersja Androida lub iOS wskazana w sklepie, wolna pamięć, legalne oprogramowanie systemowe oraz dostęp do internetu przy instalacji, aktualizacjach, pobieraniu składników ML Kit, otwieraniu stron lub wysyłaniu e-maila. Podstawowe dane projektu działają lokalnie. Zagrożenia obejmują utratę telefonu lub danych, złośliwe oprogramowanie, nieuprawniony dostęp do odblokowanego urządzenia, nieszyfrowany eksport ZIP i błędny OCR.",
+  "termsSectionContractTitle": "5. Zawarcie i rozwiązanie umowy",
+  "termsSectionContractBody": "Regulamin jest dostępny bezpłatnie przed rozpoczęciem korzystania na stronie BudowaPRO i przy pierwszym uruchomieniu aplikacji, w formie umożliwiającej zapisanie i odtworzenie. Umowa o nieodpłatne korzystanie zostaje zawarta na czas nieoznaczony po zaznaczeniu potwierdzenia i wybraniu „Rozpocznij korzystanie”. Użytkownik może zakończyć ją w każdej chwili przez zaprzestanie korzystania i odinstalowanie aplikacji; wcześniej może usunąć dane lub wykonać eksport. Brak konta oznacza brak osobnej procedury zamykania konta.",
+  "termsSectionUserDataTitle": "6. Dane użytkownika i dozwolone korzystanie",
+  "termsSectionUserDataBody": "Odpowiadasz za legalność wprowadzanych kontaktów, zdjęć i dokumentów oraz za posiadanie prawa do ich użycia. Zakazane jest dostarczanie treści o charakterze bezprawnym, naruszającym prawa osób trzecich lub bezpieczeństwo aplikacji. Dane są lokalne. Regularnie twórz ręczną kopię i sprawdzaj możliwość jej odtworzenia.",
+  "termsSectionOcrTitle": "7. OCR i obliczenia",
   "termsSectionOcrBody": "OCR może błędnie odczytać nazwę, datę, pozycję, VAT lub kwotę. Każdy wynik trzeba sprawdzić przed zapisem i zatwierdzeniem kosztu. Podsumowania zależą od poprawności danych wprowadzonych lub zaakceptowanych przez użytkownika.",
-  "termsSectionAvailabilityTitle": "6. Dostępność i aktualizacje",
-  "termsSectionAvailabilityBody": "Nie gwarantuje się nieprzerwanego działania na każdym urządzeniu ani zgodności ze wszystkimi formatami dokumentów. Aktualizacje mogą poprawiać bezpieczeństwo, zgodność z Androidem i zakres funkcji, z zachowaniem lokalnych danych w ramach obsługiwanych migracji.",
-  "termsSectionLiabilityTitle": "7. Odpowiedzialność",
+  "termsSectionAvailabilityTitle": "8. Zgodność, dostępność i aktualizacje",
+  "termsSectionAvailabilityBody": "Wydawca dostarcza aplikację i wymagane aktualizacje zgodnie z bezwzględnie obowiązującym prawem, w tym ustawowymi prawami konsumenta dotyczącymi treści lub usług cyfrowych. Nie gwarantuje zgodności ze wszystkimi urządzeniami i formatami poza zadeklarowanym zakresem. Aktualizacje mogą poprawiać bezpieczeństwo, kompatybilność i funkcje; użytkownik powinien instalować aktualizacje udostępnione dla jego systemu.",
+  "termsSectionComplaintsTitle": "9. Reklamacje",
+  "termsSectionComplaintsBody": "Reklamację dotyczącą działania BudowaPRO można wysłać na {contact}. Podaj dane umożliwiające odpowiedź, wersję aplikacji i systemu, opis problemu, oczekiwane rozwiązanie oraz — jeśli to bezpieczne — kroki odtworzenia błędu. Nie wysyłaj nieocenzurowanych dokumentów ani danych osób trzecich, jeśli nie są konieczne. Reklamacja zostanie rozpatrzona bez zbędnej zwłoki, nie później niż w 14 dni. Postępowanie reklamacyjne nie ogranicza ustawowych praw konsumenta.",
+  "@termsSectionComplaintsBody": {
+    "placeholders": {
+      "contact": {
+        "type": "String"
+      }
+    }
+  },
+  "termsSectionLicenseTitle": "10. Licencja i własność intelektualna",
+  "termsSectionLicenseBody": "Wydawca udziela użytkownikowi niewyłącznego, niezbywalnego prawa do korzystania z aplikacji na obsługiwanych urządzeniach zgodnie z regulaminem i zasadami sklepu. Prawa do aplikacji i jej treści należą do wydawcy lub licencjodawców. Użytkownik zachowuje prawa do własnych danych i materiałów.",
+  "termsSectionLiabilityTitle": "11. Odpowiedzialność",
   "termsSectionLiabilityBody": "Wydawca odpowiada w granicach bezwzględnie obowiązującego prawa. Warunki nie wyłączają ani nie ograniczają ustawowych praw konsumenta. Użytkownik odpowiada za decyzje budowlane podjęte bez wymaganej weryfikacji specjalisty oraz za skutki podania nieprawidłowych danych.",
-  "termsSectionLawTitle": "8. Prawo i spory",
+  "termsSectionLawTitle": "12. Prawo i spory",
   "termsSectionLawBody": "Stosuje się prawo polskie, bez uszczerbku dla bezwzględnie obowiązujących praw konsumenta wynikających z prawa miejsca jego zamieszkania. Spór można najpierw zgłosić wydawcy na podany adres kontaktowy.",
-  "termsSectionChangesTitle": "9. Zmiany warunków",
-  "termsSectionChangesBody": "Nowa wersja warunków powinna otrzymać nową datę i być dostępna przed publikacją aktualizacji, jeżeli zmiana wpływa na prawa użytkownika lub sposób działania aplikacji.",
+  "termsSectionChangesTitle": "13. Zmiany regulaminu",
+  "termsSectionChangesBody": "Regulamin może zostać zmieniony z ważnej przyczyny, takiej jak zmiana prawa, bezpieczeństwa, zakresu usługi, modelu płatności albo wykorzystywanego SDK. Nowa wersja otrzymuje datę i jest udostępniana przed wejściem w życie zmiany wpływającej na prawa użytkownika. Prawa nabyte i bezwzględnie obowiązujące prawa konsumenta pozostają nienaruszone.",
   "privacySettingsIntro": "BudowaPRO nie ma konta, reklam ani własnej analityki. Ten ekran pokazuje realne ustawienia i wyjątek techniczny związany z Google ML Kit.",
   "privacyStatusSection": "Bieżący status",
   "privacyStatusLocalTitle": "Treści projektu pozostają lokalnie",

@@ -1,4 +1,5 @@
 import 'package:budowapro/features/projects/data/project_providers.dart';
+import 'package:budowapro/features/legal/data/legal_providers.dart';
 import 'package:budowapro/features/schedule/data/schedule_providers.dart';
 import 'package:budowapro/features/schedule/domain/schedule_event.dart';
 import 'package:budowapro/features/schedule/domain/schedule_notification_gateway.dart';
@@ -352,6 +353,7 @@ void main() {
         projectRepositoryProvider.overrideWith(
           (ref) async => FakeProjectRepository(),
         ),
+        legalTermsAcceptedProvider.overrideWith((ref) async => true),
         scheduleRepositoryProvider.overrideWith(
           (ref) async => FakeScheduleRepository(events: <ScheduleEvent>[event]),
         ),
@@ -389,6 +391,7 @@ Widget _testApp() {
   return ProviderScope(
     overrides: [
       projectRepositoryProvider.overrideWith((ref) async => repository),
+      legalTermsAcceptedProvider.overrideWith((ref) async => true),
     ],
     child: const MainApp(),
   );

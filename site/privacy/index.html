@@ -4,6 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; img-src 'self'; style-src 'self'; base-uri 'self'; form-action 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <meta
       name="description"
       content="Polityka prywatności aplikacji BudowaPRO."
     />
@@ -31,12 +36,13 @@
       <p class="eyebrow">Dokument prawny</p>
       <h1>Polityka prywatności</h1>
       <p class="lead">
-        Opisuje rzeczywiste działanie wersji 1.0.0 aplikacji BudowaPRO na
-        Androidzie i iOS.
+        Rzeczywiste przepływy danych wersji 1.0.0 aplikacji BudowaPRO na
+        Androidzie i iOS oraz publicznych stron BudowaPRO.
       </p>
       <p class="meta">
-        <strong>Wydawca i administrator korespondencji:</strong> Przemysław Sobczyk
-        (NIP 6443558164) · <strong>Kontakt:</strong>
+        <strong>Administrator korespondencji:</strong> Przemysław Sobczyk,
+        NIP 6443558164, Przygraniczna 40, 41-203 Sosnowiec, Polska ·
+        <strong>Kontakt:</strong>
         <a href="mailto:kontakt@budowaproapp.pl"
           >kontakt@budowaproapp.pl</a
         >
@@ -44,13 +50,13 @@
       </p>
 
       <section>
-        <h2>1. Zakres polityki</h2>
+        <h2>1. Administrator i zakres polityki</h2>
         <p>
-          Polityka dotyczy aplikacji BudowaPRO. Aplikacja nie wymaga konta i nie
-          korzysta z własnego backendu. Wydawca jest administratorem danych
-          przekazanych w korespondencji z BudowaPRO. Nie otrzymuje i nie ma
-          zdalnego dostępu do treści zapisanych wyłącznie w prywatnej pamięci
-          aplikacji.
+          Polityka dotyczy aplikacji, stron prawnych i korespondencji
+          BudowaPRO. Aplikacja nie wymaga konta i nie korzysta z własnego
+          backendu. Wydawca jest administratorem danych przekazanych w
+          korespondencji. Nie otrzymuje i nie ma zdalnego dostępu do treści
+          zapisanych wyłącznie w prywatnej pamięci aplikacji.
         </p>
       </section>
       <section>
@@ -60,7 +66,7 @@
           kontakty wykonawców, terminy, notatki, decyzje, usterki,
           pomieszczenia, materiały, dostawy, dokumenty, zdjęcia, skany, wyniki
           OCR i ręczne kopie zapasowe. Dane służą wyłącznie funkcjom
-          uruchamianym przez użytkownika.
+          uruchamianym przez użytkownika. Wydawca nie otrzymuje ich kopii.
         </p>
       </section>
       <section>
@@ -75,17 +81,18 @@
         <h2>4. Skaner i Google ML Kit</h2>
         <p>
           Obraz, tekst wejściowy i wynik OCR są przetwarzane na urządzeniu i nie
-          są wysyłane do serwerów Google w celu rozpoznania. Biblioteki Google
-          ML Kit mogą pobierać komponenty oraz wysyłać zaszyfrowane metryki
-          techniczne, takie jak informacje o urządzeniu i aplikacji,
-          identyfikator instalacji, parametry użycia, wydajność i kody błędów.
-          Służą one Google do diagnostyki i analizy działania ML Kit. Szczegóły
-          opisują
+          są wysyłane do serwerów Google w celu rozpoznania. Po uruchomieniu
+          skanera lub OCR biblioteki Google ML Kit zbierają i wysyłają przez
+          HTTPS informacje o urządzeniu i
+          aplikacji, identyfikator instalacji, konfigurację API, rozmiar wejścia
+          i wyjścia, wersję funkcji, metryki wydajności, typy zdarzeń oraz kody
+          błędów. Google używa ich do diagnostyki i analityki działania ML Kit.
+          Szczegóły opisują
           <a href="https://developers.google.com/ml-kit/terms"
-            >warunki i informacje o prywatności ML Kit</a
+            >warunki i prywatność ML Kit</a
           > oraz
           <a href="https://developers.google.com/ml-kit/android-data-disclosure"
-            >informacje Google o danych zbieranych przez SDK</a
+            >ujawnienie danych Android SDK</a
           >.
         </p>
       </section>
@@ -93,8 +100,8 @@
         <h2>5. Uprawnienia urządzenia</h2>
         <ul>
           <li>
-            Aparat, skaner i selektor plików otwierają się dopiero po działaniu
-            użytkownika.
+            Skaner i selektor plików otwierają się dopiero po działaniu
+            użytkownika; aplikacja nie żąda szerokiego dostępu do pamięci.
           </li>
           <li>
             Systemowy selektor kontaktu przekazuje wybrany pojedynczy kontakt;
@@ -107,40 +114,101 @@
         </ul>
       </section>
       <section>
-        <h2>6. Eksport, strony publiczne i odbiorcy</h2>
+        <h2>6. Korespondencja i wsparcie — cele i podstawy prawne</h2>
         <p>
-          Eksport CSV, ręczna kopia ZIP, telefon, e-mail i systemowe
-          udostępnianie są wykonywane dopiero na polecenie użytkownika. Wybrana
-          zawartość trafia wtedy do wskazanej aplikacji lub dostawcy i podlega
-          jego zasadom. Ręczna kopia ZIP nie jest szyfrowana i może zawierać
-          dane kontaktowe, dokumenty oraz zdjęcia.
+          Po wysłaniu wiadomości na kontakt@budowaproapp.pl przetwarzane są
+          adres e-mail, treść wiadomości, dane podane dobrowolnie i ewentualne
+          załączniki. Cele to odpowiedź, pomoc techniczna, obsługa reklamacji,
+          bezpieczeństwo oraz ustalenie albo obrona roszczeń.
+        </p>
+        <ul>
+          <li>
+            podjęcie działań na żądanie użytkownika lub wykonanie umowy —
+            art. 6 ust. 1 lit. b RODO;
+          </li>
+          <li>
+            wykonanie obowiązku prawnego, gdy ma zastosowanie — art. 6 ust. 1
+            lit. c RODO;
+          </li>
+          <li>
+            prawnie uzasadniony interes obejmujący wsparcie, bezpieczeństwo i
+            obronę roszczeń — art. 6 ust. 1 lit. f RODO.
+          </li>
+        </ul>
+        <p>
+          Podanie danych jest dobrowolne, ale bez adresu zwrotnego i opisu
+          sprawy odpowiedź może być niemożliwa. Nie wysyłaj nieocenzurowanych
+          dokumentów ani danych osób trzecich, jeżeli nie są konieczne.
+        </p>
+      </section>
+      <section>
+        <h2>7. Odbiorcy danych, inni administratorzy i przekazywanie poza EOG</h2>
+        <p>
+          Google działa jako niezależny administrator technicznych metryk ML
+          Kit wykorzystywanych do diagnostyki i analityki SDK. GitHub, Inc. lub
+          GitHub B.V. działa jako niezależny administrator danych powstających
+          przy wejściu na publiczne strony. GitHub automatycznie otrzymuje adres
+          IP, informacje o urządzeniu i przeglądarce, identyfikatory techniczne,
+          datę i czas żądania, stronę odsyłającą, odwiedzone podstrony oraz
+          kliknięte odnośniki. Wydawca nie ma dostępu do tych logów. Publiczne
+          strony nie mają reklam, formularzy, skryptów ani własnej analityki.
         </p>
         <p>
-          Publiczne strony BudowaPRO nie zawierają reklam, formularzy ani
-          własnej analityki. Po ich otwarciu przeglądarka łączy się z hostingiem
-          GitHub Pages, którego operator może przetwarzać standardowe dane
-          techniczne połączenia zgodnie z
+          OVHcloud obsługuje pocztę jako dostawca działający na rzecz wydawcy.
+          Odbiorcą może być też aplikacja albo dostawca wskazany przez
+          użytkownika przy eksporcie. W zakresie korespondencji podstawą
+          korzystania z dostawcy poczty jest wykonanie umowy lub działania na
+          żądanie użytkownika oraz prawnie uzasadniony interes zapewnienia
+          bezpiecznej obsługi zgłoszeń — art. 6 ust. 1 lit. b i f RODO.
+        </p>
+        <p>
+          GitHub wskazuje standardowe klauzule umowne Komisji Europejskiej na
+          podstawie decyzji 2021/914 oraz EU-US Data Privacy Framework. Google
+          stosuje mechanizmy transferu opisane w swojej polityce prywatności.
+          Informację lub kopię zabezpieczeń transferu można uzyskać z
+          podlinkowanych dokumentów dostawców albo pisząc na adres wydawcy. Zobacz
           <a
             href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement"
-            >polityką prywatności GitHub</a
-          >. Wysłanie wiadomości e-mail przekazuje jej treść wybranym dostawcom
-          poczty użytkownika i wydawcy.
+            >politykę GitHub</a
+          > i <a href="https://policies.google.com/privacy">politykę Google</a>.
+          Eksport CSV, kopia ZIP, telefon, e-mail i systemowe udostępnianie są
+          wykonywane dopiero po działaniu użytkownika. Kopia ZIP nie jest
+          szyfrowana.
         </p>
       </section>
       <section>
-        <h2>7. Przechowywanie i usuwanie</h2>
+        <h2>8. Przechowywanie i usuwanie</h2>
         <p>
-          Dane pozostają w aplikacji do usunięcia rekordu lub projektu, użycia
-          funkcji „Usuń wszystkie dane BudowaPRO”, wyczyszczenia danych
-          aplikacji albo jej odinstalowania. Eksporty zapisane poza aplikacją
-          trzeba usunąć osobno. Android wyklucza prywatne pliki BudowaPRO z
-          kopii chmurowej i transferu urządzenie–urządzenie. Na iOS prywatny
-          katalog danych BudowaPRO jest oznaczony jako wyłączony z kopii
-          iCloud.
+          Dane lokalne pozostają w aplikacji do usunięcia rekordu lub projektu,
+          użycia funkcji „Usuń wszystkie dane BudowaPRO”, wyczyszczenia danych
+          aplikacji albo jej odinstalowania. Eksporty trzeba usunąć osobno.
+          Android wyklucza prywatne pliki z kopii chmurowej i transferu na nowe
+          urządzenie. Na iOS prywatny katalog BudowaPRO jest wyłączony z iCloud.
+        </p>
+        <p>
+          Korespondencja jest przechowywana do zakończenia sprawy, a następnie
+          do upływu właściwego okresu przedawnienia lub obowiązkowej retencji;
+          dane zbędne są usuwane wcześniej. Logi techniczne i metryki ML Kit są
+          przechowywane przez dostawców według ich zasad. Zobacz
+          <a href="/data-deletion/">instrukcję usuwania danych</a>.
         </p>
       </section>
       <section>
-        <h2>8. Bezpieczeństwo</h2>
+        <h2>9. Prawa użytkownika</h2>
+        <p>
+          Dane lokalne można przeglądać, poprawiać, eksportować i usuwać w
+          aplikacji. W odniesieniu do danych korespondencji, zależnie od
+          podstawy i okoliczności, przysługuje prawo dostępu, sprostowania,
+          usunięcia, ograniczenia przetwarzania, przenoszenia danych oraz
+          wniesienia sprzeciwu. Żądanie wyślij na
+          <a href="mailto:kontakt@budowaproapp.pl"
+            >kontakt@budowaproapp.pl</a
+          >. Możesz złożyć skargę do
+          <a href="https://uodo.gov.pl/pl/138/155">Prezesa UODO</a>.
+        </p>
+      </section>
+      <section>
+        <h2>10. Bezpieczeństwo</h2>
         <p>
           BudowaPRO używa prywatnych katalogów aplikacji, ogranicza uprawnienia
           i weryfikuje kopie przed odtworzeniem. Użytkownik powinien chronić
@@ -150,23 +218,14 @@
         </p>
       </section>
       <section>
-        <h2>9. Prawa i kontakt</h2>
+        <h2>11. Kontakt i zmiany polityki</h2>
         <p>
-          Dane lokalne można przeglądać, poprawiać, eksportować i usuwać w
-          aplikacji. Ponieważ wydawca nie posiada ich kopii, nie może zwrócić
-          ani usunąć ich zdalnie. Pytania dotyczące prywatności można wysłać na
+          Pytania dotyczące prywatności wyślij na
           <a href="mailto:kontakt@budowaproapp.pl"
             >kontakt@budowaproapp.pl</a
-          >. W zakresie objętym RODO użytkownik może realizować prawa wobec
-          właściwego administratora oraz złożyć skargę do Prezesa UODO.
-        </p>
-      </section>
-      <section>
-        <h2>10. Zmiany polityki</h2>
-        <p>
-          Istotna zmiana funkcji, dostawcy SDK albo przepływu danych wymaga
-          aktualizacji polityki oraz deklaracji prywatności w sklepach. Data
-          aktualizacji jest publikowana na tej stronie i w aplikacji.
+          >. Istotna zmiana funkcji, SDK albo przepływu danych wymaga
+          aktualizacji polityki i deklaracji prywatności w sklepach. Data
+          aktualizacji jest publikowana na stronie i w aplikacji.
         </p>
       </section>
     </main>

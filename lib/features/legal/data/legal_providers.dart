@@ -1,6 +1,8 @@
 import 'package:budowapro/features/legal/data/legal_link_gateway.dart';
 import 'package:budowapro/features/legal/data/local_data_deletion_service.dart';
+import 'package:budowapro/features/legal/data/sqlite_legal_acceptance_repository.dart';
 import 'package:budowapro/features/legal/domain/app_build_info.dart';
+import 'package:budowapro/features/legal/domain/legal_acceptance.dart';
 import 'package:budowapro/features/legal/domain/legal_release_config.dart';
 import 'package:budowapro/features/projects/data/project_providers.dart';
 import 'package:budowapro/shared/services/local_private_cache_cleaner.dart';
@@ -14,6 +16,17 @@ final legalReleaseConfigProvider = Provider<LegalReleaseConfig>(
 final legalLinkGatewayProvider = Provider<LegalLinkGateway>(
   (ref) => const SystemLegalLinkGateway(),
 );
+
+final legalAcceptanceRepositoryProvider =
+    FutureProvider<LegalAcceptanceRepository>((ref) async {
+      final database = await ref.watch(appDatabaseProvider.future);
+      return SqliteLegalAcceptanceRepository(database);
+    });
+
+final legalTermsAcceptedProvider = FutureProvider<bool>((ref) async {
+  final repository = await ref.watch(legalAcceptanceRepositoryProvider.future);
+  return repository.hasAcceptedCurrentTerms();
+});
 
 final localDataDeletionProvider = FutureProvider<LocalDataDeletion>((
   ref,

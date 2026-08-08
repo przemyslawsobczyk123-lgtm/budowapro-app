@@ -1,16 +1,21 @@
 final class LegalReleaseConfig {
   static const productionPublisherName = 'Przemysław Sobczyk';
+  static const productionPublisherAddress =
+      'Przygraniczna 40, 41-203 Sosnowiec, Polska';
   static const productionPublisherTaxId = '6443558164';
   static const productionContactEmail = 'kontakt@budowaproapp.pl';
   static const productionPrivacyPolicyUrl = 'https://budowaproapp.pl/privacy/';
   static const productionSupportUrl = 'https://budowaproapp.pl/support/';
+  static const productionTermsUrl = 'https://budowaproapp.pl/terms/';
 
   const LegalReleaseConfig({
     required this.publisherName,
+    this.publisherAddress = productionPublisherAddress,
     this.publisherTaxId = productionPublisherTaxId,
     required this.contactEmail,
     required this.privacyPolicyUrl,
     required this.supportUrl,
+    this.termsUrl = productionTermsUrl,
   });
 
   const LegalReleaseConfig.fromEnvironment()
@@ -22,6 +27,7 @@ final class LegalReleaseConfig {
         'BUDOWAPRO_PRIVACY_CONTACT_EMAIL',
         defaultValue: productionContactEmail,
       ),
+      publisherAddress = productionPublisherAddress,
       publisherTaxId = productionPublisherTaxId,
       privacyPolicyUrl = const String.fromEnvironment(
         'BUDOWAPRO_PRIVACY_POLICY_URL',
@@ -30,17 +36,25 @@ final class LegalReleaseConfig {
       supportUrl = const String.fromEnvironment(
         'BUDOWAPRO_SUPPORT_URL',
         defaultValue: productionSupportUrl,
-      );
+      ),
+      termsUrl = productionTermsUrl;
 
   final String publisherName;
+  final String publisherAddress;
   final String publisherTaxId;
   final String contactEmail;
   final String privacyPolicyUrl;
   final String supportUrl;
+  final String termsUrl;
 
   bool get hasPublisherName {
     final value = publisherName.trim();
     return value.isNotEmpty && value.length <= 160;
+  }
+
+  bool get hasPublisherAddress {
+    final value = publisherAddress.trim();
+    return value.isNotEmpty && value.length <= 240;
   }
 
   bool get hasValidPublisherTaxId => _isValidPolishTaxId(publisherTaxId);
@@ -61,6 +75,10 @@ final class LegalReleaseConfig {
     return _publicHttpsUri(supportUrl, rejectPdf: true);
   }
 
+  Uri? get publicTermsUri {
+    return _publicHttpsUri(termsUrl, rejectPdf: true);
+  }
+
   Uri? _publicHttpsUri(String value, {required bool rejectPdf}) {
     final uri = Uri.tryParse(value.trim());
     if (uri == null ||
@@ -76,28 +94,34 @@ final class LegalReleaseConfig {
 
   bool get hasCompleteLegalMetadata =>
       hasPublisherName &&
+      hasPublisherAddress &&
       hasValidPublisherTaxId &&
       hasValidContactEmail &&
       publicPrivacyPolicyUri != null &&
-      publicSupportUri != null;
+      publicSupportUri != null &&
+      publicTermsUri != null;
 
   List<LegalReleaseRequirement> get missingRequirements =>
       <LegalReleaseRequirement>[
         if (!hasPublisherName) LegalReleaseRequirement.publisherName,
+        if (!hasPublisherAddress) LegalReleaseRequirement.publisherAddress,
         if (!hasValidPublisherTaxId) LegalReleaseRequirement.publisherTaxId,
         if (!hasValidContactEmail) LegalReleaseRequirement.contactEmail,
         if (publicPrivacyPolicyUri == null)
           LegalReleaseRequirement.publicPrivacyPolicyUrl,
         if (publicSupportUri == null) LegalReleaseRequirement.supportUrl,
+        if (publicTermsUri == null) LegalReleaseRequirement.termsUrl,
       ];
 }
 
 enum LegalReleaseRequirement {
   publisherName,
+  publisherAddress,
   publisherTaxId,
   contactEmail,
   publicPrivacyPolicyUrl,
   supportUrl,
+  termsUrl,
 }
 
 bool _isValidPolishTaxId(String value) {

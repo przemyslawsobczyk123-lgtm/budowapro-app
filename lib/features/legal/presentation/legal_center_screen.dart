@@ -239,11 +239,14 @@ String _requirementLabel(
 ) => switch (requirement) {
   LegalReleaseRequirement.publisherName =>
     l10n.legalMissingPublisherRequirement,
+  LegalReleaseRequirement.publisherAddress =>
+    l10n.legalMissingPublisherAddressRequirement,
   LegalReleaseRequirement.publisherTaxId => l10n.legalMissingTaxIdRequirement,
   LegalReleaseRequirement.contactEmail => l10n.legalMissingEmailRequirement,
   LegalReleaseRequirement.publicPrivacyPolicyUrl =>
     l10n.legalMissingPublicUrlRequirement,
   LegalReleaseRequirement.supportUrl => l10n.legalMissingSupportUrlRequirement,
+  LegalReleaseRequirement.termsUrl => l10n.legalMissingTermsUrlRequirement,
 };
 
 Future<void> _open(BuildContext context, WidgetRef ref, Uri uri) async {

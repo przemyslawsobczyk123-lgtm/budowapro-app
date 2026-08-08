@@ -7,6 +7,10 @@ void main() {
 
     expect(config.hasCompleteLegalMetadata, isTrue);
     expect(config.publisherName, LegalReleaseConfig.productionPublisherName);
+    expect(
+      config.publisherAddress,
+      LegalReleaseConfig.productionPublisherAddress,
+    );
     expect(config.publisherTaxId, '6443558164');
     expect(config.contactEmail, 'kontakt@budowaproapp.pl');
     expect(
@@ -17,6 +21,7 @@ void main() {
       config.publicSupportUri,
       Uri.parse('https://budowaproapp.pl/support/'),
     );
+    expect(config.publicTermsUri, Uri.parse('https://budowaproapp.pl/terms/'));
   });
 
   test('accepts a complete Google Play legal configuration', () {
@@ -25,6 +30,7 @@ void main() {
       contactEmail: 'kontakt@budowaproapp.pl',
       privacyPolicyUrl: 'https://budowaproapp.pl/privacy/',
       supportUrl: 'https://budowaproapp.pl/support/',
+      termsUrl: 'https://budowaproapp.pl/terms/',
     );
 
     expect(config.hasCompleteLegalMetadata, isTrue);
@@ -37,22 +43,27 @@ void main() {
       config.publicSupportUri,
       Uri.parse('https://budowaproapp.pl/support/'),
     );
+    expect(config.publicTermsUri, Uri.parse('https://budowaproapp.pl/terms/'));
   });
 
   test('reports every missing release requirement', () {
     const config = LegalReleaseConfig(
       publisherName: ' ',
+      publisherAddress: ' ',
       contactEmail: 'invalid',
       privacyPolicyUrl: 'http://localhost/privacy.pdf',
       supportUrl: '',
+      termsUrl: 'http://localhost/terms.pdf',
     );
 
     expect(config.hasCompleteLegalMetadata, isFalse);
     expect(config.missingRequirements, <LegalReleaseRequirement>[
       LegalReleaseRequirement.publisherName,
+      LegalReleaseRequirement.publisherAddress,
       LegalReleaseRequirement.contactEmail,
       LegalReleaseRequirement.publicPrivacyPolicyUrl,
       LegalReleaseRequirement.supportUrl,
+      LegalReleaseRequirement.termsUrl,
     ]);
   });
 

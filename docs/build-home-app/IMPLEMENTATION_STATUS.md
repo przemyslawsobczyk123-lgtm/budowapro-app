@@ -691,7 +691,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-08-06. The full suite contains 587 passing tests. Debug APK:
+All commands passed on 2026-08-08. The full suite contains 601 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -711,6 +711,28 @@ in `CUSTOM_DOMAIN_RELEASE.md`. Store copy, privacy worksheets, icon, Google Play
 feature graphic and four Android screenshots are ready. Store account
 declarations, signed current artifacts and physical-device evidence remain
 owner release gates.
+
+### Legal website and store-disclosure hardening
+
+- First launch now presents public terms and privacy links before project
+  features. The current terms revision and acceptance time are stored only in
+  local app metadata; accepting an older revision does not unlock a newer one.
+- The public privacy notice now covers support correspondence, Article 6 GDPR
+  bases, exact ML Kit telemetry, GitHub Pages connection logs, provider roles,
+  transfer safeguards, retention criteria and data subject rights while
+  preserving the local-first boundary.
+- The public and in-app terms now cover the electronic-service scope, technical
+  requirements and risks, prohibited content, contract start/termination,
+  consumer rights, complaints, licence and change grounds.
+- Final provider identity and address were checked against the official Polish
+  VAT taxpayer list on 2026-08-08 and remain confined to legal documents.
+- Static pages contain no scripts, forms or analytics and use CSP plus a
+  no-referrer policy. Tests prevent accidental removal of these disclosures.
+- Sources, residual owner gates and re-audit triggers are recorded in
+  `LEGAL_COMPLIANCE_AUDIT.md`. `store/privacy/store-declarations.md` contains
+  exact Google Play Data safety answers for the current ML Kit SDKs; Play
+  Console submission still requires owner confirmation against the final
+  signed artifact.
 
 ## Next task
 

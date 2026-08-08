@@ -63,10 +63,34 @@ class LegalDocumentScreen extends ConsumerWidget {
               label: l10n.legalSourceGooglePrivacy,
               uri: LegalSources.googlePrivacy,
             ),
+            _SourceTile(
+              label: l10n.legalSourceGithubPrivacy,
+              uri: LegalSources.githubPrivacy,
+            ),
             _SourceTile(label: l10n.legalSourceGdpr, uri: LegalSources.gdpr),
             _SourceTile(
               label: l10n.legalSourceUodo,
               uri: LegalSources.uodoComplaint,
+            ),
+          ] else ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+              child: Text(
+                l10n.legalOfficialSourcesTitle,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            _SourceTile(
+              label: l10n.legalSourceElectronicServicesAct,
+              uri: LegalSources.electronicServicesAct,
+            ),
+            _SourceTile(
+              label: l10n.legalSourceConsumerRightsAct,
+              uri: LegalSources.consumerRightsAct,
+            ),
+            _SourceTile(
+              label: l10n.legalSourceTaxpayerList,
+              uri: LegalSources.ministryOfFinanceTaxpayerList,
             ),
           ],
           Padding(
@@ -156,10 +180,18 @@ List<_LegalSectionData> _privacySections(
   final taxId = config.hasValidPublisherTaxId
       ? config.publisherTaxId.trim()
       : l10n.legalNotConfiguredValue;
+  final address = config.hasPublisherAddress
+      ? config.publisherAddress.trim()
+      : l10n.legalNotConfiguredValue;
   return <_LegalSectionData>[
     _LegalSectionData(
       title: l10n.privacySectionPublisherTitle,
-      body: l10n.privacySectionPublisherBody(publisher, taxId, contact),
+      body: l10n.privacySectionPublisherBody(
+        publisher,
+        taxId,
+        address,
+        contact,
+      ),
     ),
     _LegalSectionData(
       title: l10n.privacySectionLocalDataTitle,
@@ -174,8 +206,16 @@ List<_LegalSectionData> _privacySections(
       body: l10n.privacySectionOcrBody,
     ),
     _LegalSectionData(
+      title: l10n.privacySectionPermissionsTitle,
+      body: l10n.privacySectionPermissionsBody,
+    ),
+    _LegalSectionData(
       title: l10n.privacySectionSharingTitle,
       body: l10n.privacySectionSharingBody,
+    ),
+    _LegalSectionData(
+      title: l10n.privacySectionCorrespondenceTitle,
+      body: l10n.privacySectionCorrespondenceBody(contact),
     ),
     _LegalSectionData(
       title: l10n.privacySectionRetentionTitle,
@@ -209,10 +249,13 @@ List<_LegalSectionData> _termsSections(
   final taxId = config.hasValidPublisherTaxId
       ? config.publisherTaxId.trim()
       : l10n.legalNotConfiguredValue;
+  final address = config.hasPublisherAddress
+      ? config.publisherAddress.trim()
+      : l10n.legalNotConfiguredValue;
   return <_LegalSectionData>[
     _LegalSectionData(
       title: l10n.termsSectionProviderTitle,
-      body: l10n.termsSectionProviderBody(publisher, taxId, contact),
+      body: l10n.termsSectionProviderBody(publisher, taxId, address, contact),
     ),
     _LegalSectionData(
       title: l10n.termsSectionPurposeTitle,
@@ -221,6 +264,14 @@ List<_LegalSectionData> _termsSections(
     _LegalSectionData(
       title: l10n.termsSectionSafetyTitle,
       body: l10n.termsSectionSafetyBody,
+    ),
+    _LegalSectionData(
+      title: l10n.termsSectionTechnicalTitle,
+      body: l10n.termsSectionTechnicalBody,
+    ),
+    _LegalSectionData(
+      title: l10n.termsSectionContractTitle,
+      body: l10n.termsSectionContractBody,
     ),
     _LegalSectionData(
       title: l10n.termsSectionUserDataTitle,
@@ -233,6 +284,14 @@ List<_LegalSectionData> _termsSections(
     _LegalSectionData(
       title: l10n.termsSectionAvailabilityTitle,
       body: l10n.termsSectionAvailabilityBody,
+    ),
+    _LegalSectionData(
+      title: l10n.termsSectionComplaintsTitle,
+      body: l10n.termsSectionComplaintsBody(contact),
+    ),
+    _LegalSectionData(
+      title: l10n.termsSectionLicenseTitle,
+      body: l10n.termsSectionLicenseBody,
     ),
     _LegalSectionData(
       title: l10n.termsSectionLiabilityTitle,

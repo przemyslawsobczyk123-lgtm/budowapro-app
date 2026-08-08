@@ -1,6 +1,6 @@
 # BudowaPRO - prywatnosc i wydanie Google Play
 
-Stan audytu kodu: 2026-07-29.
+Stan audytu kodu: 2026-08-08.
 
 Dokument opisuje wdrozone zabezpieczenia oraz czynnosci nalezace do wydawcy.
 Nie zastepuje indywidualnej opinii prawnej ani konfiguracji Play Console.
@@ -8,10 +8,18 @@ Nie zastepuje indywidualnej opinii prawnej ani konfiguracji Play Console.
 ## 1. Stan wdrozenia
 
 - `Wiecej -> Prywatnosc i prawo` otwiera dostepne offline centrum prawne.
+- Przy pierwszym uruchomieniu aplikacja udostepnia regulamin i polityke przed
+  wlaczeniem funkcji projektu. Aktualna wersja regulaminu musi zostac jawnie
+  potwierdzona; znacznik i czas pozostaja w lokalnej bazie urzadzenia.
 - Polityka prywatnosci, warunki uzytkowania, licencje i ustawienia prywatnosci
   sa dostepne bez konta i bez opuszczania aplikacji.
-- Dokumenty opisuja dane lokalne, retencje, usuwanie, eksport, OCR, Google
-  ML Kit, prawa uzytkownika i granice porad budowlanych.
+- Publiczny regulamin zawiera rodzaje i zakres uslug, wymagania techniczne,
+  zakaz tresci bezprawnych, zawarcie i zakonczenie korzystania oraz tryb
+  reklamacyjny. Polityka opisuje podstawy prawne korespondencji, odbiorcow,
+  transfery poza EOG, retencje i komplet praw osoby, ktorej dane dotycza.
+- Dokumenty opisuja dane lokalne, retencje, usuwanie, eksport, OCR, konkretne
+  metryki Google ML Kit, logi hostingu GitHub Pages, role dostawcow, prawa
+  uzytkownika i granice porad budowlanych.
 - Aplikacja nie ma reklam, konta, backendu, synchronizacji, Firebase Analytics
   ani Firebase Crashlytics.
 - Automatyczna kopia Androida jest wylaczona. Reguly Android 11 i 12+
@@ -54,16 +62,27 @@ BUDOWAPRO_PRIVACY_POLICY_URL=https://budowaproapp.pl/privacy/
 BUDOWAPRO_SUPPORT_URL=https://budowaproapp.pl/support/
 ```
 
+Publiczny regulamin ma staly produkcyjny adres
+`https://budowaproapp.pl/terms/`. NIP i adres uslugodawcy sa stalymi danymi
+prawnymi w konfiguracji domenowej. Wszystkie trzy elementy sa objete testem
+kompletnosci konfiguracji release.
+
 Zweryfikowane dane prawne wydawcy to `PRZEMYSŁAW SOBCZYK`, NIP
-`6443558164`. Zwykly ekran kontaktowy aplikacji nie pokazuje nazwiska ani
-NIP-u. Dane te wystepuja tylko w polityce prywatnosci i warunkach uzytkowania,
-gdzie identyfikuja administratora i uslugodawce. Publiczna marka aplikacji i
-nazwa dewelopera w sklepie to `BudowaPRO`, a publiczny kontakt do aplikacji to
-wylacznie `kontakt@budowaproapp.pl`.
+`6443558164`, adres `Przygraniczna 40, 41-203 Sosnowiec, Polska`. Zwykly ekran
+kontaktowy aplikacji nie pokazuje nazwiska, NIP-u ani adresu. Dane te wystepuja
+tylko w polityce prywatnosci i regulaminie, gdzie identyfikuja administratora i
+uslugodawce. Publiczna marka aplikacji i nazwa dewelopera w sklepie to
+`BudowaPRO`, a publiczny kontakt do aplikacji to wylacznie
+`kontakt@budowaproapp.pl`.
 
 Dane prawne zostaly sprawdzone 08.08.2026 w oficjalnym Wykazie podatnikow VAT
 Ministerstwa Finansow dla NIP `6443558164`. Przed publikacja trzeba je jeszcze
 porownac z dokumentami uzytymi do weryfikacji konta Google Play.
+
+Strona nie laduje skryptow, formularzy, reklam ani wlasnej analityki. Statyczny
+HTML ma restrykcyjna polityke CSP i `no-referrer`. Dodanie analityki, osadzonego
+filmu, formularza lub technologii niekoniecznej wymaga osobnej oceny cookies i
+zgod oraz aktualizacji tej dokumentacji.
 
 Adres polityki musi:
 
@@ -118,8 +137,8 @@ jako testowy. Artefaktu z `validationOnly: true` nie wolno wysylac do Play.
 
 Proces wykonuje:
 
-1. sprawdzenie klucza, oczekiwanego odcisku certyfikatu upload, danych wydawcy
-   i publicznego HTML polityki;
+1. sprawdzenie klucza, oczekiwanego odcisku certyfikatu upload, danych wydawcy,
+   publicznego HTML polityki i publicznego URL wsparcia;
 2. `flutter pub get`, generowanie lokalizacji, format, analize i wszystkie testy;
 3. podpisany AAB release z obfuskacja i osobnymi symbolami Dart;
 4. weryfikacje podpisu przez `jarsigner` i porownanie certyfikatu AAB;
@@ -154,11 +173,17 @@ Deklaracje trzeba potwierdzic dla dokladnych wersji SDK w wysylanym AAB.
 
 Formularz powinien uwzgledniac ujawnione przez Google techniczne dane SDK:
 
-- `Device or other IDs`;
-- `App info and performance`;
-- `App activity`;
-- cele diagnostyczne i analityka wykorzystania ML Kit;
-- szyfrowanie w tranzycie przez HTTPS.
+- `App activity > App interactions`: collected, not shared, not ephemeral,
+  optional, purpose `Analytics`;
+- `App info and performance > Diagnostics`: collected, not shared, not
+  ephemeral, optional, purpose `Analytics`;
+- `Device or other IDs > Device or other IDs`: collected, not shared, not
+  ephemeral, optional, purpose `Analytics`;
+- wszystkie trzy kategorie sa szyfrowane w tranzycie przez HTTPS.
+
+`optional` wynika z tego, ze skaner/OCR nie jest wymagany do prowadzenia
+projektu. Finalny AAB trzeba sprawdzic przed wyslaniem. Jezeli SDK transmituje
+metryki przed swiadomym uzyciem skanera, pole trzeba ustawic jako required.
 
 Nie nalezy deklarowac, ze aplikacja nie zbiera absolutnie zadnych danych,
 dopoki w AAB pozostaje ML Kit. Nie nalezy tez deklarowac wysylania obrazu,
