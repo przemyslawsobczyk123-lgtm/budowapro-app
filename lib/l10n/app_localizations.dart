@@ -2146,18 +2146,6 @@ abstract class AppLocalizations {
   /// **'Oznaczono jako wykonane: {count}.'**
   String checklistBulkCompletedMessage(int count);
 
-  /// No description provided for @checklistBulkEvidencePendingMessage.
-  ///
-  /// In pl, this message translates to:
-  /// **'Oznaczono: {completed}. Pozostałe wymagają dowodu: {pending}.'**
-  String checklistBulkEvidencePendingMessage(int completed, int pending);
-
-  /// No description provided for @checklistBulkOnlyEvidencePendingMessage.
-  ///
-  /// In pl, this message translates to:
-  /// **'Wybrane punkty wymagają najpierw dodania dowodu lub zapisanego odstępstwa.'**
-  String get checklistBulkOnlyEvidencePendingMessage;
-
   /// No description provided for @checklistAddAction.
   ///
   /// In pl, this message translates to:
@@ -2311,7 +2299,7 @@ abstract class AppLocalizations {
   /// No description provided for @checklistEvidenceLabel.
   ///
   /// In pl, this message translates to:
-  /// **'Wymagany dowód'**
+  /// **'Zalecana dokumentacja'**
   String get checklistEvidenceLabel;
 
   /// No description provided for @checklistEvidenceNone.
@@ -2353,56 +2341,8 @@ abstract class AppLocalizations {
   /// No description provided for @checklistEvidenceWaived.
   ///
   /// In pl, this message translates to:
-  /// **'Udokumentowane odstępstwo'**
+  /// **'Zapisana notatka o braku dokumentacji'**
   String get checklistEvidenceWaived;
-
-  /// No description provided for @checklistEvidenceRequiredTitle.
-  ///
-  /// In pl, this message translates to:
-  /// **'Brakuje wymaganego dowodu'**
-  String get checklistEvidenceRequiredTitle;
-
-  /// No description provided for @checklistEvidenceRequiredMessage.
-  ///
-  /// In pl, this message translates to:
-  /// **'Dodaj lokalne zdjęcie lub dokument. Możesz też jawnie odstąpić od dowodu i zapisać uzasadnienie.'**
-  String get checklistEvidenceRequiredMessage;
-
-  /// No description provided for @checklistAddEvidenceAction.
-  ///
-  /// In pl, this message translates to:
-  /// **'Dodaj dowód'**
-  String get checklistAddEvidenceAction;
-
-  /// No description provided for @checklistWaiveEvidenceAction.
-  ///
-  /// In pl, this message translates to:
-  /// **'Zapisz odstępstwo'**
-  String get checklistWaiveEvidenceAction;
-
-  /// No description provided for @checklistWaiverTitle.
-  ///
-  /// In pl, this message translates to:
-  /// **'Odstępstwo od dowodu'**
-  String get checklistWaiverTitle;
-
-  /// No description provided for @checklistWaiverLabel.
-  ///
-  /// In pl, this message translates to:
-  /// **'Uzasadnienie odstępstwa'**
-  String get checklistWaiverLabel;
-
-  /// No description provided for @checklistWaiverRequiredError.
-  ///
-  /// In pl, this message translates to:
-  /// **'Wpisz konkretne uzasadnienie odstępstwa.'**
-  String get checklistWaiverRequiredError;
-
-  /// No description provided for @checklistEvidenceImportError.
-  ///
-  /// In pl, this message translates to:
-  /// **'Nie udało się dodać dowodu. Sprawdź typ pliku i spróbuj ponownie.'**
-  String get checklistEvidenceImportError;
 
   /// No description provided for @checklistPlanningPermissionBasis.
   ///

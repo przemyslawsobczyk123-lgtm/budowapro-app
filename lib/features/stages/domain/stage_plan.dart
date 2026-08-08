@@ -405,17 +405,6 @@ void validateChecklistResolution({
   if (status == ChecklistStatus.skipped && (reason == null || reason.isEmpty)) {
     throw const ChecklistSkipReasonRequiredException();
   }
-  final waiver = evidenceWaiverComment?.trim();
-  if (status == ChecklistStatus.completed &&
-      evidenceRequirement != EvidenceRequirement.none &&
-      evidenceCount == 0 &&
-      (waiver == null || waiver.isEmpty)) {
-    throw const ChecklistEvidenceRequiredException();
-  }
-}
-
-final class ChecklistEvidenceRequiredException implements Exception {
-  const ChecklistEvidenceRequiredException();
 }
 
 final class ChecklistSkipReasonRequiredException implements Exception {

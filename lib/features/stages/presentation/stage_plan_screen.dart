@@ -349,25 +349,9 @@ class _StagePlanContentState extends ConsumerState<_StagePlanContent> {
     final selectedItems = state.checklistItems
         .where((item) => _selectedIds.contains(item.id))
         .toList(growable: false);
-    final completable = selectedItems
-        .where(
-          (item) =>
-              item.evidenceRequirement == EvidenceRequirement.none ||
-              item.hasEvidence ||
-              item.hasEvidenceWaiver,
-        )
-        .toList(growable: false);
-    final pendingCount = selectedItems.length - completable.length;
-    if (completable.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.checklistBulkOnlyEvidencePendingMessage)),
-      );
-      return;
-    }
-
     await ref
         .read(stagePlanControllerProvider.notifier)
-        .completeChecklistItems(completable.map((item) => item.id));
+        .completeChecklistItems(selectedItems.map((item) => item.id));
     if (!mounted) return;
     setState(() {
       _bulkMode = false;
@@ -376,14 +360,7 @@ class _StagePlanContentState extends ConsumerState<_StagePlanContent> {
     widget.onBulkModeChanged(false);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          pendingCount == 0
-              ? l10n.checklistBulkCompletedMessage(completable.length)
-              : l10n.checklistBulkEvidencePendingMessage(
-                  completable.length,
-                  pendingCount,
-                ),
-        ),
+        content: Text(l10n.checklistBulkCompletedMessage(selectedItems.length)),
       ),
     );
   }
@@ -1038,8 +1015,6 @@ class _ChecklistTag extends StatelessWidget {
 
 enum _StageMenuAction { edit, rename }
 
-enum _EvidenceAction { attach, waive }
-
 Future<void> _addStage(BuildContext context, WidgetRef ref) async {
   final l10n = AppLocalizations.of(context);
   final name = await showStageNameDialog(context, title: l10n.stageAddTitle);
@@ -1213,9 +1188,6 @@ Future<void> _editChecklistItem(
     await ref
         .read(stagePlanControllerProvider.notifier)
         .updateChecklistItem(item.id, input);
-  } on ChecklistEvidenceRequiredException {
-    if (!context.mounted) return;
-    await _resolveRequiredEvidence(context, ref, item, input);
   } on Object {
     if (context.mounted) _showMutationError(context);
   }
@@ -1254,77 +1226,6 @@ Future<bool> _openChecklistEvidence(
         '/documents/${Uri.encodeComponent(documentId)}',
       ) ??
       false;
-}
-
-Future<void> _resolveRequiredEvidence(
-  BuildContext context,
-  WidgetRef ref,
-  ChecklistItem item,
-  ChecklistItemDetailsInput input,
-) async {
-  final l10n = AppLocalizations.of(context);
-  final action = await showDialog<_EvidenceAction>(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(l10n.checklistEvidenceRequiredTitle),
-      content: Text(l10n.checklistEvidenceRequiredMessage),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(l10n.cancelAction),
-        ),
-        OutlinedButton.icon(
-          onPressed: () => Navigator.pop(context, _EvidenceAction.waive),
-          icon: const Icon(Icons.edit_note_rounded),
-          label: Text(l10n.checklistWaiveEvidenceAction),
-        ),
-        FilledButton.icon(
-          onPressed: () => Navigator.pop(context, _EvidenceAction.attach),
-          icon: const Icon(Icons.attach_file_rounded),
-          label: Text(l10n.checklistAddEvidenceAction),
-        ),
-      ],
-    ),
-  );
-  if (action == null || !context.mounted) return;
-  final controller = ref.read(stagePlanControllerProvider.notifier);
-  try {
-    switch (action) {
-      case _EvidenceAction.attach:
-        final attached = await controller.attachEvidence(item.id);
-        if (attached) await controller.updateChecklistItem(item.id, input);
-      case _EvidenceAction.waive:
-        final comment = await showEvidenceWaiverDialog(context);
-        if (comment == null || !context.mounted) return;
-        await controller.updateChecklistItem(
-          item.id,
-          _withWaiver(input, comment),
-        );
-    }
-  } on Object {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.checklistEvidenceImportError)),
-      );
-    }
-  }
-}
-
-ChecklistItemDetailsInput _withWaiver(
-  ChecklistItemDetailsInput input,
-  String comment,
-) {
-  return ChecklistItemDetailsInput(
-    status: input.status,
-    importance: input.importance,
-    evidenceRequirement: input.evidenceRequirement,
-    dueDate: input.dueDate,
-    assignee: input.assignee,
-    note: input.note,
-    riskIfSkipped: input.riskIfSkipped,
-    statusReason: input.statusReason,
-    evidenceWaiverComment: comment,
-  );
 }
 
 Future<void> _runMutation(

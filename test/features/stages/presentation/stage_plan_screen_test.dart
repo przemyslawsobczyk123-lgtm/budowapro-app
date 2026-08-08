@@ -214,10 +214,11 @@ void main() {
     expect(find.text('To nie jest projekt wykonawczy'), findsOneWidget);
   });
 
-  testWidgets('offers evidence or waiver when a required item is completed', (
+  testWidgets('completes an item without evidence or waiver prompts', (
     tester,
   ) async {
-    await tester.pumpWidget(_testApp());
+    final repository = _FakeStageRepository('project-1');
+    await tester.pumpWidget(_testApp(stageRepository: repository));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const ValueKey('stage-tab-formalities')));
@@ -238,9 +239,11 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Zapisz').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Brakuje wymaganego dowodu'), findsOneWidget);
-    expect(find.text('Dodaj dowód'), findsOneWidget);
-    expect(find.text('Zapisz odstępstwo'), findsOneWidget);
+    expect(repository.updateInputs, hasLength(1));
+    expect(repository.updateInputs.single.status, ChecklistStatus.completed);
+    expect(find.text('Brakuje wymaganego dowodu'), findsNothing);
+    expect(find.text('Dodaj dowód'), findsNothing);
+    expect(find.text('Zapisz odstępstwo'), findsNothing);
   });
 
   testWidgets('selects and completes several checklist items in one action', (
@@ -258,6 +261,7 @@ void main() {
     expect(find.byType(FloatingActionButton), findsNothing);
 
     for (final key in <String>[
+      'checklist-item-planningPermissionBasis',
       'checklist-item-houseDesignSelection',
       'checklist-item-managerDocumentationHandover',
     ]) {
@@ -275,12 +279,12 @@ void main() {
       await tester.pump();
     }
 
-    expect(find.text('2 zaznaczonych'), findsOneWidget);
+    expect(find.text('3 zaznaczonych'), findsOneWidget);
     await tester.tap(find.text('Oznacz jako wykonane'));
     await tester.pumpAndSettle();
 
     expect(repository.completedBatches, hasLength(1));
-    expect(repository.completedBatches.single, hasLength(2));
+    expect(repository.completedBatches.single, hasLength(3));
     expect(find.byType(Checkbox), findsNothing);
     expect(find.text('Oznacz jako wykonane'), findsNothing);
     expect(find.byType(FloatingActionButton), findsOneWidget);
@@ -388,6 +392,8 @@ final class _FakeStageRepository implements StageRepository {
   late final List<ProjectStage> stages;
   late final Map<String, List<ChecklistItem>> itemsByStage;
   final List<List<String>> completedBatches = <List<String>>[];
+  final List<ChecklistItemDetailsInput> updateInputs =
+      <ChecklistItemDetailsInput>[];
 
   @override
   Future<List<ProjectStage>> listStages({
@@ -412,6 +418,7 @@ final class _FakeStageRepository implements StageRepository {
     required String checklistItemId,
     required ChecklistItemDetailsInput input,
   }) async {
+    updateInputs.add(input);
     final item = itemsByStage.values
         .expand((items) => items)
         .singleWhere((item) => item.id == checklistItemId);

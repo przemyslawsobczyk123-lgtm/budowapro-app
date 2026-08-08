@@ -1132,15 +1132,6 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String checklistBulkEvidencePendingMessage(int completed, int pending) {
-    return 'Oznaczono: $completed. Pozostałe wymagają dowodu: $pending.';
-  }
-
-  @override
-  String get checklistBulkOnlyEvidencePendingMessage =>
-      'Wybrane punkty wymagają najpierw dodania dowodu lub zapisanego odstępstwa.';
-
-  @override
   String get checklistAddAction => 'Dodaj punkt';
 
   @override
@@ -1218,7 +1209,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Pominięcie punktu wymaga podania powodu.';
 
   @override
-  String get checklistEvidenceLabel => 'Wymagany dowód';
+  String get checklistEvidenceLabel => 'Zalecana dokumentacja';
 
   @override
   String get checklistEvidenceNone => 'Bez dowodu';
@@ -1243,34 +1234,7 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get checklistEvidenceWaived => 'Udokumentowane odstępstwo';
-
-  @override
-  String get checklistEvidenceRequiredTitle => 'Brakuje wymaganego dowodu';
-
-  @override
-  String get checklistEvidenceRequiredMessage =>
-      'Dodaj lokalne zdjęcie lub dokument. Możesz też jawnie odstąpić od dowodu i zapisać uzasadnienie.';
-
-  @override
-  String get checklistAddEvidenceAction => 'Dodaj dowód';
-
-  @override
-  String get checklistWaiveEvidenceAction => 'Zapisz odstępstwo';
-
-  @override
-  String get checklistWaiverTitle => 'Odstępstwo od dowodu';
-
-  @override
-  String get checklistWaiverLabel => 'Uzasadnienie odstępstwa';
-
-  @override
-  String get checklistWaiverRequiredError =>
-      'Wpisz konkretne uzasadnienie odstępstwa.';
-
-  @override
-  String get checklistEvidenceImportError =>
-      'Nie udało się dodać dowodu. Sprawdź typ pliku i spróbuj ponownie.';
+  String get checklistEvidenceWaived => 'Zapisana notatka o braku dokumentacji';
 
   @override
   String get checklistPlanningPermissionBasis =>

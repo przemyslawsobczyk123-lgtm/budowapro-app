@@ -159,10 +159,11 @@ Last updated: 2026-08-06
 - Checklist items support five statuses, four importance levels, due date, responsible person, notes,
   skip risk, status reason and evidence policy. Custom checklist items can be added to every stage.
 - Multi-select mode uses accessible checkboxes, a live selection count and one atomic completion action.
-  Items that still require evidence remain open and are reported instead of silently bypassing policy.
-- A skipped item requires a reason. A system item requiring evidence cannot be completed or downgraded
-  without a compatible local attachment or a documented waiver. Photo requirements accept only
-  `image/*` attachments.
+  Every selected open item is completed immediately, including a mixed selection of items with recommended
+  photo or document evidence.
+- A skipped item requires a reason. Checklist evidence is optional documentation that can be linked before
+  or after completion and never blocks the completed status. Photo recommendations accept only `image/*`
+  attachments when the user chooses to add them.
 - Checklist evidence reuses private project storage. Startup cleanup preserves files linked to either
   costs or checklist items, and failed linking removes only the unlinked staged file.
 - Custom stages are available immediately in the cost form and budget filters; labels are resolved from

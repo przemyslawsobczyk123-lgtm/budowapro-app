@@ -225,7 +225,7 @@ Zakres:
 Kryteria odbioru:
 
 - postep wynika z checklisty,
-- wymagany punkt nie zamyka sie bez dowodu lub jawnego odstapienia,
+- punkt mozna zamknac od razu, a zalecany dowod dolaczyc opcjonalnie przed lub po zakonczeniu,
 - wszystkie elementy minimalnej checklisty ze specyfikacji sa zasiane.
 
 Powiazania: `PLAN-001` - `PLAN-007`.

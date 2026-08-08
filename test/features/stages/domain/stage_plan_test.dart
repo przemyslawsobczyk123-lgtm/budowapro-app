@@ -146,14 +146,14 @@ void main() {
   });
 
   group('Checklist resolution', () {
-    test('rejects completion without required evidence or waiver', () {
+    test('accepts completion without evidence or waiver', () {
       expect(
         () => validateChecklistResolution(
           status: ChecklistStatus.completed,
           evidenceRequirement: EvidenceRequirement.photo,
           evidenceCount: 0,
         ),
-        throwsA(isA<ChecklistEvidenceRequiredException>()),
+        returnsNormally,
       );
     });
 

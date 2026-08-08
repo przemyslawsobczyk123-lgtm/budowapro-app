@@ -710,67 +710,6 @@ class _ChecklistEditorSheetState extends State<_ChecklistEditorSheet> {
   }
 }
 
-Future<String?> showEvidenceWaiverDialog(BuildContext context) {
-  return showDialog<String>(
-    context: context,
-    builder: (context) => const _EvidenceWaiverDialog(),
-  );
-}
-
-class _EvidenceWaiverDialog extends StatefulWidget {
-  const _EvidenceWaiverDialog();
-
-  @override
-  State<_EvidenceWaiverDialog> createState() => _EvidenceWaiverDialogState();
-}
-
-class _EvidenceWaiverDialogState extends State<_EvidenceWaiverDialog> {
-  final _formKey = GlobalKey<FormState>();
-  final _controller = TextEditingController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return AlertDialog(
-      title: Text(l10n.checklistWaiverTitle),
-      content: Form(
-        key: _formKey,
-        child: TextFormField(
-          controller: _controller,
-          autofocus: true,
-          maxLength: 500,
-          minLines: 3,
-          maxLines: 5,
-          decoration: InputDecoration(labelText: l10n.checklistWaiverLabel),
-          validator: (value) => value == null || value.trim().isEmpty
-              ? l10n.checklistWaiverRequiredError
-              : null,
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(l10n.cancelAction),
-        ),
-        FilledButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              Navigator.pop(context, _controller.text.trim());
-            }
-          },
-          child: Text(l10n.saveAction),
-        ),
-      ],
-    );
-  }
-}
-
 class _EditorSheet extends StatelessWidget {
   const _EditorSheet({
     required this.title,

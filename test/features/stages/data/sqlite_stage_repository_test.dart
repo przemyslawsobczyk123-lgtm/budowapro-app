@@ -363,7 +363,7 @@ void main() {
     expect(reloadedOwnItem.note, 'Potwierdzić oba końce przepustu.');
   });
 
-  test('required item closes only after local evidence is linked', () async {
+  test('item closes immediately and accepts optional evidence later', () async {
     await repository.listStages(
       projectId: 'project-1',
       template: ProjectTemplate.houseConstruction,
@@ -376,25 +376,20 @@ void main() {
       (item) => item.templateKey == ChecklistTemplateKey.foundationGrounding,
     );
 
-    await expectLater(
-      repository.updateChecklistItem(
-        projectId: 'project-1',
-        checklistItemId: grounding.id,
-        input: _details(grounding, status: ChecklistStatus.completed),
+    final completedWithoutEvidence = await repository.updateChecklistItem(
+      projectId: 'project-1',
+      checklistItemId: grounding.id,
+      input: ChecklistItemDetailsInput(
+        status: ChecklistStatus.completed,
+        importance: grounding.importance,
+        evidenceRequirement: EvidenceRequirement.none,
       ),
-      throwsA(isA<ChecklistEvidenceRequiredException>()),
     );
-    await expectLater(
-      repository.updateChecklistItem(
-        projectId: 'project-1',
-        checklistItemId: grounding.id,
-        input: ChecklistItemDetailsInput(
-          status: ChecklistStatus.completed,
-          importance: grounding.importance,
-          evidenceRequirement: EvidenceRequirement.none,
-        ),
-      ),
-      throwsA(isA<ChecklistEvidenceRequiredException>()),
+    expect(completedWithoutEvidence.status, ChecklistStatus.completed);
+    expect(completedWithoutEvidence.hasEvidence, isFalse);
+    expect(
+      completedWithoutEvidence.evidenceRequirement,
+      EvidenceRequirement.photo,
     );
 
     final rawDatabase = await database.open();
@@ -412,15 +407,10 @@ void main() {
           'availability': 'available',
           'imported_at_utc_ms': 0,
         });
-    final withEvidence = await repository.attachEvidence(
+    final completed = await repository.attachEvidence(
       projectId: 'project-1',
       checklistItemId: grounding.id,
       attachmentId: 'photo-1',
-    );
-    final completed = await repository.updateChecklistItem(
-      projectId: 'project-1',
-      checklistItemId: grounding.id,
-      input: _details(withEvidence, status: ChecklistStatus.completed),
     );
 
     expect(completed.status, ChecklistStatus.completed);
@@ -462,49 +452,34 @@ void main() {
     expect(completed.hasEvidenceWaiver, isTrue);
   });
 
-  test(
-    'bulk completion is atomic when one item still requires evidence',
-    () async {
-      await repository.listStages(
-        projectId: 'project-1',
-        template: ProjectTemplate.houseConstruction,
-      );
-      final items = await repository.listChecklistItems(
-        projectId: 'project-1',
-        stageId: 'formalities',
-      );
-      final quickItem = items.singleWhere(
-        (item) => item.templateKey == ChecklistTemplateKey.houseDesignSelection,
-      );
-      final evidenceItem = items.singleWhere(
-        (item) =>
-            item.templateKey == ChecklistTemplateKey.planningPermissionBasis,
-      );
+  test('bulk completion closes nine mixed items without evidence', () async {
+    await repository.listStages(
+      projectId: 'project-1',
+      template: ProjectTemplate.houseConstruction,
+    );
+    final items = await repository.listChecklistItems(
+      projectId: 'project-1',
+      stageId: 'formalities',
+    );
+    final selectedIds = items.take(9).map((item) => item.id).toList();
+    expect(
+      items
+          .take(9)
+          .any((item) => item.evidenceRequirement != EvidenceRequirement.none),
+      isTrue,
+    );
 
-      await expectLater(
-        repository.completeChecklistItems(
-          projectId: 'project-1',
-          checklistItemIds: <String>[quickItem.id, evidenceItem.id],
-        ),
-        throwsA(isA<ChecklistEvidenceRequiredException>()),
-      );
-
-      final unchanged = await repository.listChecklistItems(
-        projectId: 'project-1',
-        stageId: 'formalities',
-      );
-      expect(
-        unchanged.singleWhere((item) => item.id == quickItem.id).status,
-        ChecklistStatus.todo,
-      );
-
-      final completed = await repository.completeChecklistItems(
-        projectId: 'project-1',
-        checklistItemIds: <String>[quickItem.id],
-      );
-      expect(completed.single.status, ChecklistStatus.completed);
-    },
-  );
+    final completed = await repository.completeChecklistItems(
+      projectId: 'project-1',
+      checklistItemIds: selectedIds,
+    );
+    expect(completed, hasLength(9));
+    expect(
+      completed.map((item) => item.status),
+      everyElement(ChecklistStatus.completed),
+    );
+    expect(completed.every((item) => !item.hasEvidence), isTrue);
+  });
 
   test('rejects a reordered list that omits a project stage', () async {
     await repository.listStages(
@@ -520,21 +495,4 @@ void main() {
       throwsA(isA<StageOrderMismatchException>()),
     );
   });
-}
-
-ChecklistItemDetailsInput _details(
-  ChecklistItem item, {
-  required ChecklistStatus status,
-}) {
-  return ChecklistItemDetailsInput(
-    status: status,
-    importance: item.importance,
-    evidenceRequirement: item.evidenceRequirement,
-    dueDate: item.dueDate,
-    assignee: item.assignee,
-    note: item.note,
-    riskIfSkipped: item.riskIfSkipped,
-    statusReason: item.statusReason,
-    evidenceWaiverComment: item.evidenceWaiverComment,
-  );
 }

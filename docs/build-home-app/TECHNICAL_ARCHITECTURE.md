@@ -325,10 +325,11 @@ display name but not its ID, so existing cost links remain valid.
 
 Stage progress is derived at read time from checklist statuses. `completed` and
 explicitly `skipped` items count as resolved; no progress percentage is stored.
-Skipping requires a reason. Completing a template item that requires evidence
-is validated in the repository transaction and succeeds only when a compatible
-available attachment is linked or a non-empty waiver comment is stored. A
-system photo requirement cannot be downgraded through the editor.
+Skipping requires a reason. Evidence requirements in the template catalogue are
+recommendations for useful project documentation, not completion gates. A point
+can be completed immediately and a compatible local attachment can be linked
+before or after completion. Historical waiver comments remain readable for
+backward compatibility.
 
 The house catalog is code-versioned and seeded idempotently on first plan
 access. It contains 15 formalities, 12 site-preparation checkpoints and 16
@@ -355,8 +356,9 @@ The source register and editorial constraints are maintained in
 `STAGE_GUIDANCE_SOURCES.md`.
 
 Bulk completion validates every requested item before any row is updated and
-runs in one SQLite transaction. The UI sends only items whose evidence policy
-is already satisfied and reports the remaining selection. Schema `v10` extends
+runs in one SQLite transaction. The UI sends every selected open item, including
+items with recommended evidence, so the complete selection closes in one action.
+Schema `v10` extends
 the project stage value additively instead of rebuilding the parent table, so
 foreign-key child records remain untouched. Catalog migration moves the stable
 ground-research row to formalities and removes the former combined site-setup

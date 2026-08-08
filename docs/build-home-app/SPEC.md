@@ -189,7 +189,7 @@ Globalny wybor projektu jest dostepny z kazdego glownego ekranu. Zmiana projektu
 | PLAN-003 | P0 | Etap grupuje checklisty, koszty, kontakty, terminy, dokumenty, zdjecia i ryzyka. |
 | PLAN-004 | P0 | Checklista ma status: do zrobienia, w toku, zablokowana, zakonczona albo pominieta z powodem. |
 | PLAN-005 | P0 | Element checklisty ma waznosc, termin, osobe, notatke, ryzyko pominiecia i wymagany dowod. |
-| PLAN-006 | P0 | Wymagany element nie moze byc zamkniety bez dowodu albo jawnego odstapienia z komentarzem. |
+| PLAN-006 | P0 | Dowod jest zalecana dokumentacja i moze zostac dolaczony przed albo po zamknieciu punktu; jego brak nie blokuje oznaczenia punktu jako zakonczony. |
 | PLAN-007 | P0 | Postep etapu wynika z checklisty, nie z recznie wpisanego procentu. |
 | PLAN-008 | P0 | Plan 7 dni laczy zadania, wizyty, dostawy, odbiory i prace blokowane. |
 | PLAN-009 | P1 | Zaleznosci pokazuja, co blokuje nastepna prace i jaki jest termin decyzji. |
@@ -198,7 +198,7 @@ Globalny wybor projektu jest dostepny z kazdego glownego ekranu. Zmiana projektu
 | PLAN-012 | P0 | Wskazowka techniczna zawsze informuje, ze nie zastepuje projektu, warunkow gruntowo-wodnych ani decyzji projektanta lub kierownika budowy. |
 | PLAN-013 | P0 | Uzytkownik moze dodac wlasna pozycje z tytulem, fachowcem, notatka, ryzykiem, waznoscia i wymaganym dowodem; aktualizacja katalogu nie nadpisuje danych uzytkownika. |
 | PLAN-014 | P0 | Stan surowy otwarty przypomina o wyborze systemu rolet lub zaluzji przed nadprozami; wymiar wneki wynika z wybranego systemu i zatwierdzonego detalu. |
-| PLAN-015 | P0 | Uzytkownik moze zaznaczyc wiele otwartych punktow i zakonczyc je jedna operacja; wymagania dowodowe nadal obowiazuja, a zapis jest atomowy. |
+| PLAN-015 | P0 | Uzytkownik moze zaznaczyc wiele otwartych punktow i zakonczyc wszystkie jedna atomowa operacja bez dodatkowych wymagan dowodowych. |
 | PLAN-016 | P0 | Szczegoly punktu pokazuja pelny wbudowany opis ryzyka bez limitu linii; opcjonalne nadpisanie uzytkownika pozostaje osobnym polem. |
 | PLAN-017 | P0 | Wskazowki obejmuja formalnosci, przygotowanie placu, Stan 0, stan surowy otwarty i zamkniety, instalacje oraz wykonczenie, bez automatycznego dopisywania checklist do istniejacych projektow. |
 
