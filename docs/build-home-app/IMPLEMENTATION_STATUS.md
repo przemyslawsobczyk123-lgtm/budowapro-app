@@ -99,7 +99,8 @@ Last updated: 2026-08-09
   Polish gross amounts, VAT 0/8/23, quantity with unit, supplier, category, stage, payment method,
   note and entry date.
 - Entries can be saved as drafts or confirmed, then edited, copied to a new draft and moved
-  through valid payment statuses. Any entry can be deleted after explicit confirmation.
+  through valid payment statuses from both the edit form and detail actions. Every confirmed
+  status change creates a separate history revision. Any entry can be deleted after explicit confirmation.
 - Drafts preserve their selected target status across database reopening while remaining excluded
   from every financial summary.
 - The original confirmed financial value remains immutable in history. Editing a confirmed gross amount
@@ -693,7 +694,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-08-09. The full suite contains 602 passing tests. Debug APK:
+All commands passed on 2026-08-09. The full suite contains 604 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk

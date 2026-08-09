@@ -1399,7 +1399,7 @@ abstract class AppLocalizations {
   /// No description provided for @costFinancialFieldsLocked.
   ///
   /// In pl, this message translates to:
-  /// **'Rodzaj i status zatwierdzonego wpisu są zablokowane.'**
+  /// **'Rodzaj i stawka VAT zatwierdzonego wpisu są zablokowane.'**
   String get costFinancialFieldsLocked;
 
   /// No description provided for @costAmountCorrectionHint.

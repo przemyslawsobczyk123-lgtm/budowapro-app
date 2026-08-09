@@ -169,6 +169,36 @@ void main() {
     },
   );
 
+  test('confirmed edit changes payment status and records history', () async {
+    final initial = await gateway.load(projectId: 'project-1');
+    final saved = await gateway.save(
+      initialData: initial,
+      submission: _submission(status: CostStatus.due),
+      asDraft: false,
+    );
+    final editData = await gateway.load(
+      projectId: 'project-1',
+      costEntryId: saved.id,
+    );
+
+    final edited = await gateway.save(
+      initialData: editData,
+      submission: _submission(status: CostStatus.paid),
+      asDraft: false,
+    );
+    final history = await gateway.history(
+      projectId: 'project-1',
+      costEntryId: saved.id,
+      page: PageRequest(limit: 10),
+    );
+
+    expect(edited.status, CostStatus.paid);
+    expect(
+      history.items.map((entry) => entry.action),
+      contains(CostHistoryAction.statusChanged),
+    );
+  });
+
   test('updates and confirms an existing draft in one operation', () async {
     final initial = await gateway.load(projectId: 'project-1');
     final draft = await gateway.save(

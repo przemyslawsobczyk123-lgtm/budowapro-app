@@ -535,7 +535,7 @@
   "costQuantityInvalidError": "Wpisz dodatnią ilość.",
   "costNoteTooLongError": "Notatka może mieć maksymalnie 2000 znaków.",
   "costStatusInvalidError": "Ten status nie pasuje do rodzaju wpisu.",
-  "costFinancialFieldsLocked": "Rodzaj i status zatwierdzonego wpisu są zablokowane.",
+  "costFinancialFieldsLocked": "Rodzaj i stawka VAT zatwierdzonego wpisu są zablokowane.",
   "costAmountCorrectionHint": "Zmiana kwoty zapisze korektę i zachowa pierwotną wartość w historii.",
   "costDetailsEditAction": "Edytuj",
   "costDetailsCopyDraftAction": "Kopiuj do szkicu",

@@ -242,7 +242,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
         ),
       );
     }
-    return _costRepository.updateDetails(
+    final updated = await _costRepository.updateDetails(
       projectId: entry.projectId,
       costEntryId: entry.id,
       input: ConfirmedCostDetailsInput(
@@ -258,6 +258,14 @@ final class LocalCostEditorGateway implements CostEditorGateway {
         attachmentIds: confirmedInput.attachmentIds,
         note: confirmedInput.note,
       ),
+    );
+    if (entry.status == confirmedInput.status) {
+      return updated;
+    }
+    return _costRepository.changeStatus(
+      projectId: entry.projectId,
+      costEntryId: entry.id,
+      status: confirmedInput.status,
     );
   }
 
@@ -376,7 +384,6 @@ void _requireImmutableFinancialFields(
   final original = existing.input;
   final amountChanged = original.amount.gross != submitted.amount.gross;
   if (original.type != submitted.type ||
-      original.status != submitted.status ||
       original.amount.rate != submitted.amount.rate ||
       (amountChanged && original.type != CostEntryType.cost)) {
     throw StateError('Confirmed financial fields require a correction');

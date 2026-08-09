@@ -694,7 +694,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get costFinancialFieldsLocked =>
-      'Rodzaj i status zatwierdzonego wpisu są zablokowane.';
+      'Rodzaj i stawka VAT zatwierdzonego wpisu są zablokowane.';
 
   @override
   String get costAmountCorrectionHint =>

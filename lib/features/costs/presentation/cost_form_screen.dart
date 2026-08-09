@@ -298,7 +298,7 @@ class _CostFormState extends State<_CostForm> {
                             ),
                           )
                           .toList(growable: false),
-                      onChanged: _financialFieldsLocked || _isSubmitting
+                      onChanged: _isSubmitting
                           ? null
                           : (value) {
                               if (value != null) {

@@ -252,6 +252,38 @@ void main() {
     expect(gateway.saveCallCount, 1);
   });
 
+  testWidgets('allows marking a confirmed cost as paid while editing', (
+    tester,
+  ) async {
+    final entry = _entry(status: CostStatus.due);
+    final gateway = _FakeGateway(
+      data: CostEditorData(
+        project: _project(),
+        entry: entry,
+        attachments: const [],
+      ),
+    );
+    await tester.pumpWidget(
+      _gatewayApp(
+        gateway,
+        CostFormScreen(projectId: 'project-1', costEntryId: entry.id),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.byKey(const ValueKey('costStatus-due')));
+    await tester.tap(find.byKey(const ValueKey('costStatus-due')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Opłacony').last);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const ValueKey('costSave')));
+    await tester.tap(find.byKey(const ValueKey('costSave')));
+    await tester.pumpAndSettle();
+
+    expect(gateway.lastSubmission?.status, CostStatus.paid);
+    expect(gateway.saveCallCount, 1);
+  });
+
   testWidgets('offers a custom project stage in the cost form', (tester) async {
     final gateway = _FakeGateway(
       data: CostEditorData(
