@@ -934,6 +934,228 @@ abstract class AppLocalizations {
   /// **'Nie udało się utworzyć pliku CSV.'**
   String get costCsvExportError;
 
+  /// No description provided for @costSpreadsheetImportTooltip.
+  ///
+  /// In pl, this message translates to:
+  /// **'Importuj CSV lub Excel'**
+  String get costSpreadsheetImportTooltip;
+
+  /// No description provided for @costSpreadsheetImportTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Import kosztów'**
+  String get costSpreadsheetImportTitle;
+
+  /// No description provided for @costSpreadsheetImportEmptyTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz arkusz kosztów'**
+  String get costSpreadsheetImportEmptyTitle;
+
+  /// No description provided for @costSpreadsheetImportEmptyMessage.
+  ///
+  /// In pl, this message translates to:
+  /// **'Obsługiwane pliki: CSV i XLSX.'**
+  String get costSpreadsheetImportEmptyMessage;
+
+  /// No description provided for @costSpreadsheetImportChooseFileAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz plik'**
+  String get costSpreadsheetImportChooseFileAction;
+
+  /// No description provided for @costSpreadsheetImportChangeFileAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zmień plik'**
+  String get costSpreadsheetImportChangeFileAction;
+
+  /// No description provided for @costSpreadsheetImportFileLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plik'**
+  String get costSpreadsheetImportFileLabel;
+
+  /// No description provided for @costSpreadsheetImportSheetLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Arkusz'**
+  String get costSpreadsheetImportSheetLabel;
+
+  /// No description provided for @costSpreadsheetImportHeaderDetected.
+  ///
+  /// In pl, this message translates to:
+  /// **'Rozpoznano wiersz nagłówków.'**
+  String get costSpreadsheetImportHeaderDetected;
+
+  /// No description provided for @costSpreadsheetImportNoHeader.
+  ///
+  /// In pl, this message translates to:
+  /// **'Plik bez rozpoznanych nagłówków.'**
+  String get costSpreadsheetImportNoHeader;
+
+  /// No description provided for @costSpreadsheetImportMappingTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Mapowanie kolumn'**
+  String get costSpreadsheetImportMappingTitle;
+
+  /// No description provided for @costSpreadsheetImportNameColumnLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kolumna nazwy'**
+  String get costSpreadsheetImportNameColumnLabel;
+
+  /// No description provided for @costSpreadsheetImportAmountColumnLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kolumna kwoty brutto'**
+  String get costSpreadsheetImportAmountColumnLabel;
+
+  /// No description provided for @costSpreadsheetImportColumnLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kolumna {index}'**
+  String costSpreadsheetImportColumnLabel(int index);
+
+  /// No description provided for @costSpreadsheetImportDefaultsTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ustawienia pozycji'**
+  String get costSpreadsheetImportDefaultsTitle;
+
+  /// No description provided for @costSpreadsheetImportStageNone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez etapu'**
+  String get costSpreadsheetImportStageNone;
+
+  /// No description provided for @costSpreadsheetImportPreviewTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Podgląd pozycji'**
+  String get costSpreadsheetImportPreviewTitle;
+
+  /// No description provided for @costSpreadsheetImportSummary.
+  ///
+  /// In pl, this message translates to:
+  /// **'Poprawne: {validCount} · Odrzucone: {invalidCount}'**
+  String costSpreadsheetImportSummary(int validCount, int invalidCount);
+
+  /// No description provided for @costSpreadsheetImportRowLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wiersz {row}'**
+  String costSpreadsheetImportRowLabel(int row);
+
+  /// No description provided for @costSpreadsheetImportMissingNameError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak nazwy.'**
+  String get costSpreadsheetImportMissingNameError;
+
+  /// No description provided for @costSpreadsheetImportNameTooLongError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nazwa jest dłuższa niż 120 znaków.'**
+  String get costSpreadsheetImportNameTooLongError;
+
+  /// No description provided for @costSpreadsheetImportMissingAmountError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak kwoty.'**
+  String get costSpreadsheetImportMissingAmountError;
+
+  /// No description provided for @costSpreadsheetImportInvalidAmountError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nieprawidłowa kwota.'**
+  String get costSpreadsheetImportInvalidAmountError;
+
+  /// No description provided for @costSpreadsheetImportAmountTooLargeError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Kwota przekracza dozwolony limit.'**
+  String get costSpreadsheetImportAmountTooLargeError;
+
+  /// No description provided for @costSpreadsheetImportFormulaError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Formuła nie ma zapisanej wartości.'**
+  String get costSpreadsheetImportFormulaError;
+
+  /// No description provided for @costSpreadsheetImportSubmitAction.
+  ///
+  /// In pl, this message translates to:
+  /// **'Importuj pozycje: {count}'**
+  String costSpreadsheetImportSubmitAction(int count);
+
+  /// No description provided for @costSpreadsheetImportSuccess.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zaimportowano pozycji: {count}.'**
+  String costSpreadsheetImportSuccess(int count);
+
+  /// No description provided for @costSpreadsheetImportNoValidRows.
+  ///
+  /// In pl, this message translates to:
+  /// **'Brak poprawnych pozycji do importu.'**
+  String get costSpreadsheetImportNoValidRows;
+
+  /// No description provided for @costSpreadsheetImportSaveError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się zapisać importowanych pozycji.'**
+  String get costSpreadsheetImportSaveError;
+
+  /// No description provided for @costSpreadsheetImportUnsupportedFormatError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybierz plik CSV albo XLSX.'**
+  String get costSpreadsheetImportUnsupportedFormatError;
+
+  /// No description provided for @costSpreadsheetImportEmptyFileError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Arkusz nie zawiera pozycji do importu.'**
+  String get costSpreadsheetImportEmptyFileError;
+
+  /// No description provided for @costSpreadsheetImportFileTooLargeError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Wybrany plik jest za duży.'**
+  String get costSpreadsheetImportFileTooLargeError;
+
+  /// No description provided for @costSpreadsheetImportWorkbookTooLargeError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Zawartość arkusza jest za duża.'**
+  String get costSpreadsheetImportWorkbookTooLargeError;
+
+  /// No description provided for @costSpreadsheetImportNotEnoughColumnsError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Arkusz musi zawierać co najmniej dwie kolumny.'**
+  String get costSpreadsheetImportNotEnoughColumnsError;
+
+  /// No description provided for @costSpreadsheetImportTooManyRowsError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Arkusz może zawierać maksymalnie 1000 pozycji.'**
+  String get costSpreadsheetImportTooManyRowsError;
+
+  /// No description provided for @costSpreadsheetImportTooManyColumnsError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Arkusz może zawierać maksymalnie 50 kolumn.'**
+  String get costSpreadsheetImportTooManyColumnsError;
+
+  /// No description provided for @costSpreadsheetImportUnreadableFileError.
+  ///
+  /// In pl, this message translates to:
+  /// **'Nie udało się odczytać wybranego arkusza.'**
+  String get costSpreadsheetImportUnreadableFileError;
+
   /// No description provided for @costCsvShareTitle.
   ///
   /// In pl, this message translates to:

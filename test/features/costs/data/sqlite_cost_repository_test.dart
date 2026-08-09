@@ -131,6 +131,66 @@ void main() {
     expect(loaded?.amount.gross, _pln(3));
   });
 
+  test('creates an imported cost batch in one transaction', () async {
+    final created = await repository.createAll(<ConfirmedCostEntryInput>[
+      ConfirmedCostEntryInput(
+        _input(
+          name: 'Beton',
+          type: CostEntryType.planned,
+          component: CostComponent.material,
+          source: CostSource.imported,
+        ),
+      ),
+      ConfirmedCostEntryInput(
+        _input(
+          name: 'Stal',
+          type: CostEntryType.planned,
+          component: CostComponent.material,
+          source: CostSource.imported,
+        ),
+      ),
+    ]);
+
+    final listed = await repository.list(
+      CostQuery(projectId: 'project-1'),
+      PageRequest(),
+    );
+
+    expect(created.map((entry) => entry.name), <String>['Beton', 'Stal']);
+    expect(listed.items.map((entry) => entry.name).toSet(), <String>{
+      'Beton',
+      'Stal',
+    });
+    expect(
+      created.every((entry) => entry.input.source == CostSource.imported),
+      isTrue,
+    );
+  });
+
+  test('rolls back the complete imported batch when one row fails', () async {
+    await expectLater(
+      repository.createAll(<ConfirmedCostEntryInput>[
+        ConfirmedCostEntryInput(
+          _input(name: 'Beton', source: CostSource.imported),
+        ),
+        ConfirmedCostEntryInput(
+          _input(
+            name: 'Błędna waluta',
+            currencyCode: 'EUR',
+            source: CostSource.imported,
+          ),
+        ),
+      ]),
+      throwsArgumentError,
+    );
+
+    final listed = await repository.list(
+      CostQuery(projectId: 'project-1'),
+      PageRequest(),
+    );
+    expect(listed.items, isEmpty);
+  });
+
   test('draft can be replaced, confirmed and changed to paid', () async {
     final draft = await repository.saveDraft(
       CostDraftInput(_input(name: 'Roboczy koszt')),

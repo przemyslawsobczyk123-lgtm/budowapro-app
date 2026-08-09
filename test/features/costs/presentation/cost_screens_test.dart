@@ -555,6 +555,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const ValueKey('costBudgetCreate')), findsOneWidget);
+    expect(find.byKey(const ValueKey('costSpreadsheetImport')), findsOneWidget);
     expect(find.text('Beton B20'), findsOneWidget);
   });
 
@@ -1070,6 +1071,11 @@ class _FakeCostRepository implements CostRepository {
   @override
   Future<CostEntry> create(ConfirmedCostEntryInput input) async =>
       throw UnimplementedError();
+
+  @override
+  Future<List<CostEntry>> createAll(
+    Iterable<ConfirmedCostEntryInput> inputs,
+  ) async => throw UnimplementedError();
 
   @override
   Future<CostEntry> saveDraft(CostDraftInput input) async =>

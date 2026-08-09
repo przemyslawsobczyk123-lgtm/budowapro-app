@@ -457,6 +457,69 @@
     }
   },
   "costCsvExportError": "Nie udało się utworzyć pliku CSV.",
+  "costSpreadsheetImportTooltip": "Importuj CSV lub Excel",
+  "costSpreadsheetImportTitle": "Import kosztów",
+  "costSpreadsheetImportEmptyTitle": "Wybierz arkusz kosztów",
+  "costSpreadsheetImportEmptyMessage": "Obsługiwane pliki: CSV i XLSX.",
+  "costSpreadsheetImportChooseFileAction": "Wybierz plik",
+  "costSpreadsheetImportChangeFileAction": "Zmień plik",
+  "costSpreadsheetImportFileLabel": "Plik",
+  "costSpreadsheetImportSheetLabel": "Arkusz",
+  "costSpreadsheetImportHeaderDetected": "Rozpoznano wiersz nagłówków.",
+  "costSpreadsheetImportNoHeader": "Plik bez rozpoznanych nagłówków.",
+  "costSpreadsheetImportMappingTitle": "Mapowanie kolumn",
+  "costSpreadsheetImportNameColumnLabel": "Kolumna nazwy",
+  "costSpreadsheetImportAmountColumnLabel": "Kolumna kwoty brutto",
+  "costSpreadsheetImportColumnLabel": "Kolumna {index}",
+  "@costSpreadsheetImportColumnLabel": {
+    "placeholders": {
+      "index": {"type": "int"}
+    }
+  },
+  "costSpreadsheetImportDefaultsTitle": "Ustawienia pozycji",
+  "costSpreadsheetImportStageNone": "Bez etapu",
+  "costSpreadsheetImportPreviewTitle": "Podgląd pozycji",
+  "costSpreadsheetImportSummary": "Poprawne: {validCount} · Odrzucone: {invalidCount}",
+  "@costSpreadsheetImportSummary": {
+    "placeholders": {
+      "validCount": {"type": "int"},
+      "invalidCount": {"type": "int"}
+    }
+  },
+  "costSpreadsheetImportRowLabel": "Wiersz {row}",
+  "@costSpreadsheetImportRowLabel": {
+    "placeholders": {
+      "row": {"type": "int"}
+    }
+  },
+  "costSpreadsheetImportMissingNameError": "Brak nazwy.",
+  "costSpreadsheetImportNameTooLongError": "Nazwa jest dłuższa niż 120 znaków.",
+  "costSpreadsheetImportMissingAmountError": "Brak kwoty.",
+  "costSpreadsheetImportInvalidAmountError": "Nieprawidłowa kwota.",
+  "costSpreadsheetImportAmountTooLargeError": "Kwota przekracza dozwolony limit.",
+  "costSpreadsheetImportFormulaError": "Formuła nie ma zapisanej wartości.",
+  "costSpreadsheetImportSubmitAction": "Importuj pozycje: {count}",
+  "@costSpreadsheetImportSubmitAction": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "costSpreadsheetImportSuccess": "Zaimportowano pozycji: {count}.",
+  "@costSpreadsheetImportSuccess": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "costSpreadsheetImportNoValidRows": "Brak poprawnych pozycji do importu.",
+  "costSpreadsheetImportSaveError": "Nie udało się zapisać importowanych pozycji.",
+  "costSpreadsheetImportUnsupportedFormatError": "Wybierz plik CSV albo XLSX.",
+  "costSpreadsheetImportEmptyFileError": "Arkusz nie zawiera pozycji do importu.",
+  "costSpreadsheetImportFileTooLargeError": "Wybrany plik jest za duży.",
+  "costSpreadsheetImportWorkbookTooLargeError": "Zawartość arkusza jest za duża.",
+  "costSpreadsheetImportNotEnoughColumnsError": "Arkusz musi zawierać co najmniej dwie kolumny.",
+  "costSpreadsheetImportTooManyRowsError": "Arkusz może zawierać maksymalnie 1000 pozycji.",
+  "costSpreadsheetImportTooManyColumnsError": "Arkusz może zawierać maksymalnie 50 kolumn.",
+  "costSpreadsheetImportUnreadableFileError": "Nie udało się odczytać wybranego arkusza.",
   "costCsvShareTitle": "BudowaPRO - eksport kosztów",
   "costCsvLifecycleColumn": "Tryb wpisu",
   "costCsvComponentColumn": "Skład kosztu",

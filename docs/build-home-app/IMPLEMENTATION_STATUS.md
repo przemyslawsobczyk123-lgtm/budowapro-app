@@ -138,6 +138,13 @@ Last updated: 2026-08-09
   warning layout on a 320 px viewport.
 - Filtered reloads keep the search field, keyboard focus and current results mounted, so users can
   type or erase continuously while the replacement query is still running.
+- The budget register imports local CSV and XLSX spreadsheets with or without recognized headers.
+  Users map the name and gross-amount columns, choose cost type, material/labor classification, VAT
+  and stage, then review accepted and rejected rows before saving. Polish and international amount
+  formats are parsed without floating-point persistence.
+- Spreadsheet parsing runs outside the UI isolate and enforces file, workbook, row and column limits.
+  Valid rows are written in one SQLite transaction with source `imported`; a failure rolls back the
+  complete batch. The original spreadsheet is not uploaded or retained by the application.
 - Tag and warranty filters intentionally remain deferred until their persisted document/warranty
   models are introduced; the register does not expose controls that cannot query real data.
 
@@ -674,6 +681,8 @@ pdf 3.13.0
 image 4.9.1
 crypto 3.0.7
 archive 4.0.9
+csv 8.0.0
+excel_community 2.2.0
 share_plus 12.0.2
 package_info_plus 9.0.1
 cupertino_icons 1.0.9
@@ -694,7 +703,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-08-09. The full suite contains 604 passing tests. Debug APK:
+All commands passed on 2026-08-09. The full suite contains 617 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk

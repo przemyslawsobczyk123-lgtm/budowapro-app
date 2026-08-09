@@ -457,6 +457,143 @@ class AppLocalizationsPl extends AppLocalizations {
   String get costCsvExportError => 'Nie udało się utworzyć pliku CSV.';
 
   @override
+  String get costSpreadsheetImportTooltip => 'Importuj CSV lub Excel';
+
+  @override
+  String get costSpreadsheetImportTitle => 'Import kosztów';
+
+  @override
+  String get costSpreadsheetImportEmptyTitle => 'Wybierz arkusz kosztów';
+
+  @override
+  String get costSpreadsheetImportEmptyMessage =>
+      'Obsługiwane pliki: CSV i XLSX.';
+
+  @override
+  String get costSpreadsheetImportChooseFileAction => 'Wybierz plik';
+
+  @override
+  String get costSpreadsheetImportChangeFileAction => 'Zmień plik';
+
+  @override
+  String get costSpreadsheetImportFileLabel => 'Plik';
+
+  @override
+  String get costSpreadsheetImportSheetLabel => 'Arkusz';
+
+  @override
+  String get costSpreadsheetImportHeaderDetected =>
+      'Rozpoznano wiersz nagłówków.';
+
+  @override
+  String get costSpreadsheetImportNoHeader =>
+      'Plik bez rozpoznanych nagłówków.';
+
+  @override
+  String get costSpreadsheetImportMappingTitle => 'Mapowanie kolumn';
+
+  @override
+  String get costSpreadsheetImportNameColumnLabel => 'Kolumna nazwy';
+
+  @override
+  String get costSpreadsheetImportAmountColumnLabel => 'Kolumna kwoty brutto';
+
+  @override
+  String costSpreadsheetImportColumnLabel(int index) {
+    return 'Kolumna $index';
+  }
+
+  @override
+  String get costSpreadsheetImportDefaultsTitle => 'Ustawienia pozycji';
+
+  @override
+  String get costSpreadsheetImportStageNone => 'Bez etapu';
+
+  @override
+  String get costSpreadsheetImportPreviewTitle => 'Podgląd pozycji';
+
+  @override
+  String costSpreadsheetImportSummary(int validCount, int invalidCount) {
+    return 'Poprawne: $validCount · Odrzucone: $invalidCount';
+  }
+
+  @override
+  String costSpreadsheetImportRowLabel(int row) {
+    return 'Wiersz $row';
+  }
+
+  @override
+  String get costSpreadsheetImportMissingNameError => 'Brak nazwy.';
+
+  @override
+  String get costSpreadsheetImportNameTooLongError =>
+      'Nazwa jest dłuższa niż 120 znaków.';
+
+  @override
+  String get costSpreadsheetImportMissingAmountError => 'Brak kwoty.';
+
+  @override
+  String get costSpreadsheetImportInvalidAmountError => 'Nieprawidłowa kwota.';
+
+  @override
+  String get costSpreadsheetImportAmountTooLargeError =>
+      'Kwota przekracza dozwolony limit.';
+
+  @override
+  String get costSpreadsheetImportFormulaError =>
+      'Formuła nie ma zapisanej wartości.';
+
+  @override
+  String costSpreadsheetImportSubmitAction(int count) {
+    return 'Importuj pozycje: $count';
+  }
+
+  @override
+  String costSpreadsheetImportSuccess(int count) {
+    return 'Zaimportowano pozycji: $count.';
+  }
+
+  @override
+  String get costSpreadsheetImportNoValidRows =>
+      'Brak poprawnych pozycji do importu.';
+
+  @override
+  String get costSpreadsheetImportSaveError =>
+      'Nie udało się zapisać importowanych pozycji.';
+
+  @override
+  String get costSpreadsheetImportUnsupportedFormatError =>
+      'Wybierz plik CSV albo XLSX.';
+
+  @override
+  String get costSpreadsheetImportEmptyFileError =>
+      'Arkusz nie zawiera pozycji do importu.';
+
+  @override
+  String get costSpreadsheetImportFileTooLargeError =>
+      'Wybrany plik jest za duży.';
+
+  @override
+  String get costSpreadsheetImportWorkbookTooLargeError =>
+      'Zawartość arkusza jest za duża.';
+
+  @override
+  String get costSpreadsheetImportNotEnoughColumnsError =>
+      'Arkusz musi zawierać co najmniej dwie kolumny.';
+
+  @override
+  String get costSpreadsheetImportTooManyRowsError =>
+      'Arkusz może zawierać maksymalnie 1000 pozycji.';
+
+  @override
+  String get costSpreadsheetImportTooManyColumnsError =>
+      'Arkusz może zawierać maksymalnie 50 kolumn.';
+
+  @override
+  String get costSpreadsheetImportUnreadableFileError =>
+      'Nie udało się odczytać wybranego arkusza.';
+
+  @override
   String get costCsvShareTitle => 'BudowaPRO - eksport kosztów';
 
   @override

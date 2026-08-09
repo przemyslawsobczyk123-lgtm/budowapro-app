@@ -9,6 +9,8 @@ import 'cost_summary.dart';
 abstract interface class CostRepository {
   Future<CostEntry> create(ConfirmedCostEntryInput input);
 
+  Future<List<CostEntry>> createAll(Iterable<ConfirmedCostEntryInput> inputs);
+
   Future<CostEntry> saveDraft(CostDraftInput input);
 
   Future<CostEntry> replaceDraft({

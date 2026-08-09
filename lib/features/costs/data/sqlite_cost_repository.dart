@@ -40,6 +40,30 @@ final class SqliteCostRepository implements CostRepository {
     });
   }
 
+  @override
+  Future<List<CostEntry>> createAll(Iterable<ConfirmedCostEntryInput> inputs) {
+    final batch = List<ConfirmedCostEntryInput>.of(inputs);
+    if (batch.length > 1000) {
+      throw ArgumentError.value(inputs, 'inputs', 'must not exceed 1000 rows');
+    }
+    if (batch.isEmpty) {
+      return Future<List<CostEntry>>.value(const <CostEntry>[]);
+    }
+    return _database.transaction<List<CostEntry>>((transaction) async {
+      final created = <CostEntry>[];
+      for (final input in batch) {
+        created.add(
+          await _insert(
+            transaction,
+            input.input,
+            lifecycle: CostLifecycle.confirmed,
+          ),
+        );
+      }
+      return created;
+    });
+  }
+
   Future<CostEntry> insertConfirmedInTransaction(
     DatabaseExecutor transaction,
     ConfirmedCostEntryInput input,

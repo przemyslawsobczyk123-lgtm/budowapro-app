@@ -9,6 +9,7 @@ import 'package:budowapro/features/costs/domain/money.dart';
 import 'package:budowapro/features/costs/domain/vat_breakdown.dart';
 import 'package:budowapro/features/costs/presentation/cost_form_model.dart';
 import 'package:budowapro/features/costs/presentation/cost_register_initial_filter.dart';
+import 'package:budowapro/features/costs/presentation/cost_spreadsheet_import_screen.dart';
 import 'package:budowapro/features/exports/data/export_providers.dart';
 import 'package:budowapro/features/exports/domain/cost_csv_export.dart';
 import 'package:budowapro/features/projects/domain/project.dart';
@@ -453,6 +454,27 @@ class _CostRegisterState extends State<_CostRegister> {
     if (mounted) await _reload();
   }
 
+  Future<void> _openSpreadsheetImport() async {
+    final count = await Navigator.of(context).push<int>(
+      MaterialPageRoute<int>(
+        builder: (context) => CostSpreadsheetImportScreen(
+          project: widget.project,
+          stages: widget.stages,
+        ),
+      ),
+    );
+    if (!mounted || count == null) return;
+    await _reload();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          AppLocalizations.of(context).costSpreadsheetImportSuccess(count),
+        ),
+      ),
+    );
+  }
+
   Future<void> _openDetails(CostEntry entry) async {
     await context.push(
       '/projects/${Uri.encodeComponent(widget.project.id)}/costs/${Uri.encodeComponent(entry.id)}',
@@ -566,6 +588,12 @@ class _CostRegisterState extends State<_CostRegister> {
               localizations.budgetTitle,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+          ),
+          IconButton(
+            key: const ValueKey('costSpreadsheetImport'),
+            tooltip: localizations.costSpreadsheetImportTooltip,
+            onPressed: _openSpreadsheetImport,
+            icon: const Icon(Icons.upload_file_outlined),
           ),
           IconButton(
             key: const ValueKey('costCsvExport'),
