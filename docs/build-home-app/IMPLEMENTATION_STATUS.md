@@ -1,6 +1,6 @@
 # BudowaPRO - implementation status
 
-Last updated: 2026-08-06
+Last updated: 2026-08-09
 
 ## Current release
 
@@ -135,6 +135,8 @@ Last updated: 2026-08-06
   deterministic sorting, literal wildcard search and lazy pages over a 10,000-entry fixture.
 - Widget tests cover debounced search, applying a filter without losing text, lazy page loading and
   warning layout on a 320 px viewport.
+- Filtered reloads keep the search field, keyboard focus and current results mounted, so users can
+  type or erase continuously while the replacement query is still running.
 - Tag and warranty filters intentionally remain deferred until their persisted document/warranty
   models are introduced; the register does not expose controls that cannot query real data.
 
@@ -691,7 +693,7 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-08-08. The full suite contains 601 passing tests. Debug APK:
+All commands passed on 2026-08-09. The full suite contains 602 passing tests. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk

@@ -27,6 +27,7 @@ import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:budowapro/shared/models/page.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
@@ -572,6 +573,44 @@ void main() {
     expect(find.text('beton'), findsOneWidget);
   });
 
+  testWidgets('keeps search focused while filtered results are loading', (
+    tester,
+  ) async {
+    final costs = _FakeCostRepository(entries: [_entry()]);
+    await tester.pumpWidget(_budgetApp(costs));
+    await tester.pumpAndSettle();
+
+    final filteredPage = Completer<void>();
+    costs.nextFirstPageGate = filteredPage;
+    final search = find.byKey(const ValueKey('costRegisterSearch'));
+    await tester.tap(search);
+    await tester.enterText(search, 'geodeta');
+    await tester.pump(const Duration(milliseconds: 350));
+
+    expect(search, findsOneWidget);
+    final editable = tester.widget<EditableText>(
+      find.descendant(of: search, matching: find.byType(EditableText)),
+    );
+    expect(editable.focusNode.hasFocus, isTrue);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
+    await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
+    await tester.pump();
+
+    expect(
+      tester
+          .widget<EditableText>(
+            find.descendant(of: search, matching: find.byType(EditableText)),
+          )
+          .controller
+          .text,
+      'geode',
+    );
+
+    filteredPage.complete();
+    await tester.pumpAndSettle();
+  });
+
   testWidgets('applies a report drill-down before the first register query', (
     tester,
   ) async {
@@ -993,6 +1032,7 @@ class _FakeCostRepository implements CostRepository {
   final Map<String, Money>? effectiveGrossByEntryId;
   final List<CostQuery> listQueries = <CostQuery>[];
   final List<PageRequest> pageRequests = <PageRequest>[];
+  Completer<void>? nextFirstPageGate;
   Completer<void>? nextPageGate;
 
   @override
@@ -1046,6 +1086,11 @@ class _FakeCostRepository implements CostRepository {
   Future<Page<CostEntry>> list(CostQuery query, PageRequest page) async {
     listQueries.add(query);
     pageRequests.add(page);
+    final firstPageGate = nextFirstPageGate;
+    if (page.offset == 0 && firstPageGate != null) {
+      nextFirstPageGate = null;
+      await firstPageGate.future;
+    }
     final gate = nextPageGate;
     if (page.offset > 0 && gate != null) {
       nextPageGate = null;

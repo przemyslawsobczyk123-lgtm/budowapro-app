@@ -181,7 +181,7 @@ class _CostRegisterState extends State<_CostRegister> {
   Object? _loadMoreError;
   var _totalCount = 0;
   var _generation = 0;
-  var _isInitialLoading = true;
+  var _isReloading = true;
   var _isLoadingMore = false;
   var _isExportingCsv = false;
   var _types = <CostEntryType>{};
@@ -260,7 +260,7 @@ class _CostRegisterState extends State<_CostRegister> {
     final generation = ++_generation;
     final query = _query();
     setState(() {
-      _isInitialLoading = true;
+      _isReloading = true;
       _isLoadingMore = false;
       _initialError = null;
       _loadMoreError = null;
@@ -286,20 +286,20 @@ class _CostRegisterState extends State<_CostRegister> {
         _options = results[2] as CostFilterOptions;
         _totalCount = page.totalCount;
         _nextRequest = page.nextRequest;
-        _isInitialLoading = false;
+        _isReloading = false;
       });
     } on Object catch (error) {
       if (!mounted || generation != _generation) return;
       setState(() {
         _initialError = error;
-        _isInitialLoading = false;
+        _isReloading = false;
       });
     }
   }
 
   Future<void> _loadMore() async {
     final request = _nextRequest;
-    if (request == null || _isLoadingMore || _isInitialLoading) return;
+    if (request == null || _isLoadingMore || _isReloading) return;
     final generation = _generation;
     setState(() {
       _isLoadingMore = true;
@@ -505,10 +505,10 @@ class _CostRegisterState extends State<_CostRegister> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
-    if (_isInitialLoading) {
+    if (_summary == null && _isReloading) {
       return AppLoadingState(label: localizations.projectsLoading);
     }
-    if (_initialError != null || _summary == null) {
+    if (_summary == null) {
       return AppErrorState(
         title: localizations.costBudgetLoadError,
         retryLabel: localizations.retryAction,
@@ -617,6 +617,30 @@ class _CostRegisterState extends State<_CostRegister> {
           ),
         ),
       ),
+      SizedBox(
+        height: 2,
+        child: _isReloading
+            ? const LinearProgressIndicator(
+                key: ValueKey('costRegisterReloadProgress'),
+              )
+            : null,
+      ),
+      if (_initialError != null)
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Row(
+            children: [
+              const Icon(Icons.error_outline_rounded, size: 20),
+              const SizedBox(width: 8),
+              Expanded(child: Text(localizations.costBudgetLoadError)),
+              TextButton(
+                key: const ValueKey('costRegisterRetryReload'),
+                onPressed: _reload,
+                child: Text(localizations.retryAction),
+              ),
+            ],
+          ),
+        ),
       const SizedBox(height: 14),
       _BudgetSummary(project: widget.project, summary: _summary!),
       const SizedBox(height: 12),
