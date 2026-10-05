@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The notification small icon is referenced only from Dart
+     (local_schedule_notification_gateway.dart), which the release resource
+     shrinker cannot see. flutter_local_notifications asks for it to be kept
+     explicitly; without it reminders fail silently in release builds. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@mipmap/ic_launcher" />

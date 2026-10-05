@@ -53,7 +53,10 @@ final class LocalScheduleNotificationGateway
     await _initializeTimeZones();
     await _plugin.initialize(
       settings: const InitializationSettings(
-        android: AndroidInitializationSettings('ic_launcher'),
+        // A bare name is looked up as a drawable only; the launcher icon is a
+        // mipmap, so 'ic_launcher' failed with invalid_icon and no reminder
+        // could ever be scheduled. Kept from shrinking by res/raw/keep.xml.
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
         iOS: DarwinInitializationSettings(
           requestAlertPermission: false,
           requestBadgePermission: false,
