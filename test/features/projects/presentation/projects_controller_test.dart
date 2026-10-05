@@ -197,6 +197,40 @@ void main() {
       house.id,
     );
   });
+
+  test('starts selected project read while the list is pending', () async {
+    final house = _project('house', _houseDraft('Dom'), 1);
+    final listGate = Completer<void>();
+    final fakeRepository = FakeProjectRepository(
+      projects: <Project>[house],
+      selectedProjectId: house.id,
+    )..listGate = listGate;
+    final fakeContainer = ProviderContainer(
+      overrides: [
+        projectRepositoryProvider.overrideWith((ref) async => fakeRepository),
+      ],
+    );
+    addTearDown(() {
+      if (!listGate.isCompleted) listGate.complete();
+      fakeContainer.dispose();
+    });
+
+    final loading = fakeContainer.read(projectsControllerProvider.future);
+    await _waitUntil(() => fakeRepository.listCallCount == 1);
+
+    expect(fakeRepository.selectedCallCount, 1);
+
+    listGate.complete();
+    final state = await loading;
+    expect(state.selectedProject?.id, house.id);
+  });
+}
+
+Future<void> _waitUntil(bool Function() condition) async {
+  for (var attempt = 0; attempt < 20 && !condition(); attempt++) {
+    await Future<void>.delayed(Duration.zero);
+  }
+  expect(condition(), isTrue, reason: 'Asynchronous operation did not start');
 }
 
 Project _project(String id, ProjectDraft draft, int minute) {

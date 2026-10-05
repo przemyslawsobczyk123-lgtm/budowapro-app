@@ -14,6 +14,19 @@ final documentsControllerProvider =
       DocumentsController.new,
     );
 
+typedef DocumentPreviewFilesLoader =
+    Future<Map<String, File>> Function({
+      required String projectId,
+      required Iterable<String> attachmentIds,
+      required LocalAttachmentStager stager,
+    });
+
+final documentPreviewFilesProvider = Provider<DocumentPreviewFilesLoader>(
+  (ref) =>
+      ({required projectId, required attachmentIds, required stager}) => stager
+          .previewFiles(projectId: projectId, attachmentIds: attachmentIds),
+);
+
 final class DocumentLibraryFilters {
   const DocumentLibraryFilters({
     this.searchText = '',
@@ -236,26 +249,41 @@ final class DocumentsController extends AsyncNotifier<DocumentsState> {
     Project project,
     DocumentLibraryFilters filters,
   ) async {
-    final repository = await ref.read(documentRepositoryProvider.future);
-    final page = await repository.list(
+    final repositoryFuture = ref.read(documentRepositoryProvider.future);
+    final stagerFuture = ref.read(localAttachmentStagerProvider.future);
+    final repository = await repositoryFuture;
+    final pageFuture = repository.list(
       filters.query(project.id),
       PageRequest(limit: pageSize),
     );
-    final previews =
-        await (await ref.read(
-          localAttachmentStagerProvider.future,
-        )).previewFiles(
-          projectId: project.id,
-          attachmentIds: page.items.map((document) => document.id),
-        );
+    final filterOptionsFuture = repository.filterOptions(projectId: project.id);
+    final previewLoader = ref.read(documentPreviewFilesProvider);
+    final previewsFuture =
+        Future.wait<Object>(<Future<Object>>[pageFuture, stagerFuture]).then((
+          results,
+        ) {
+          final page = results[0] as Page<ProjectDocument>;
+          final stager = results[1] as LocalAttachmentStager;
+          return previewLoader(
+            projectId: project.id,
+            attachmentIds: page.items.map((document) => document.id),
+            stager: stager,
+          );
+        });
+    final results = await Future.wait<Object>(<Future<Object>>[
+      pageFuture,
+      filterOptionsFuture,
+      previewsFuture,
+    ]);
+    final page = results[0] as Page<ProjectDocument>;
     return DocumentsState(
       project: project,
       documents: page.items,
       totalCount: page.totalCount,
       nextPage: page.nextRequest,
       filters: filters,
-      filterOptions: await repository.filterOptions(projectId: project.id),
-      previewFiles: previews,
+      filterOptions: results[1] as DocumentFilterOptions,
+      previewFiles: results[2] as Map<String, File>,
     );
   }
 }

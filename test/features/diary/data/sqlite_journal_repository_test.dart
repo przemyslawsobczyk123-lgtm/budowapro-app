@@ -145,6 +145,53 @@ void main() {
     },
   );
 
+  test('deleting a decision removes its polymorphic room relations', () async {
+    final created = await journal.create(
+      JournalEntryInput(
+        projectId: 'project-1',
+        type: JournalEntryType.decision,
+        title: 'Wybór płytek',
+        occurredAt: now,
+        selectedOption: 'Wariant A',
+      ),
+    );
+    final executor = await database.open();
+    await _insertRoomChoice(executor);
+    await executor.insert(AppDatabase.roomChoiceOutputsTable, <String, Object?>{
+      'project_id': 'project-1',
+      'choice_id': 'choice-1',
+      'output_type': 'decision',
+      'record_id': created.id,
+      'created_at_utc_ms': 0,
+    });
+    await executor.insert(AppDatabase.roomRecordLinksTable, <String, Object?>{
+      'project_id': 'project-1',
+      'room_id': 'room-1',
+      'record_type': 'journal',
+      'record_id': created.id,
+      'linked_at_utc_ms': 0,
+    });
+
+    await journal.delete(projectId: 'project-1', entryId: created.id);
+
+    expect(
+      await executor.query(
+        AppDatabase.roomChoiceOutputsTable,
+        where: 'project_id = ? AND output_type = ? AND record_id = ?',
+        whereArgs: <Object?>['project-1', 'decision', created.id],
+      ),
+      isEmpty,
+    );
+    expect(
+      await executor.query(
+        AppDatabase.roomRecordLinksTable,
+        where: 'project_id = ? AND record_type = ? AND record_id = ?',
+        whereArgs: <Object?>['project-1', 'journal', created.id],
+      ),
+      isEmpty,
+    );
+  });
+
   test('classifies a quick note into a durable journal entry', () async {
     final captures = SqliteCaptureRepository(
       database: database,
@@ -309,5 +356,26 @@ void main() {
       ),
       throwsA(isA<JournalDecisionIncompleteException>()),
     );
+  });
+}
+
+Future<void> _insertRoomChoice(DatabaseExecutor executor) async {
+  await executor.insert(AppDatabase.roomsTable, <String, Object?>{
+    'id': 'room-1',
+    'project_id': 'project-1',
+    'name': 'Kuchnia',
+    'floor_label': '',
+    'standard': 'standard',
+    'created_at_utc_ms': 0,
+    'updated_at_utc_ms': 0,
+  });
+  await executor.insert(AppDatabase.roomChoicesTable, <String, Object?>{
+    'id': 'choice-1',
+    'project_id': 'project-1',
+    'room_id': 'room-1',
+    'title': 'Płytki',
+    'status': 'selected',
+    'created_at_utc_ms': 0,
+    'updated_at_utc_ms': 0,
   });
 }

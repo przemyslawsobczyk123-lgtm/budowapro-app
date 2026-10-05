@@ -194,6 +194,32 @@ void main() {
     expect(persisted?.name, 'Dom');
   });
 
+  test('rejects a currency change after a stage budget is recorded', () async {
+    final created = await repository.create(_houseDraft('Dom'));
+    await _insertProjectStage(
+      appDatabase,
+      projectId: created.id,
+      plannedBudgetMinorUnits: 150000,
+    );
+
+    await expectLater(
+      repository.update(
+        created.id,
+        ProjectDraft(
+          name: 'Zmieniony dom',
+          type: ProjectType.houseBuild,
+          template: ProjectTemplate.houseConstruction,
+          currencyCode: 'EUR',
+        ),
+      ),
+      throwsA(isA<ProjectCurrencyLockedException>()),
+    );
+
+    final persisted = await repository.findById(created.id);
+    expect(persisted?.currencyCode, 'PLN');
+    expect(persisted?.name, 'Dom');
+  });
+
   test('lists active projects with stable pagination', () async {
     final first = await repository.create(_houseDraft('Pierwszy'));
     now = now.add(const Duration(minutes: 1));
@@ -380,6 +406,27 @@ Future<void> _insertCostEntry(
     'gross_minor_units': 123,
     'currency_code': 'PLN',
     'source': 'manual',
+    'created_at_utc_ms': 0,
+    'updated_at_utc_ms': 0,
+  });
+}
+
+Future<void> _insertProjectStage(
+  AppDatabase database, {
+  required String projectId,
+  required int plannedBudgetMinorUnits,
+}) async {
+  final executor = await database.open();
+  await executor.insert(AppDatabase.projectStagesTable, <String, Object?>{
+    'project_id': projectId,
+    'id': 'stage-1',
+    'template_stage_key': null,
+    'custom_name': 'Etap testowy',
+    'status': 'planned',
+    'sort_order': 0,
+    'planned_start_utc_ms': null,
+    'planned_end_utc_ms': null,
+    'planned_budget_minor_units': plannedBudgetMinorUnits,
     'created_at_utc_ms': 0,
     'updated_at_utc_ms': 0,
   });

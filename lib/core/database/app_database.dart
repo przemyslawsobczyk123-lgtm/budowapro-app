@@ -19,7 +19,7 @@ final class AppDatabase {
 
   AppDatabase._(this._factory, this._path);
 
-  static const int schemaVersion = 19;
+  static const int schemaVersion = 20;
   static const String databaseFileName = 'budowapro.db';
   static const String metadataTable = 'app_metadata';
   static const String projectsTable = 'projects';
@@ -28,6 +28,7 @@ final class AppDatabase {
   static const String costEntryAttachmentsTable = 'cost_entry_attachments';
   static const String costEntryRevisionsTable = 'cost_entry_revisions';
   static const String costCorrectionsTable = 'cost_corrections';
+  static const String costEntryContactsTable = 'cost_entry_contacts';
   static const String projectStagesTable = 'project_stages';
   static const String checklistItemsTable = 'checklist_items';
   static const String checklistItemAttachmentsTable =
@@ -84,6 +85,7 @@ final class AppDatabase {
     costEntryAttachmentsTable,
     costEntryRevisionsTable,
     costCorrectionsTable,
+    costEntryContactsTable,
     projectStagesTable,
     checklistItemsTable,
     checklistItemAttachmentsTable,
@@ -2408,6 +2410,25 @@ final class AppDatabase {
 
     if (fromVersion < 19 && toVersion >= 19) {
       await _rebuildMaterialRelations(database);
+    }
+
+    if (fromVersion < 20 && toVersion >= 20) {
+      await database.execute('''
+        CREATE TABLE IF NOT EXISTS $costEntryContactsTable (
+          project_id TEXT NOT NULL,
+          cost_entry_id TEXT NOT NULL,
+          contact_id TEXT NOT NULL,
+          PRIMARY KEY (project_id, cost_entry_id),
+          FOREIGN KEY (cost_entry_id, project_id)
+            REFERENCES $costEntriesTable(id, project_id) ON DELETE CASCADE,
+          FOREIGN KEY (project_id, contact_id)
+            REFERENCES $contactsTable(project_id, id) ON DELETE CASCADE
+        )
+      ''');
+      await database.execute('''
+        CREATE INDEX IF NOT EXISTS cost_entry_contacts_project_contact_idx
+        ON $costEntryContactsTable (project_id, contact_id, cost_entry_id)
+      ''');
     }
 
     if (fromVersion < toVersion) {

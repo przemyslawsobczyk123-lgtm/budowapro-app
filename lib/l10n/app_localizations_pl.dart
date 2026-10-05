@@ -693,6 +693,17 @@ class AppLocalizationsPl extends AppLocalizations {
   String get costSupplierLabel => 'Dostawca';
 
   @override
+  String get costContactLabel => 'Osoba lub firma';
+
+  @override
+  String get costContactNone => 'Bez przypisanego kontaktu';
+
+  @override
+  String costContactArchived(String name) {
+    return '$name (archiwalny)';
+  }
+
+  @override
   String get costQuantityLabel => 'Ilość';
 
   @override
@@ -3765,7 +3776,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get budgetReportDimensionSupplier => 'Wykonawca';
 
   @override
+  String get budgetReportDimensionContact => 'Osoba / firma';
+
+  @override
   String get budgetReportDimensionComponent => 'Skład kosztu';
+
+  @override
+  String get budgetReportDimensionPaymentMethod => 'Płatność';
 
   @override
   String get budgetReportDimensionMonth => 'Miesiąc';

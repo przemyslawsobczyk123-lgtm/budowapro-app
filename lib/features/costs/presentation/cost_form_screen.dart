@@ -149,6 +149,7 @@ class _CostFormState extends State<_CostForm> {
   late VatRate _vatRate;
   late DateTime _entryDate;
   String? _stageId;
+  String? _contactId;
   CostPaymentMethod? _paymentMethod;
   late List<StagedCostAttachment> _attachments;
   final _newAttachmentIds = <String>{};
@@ -173,6 +174,7 @@ class _CostFormState extends State<_CostForm> {
         ? ''
         : formatMinorUnitsForInput(input.amount.gross.minorUnits);
     _stageId = input?.stageId;
+    _contactId = input?.contactId;
     _categoryController.text = input?.categoryId ?? '';
     _supplierController.text = input?.supplierId ?? '';
     _quantityController.text = formatQuantityForInput(input?.quantity);
@@ -355,6 +357,41 @@ class _CostFormState extends State<_CostForm> {
                 ],
                 const SizedBox(height: 24),
                 _SectionTitle(localizations.costFormFinancialSection),
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String?>(
+                  key: ValueKey('costContact-${_contactId ?? 'none'}'),
+                  initialValue: _contactId,
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    labelText: localizations.costContactLabel,
+                    prefixIcon: const Icon(Icons.person_outline_rounded),
+                  ),
+                  items: [
+                    DropdownMenuItem<String?>(
+                      value: null,
+                      child: Text(localizations.costContactNone),
+                    ),
+                    ...widget.initialData.contactOptions.map(
+                      (contact) => DropdownMenuItem<String?>(
+                        value: contact.id,
+                        child: Text(
+                          contact.isArchived
+                              ? localizations.costContactArchived(
+                                  contact.displayName,
+                                )
+                              : contact.displayName,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ],
+                  onChanged: _isSubmitting
+                      ? null
+                      : (value) => setState(() {
+                          _contactId = value;
+                          _isDirty = true;
+                        }),
+                ),
                 const SizedBox(height: 12),
                 _ResponsivePair(
                   children: [
@@ -660,6 +697,7 @@ class _CostFormState extends State<_CostForm> {
       stageId: _stageId,
       categoryId: _categoryController.text,
       supplierId: _supplierController.text,
+      contactId: _contactId,
       quantity: _quantityController.text,
       unit: _unitController.text,
       paymentMethod: _paymentMethod,

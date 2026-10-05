@@ -154,9 +154,19 @@ class _ReportContentState extends State<_ReportContent> {
                     label: Text(l10n.budgetReportDimensionSupplier),
                   ),
                   ButtonSegment(
+                    value: BudgetBreakdownDimension.contact,
+                    icon: const Icon(Icons.person_outline_rounded),
+                    label: Text(l10n.budgetReportDimensionContact),
+                  ),
+                  ButtonSegment(
                     value: BudgetBreakdownDimension.component,
                     icon: const Icon(Icons.construction_outlined),
                     label: Text(l10n.budgetReportDimensionComponent),
+                  ),
+                  ButtonSegment(
+                    value: BudgetBreakdownDimension.paymentMethod,
+                    icon: const Icon(Icons.credit_card_outlined),
+                    label: Text(l10n.budgetReportDimensionPaymentMethod),
                   ),
                   ButtonSegment(
                     value: BudgetBreakdownDimension.month,
@@ -406,12 +416,7 @@ class _BreakdownList extends StatelessWidget {
             ),
             dimension: dimension,
             slice: slices[index],
-            label: _sliceLabel(
-              context,
-              dimension,
-              slices[index].key,
-              stageLabels,
-            ),
+            label: _sliceLabel(context, dimension, slices[index], stageLabels),
             currencyCode: currencyCode,
             progress: maximum == 0
                 ? null
@@ -562,8 +567,17 @@ void _openCosts(
         case BudgetBreakdownDimension.supplier:
           parameters['supplierId'] = key;
           break;
+        case BudgetBreakdownDimension.contact:
+          parameters['contactId'] = key;
+          break;
         case BudgetBreakdownDimension.component:
           parameters['component'] = key;
+          break;
+        case BudgetBreakdownDimension.paymentMethod:
+          final paymentMethod = _paymentMethodFromStorage(key);
+          if (paymentMethod != null) {
+            parameters['paymentMethod'] = paymentMethod.name;
+          }
           break;
         case BudgetBreakdownDimension.month:
           final month = _parseMonth(key);
@@ -584,11 +598,15 @@ void _openCosts(
 String _sliceLabel(
   BuildContext context,
   BudgetBreakdownDimension dimension,
-  String? key,
+  BudgetReportSlice slice,
   Map<String, String> stageLabels,
 ) {
   final l10n = AppLocalizations.of(context);
+  final key = slice.key;
   if (key == null) return l10n.budgetReportNoAssignment;
+  if (dimension == BudgetBreakdownDimension.contact && slice.label != null) {
+    return slice.label!;
+  }
   if (dimension == BudgetBreakdownDimension.stage) {
     return stageLabels[key] ?? key;
   }
@@ -608,8 +626,32 @@ String _sliceLabel(
       return '${label[0].toUpperCase()}${label.substring(1)}';
     }
   }
+  if (dimension == BudgetBreakdownDimension.paymentMethod) {
+    final paymentMethod = _paymentMethodFromStorage(key);
+    if (paymentMethod != null) {
+      return _paymentLabel(l10n, paymentMethod);
+    }
+  }
   return key;
 }
+
+CostPaymentMethod? _paymentMethodFromStorage(String value) => switch (value) {
+  'cash' => CostPaymentMethod.cash,
+  'card' => CostPaymentMethod.card,
+  'bank_transfer' => CostPaymentMethod.bankTransfer,
+  'blik' => CostPaymentMethod.blik,
+  'other' => CostPaymentMethod.other,
+  _ => null,
+};
+
+String _paymentLabel(AppLocalizations l10n, CostPaymentMethod value) =>
+    switch (value) {
+      CostPaymentMethod.cash => l10n.costPaymentCash,
+      CostPaymentMethod.card => l10n.costPaymentCard,
+      CostPaymentMethod.bankTransfer => l10n.costPaymentBankTransfer,
+      CostPaymentMethod.blik => l10n.costPaymentBlik,
+      CostPaymentMethod.other => l10n.costPaymentOther,
+    };
 
 DateTime? _parseMonth(String value) {
   final match = RegExp(r'^(\d{4})-(\d{2})$').firstMatch(value);

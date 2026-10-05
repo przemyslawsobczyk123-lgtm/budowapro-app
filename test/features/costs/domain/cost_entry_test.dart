@@ -31,6 +31,7 @@ void main() {
       stageId: ' state-zero ',
       categoryId: ' installations ',
       supplierId: ' supplier-1 ',
+      contactId: ' contact-1 ',
       quantity: DecimalQuantity(unscaledValue: 125, scale: 2),
       unit: ' m ',
       paymentMethod: CostPaymentMethod.bankTransfer,
@@ -45,6 +46,7 @@ void main() {
     expect(input.stageId, 'state-zero');
     expect(input.categoryId, 'installations');
     expect(input.supplierId, 'supplier-1');
+    expect(input.contactId, 'contact-1');
     expect(input.quantity?.unscaledValue, 125);
     expect(input.quantity?.scale, 2);
     expect(input.unit, 'm');

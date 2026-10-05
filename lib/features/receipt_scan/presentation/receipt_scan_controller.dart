@@ -97,6 +97,10 @@ final class ReceiptScanController extends ChangeNotifier {
         projectId: _projectId,
         method: method,
       );
+      if (_isDisposed) {
+        if (source != null) await _discardOnDispose(source);
+        return;
+      }
       if (source == null) {
         _setState(const ReceiptScanViewState.idle());
         return;
@@ -281,12 +285,16 @@ final class ReceiptScanController extends ChangeNotifier {
       final batch = _financialBatch(source, draft);
       final duplicate = await _financialRepository.checkDuplicates(batch);
       if (duplicate.isDuplicate && !duplicateAcknowledged) {
-        _restoreReview(
-          source: source,
-          session: session,
-          draft: draft,
-          duplicateCheck: duplicate,
-        );
+        if (_isDisposed) {
+          await _discardOnDispose(source);
+        } else {
+          _restoreReview(
+            source: source,
+            session: session,
+            draft: draft,
+            duplicateCheck: duplicate,
+          );
+        }
         return;
       }
       final result = await _financialRepository.saveReviewedDrafts(
@@ -300,19 +308,27 @@ final class ReceiptScanController extends ChangeNotifier {
         ),
       );
     } on ReceiptDuplicateException catch (error) {
-      _restoreReview(
-        source: source,
-        session: session,
-        draft: draft,
-        duplicateCheck: error.check,
-      );
+      if (_isDisposed) {
+        await _discardOnDispose(source);
+      } else {
+        _restoreReview(
+          source: source,
+          session: session,
+          draft: draft,
+          duplicateCheck: error.check,
+        );
+      }
     } on Object {
-      _restoreReview(
-        source: source,
-        session: session,
-        draft: draft,
-        saveFailed: true,
-      );
+      if (_isDisposed) {
+        await _discardOnDispose(source);
+      } else {
+        _restoreReview(
+          source: source,
+          session: session,
+          draft: draft,
+          saveFailed: true,
+        );
+      }
     }
   }
 

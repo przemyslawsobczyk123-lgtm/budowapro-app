@@ -52,13 +52,13 @@ CostSpreadsheetTable _parseCsv(String fileName, Uint8List bytes) {
     if (contents.startsWith('\uFEFF')) {
       contents = contents.substring(1);
     }
-    final decoded = Csv().decode(contents);
-    return _buildTable(
-      fileName: fileName,
-      rows: decoded
-          .map((row) => row.map((cell) => cell.toString()).toList())
-          .toList(),
+    final decoded = <List<String>>[];
+    final sink = Csv().decoder.startChunkedConversion(
+      _BoundedCsvRowSink(decoded),
     );
+    sink.add(contents);
+    sink.close();
+    return _buildTable(fileName: fileName, rows: decoded);
   } on CostSpreadsheetImportException {
     rethrow;
   } on Object {
@@ -75,14 +75,9 @@ CostSpreadsheetTable _parseXlsx(String fileName, Uint8List bytes) {
     );
   }
   try {
-    final archive = ZipDecoder().decodeBytes(bytes, verify: true);
-    if (archive.length > CostSpreadsheetParser.maximumWorkbookEntries ||
-        archive.fold<int>(0, (total, file) => total + file.size) >
-            CostSpreadsheetParser.maximumWorkbookBytes) {
-      throw const CostSpreadsheetImportException(
-        CostSpreadsheetImportError.workbookTooLarge,
-      );
-    }
+    final decoder = ZipDecoder();
+    decoder.decodeBytes(bytes);
+    _validateWorkbookArchive(decoder);
 
     final workbook = Excel.decodeBytes(bytes);
     for (final entry in workbook.tables.entries) {
@@ -132,6 +127,65 @@ CostSpreadsheetTable _parseXlsx(String fileName, Uint8List bytes) {
       CostSpreadsheetImportError.unreadableFile,
     );
   }
+}
+
+void _validateWorkbookArchive(ZipDecoder decoder) {
+  final headers = decoder.directory.fileHeaders;
+  if (headers.length > CostSpreadsheetParser.maximumWorkbookEntries) {
+    throw const CostSpreadsheetImportException(
+      CostSpreadsheetImportError.workbookTooLarge,
+    );
+  }
+  var totalBytes = 0;
+  final normalizedPaths = <String>{};
+  for (final header in headers) {
+    totalBytes += header.uncompressedSize;
+    if (totalBytes > CostSpreadsheetParser.maximumWorkbookBytes) {
+      throw const CostSpreadsheetImportException(
+        CostSpreadsheetImportError.workbookTooLarge,
+      );
+    }
+    final normalized = p.posix.normalize(header.filename.replaceAll('\\', '/'));
+    final isUnsafe =
+        p.posix.isAbsolute(normalized) ||
+        normalized == '..' ||
+        normalized.startsWith('../') ||
+        !normalizedPaths.add(normalized.toLowerCase());
+    if (isUnsafe) {
+      throw const CostSpreadsheetImportException(
+        CostSpreadsheetImportError.unreadableFile,
+      );
+    }
+    if (header.generalPurposeBitFlag & 0x1 != 0) {
+      throw const CostSpreadsheetImportException(
+        CostSpreadsheetImportError.unreadableFile,
+      );
+    }
+  }
+}
+
+final class _BoundedCsvRowSink implements Sink<List<dynamic>> {
+  _BoundedCsvRowSink(this.rows);
+
+  final List<List<String>> rows;
+
+  @override
+  void add(List<dynamic> row) {
+    if (row.length > CostSpreadsheetParser.maximumColumns) {
+      throw const CostSpreadsheetImportException(
+        CostSpreadsheetImportError.tooManyColumns,
+      );
+    }
+    if (rows.length >= CostSpreadsheetParser.maximumDataRows + 1) {
+      throw const CostSpreadsheetImportException(
+        CostSpreadsheetImportError.tooManyRows,
+      );
+    }
+    rows.add(row.map((cell) => cell.toString()).toList(growable: false));
+  }
+
+  @override
+  void close() {}
 }
 
 CostSpreadsheetTable _buildTable({

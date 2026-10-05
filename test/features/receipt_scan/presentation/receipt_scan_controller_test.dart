@@ -47,6 +47,22 @@ void main() {
     expect(gateway.recognizeCalls, 0);
   });
 
+  test('discards a capture that finishes after controller disposal', () async {
+    final captureCompleter = Completer<StagedReceiptSource?>();
+    gateway.captureFuture = captureCompleter.future;
+
+    final start = controller.start(ReceiptCaptureMethod.fileImport);
+    expect(controller.state.operation, ReceiptScanOperation.capture);
+
+    controller.dispose();
+    controllerDisposed = true;
+    captureCompleter.complete(_source);
+    await start;
+
+    expect(gateway.recognizeCalls, 0);
+    expect(gateway.discardCalls, 1);
+  });
+
   test(
     'publishes a provisional result without financial persistence',
     () async {
@@ -162,6 +178,27 @@ void main() {
     await save;
     expect(financialRepository.saveCalls, 1);
     expect(gateway.discardCalls, 0);
+  });
+
+  test('discards the source when a background financial save fails', () async {
+    gateway.captureResult = _source;
+    gateway.recognitionResult = _reviewableSession();
+    financialRepository.failure = StateError('database failure');
+    final duplicateCompleter = Completer<ReceiptDuplicateCheck>();
+    financialRepository.duplicateFuture = duplicateCompleter.future;
+    await controller.start(ReceiptCaptureMethod.scanner);
+    _confirmAllItems(controller);
+
+    final save = controller.saveReviewed();
+    controller.dispose();
+    controllerDisposed = true;
+    duplicateCompleter.complete(
+      ReceiptDuplicateCheck(const <ReceiptDuplicateReason>[]),
+    );
+    await save;
+
+    expect(financialRepository.saveCalls, 1);
+    expect(gateway.discardCalls, 1);
   });
 
   test(
@@ -310,6 +347,7 @@ final class _FakeGateway implements ReceiptScanGateway {
   int recognizeCalls = 0;
   int discardCalls = 0;
   StagedReceiptSource? captureResult;
+  Future<StagedReceiptSource?>? captureFuture;
   ReceiptScanSession? recognitionResult;
   ReceiptScanException? failure;
   Object? discardFailure;
@@ -324,6 +362,7 @@ final class _FakeGateway implements ReceiptScanGateway {
         when failure.kind == ReceiptScanFailureKind.scannerUnavailable) {
       throw failure;
     }
+    if (captureFuture case final future?) return future;
     return captureResult;
   }
 

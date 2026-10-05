@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:budowapro/core/theme/app_theme.dart';
+import 'package:budowapro/features/contacts/domain/contact.dart';
 import 'package:budowapro/features/costs/data/cost_providers.dart';
 import 'package:budowapro/features/costs/data/cost_attachment_stager.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
@@ -156,6 +157,42 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(gateway.lastSubmission?.component, CostComponent.labor);
+  });
+
+  testWidgets('assigns a project contact while adding a cost', (tester) async {
+    final contact = _contact();
+    final gateway = _FakeGateway(
+      data: CostEditorData(
+        project: _project(),
+        entry: null,
+        attachments: const [],
+        contactOptions: <Contact>[contact],
+      ),
+    );
+    await tester.pumpWidget(
+      _gatewayApp(gateway, const CostFormScreen(projectId: 'project-1')),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const ValueKey('costNameField')),
+      'Instalacja elektryczna',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('costGrossField')),
+      '5000,00',
+    );
+    final contactField = find.byKey(const ValueKey('costContact-none'));
+    await tester.ensureVisible(contactField);
+    await tester.tap(contactField);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(contact.displayName).last);
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const ValueKey('costSave')));
+    await tester.tap(find.byKey(const ValueKey('costSave')));
+    await tester.pumpAndSettle();
+
+    expect(gateway.lastSubmission?.contactId, contact.id);
   });
 
   testWidgets('returns a changed result after saving a new cost', (
@@ -559,6 +596,35 @@ void main() {
     expect(find.text('Beton B20'), findsOneWidget);
   });
 
+  testWidgets('loads each budget page through one register query', (
+    tester,
+  ) async {
+    final costs = _FakeCostRepository(entries: [_entry()]);
+
+    await tester.pumpWidget(_budgetApp(costs));
+    await tester.pumpAndSettle();
+
+    expect(costs.listCallCount, 0);
+    expect(costs.exportCallCount, 1);
+  });
+
+  testWidgets('reuses filter options while searching the register', (
+    tester,
+  ) async {
+    final costs = _FakeCostRepository(entries: [_entry()]);
+    await tester.pumpWidget(_budgetApp(costs));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const ValueKey('costRegisterSearch')),
+      'beton',
+    );
+    await tester.pump(const Duration(milliseconds: 350));
+    await tester.pumpAndSettle();
+
+    expect(costs.filterOptionsCallCount, 1);
+  });
+
   testWidgets('shows the effective amount after a price correction', (
     tester,
   ) async {
@@ -875,12 +941,25 @@ ProjectStage _customStage() => ProjectStage(
   updatedAt: DateTime.utc(2026, 7, 1),
 );
 
+Contact _contact() => Contact(
+  id: 'contact-1',
+  projectId: 'project-1',
+  draft: ContactDraft(
+    displayName: 'Instal-Pro',
+    kind: ContactKind.company,
+    roles: const <ContactRole>{ContactRole.electrician},
+  ),
+  createdAt: DateTime.utc(2026, 7, 1),
+  updatedAt: DateTime.utc(2026, 7, 1),
+);
+
 CostEntry _entry({
   String id = 'cost-1',
   String name = 'Beton B20',
   CostLifecycle lifecycle = CostLifecycle.confirmed,
   CostStatus status = CostStatus.paid,
   CostComponent component = CostComponent.unassigned,
+  String? contactId,
 }) => CostEntry(
   id: id,
   input: CostEntryInput(
@@ -894,6 +973,7 @@ CostEntry _entry({
       VatRate.standard23,
     ),
     entryDate: DateTime.utc(2026, 7, 15),
+    contactId: contactId,
     note: 'Dostawa rano',
   ),
   lifecycle: lifecycle,
@@ -1065,6 +1145,9 @@ class _FakeCostRepository implements CostRepository {
   final Map<String, Money>? effectiveGrossByEntryId;
   final List<CostQuery> listQueries = <CostQuery>[];
   final List<PageRequest> pageRequests = <PageRequest>[];
+  var listCallCount = 0;
+  var exportCallCount = 0;
+  var filterOptionsCallCount = 0;
   Completer<void>? nextFirstPageGate;
   Completer<void>? nextPageGate;
 
@@ -1122,6 +1205,16 @@ class _FakeCostRepository implements CostRepository {
 
   @override
   Future<Page<CostEntry>> list(CostQuery query, PageRequest page) async {
+    listCallCount++;
+    await _trackPage(query, page);
+    final end = (page.offset + page.limit).clamp(0, entries.length);
+    final items = page.offset >= entries.length
+        ? const <CostEntry>[]
+        : entries.sublist(page.offset, end);
+    return Page(items: items, totalCount: entries.length, request: page);
+  }
+
+  Future<void> _trackPage(CostQuery query, PageRequest page) async {
     listQueries.add(query);
     pageRequests.add(page);
     final firstPageGate = nextFirstPageGate;
@@ -1134,31 +1227,30 @@ class _FakeCostRepository implements CostRepository {
       nextPageGate = null;
       await gate.future;
     }
-    final end = (page.offset + page.limit).clamp(0, entries.length);
-    final items = page.offset >= entries.length
-        ? const <CostEntry>[]
-        : entries.sublist(page.offset, end);
-    return Page(items: items, totalCount: entries.length, request: page);
   }
 
   @override
   Future<Page<CostExportRecord>> exportRows(
     CostQuery query,
     PageRequest page,
-  ) async => Page<CostExportRecord>(
-    items: entries
-        .map(
-          (entry) => CostExportRecord(
-            entry: entry,
-            effectiveGross:
-                effectiveGrossByEntryId?[entry.id] ?? entry.amount.gross,
-          ),
-        )
-        .skip(page.offset)
-        .take(page.limit),
-    totalCount: entries.length,
-    request: page,
-  );
+  ) async {
+    exportCallCount++;
+    await _trackPage(query, page);
+    return Page<CostExportRecord>(
+      items: entries
+          .map(
+            (entry) => CostExportRecord(
+              entry: entry,
+              effectiveGross:
+                  effectiveGrossByEntryId?[entry.id] ?? entry.amount.gross,
+            ),
+          )
+          .skip(page.offset)
+          .take(page.limit),
+      totalCount: entries.length,
+      request: page,
+    );
+  }
 
   @override
   Future<CostSummary> summarize(CostSummaryQuery query) async =>
@@ -1168,8 +1260,10 @@ class _FakeCostRepository implements CostRepository {
       );
 
   @override
-  Future<CostFilterOptions> filterOptions({required String projectId}) async =>
-      CostFilterOptions();
+  Future<CostFilterOptions> filterOptions({required String projectId}) async {
+    filterOptionsCallCount++;
+    return CostFilterOptions();
+  }
 
   @override
   Future<Page<CostHistoryEntry>> history({

@@ -33,7 +33,10 @@ final class FakeProjectRepository implements ProjectRepository {
   var _identifier = 0;
 
   int deleteCallCount = 0;
+  int listCallCount = 0;
+  int selectedCallCount = 0;
   Object? selectError;
+  Completer<void>? listGate;
   Completer<void>? selectGate;
   final List<String> selectCalls = <String>[];
 
@@ -92,6 +95,11 @@ final class FakeProjectRepository implements ProjectRepository {
     PageRequest request, {
     bool includeArchived = false,
   }) async {
+    listCallCount += 1;
+    final gate = listGate;
+    if (gate != null) {
+      await gate.future;
+    }
     final matching =
         _projects
             .where((project) => includeArchived || !project.isArchived)
@@ -129,6 +137,7 @@ final class FakeProjectRepository implements ProjectRepository {
 
   @override
   Future<Project?> selected() async {
+    selectedCallCount += 1;
     final selectedId = _selectedProjectId;
     if (selectedId == null) {
       return null;

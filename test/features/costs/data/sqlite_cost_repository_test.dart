@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:budowapro/core/database/app_database.dart';
 import 'package:budowapro/core/files/project_file_store.dart';
+import 'package:budowapro/features/contacts/data/sqlite_contact_repository.dart';
+import 'package:budowapro/features/contacts/domain/contact.dart';
+import 'package:budowapro/features/contacts/domain/contact_repository.dart';
 import 'package:budowapro/features/costs/data/cost_attachment_stager.dart';
 import 'package:budowapro/features/costs/data/sqlite_cost_repository.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
@@ -22,7 +25,10 @@ void main() {
   late String databasePath;
   late AppDatabase database;
   late ProjectFileStore fileStore;
+  late SqliteProjectRepository projectRepository;
   late SqliteCostRepository repository;
+  late SqliteContactRepository contactRepository;
+  late String contactId;
   var nextId = 0;
   var nextMinute = 0;
 
@@ -38,7 +44,7 @@ void main() {
     fileStore = ProjectFileStore(
       rootDirectory: Directory(p.join(temporaryDirectory.path, 'files')),
     );
-    final projectRepository = SqliteProjectRepository(
+    projectRepository = SqliteProjectRepository(
       database: database,
       fileStore: fileStore,
       idGenerator: () => 'project-1',
@@ -56,6 +62,19 @@ void main() {
       idGenerator: generateId,
       utcNow: utcNow,
     );
+    contactRepository = SqliteContactRepository(
+      database: database,
+      idGenerator: () => 'contact-main',
+      utcNow: utcNow,
+    );
+    contactId = (await contactRepository.create(
+      projectId: 'project-1',
+      draft: ContactDraft(
+        displayName: 'Instal-Pro',
+        kind: ContactKind.company,
+        roles: const <ContactRole>{ContactRole.electrician},
+      ),
+    )).id;
   });
 
   tearDown(() async {
@@ -79,6 +98,7 @@ void main() {
             quantity: DecimalQuantity(unscaledValue: 185, scale: 1),
             unit: 'm3',
             paymentMethod: CostPaymentMethod.bankTransfer,
+            contactId: contactId,
           ),
         ),
       );
@@ -107,8 +127,134 @@ void main() {
       expect(loaded.input.quantity?.scale, 1);
       expect(loaded.input.unit, 'm3');
       expect(loaded.input.paymentMethod, CostPaymentMethod.bankTransfer);
+      expect(loaded.input.contactId, contactId);
     },
   );
+
+  test('updates and filters the project contact assigned to a cost', () async {
+    final created = await repository.create(
+      ConfirmedCostEntryInput(
+        _input(
+          name: 'Instalacja elektryczna',
+          status: CostStatus.due,
+          contactId: contactId,
+        ),
+      ),
+    );
+
+    final byContact = await repository.list(
+      CostQuery(projectId: 'project-1', contactIds: <String>{contactId}),
+      PageRequest(),
+    );
+    expect(byContact.items.single.id, created.id);
+    final byContactName = await repository.list(
+      CostQuery(projectId: 'project-1', searchText: 'Instal-Pro'),
+      PageRequest(),
+    );
+    expect(byContactName.items.single.id, created.id);
+
+    await repository.updateDetails(
+      projectId: 'project-1',
+      costEntryId: created.id,
+      input: ConfirmedCostDetailsInput(
+        name: created.name,
+        component: created.component,
+        entryDate: created.entryDate,
+        stageId: created.input.stageId,
+        categoryId: created.input.categoryId,
+        supplierId: created.input.supplierId,
+        contactId: null,
+        paymentMethod: created.input.paymentMethod,
+        attachmentIds: created.input.attachmentIds,
+        note: created.input.note,
+      ),
+    );
+
+    final unassigned = await repository.list(
+      CostQuery(
+        projectId: 'project-1',
+        missingAssignments: const <CostMissingAssignment>{
+          CostMissingAssignment.contact,
+        },
+      ),
+      PageRequest(),
+    );
+    expect(unassigned.items.single.id, created.id);
+  });
+
+  test(
+    'rejects a contact from another project and protects linked contacts',
+    () async {
+      final projects = SqliteProjectRepository(
+        database: database,
+        fileStore: fileStore,
+        idGenerator: () => 'project-2',
+        utcNow: utcNow,
+      );
+      await projects.create(
+        ProjectDraft(
+          name: 'Mieszkanie',
+          type: ProjectType.apartmentRenovation,
+          template: ProjectTemplate.renovation,
+        ),
+      );
+      final foreignContacts = SqliteContactRepository(
+        database: database,
+        idGenerator: () => 'foreign-contact',
+        utcNow: utcNow,
+      );
+      final foreign = await foreignContacts.create(
+        projectId: 'project-2',
+        draft: ContactDraft(
+          displayName: 'Obca firma',
+          kind: ContactKind.company,
+          roles: const <ContactRole>{ContactRole.other},
+        ),
+      );
+
+      await expectLater(
+        repository.create(
+          ConfirmedCostEntryInput(
+            _input(status: CostStatus.paid, contactId: foreign.id),
+          ),
+        ),
+        throwsArgumentError,
+      );
+
+      final linked = await repository.create(
+        ConfirmedCostEntryInput(
+          _input(status: CostStatus.paid, contactId: contactId),
+        ),
+      );
+      await expectLater(
+        contactRepository.delete(projectId: 'project-1', contactId: contactId),
+        throwsA(isA<ContactInUseException>()),
+      );
+      await repository.delete(projectId: 'project-1', costEntryId: linked.id);
+      await contactRepository.delete(
+        projectId: 'project-1',
+        contactId: contactId,
+      );
+    },
+  );
+
+  test('deleting a project cascades its linked cost and contact', () async {
+    await repository.create(
+      ConfirmedCostEntryInput(
+        _input(status: CostStatus.paid, contactId: contactId),
+      ),
+    );
+
+    await projectRepository.delete('project-1');
+
+    final rawDatabase = await database.open();
+    expect(await rawDatabase.query(AppDatabase.costEntriesTable), isEmpty);
+    expect(await rawDatabase.query(AppDatabase.contactsTable), isEmpty);
+    expect(
+      await rawDatabase.query(AppDatabase.costEntryContactsTable),
+      isEmpty,
+    );
+  });
 
   test('round trips a gross-originated VAT rounding boundary', () async {
     final input = CostEntryInput(
@@ -673,6 +819,8 @@ void main() {
     expect(options.stageIds, <String>['shell_closed', 'state_zero']);
     expect(options.categoryIds, <String>['materials', 'windows']);
     expect(options.supplierIds, <String>['alfa', 'zeta']);
+    expect(options.contacts.map((contact) => contact.id), <String>[contactId]);
+    expect(options.contacts.single.displayName, 'Instal-Pro');
   });
 
   test(
@@ -759,6 +907,84 @@ void main() {
       ),
       isNull,
     );
+  });
+
+  test('deleting a cost removes its polymorphic room link', () async {
+    final cost = await repository.create(
+      ConfirmedCostEntryInput(_input(status: CostStatus.paid)),
+    );
+    final executor = await database.open();
+    await executor.insert(AppDatabase.roomsTable, <String, Object?>{
+      'id': 'room-1',
+      'project_id': 'project-1',
+      'name': 'Kuchnia',
+      'floor_label': '',
+      'standard': 'standard',
+      'created_at_utc_ms': 0,
+      'updated_at_utc_ms': 0,
+    });
+    await executor.insert(AppDatabase.roomRecordLinksTable, <String, Object?>{
+      'project_id': 'project-1',
+      'room_id': 'room-1',
+      'record_type': 'cost',
+      'record_id': cost.id,
+      'linked_at_utc_ms': 0,
+    });
+
+    await repository.delete(projectId: 'project-1', costEntryId: cost.id);
+
+    final links = await executor.query(
+      AppDatabase.roomRecordLinksTable,
+      where: 'project_id = ? AND record_type = ? AND record_id = ?',
+      whereArgs: <Object?>['project-1', 'cost', cost.id],
+    );
+    expect(links, isEmpty);
+  });
+
+  test('rolls back relation cleanup when deleting a cost fails', () async {
+    final cost = await repository.create(
+      ConfirmedCostEntryInput(_input(status: CostStatus.paid)),
+    );
+    final executor = await database.open();
+    await executor.insert(AppDatabase.roomsTable, <String, Object?>{
+      'id': 'room-1',
+      'project_id': 'project-1',
+      'name': 'Kuchnia',
+      'floor_label': '',
+      'standard': 'standard',
+      'created_at_utc_ms': 0,
+      'updated_at_utc_ms': 0,
+    });
+    await executor.insert(AppDatabase.roomRecordLinksTable, <String, Object?>{
+      'project_id': 'project-1',
+      'room_id': 'room-1',
+      'record_type': 'cost',
+      'record_id': cost.id,
+      'linked_at_utc_ms': 0,
+    });
+    await executor.execute('''
+      CREATE TRIGGER block_cost_delete
+      BEFORE DELETE ON ${AppDatabase.costEntriesTable}
+      BEGIN
+        SELECT RAISE(ABORT, 'blocked by test');
+      END
+    ''');
+
+    await expectLater(
+      repository.delete(projectId: 'project-1', costEntryId: cost.id),
+      throwsA(isA<DatabaseException>()),
+    );
+
+    expect(
+      await repository.findById(projectId: 'project-1', costEntryId: cost.id),
+      isNotNull,
+    );
+    final links = await executor.query(
+      AppDatabase.roomRecordLinksTable,
+      where: 'project_id = ? AND record_type = ? AND record_id = ?',
+      whereArgs: <Object?>['project-1', 'cost', cost.id],
+    );
+    expect(links, hasLength(1));
   });
 
   test('updates confirmed details without replacing financial truth', () async {
@@ -858,6 +1084,7 @@ CostEntryInput _input({
   String? stageId = 'state_zero',
   String? categoryId = 'materials',
   String? supplierId = 'supplier-1',
+  String? contactId,
   VatRate vatRate = VatRate.standard23,
   CostSource source = CostSource.manual,
   String? note = 'Test note',
@@ -876,6 +1103,7 @@ CostEntryInput _input({
     stageId: stageId,
     categoryId: categoryId,
     supplierId: supplierId,
+    contactId: contactId,
     quantity: quantity,
     unit: unit,
     paymentMethod: paymentMethod,

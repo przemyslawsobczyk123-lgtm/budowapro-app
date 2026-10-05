@@ -587,6 +587,11 @@ Future<File> _rewriteAsPreviousSchemaBackup({
     options: OpenDatabaseOptions(singleInstance: false),
   );
   try {
+    if (schemaVersion < 20) {
+      await previousDatabase.execute(
+        'DROP TABLE IF EXISTS ${AppDatabase.costEntryContactsTable}',
+      );
+    }
     if (schemaVersion == 18) {
       await _downgradeMaterialSchemaToV18(previousDatabase);
     }

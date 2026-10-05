@@ -2,7 +2,15 @@ import 'dart:collection';
 
 import 'package:budowapro/features/costs/domain/money.dart';
 
-enum BudgetBreakdownDimension { stage, category, supplier, component, month }
+enum BudgetBreakdownDimension {
+  stage,
+  category,
+  supplier,
+  contact,
+  component,
+  paymentMethod,
+  month,
+}
 
 final class BudgetReportSlice {
   factory BudgetReportSlice({
@@ -10,11 +18,21 @@ final class BudgetReportSlice {
     required Money committed,
     required Money paid,
     required int recordCount,
+    String? label,
   }) {
     final normalizedKey = key?.trim();
+    final normalizedLabel = label?.trim();
     if (normalizedKey != null &&
         (normalizedKey.isEmpty || normalizedKey.length > 120)) {
       throw ArgumentError.value(key, 'key', 'must contain 1 to 120 characters');
+    }
+    if (normalizedLabel != null &&
+        (normalizedLabel.isEmpty || normalizedLabel.length > 160)) {
+      throw ArgumentError.value(
+        label,
+        'label',
+        'must contain 1 to 160 characters',
+      );
     }
     if (committed.isNegative || paid.isNegative) {
       throw RangeError('Report slice amounts must not be negative');
@@ -30,6 +48,7 @@ final class BudgetReportSlice {
     }
     return BudgetReportSlice._(
       key: normalizedKey,
+      label: normalizedLabel,
       committed: committed,
       paid: paid,
       recordCount: recordCount,
@@ -38,12 +57,14 @@ final class BudgetReportSlice {
 
   const BudgetReportSlice._({
     required this.key,
+    required this.label,
     required this.committed,
     required this.paid,
     required this.recordCount,
   });
 
   final String? key;
+  final String? label;
   final Money committed;
   final Money paid;
   final int recordCount;

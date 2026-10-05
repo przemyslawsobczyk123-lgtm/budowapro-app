@@ -96,6 +96,50 @@ void main() {
     );
     expect(find.byType(LinearProgressIndicator), findsNothing);
   });
+
+  testWidgets('drills into a contact report dimension', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1400, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final project = _project();
+    final report = BudgetReport(
+      projectId: project.id,
+      currencyCode: 'PLN',
+      committed: _pln(500000),
+      paid: _pln(500000),
+      costRecordCount: 1,
+      breakdowns: {
+        BudgetBreakdownDimension.contact: [
+          BudgetReportSlice(
+            key: 'contact-1',
+            label: 'Instal-Pro',
+            committed: _pln(500000),
+            paid: _pln(500000),
+            recordCount: 1,
+          ),
+        ],
+        BudgetBreakdownDimension.paymentMethod: [
+          BudgetReportSlice(
+            key: 'card',
+            committed: _pln(500000),
+            paid: _pln(500000),
+            recordCount: 1,
+          ),
+        ],
+      },
+    );
+    await tester.pumpWidget(_app(project: project, report: report));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Osoba / firma'));
+    await tester.pumpAndSettle();
+    expect(find.text('Instal-Pro'), findsOneWidget);
+    await tester.tap(
+      find.byKey(const ValueKey('budgetReportSlice-contact-contact-1')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('contactId=contact-1'), findsOneWidget);
+  });
 }
 
 Widget _app({required Project project, required BudgetReport report}) {

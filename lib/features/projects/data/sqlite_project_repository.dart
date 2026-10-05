@@ -69,7 +69,7 @@ final class SqliteProjectRepository implements ProjectRepository {
         throw const ProjectNotFoundException();
       }
       if (existing.currencyCode != draft.currencyCode &&
-          await _countCostEntries(transaction, projectId) > 0) {
+          await _hasCurrencyDependentRecords(transaction, projectId)) {
         throw const ProjectCurrencyLockedException();
       }
       final updated = Project(
@@ -296,16 +296,57 @@ final class SqliteProjectRepository implements ProjectRepository {
     return rows.isEmpty ? null : _projectFromRow(rows.single);
   }
 
-  static Future<int> _countCostEntries(
+  static Future<bool> _hasCurrencyDependentRecords(
     DatabaseExecutor executor,
     String projectId,
   ) async {
-    final rows = await executor.rawQuery(
-      'SELECT COUNT(*) AS total FROM ${AppDatabase.costEntriesTable}'
-      ' WHERE project_id = ?',
-      <Object?>[projectId],
-    );
-    return rows.single['total']! as int;
+    final rows = await executor.rawQuery('''
+        SELECT (
+          EXISTS (
+            SELECT 1 FROM ${AppDatabase.costEntriesTable}
+            WHERE project_id = ? LIMIT 1
+          ) OR EXISTS (
+            SELECT 1 FROM ${AppDatabase.projectStagesTable}
+            WHERE project_id = ?
+              AND planned_budget_minor_units IS NOT NULL
+            LIMIT 1
+          ) OR EXISTS (
+            SELECT 1 FROM ${AppDatabase.contractorQuotesTable}
+            WHERE project_id = ? LIMIT 1
+          ) OR EXISTS (
+            SELECT 1 FROM ${AppDatabase.receiptImportsTable}
+            WHERE project_id = ? LIMIT 1
+          ) OR EXISTS (
+            SELECT 1 FROM ${AppDatabase.captureDraftsTable}
+            WHERE project_id = ? AND gross_amount_minor_units IS NOT NULL
+            LIMIT 1
+          ) OR EXISTS (
+            SELECT 1 FROM ${AppDatabase.journalEntriesTable}
+            WHERE project_id = ? AND cost_delta_minor_units IS NOT NULL
+            LIMIT 1
+          ) OR EXISTS (
+            SELECT 1 FROM ${AppDatabase.roomsTable}
+            WHERE project_id = ? AND planned_budget_minor_units IS NOT NULL
+            LIMIT 1
+          ) OR EXISTS (
+            SELECT 1 FROM ${AppDatabase.roomChoiceVariantsTable}
+            WHERE project_id = ? LIMIT 1
+          ) OR EXISTS (
+            SELECT 1 FROM ${AppDatabase.materialsTable}
+            WHERE project_id = ? AND ordered_gross_minor_units IS NOT NULL
+            LIMIT 1
+          ) OR EXISTS (
+            SELECT 1 FROM ${AppDatabase.materialReturnsTable}
+            WHERE project_id = ?
+              AND (
+                expected_refund_minor_units IS NOT NULL OR
+                actual_refund_minor_units IS NOT NULL
+              )
+            LIMIT 1
+          )
+        ) AS is_locked
+      ''', List<Object?>.filled(10, projectId));
+    return rows.single['is_locked'] == 1;
   }
 
   static Future<int> _countProjectRecords(

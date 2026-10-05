@@ -5,6 +5,7 @@ import 'package:budowapro/features/receipt_scan/domain/receipt_scan.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as image;
 import 'package:path/path.dart' as p;
+import 'package:pdf/widgets.dart' as pdf;
 
 void main() {
   late Directory temporaryDirectory;
@@ -105,6 +106,35 @@ void main() {
       LocalReceiptOcrImagePreparer().prepare(
         originalUri: original.uri,
         mediaType: 'image/jpeg',
+      ),
+      throwsA(
+        isA<ReceiptScanException>().having(
+          (error) => error.kind,
+          'kind',
+          ReceiptScanFailureKind.unsupportedInput,
+        ),
+      ),
+    );
+  });
+
+  test('rejects a PDF that exceeds the OCR page limit', () async {
+    final original = File(
+      p.join(temporaryDirectory.path, 'too-many-pages.pdf'),
+    );
+    final document = pdf.Document();
+    for (
+      var index = 0;
+      index < LocalReceiptOcrImagePreparer.maximumPdfPages + 1;
+      index += 1
+    ) {
+      document.addPage(pdf.Page(build: (_) => pdf.Text('Page ${index + 1}')));
+    }
+    await original.writeAsBytes(await document.save(), flush: true);
+
+    await expectLater(
+      LocalReceiptOcrImagePreparer().prepare(
+        originalUri: original.uri,
+        mediaType: 'application/pdf',
       ),
       throwsA(
         isA<ReceiptScanException>().having(

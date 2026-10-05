@@ -143,6 +143,11 @@ final class SqliteJournalRepository implements JournalRepository {
   @override
   Future<void> delete({required String projectId, required String entryId}) {
     return _database.transaction<void>((transaction) async {
+      await _deletePolymorphicRelations(
+        transaction,
+        projectId: projectId,
+        entryId: entryId,
+      );
       final deleted = await transaction.delete(
         AppDatabase.journalEntriesTable,
         where: 'project_id = ? AND id = ?',
@@ -150,6 +155,33 @@ final class SqliteJournalRepository implements JournalRepository {
       );
       if (deleted == 0) throw const JournalEntryNotFoundException();
     });
+  }
+
+  static Future<void> _deletePolymorphicRelations(
+    DatabaseExecutor executor, {
+    required String projectId,
+    required String entryId,
+  }) async {
+    await executor.delete(
+      AppDatabase.roomChoiceOutputsTable,
+      where: 'project_id = ? AND output_type = ? AND record_id = ?',
+      whereArgs: <Object?>[projectId, 'decision', entryId],
+    );
+    await executor.delete(
+      AppDatabase.roomRecordLinksTable,
+      where: 'project_id = ? AND record_type = ? AND record_id = ?',
+      whereArgs: <Object?>[projectId, 'journal', entryId],
+    );
+    await executor.delete(
+      AppDatabase.documentContextLinksTable,
+      where: 'project_id = ? AND relation_type IN (?, ?) AND target_id = ?',
+      whereArgs: <Object?>[projectId, 'decision', 'defect', entryId],
+    );
+    await executor.delete(
+      AppDatabase.technicalPhotoLinksTable,
+      where: 'project_id = ? AND relation_type IN (?, ?) AND target_id = ?',
+      whereArgs: <Object?>[projectId, 'decision', 'defect', entryId],
+    );
   }
 
   Future<JournalEntry?> findByIdInTransaction(

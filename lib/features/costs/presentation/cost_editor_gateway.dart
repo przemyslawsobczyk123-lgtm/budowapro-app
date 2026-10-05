@@ -1,4 +1,7 @@
 import 'package:budowapro/features/costs/data/cost_attachment_picker.dart';
+import 'package:budowapro/features/contacts/data/contact_providers.dart';
+import 'package:budowapro/features/contacts/domain/contact.dart';
+import 'package:budowapro/features/contacts/domain/contact_repository.dart';
 import 'package:budowapro/features/costs/data/cost_attachment_stager.dart';
 import 'package:budowapro/features/costs/data/cost_providers.dart';
 import 'package:budowapro/features/costs/domain/cost_entry.dart';
@@ -26,6 +29,7 @@ final costEditorGatewayProvider = FutureProvider<CostEditorGateway>((
     attachmentStager: await ref.watch(costAttachmentStagerProvider.future),
     attachmentPicker: ref.watch(costAttachmentPickerProvider),
     stageRepository: await ref.watch(stageRepositoryProvider.future),
+    contactRepository: await ref.watch(contactRepositoryProvider.future),
     utcNow: DateTime.now,
   );
 });
@@ -74,11 +78,13 @@ final class CostEditorData {
     Iterable<String> categoryOptions = const <String>[],
     Iterable<String> supplierOptions = const <String>[],
     Iterable<ProjectStage> stageOptions = const <ProjectStage>[],
+    Iterable<Contact> contactOptions = const <Contact>[],
     this.relations = const CostRelations.empty(),
   }) : attachments = List<StagedCostAttachment>.unmodifiable(attachments),
        categoryOptions = List<String>.unmodifiable(categoryOptions),
        supplierOptions = List<String>.unmodifiable(supplierOptions),
-       stageOptions = List<ProjectStage>.unmodifiable(stageOptions);
+       stageOptions = List<ProjectStage>.unmodifiable(stageOptions),
+       contactOptions = List<Contact>.unmodifiable(contactOptions);
 
   final Project project;
   final CostEntry? entry;
@@ -86,6 +92,7 @@ final class CostEditorData {
   final List<String> categoryOptions;
   final List<String> supplierOptions;
   final List<ProjectStage> stageOptions;
+  final List<Contact> contactOptions;
   final CostRelations relations;
 }
 
@@ -102,6 +109,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
     required CostAttachmentPicker attachmentPicker,
     required DateTime Function() utcNow,
     StageRepository? stageRepository,
+    ContactRepository? contactRepository,
   }) {
     return LocalCostEditorGateway._(
       projectRepository,
@@ -110,6 +118,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
       attachmentStager,
       attachmentPicker,
       stageRepository,
+      contactRepository,
       utcNow,
     );
   }
@@ -121,6 +130,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
     this._attachmentStager,
     this._attachmentPicker,
     this._stageRepository,
+    this._contactRepository,
     this._utcNow,
   );
 
@@ -130,6 +140,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
   final CostAttachmentStager _attachmentStager;
   final CostAttachmentPicker _attachmentPicker;
   final StageRepository? _stageRepository;
+  final ContactRepository? _contactRepository;
   final DateTime Function() _utcNow;
 
   @override
@@ -169,6 +180,36 @@ final class LocalCostEditorGateway implements CostEditorGateway {
       projectId: projectId,
       template: project.template,
     );
+    final contacts = <Contact>[];
+    final contactRepository = _contactRepository;
+    if (contactRepository != null) {
+      var request = PageRequest(limit: PageRequest.maximumLimit);
+      while (true) {
+        final page = await contactRepository.list(
+          ContactQuery(projectId: projectId),
+          request,
+        );
+        contacts.addAll(page.items);
+        final nextRequest = page.nextRequest;
+        if (nextRequest == null) break;
+        request = nextRequest;
+      }
+      final assignedContactId = entry?.input.contactId;
+      if (assignedContactId != null &&
+          !contacts.any((contact) => contact.id == assignedContactId)) {
+        final assigned = await contactRepository.findById(
+          projectId: projectId,
+          contactId: assignedContactId,
+        );
+        if (assigned != null) contacts.add(assigned);
+      }
+      contacts.sort((left, right) {
+        final byName = left.displayName.toLowerCase().compareTo(
+          right.displayName.toLowerCase(),
+        );
+        return byName != 0 ? byName : left.id.compareTo(right.id);
+      });
+    }
     return CostEditorData(
       project: project,
       entry: entry,
@@ -180,6 +221,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
         projectEntries.items.map((item) => item.input.supplierId),
       ),
       stageOptions: stageOptions ?? const <ProjectStage>[],
+      contactOptions: contacts,
       relations: relations,
     );
   }
@@ -252,6 +294,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
         stageId: confirmedInput.stageId,
         categoryId: confirmedInput.categoryId,
         supplierId: confirmedInput.supplierId,
+        contactId: confirmedInput.contactId,
         quantity: confirmedInput.quantity,
         unit: confirmedInput.unit,
         paymentMethod: confirmedInput.paymentMethod,
@@ -315,6 +358,7 @@ final class LocalCostEditorGateway implements CostEditorGateway {
           stageId: input.stageId,
           categoryId: input.categoryId,
           supplierId: input.supplierId,
+          contactId: input.contactId,
           quantity: input.quantity,
           unit: input.unit,
           paymentMethod: input.paymentMethod,

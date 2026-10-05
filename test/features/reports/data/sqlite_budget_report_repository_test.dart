@@ -31,6 +31,7 @@ void main() {
   late SqliteBudgetReportRepository reports;
   late SqliteJournalRepository journal;
   late String approverId;
+  late String contractorId;
   var nextId = 0;
 
   setUp(() async {
@@ -80,6 +81,20 @@ void main() {
               ),
             ))
             .id;
+    contractorId =
+        (await SqliteContactRepository(
+              database: database,
+              idGenerator: () => 'contact-2',
+              utcNow: () => DateTime.utc(2026, 7, 1, 13),
+            ).create(
+              projectId: 'project-1',
+              draft: ContactDraft(
+                displayName: 'Bud-Mat',
+                kind: ContactKind.company,
+                roles: const <ContactRole>{ContactRole.supplier},
+              ),
+            ))
+            .id;
   });
 
   tearDown(() async {
@@ -101,6 +116,8 @@ void main() {
           stageId: 'stage-zero',
           categoryId: 'materials',
           supplierId: 'supplier-a',
+          contactId: contractorId,
+          paymentMethod: CostPaymentMethod.card,
           date: DateTime.utc(2026, 1, 15, 12),
         ),
       ),
@@ -123,6 +140,8 @@ void main() {
           stageId: 'installations',
           categoryId: 'labour',
           supplierId: 'supplier-b',
+          contactId: approverId,
+          paymentMethod: CostPaymentMethod.bankTransfer,
           date: DateTime(2026, 2),
         ),
       ),
@@ -187,6 +206,22 @@ void main() {
           .slicesFor(BudgetBreakdownDimension.month)
           .map((slice) => (slice.key, slice.committed.minorUnits)),
       [('2026-01', 90000), ('2026-02', 60000)],
+    );
+    expect(
+      report
+          .slicesFor(BudgetBreakdownDimension.contact)
+          .map((slice) => (slice.key, slice.label, slice.committed.minorUnits)),
+      [
+        (contractorId, 'Bud-Mat', 90000),
+        (approverId, 'Inwestor', 50000),
+        (null, null, 10000),
+      ],
+    );
+    expect(
+      report
+          .slicesFor(BudgetBreakdownDimension.paymentMethod)
+          .map((slice) => (slice.key, slice.committed.minorUnits)),
+      [('card', 90000), ('bank_transfer', 50000), (null, 10000)],
     );
     final unassigned = await costs.list(
       CostQuery(
@@ -266,6 +301,8 @@ CostEntryInput _entry({
   String? stageId = 'stage-zero',
   String? categoryId = 'materials',
   String? supplierId = 'supplier-a',
+  String? contactId,
+  CostPaymentMethod? paymentMethod,
   DateTime? date,
 }) {
   return CostEntryInput(
@@ -279,6 +316,8 @@ CostEntryInput _entry({
     stageId: stageId,
     categoryId: categoryId,
     supplierId: supplierId,
+    contactId: contactId,
+    paymentMethod: paymentMethod,
   );
 }
 

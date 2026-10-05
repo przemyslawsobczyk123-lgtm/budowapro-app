@@ -72,7 +72,7 @@ enum CostSort {
 
 enum CostWarning { missingDocument, missingDescription, vatToReview }
 
-enum CostMissingAssignment { stage, category, supplier }
+enum CostMissingAssignment { stage, category, supplier, contact, paymentMethod }
 
 final class CostQuery {
   factory CostQuery({
@@ -84,6 +84,7 @@ final class CostQuery {
     Set<String> stageIds = const <String>{},
     Set<String> categoryIds = const <String>{},
     Set<String> supplierIds = const <String>{},
+    Set<String> contactIds = const <String>{},
     Set<CostMissingAssignment> missingAssignments =
         const <CostMissingAssignment>{},
     Set<CostPaymentMethod> paymentMethods = const <CostPaymentMethod>{},
@@ -116,6 +117,7 @@ final class CostQuery {
       stageIds: _normalizedIds(stageIds, 'stageIds'),
       categoryIds: _normalizedIds(categoryIds, 'categoryIds'),
       supplierIds: _normalizedIds(supplierIds, 'supplierIds'),
+      contactIds: _normalizedIds(contactIds, 'contactIds'),
       missingAssignments: UnmodifiableSetView<CostMissingAssignment>(
         Set<CostMissingAssignment>.of(missingAssignments),
       ),
@@ -140,6 +142,7 @@ final class CostQuery {
     required this.stageIds,
     required this.categoryIds,
     required this.supplierIds,
+    required this.contactIds,
     required this.missingAssignments,
     required this.paymentMethods,
     required this.sources,
@@ -158,6 +161,7 @@ final class CostQuery {
   final UnmodifiableSetView<String> stageIds;
   final UnmodifiableSetView<String> categoryIds;
   final UnmodifiableSetView<String> supplierIds;
+  final UnmodifiableSetView<String> contactIds;
   final UnmodifiableSetView<CostMissingAssignment> missingAssignments;
   final UnmodifiableSetView<CostPaymentMethod> paymentMethods;
   final UnmodifiableSetView<CostSource> sources;
@@ -176,6 +180,7 @@ final class CostQuery {
     if (stageIds.isNotEmpty) count++;
     if (categoryIds.isNotEmpty) count++;
     if (supplierIds.isNotEmpty) count++;
+    if (contactIds.isNotEmpty) count++;
     if (missingAssignments.isNotEmpty) count++;
     if (paymentMethods.isNotEmpty) count++;
     if (sources.isNotEmpty) count++;
@@ -193,6 +198,7 @@ final class CostQuery {
     stageIds: stageIds,
     categoryIds: categoryIds,
     supplierIds: supplierIds,
+    contactIds: contactIds,
     missingAssignments: missingAssignments,
     paymentMethods: paymentMethods,
     sources: sources,
@@ -224,13 +230,40 @@ final class CostFilterOptions {
     Iterable<String> stageIds = const <String>[],
     Iterable<String> categoryIds = const <String>[],
     Iterable<String> supplierIds = const <String>[],
+    Iterable<CostContactOption> contacts = const <CostContactOption>[],
   }) : stageIds = UnmodifiableListView<String>(stageIds),
        categoryIds = UnmodifiableListView<String>(categoryIds),
-       supplierIds = UnmodifiableListView<String>(supplierIds);
+       supplierIds = UnmodifiableListView<String>(supplierIds),
+       contacts = UnmodifiableListView<CostContactOption>(contacts);
 
   final UnmodifiableListView<String> stageIds;
   final UnmodifiableListView<String> categoryIds;
   final UnmodifiableListView<String> supplierIds;
+  final UnmodifiableListView<CostContactOption> contacts;
+}
+
+final class CostContactOption {
+  factory CostContactOption({
+    required String id,
+    required String displayName,
+    bool isArchived = false,
+  }) {
+    return CostContactOption._(
+      id: _requiredOptionText(id, 'id', 64),
+      displayName: _requiredOptionText(displayName, 'displayName', 160),
+      isArchived: isArchived,
+    );
+  }
+
+  const CostContactOption._({
+    required this.id,
+    required this.displayName,
+    required this.isArchived,
+  });
+
+  final String id;
+  final String displayName;
+  final bool isArchived;
 }
 
 final class CostNotFoundException implements Exception {
@@ -258,6 +291,14 @@ String? _optionalSearchText(String? value) {
       'searchText',
       'must not exceed 120 characters',
     );
+  }
+  return normalized;
+}
+
+String _requiredOptionText(String value, String fieldName, int maximumLength) {
+  final normalized = value.trim();
+  if (normalized.isEmpty || normalized.length > maximumLength) {
+    throw ArgumentError.value(value, fieldName);
   }
   return normalized;
 }

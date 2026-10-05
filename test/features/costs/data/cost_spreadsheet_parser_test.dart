@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:archive/archive.dart';
 import 'package:budowapro/features/costs/data/cost_spreadsheet_parser.dart';
 import 'package:budowapro/features/costs/domain/cost_spreadsheet_import.dart';
 import 'package:excel_community/excel_community.dart';
@@ -53,6 +54,77 @@ void main() {
     expect(table.sheetName, 'Kosztorys');
     expect(table.headerDetected, isTrue);
     expect(table.rows.single.cells, <String>['Cegła', '349.9']);
+  });
+
+  test('rejects an XLSX containing an unsafe archive path', () async {
+    final workbook = Excel.createExcel();
+    final sheet = workbook['Kosztorys'];
+    sheet.cell(CellIndex.indexByString('A1')).value = TextCellValue('Nazwa');
+    sheet.cell(CellIndex.indexByString('B1')).value = TextCellValue('Kwota');
+    sheet.cell(CellIndex.indexByString('A2')).value = TextCellValue('Beton');
+    sheet.cell(CellIndex.indexByString('B2')).value = const IntCellValue(100);
+    final archive = ZipDecoder().decodeBytes(workbook.save()!);
+    archive.add(ArchiveFile.string('../outside.xml', 'unsafe'));
+    final encoded = ZipEncoder().encode(archive);
+
+    await expectLater(
+      const CostSpreadsheetParser().parse(
+        fileName: 'niebezpieczny.xlsx',
+        bytes: Uint8List.fromList(encoded),
+      ),
+      throwsA(
+        isA<CostSpreadsheetImportException>().having(
+          (error) => error.code,
+          'code',
+          CostSpreadsheetImportError.unreadableFile,
+        ),
+      ),
+    );
+  });
+
+  test('rejects an XLSX containing duplicate archive paths', () async {
+    final workbook = Excel.createExcel();
+    final sheet = workbook['Kosztorys'];
+    sheet.cell(CellIndex.indexByString('A1')).value = TextCellValue('Nazwa');
+    sheet.cell(CellIndex.indexByString('B1')).value = TextCellValue('Kwota');
+    sheet.cell(CellIndex.indexByString('A2')).value = TextCellValue('Beton');
+    sheet.cell(CellIndex.indexByString('B2')).value = const IntCellValue(100);
+    final archive = ZipDecoder().decodeBytes(workbook.save()!);
+    const placeholder = 'duplicate_entry.xml';
+    const duplicate = '[Content_Types].xml';
+    archive.add(ArchiveFile.string(placeholder, 'duplicate'));
+    final encoded = ZipEncoder().encode(archive);
+    final placeholderBytes = utf8.encode(placeholder);
+    final duplicateBytes = utf8.encode(duplicate);
+    for (var offset = 0; offset <= encoded.length - placeholderBytes.length;) {
+      var matches = true;
+      for (var index = 0; index < placeholderBytes.length; index++) {
+        if (encoded[offset + index] != placeholderBytes[index]) {
+          matches = false;
+          break;
+        }
+      }
+      if (!matches) {
+        offset++;
+        continue;
+      }
+      encoded.setRange(offset, offset + duplicateBytes.length, duplicateBytes);
+      offset += duplicateBytes.length;
+    }
+
+    await expectLater(
+      const CostSpreadsheetParser().parse(
+        fileName: 'duplikat.xlsx',
+        bytes: Uint8List.fromList(encoded),
+      ),
+      throwsA(
+        isA<CostSpreadsheetImportException>().having(
+          (error) => error.code,
+          'code',
+          CostSpreadsheetImportError.unreadableFile,
+        ),
+      ),
+    );
   });
 
   test('rejects more than the supported number of data rows', () async {

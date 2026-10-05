@@ -194,7 +194,8 @@ void main() {
     expect(cost?.type, CostEntryType.planned);
     expect(cost?.status, CostStatus.ordered);
     expect(cost?.input.source, CostSource.offerConversion);
-    expect(cost?.input.supplierId, 'contact-1');
+    expect(cost?.input.contactId, 'contact-1');
+    expect(cost?.input.supplierId, isNull);
     expect(cost?.input.stageId, 'installations');
     expect(cost?.input.attachmentIds, <String>['attachment-1']);
     expect(cost?.amount.gross, _pln(1230000));

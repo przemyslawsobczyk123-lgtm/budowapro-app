@@ -160,7 +160,7 @@ final class MaterialsController extends AsyncNotifier<MaterialsState> {
   }) async {
     final repository = await ref.read(materialRepositoryProvider.future);
     final now = ref.read(materialNowProvider)();
-    final page = await repository.list(
+    final pageFuture = repository.list(
       MaterialQuery(
         projectId: project.id,
         searchText: searchText,
@@ -169,14 +169,21 @@ final class MaterialsController extends AsyncNotifier<MaterialsState> {
       PageRequest(limit: _pageSize),
       now: now,
     );
+    final summaryFuture = repository.summarize(
+      projectId: project.id,
+      currencyCode: project.currencyCode,
+      now: now,
+    );
+    final results = await Future.wait<Object>(<Future<Object>>[
+      pageFuture,
+      summaryFuture,
+    ]);
+    final page = results[0] as Page<MaterialItem>;
+    final summary = results[1] as MaterialDashboardSummary;
     return MaterialsState(
       project: project,
       materials: page.items,
-      summary: await repository.summarize(
-        projectId: project.id,
-        currencyCode: project.currencyCode,
-        now: now,
-      ),
+      summary: summary,
       searchText: searchText,
       statuses: statuses,
       totalCount: page.totalCount,

@@ -283,22 +283,42 @@ final class TechnicalPhotosController
     Project project,
     TechnicalPhotoFilters filters,
   ) async {
-    final repository = await ref.read(technicalPhotoRepositoryProvider.future);
-    final page = await repository.listPhotos(
-      filters.query(project.id),
-      PageRequest(limit: pageSize),
+    final repositoryFuture = ref.read(technicalPhotoRepositoryProvider.future);
+    final stageRepositoryFuture = ref.read(stageRepositoryProvider.future);
+    final pageFuture = repositoryFuture.then(
+      (repository) => repository.listPhotos(
+        filters.query(project.id),
+        PageRequest(limit: pageSize),
+      ),
     );
+    final albumsFuture = repositoryFuture.then(
+      (repository) => repository.listAlbums(projectId: project.id),
+    );
+    final stagesFuture = stageRepositoryFuture.then(
+      (repository) => repository.listStages(
+        projectId: project.id,
+        template: project.template,
+      ),
+    );
+    final previewsFuture = pageFuture.then(
+      (page) => _previews(project.id, page.items),
+    );
+    final results = await Future.wait<Object>(<Future<Object>>[
+      pageFuture,
+      albumsFuture,
+      stagesFuture,
+      previewsFuture,
+    ], eagerError: true);
+    final page = results[0] as Page<TechnicalPhoto>;
     return TechnicalPhotosState(
       project: project,
-      albums: await repository.listAlbums(projectId: project.id),
+      albums: results[1] as List<TechnicalAlbumOverview>,
       photos: page.items,
-      stages: await (await ref.read(
-        stageRepositoryProvider.future,
-      )).listStages(projectId: project.id, template: project.template),
+      stages: results[2] as List<ProjectStage>,
       totalCount: page.totalCount,
       nextPage: page.nextRequest,
       filters: filters,
-      previewFiles: await _previews(project.id, page.items),
+      previewFiles: results[3] as Map<String, File>,
     );
   }
 

@@ -67,6 +67,7 @@ final class CostEntryInput {
     String? stageId,
     String? categoryId,
     String? supplierId,
+    String? contactId,
     DecimalQuantity? quantity,
     String? unit,
     CostPaymentMethod? paymentMethod,
@@ -93,6 +94,7 @@ final class CostEntryInput {
       stageId: _optionalText(stageId, 'stageId', maximumLength: 64),
       categoryId: _optionalText(categoryId, 'categoryId', maximumLength: 64),
       supplierId: _optionalText(supplierId, 'supplierId', maximumLength: 64),
+      contactId: _optionalText(contactId, 'contactId', maximumLength: 64),
       quantity: quantity,
       unit: _optionalText(unit, 'unit', maximumLength: 24),
       paymentMethod: paymentMethod,
@@ -113,6 +115,7 @@ final class CostEntryInput {
     required this.stageId,
     required this.categoryId,
     required this.supplierId,
+    required this.contactId,
     required this.quantity,
     required this.unit,
     required this.paymentMethod,
@@ -131,6 +134,7 @@ final class CostEntryInput {
   final String? stageId;
   final String? categoryId;
   final String? supplierId;
+  final String? contactId;
   final DecimalQuantity? quantity;
   final String? unit;
   final CostPaymentMethod? paymentMethod;
@@ -176,6 +180,7 @@ final class ConfirmedCostDetailsInput {
     String? stageId,
     String? categoryId,
     String? supplierId,
+    String? contactId,
     DecimalQuantity? quantity,
     String? unit,
     CostPaymentMethod? paymentMethod,
@@ -192,6 +197,7 @@ final class ConfirmedCostDetailsInput {
       stageId: _optionalText(stageId, 'stageId', maximumLength: 64),
       categoryId: _optionalText(categoryId, 'categoryId', maximumLength: 64),
       supplierId: _optionalText(supplierId, 'supplierId', maximumLength: 64),
+      contactId: _optionalText(contactId, 'contactId', maximumLength: 64),
       quantity: quantity,
       unit: _optionalText(unit, 'unit', maximumLength: 24),
       paymentMethod: paymentMethod,
@@ -207,6 +213,7 @@ final class ConfirmedCostDetailsInput {
     required this.stageId,
     required this.categoryId,
     required this.supplierId,
+    required this.contactId,
     required this.quantity,
     required this.unit,
     required this.paymentMethod,
@@ -220,6 +227,7 @@ final class ConfirmedCostDetailsInput {
   final String? stageId;
   final String? categoryId;
   final String? supplierId;
+  final String? contactId;
   final DecimalQuantity? quantity;
   final String? unit;
   final CostPaymentMethod? paymentMethod;
@@ -282,6 +290,7 @@ final class CostEntry {
   CostStatus get status => input.status;
   VatBreakdown get amount => input.amount;
   DateTime get entryDate => input.entryDate;
+  String? get contactId => input.contactId;
 
   bool get isIncludedInSummaries {
     return lifecycle == CostLifecycle.confirmed && type != CostEntryType.offer;

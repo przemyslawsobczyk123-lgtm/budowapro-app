@@ -703,6 +703,33 @@ void main() {
     expect(await migrated.rawQuery('PRAGMA foreign_key_check'), isEmpty);
   });
 
+  test('migrates version 19 by adding project-scoped cost contacts', () async {
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final current = await appDatabase!.open();
+    await current.execute('DROP TABLE ${AppDatabase.costEntryContactsTable}');
+    await current.update(
+      AppDatabase.metadataTable,
+      const <String, Object?>{'value': '19'},
+      where: 'key = ?',
+      whereArgs: const <Object?>[AppDatabase.schemaVersionKey],
+    );
+    await current.setVersion(19);
+    await appDatabase!.close();
+
+    appDatabase = AppDatabase(factory: databaseFactoryFfi, path: databasePath);
+    final migrated = await appDatabase!.open();
+    final table = await migrated.query(
+      'sqlite_master',
+      columns: const <String>['name'],
+      where: "type = 'table' AND name = ?",
+      whereArgs: const <Object?>[AppDatabase.costEntryContactsTable],
+    );
+
+    expect(await migrated.getVersion(), AppDatabase.schemaVersion);
+    expect(table.single['name'], AppDatabase.costEntryContactsTable);
+    expect(await migrated.rawQuery('PRAGMA foreign_key_check'), isEmpty);
+  });
+
   test(
     'migrates version 9 for site preparation without losing child rows',
     () async {

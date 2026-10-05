@@ -1354,6 +1354,24 @@ abstract class AppLocalizations {
   /// **'Dostawca'**
   String get costSupplierLabel;
 
+  /// No description provided for @costContactLabel.
+  ///
+  /// In pl, this message translates to:
+  /// **'Osoba lub firma'**
+  String get costContactLabel;
+
+  /// No description provided for @costContactNone.
+  ///
+  /// In pl, this message translates to:
+  /// **'Bez przypisanego kontaktu'**
+  String get costContactNone;
+
+  /// No description provided for @costContactArchived.
+  ///
+  /// In pl, this message translates to:
+  /// **'{name} (archiwalny)'**
+  String costContactArchived(String name);
+
   /// No description provided for @costQuantityLabel.
   ///
   /// In pl, this message translates to:
@@ -6616,11 +6634,23 @@ abstract class AppLocalizations {
   /// **'Wykonawca'**
   String get budgetReportDimensionSupplier;
 
+  /// No description provided for @budgetReportDimensionContact.
+  ///
+  /// In pl, this message translates to:
+  /// **'Osoba / firma'**
+  String get budgetReportDimensionContact;
+
   /// No description provided for @budgetReportDimensionComponent.
   ///
   /// In pl, this message translates to:
   /// **'Skład kosztu'**
   String get budgetReportDimensionComponent;
+
+  /// No description provided for @budgetReportDimensionPaymentMethod.
+  ///
+  /// In pl, this message translates to:
+  /// **'Płatność'**
+  String get budgetReportDimensionPaymentMethod;
 
   /// No description provided for @budgetReportDimensionMonth.
   ///

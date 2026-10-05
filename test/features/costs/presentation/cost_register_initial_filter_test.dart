@@ -10,6 +10,8 @@ void main() {
       'status': 'paid',
       'component': 'labor',
       'stageId': 'stage-zero',
+      'contactId': 'contact-1',
+      'paymentMethod': 'card',
       'from': '2026-01-01',
       'to': '2026-01-31',
     });
@@ -18,6 +20,8 @@ void main() {
     expect(filter.statuses, {CostStatus.paid});
     expect(filter.components, {CostComponent.labor});
     expect(filter.stageId, 'stage-zero');
+    expect(filter.contactId, 'contact-1');
+    expect(filter.paymentMethod, CostPaymentMethod.card);
     expect(filter.fromDate, DateTime(2026));
     expect(filter.toDate, DateTime(2026, 1, 31));
     expect(filter.includeDrafts, isFalse);
@@ -30,6 +34,18 @@ void main() {
     });
 
     expect(filter.missingAssignments, {CostMissingAssignment.supplier});
+  });
+
+  test('parses missing contact and payment method drill-downs', () {
+    final contact = CostRegisterInitialFilter.fromQueryParameters({
+      'unassigned': 'contact',
+    });
+    final payment = CostRegisterInitialFilter.fromQueryParameters({
+      'unassigned': 'paymentMethod',
+    });
+
+    expect(contact.missingAssignments, {CostMissingAssignment.contact});
+    expect(payment.missingAssignments, {CostMissingAssignment.paymentMethod});
   });
 
   test('ignores malformed and unsupported filter values', () {

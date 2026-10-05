@@ -13,6 +13,8 @@ final class CostRegisterInitialFilter {
     String? stageId,
     String? categoryId,
     String? supplierId,
+    String? contactId,
+    CostPaymentMethod? paymentMethod,
     DateTime? fromDate,
     DateTime? toDate,
     bool includeDrafts = true,
@@ -34,6 +36,8 @@ final class CostRegisterInitialFilter {
       stageId: _validId(stageId),
       categoryId: _validId(categoryId),
       supplierId: _validId(supplierId),
+      contactId: _validId(contactId),
+      paymentMethod: paymentMethod,
       fromDate: normalizedFrom,
       toDate: normalizedTo,
       includeDrafts: includeDrafts,
@@ -48,6 +52,10 @@ final class CostRegisterInitialFilter {
     final type = _enumValue(CostEntryType.values, parameters['type']);
     final component = _enumValue(CostComponent.values, parameters['component']);
     final status = _enumValue(CostStatus.values, parameters['status']);
+    final paymentMethod = _enumValue(
+      CostPaymentMethod.values,
+      parameters['paymentMethod'],
+    );
     final missing = _enumValue(
       CostMissingAssignment.values,
       parameters['unassigned'],
@@ -72,6 +80,12 @@ final class CostRegisterInitialFilter {
       supplierId: missing == CostMissingAssignment.supplier
           ? null
           : parameters['supplierId'],
+      contactId: missing == CostMissingAssignment.contact
+          ? null
+          : parameters['contactId'],
+      paymentMethod: missing == CostMissingAssignment.paymentMethod
+          ? null
+          : paymentMethod,
       fromDate: hasReversedRange ? null : fromDate,
       toDate: hasReversedRange ? null : toDate,
       includeDrafts: parameters['drafts'] == '1',
@@ -86,6 +100,8 @@ final class CostRegisterInitialFilter {
     required this.stageId,
     required this.categoryId,
     required this.supplierId,
+    required this.contactId,
+    required this.paymentMethod,
     required this.fromDate,
     required this.toDate,
     required this.includeDrafts,
@@ -98,6 +114,8 @@ final class CostRegisterInitialFilter {
   final String? stageId;
   final String? categoryId;
   final String? supplierId;
+  final String? contactId;
+  final CostPaymentMethod? paymentMethod;
   final DateTime? fromDate;
   final DateTime? toDate;
   final bool includeDrafts;
@@ -110,6 +128,8 @@ final class CostRegisterInitialFilter {
     stageId,
     categoryId,
     supplierId,
+    contactId,
+    paymentMethod?.name,
     fromDate?.toIso8601String(),
     toDate?.toIso8601String(),
     includeDrafts,

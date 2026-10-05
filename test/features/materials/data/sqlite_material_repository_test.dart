@@ -226,6 +226,47 @@ void main() {
     );
   });
 
+  test('deleting a material removes its room choice output', () async {
+    final material = await repository.create(materialInput());
+    final executor = await database.open();
+    await executor.insert(AppDatabase.roomsTable, <String, Object?>{
+      'id': 'room-1',
+      'project_id': 'project-1',
+      'name': 'Kuchnia',
+      'floor_label': '',
+      'standard': 'standard',
+      'created_at_utc_ms': 0,
+      'updated_at_utc_ms': 0,
+    });
+    await executor.insert(AppDatabase.roomChoicesTable, <String, Object?>{
+      'id': 'choice-1',
+      'project_id': 'project-1',
+      'room_id': 'room-1',
+      'title': 'Płytki',
+      'status': 'selected',
+      'created_at_utc_ms': 0,
+      'updated_at_utc_ms': 0,
+    });
+    await executor.insert(AppDatabase.roomChoiceOutputsTable, <String, Object?>{
+      'project_id': 'project-1',
+      'choice_id': 'choice-1',
+      'output_type': 'material',
+      'record_id': material.id,
+      'created_at_utc_ms': 0,
+    });
+
+    await repository.delete(projectId: 'project-1', materialId: material.id);
+
+    expect(
+      await executor.query(
+        AppDatabase.roomChoiceOutputsTable,
+        where: 'project_id = ? AND output_type = ? AND record_id = ?',
+        whereArgs: <Object?>['project-1', 'material', material.id],
+      ),
+      isEmpty,
+    );
+  });
+
   test(
     'stores a completed return with only the actual refund entered',
     () async {

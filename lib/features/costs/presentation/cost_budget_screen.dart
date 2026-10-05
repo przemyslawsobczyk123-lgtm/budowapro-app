@@ -177,6 +177,7 @@ class _CostRegisterState extends State<_CostRegister> {
   Map<String, Money> _effectiveGrossByEntryId = const <String, Money>{};
   CostSummary? _summary;
   CostFilterOptions _options = CostFilterOptions();
+  String? _filterOptionsProjectId;
   PageRequest? _nextRequest;
   Object? _initialError;
   Object? _loadMoreError;
@@ -192,6 +193,7 @@ class _CostRegisterState extends State<_CostRegister> {
   String? _stageId;
   String? _categoryId;
   String? _supplierId;
+  String? _contactId;
   var _paymentMethods = <CostPaymentMethod>{};
   var _sources = <CostSource>{};
   var _warnings = <CostWarning>{};
@@ -214,6 +216,10 @@ class _CostRegisterState extends State<_CostRegister> {
     if (oldWidget.project.id != widget.project.id ||
         !identical(oldWidget.repository, widget.repository) ||
         oldWidget.initialFilter.cacheKey != widget.initialFilter.cacheKey) {
+      if (oldWidget.project.id != widget.project.id ||
+          !identical(oldWidget.repository, widget.repository)) {
+        _filterOptionsProjectId = null;
+      }
       _applyInitialFilter();
       unawaited(_reload());
     }
@@ -243,6 +249,7 @@ class _CostRegisterState extends State<_CostRegister> {
     supplierIds: _supplierId == null
         ? const <String>{}
         : <String>{_supplierId!},
+    contactIds: _contactId == null ? const <String>{} : <String>{_contactId!},
     paymentMethods: _paymentMethods,
     sources: _sources,
     warnings: _warnings,
@@ -257,9 +264,14 @@ class _CostRegisterState extends State<_CostRegister> {
     return query.activeFilterCount - (query.searchText == null ? 0 : 1);
   }
 
-  Future<void> _reload() async {
+  Future<void> _reload({bool refreshFilterOptions = false}) async {
     final generation = ++_generation;
     final query = _query();
+    final shouldLoadFilterOptions =
+        refreshFilterOptions || _filterOptionsProjectId != widget.project.id;
+    final filterOptions = shouldLoadFilterOptions
+        ? widget.repository.filterOptions(projectId: widget.project.id)
+        : Future<CostFilterOptions>.value(_options);
     setState(() {
       _isReloading = true;
       _isLoadingMore = false;
@@ -269,22 +281,23 @@ class _CostRegisterState extends State<_CostRegister> {
     });
     try {
       final results = await Future.wait<Object>([
-        widget.repository.list(query, PageRequest(limit: _pageSize)),
-        widget.repository.summarize(CostSummaryQuery.fromCostQuery(query)),
-        widget.repository.filterOptions(projectId: widget.project.id),
         widget.repository.exportRows(query, PageRequest(limit: _pageSize)),
+        widget.repository.summarize(CostSummaryQuery.fromCostQuery(query)),
+        filterOptions,
       ]);
       if (!mounted || generation != _generation) return;
-      final page = results[0] as Page<CostEntry>;
-      final exportPage = results[3] as Page<CostExportRecord>;
+      final page = results[0] as Page<CostExportRecord>;
       setState(() {
-        _entries = page.items;
+        _entries = page.items
+            .map((record) => record.entry)
+            .toList(growable: true);
         _effectiveGrossByEntryId = <String, Money>{
-          for (final record in exportPage.items)
+          for (final record in page.items)
             record.entry.id: record.effectiveGross,
         };
         _summary = results[1] as CostSummary;
         _options = results[2] as CostFilterOptions;
+        _filterOptionsProjectId = widget.project.id;
         _totalCount = page.totalCount;
         _nextRequest = page.nextRequest;
         _isReloading = false;
@@ -307,20 +320,13 @@ class _CostRegisterState extends State<_CostRegister> {
       _loadMoreError = null;
     });
     try {
-      final results = await Future.wait<Object>([
-        widget.repository.list(_query(), request),
-        widget.repository.exportRows(_query(), request),
-      ]);
+      final page = await widget.repository.exportRows(_query(), request);
       if (!mounted || generation != _generation) return;
-      final page = results[0] as Page<CostEntry>;
-      final exportPage = results[1] as Page<CostExportRecord>;
       setState(() {
-        _entries = <CostEntry>[..._entries, ...page.items];
-        _effectiveGrossByEntryId = <String, Money>{
-          ..._effectiveGrossByEntryId,
-          for (final record in exportPage.items)
-            record.entry.id: record.effectiveGross,
-        };
+        _entries.addAll(page.items.map((record) => record.entry));
+        for (final record in page.items) {
+          _effectiveGrossByEntryId[record.entry.id] = record.effectiveGross;
+        }
         _totalCount = page.totalCount;
         _nextRequest = page.nextRequest;
         _isLoadingMore = false;
@@ -373,12 +379,17 @@ class _CostRegisterState extends State<_CostRegister> {
               (missing == CostMissingAssignment.category &&
                   result.categoryId != null) ||
               (missing == CostMissingAssignment.supplier &&
-                  result.supplierId != null)))
+                  result.supplierId != null) ||
+              (missing == CostMissingAssignment.contact &&
+                  result.contactId != null) ||
+              (missing == CostMissingAssignment.paymentMethod &&
+                  result.paymentMethods.isNotEmpty)))
             missing,
       };
       _stageId = result.stageId;
       _categoryId = result.categoryId;
       _supplierId = result.supplierId;
+      _contactId = result.contactId;
       _paymentMethods = result.paymentMethods;
       _sources = result.sources;
       _warnings = result.warnings;
@@ -397,6 +408,7 @@ class _CostRegisterState extends State<_CostRegister> {
     stageId: _stageId,
     categoryId: _categoryId,
     supplierId: _supplierId,
+    contactId: _contactId,
     paymentMethods: _paymentMethods,
     sources: _sources,
     warnings: _warnings,
@@ -416,6 +428,7 @@ class _CostRegisterState extends State<_CostRegister> {
     _stageId = null;
     _categoryId = null;
     _supplierId = null;
+    _contactId = null;
     _paymentMethods = <CostPaymentMethod>{};
     _sources = <CostSource>{};
     _warnings = <CostWarning>{};
@@ -437,6 +450,10 @@ class _CostRegisterState extends State<_CostRegister> {
     _stageId = filter.stageId;
     _categoryId = filter.categoryId;
     _supplierId = filter.supplierId;
+    _contactId = filter.contactId;
+    if (filter.paymentMethod != null) {
+      _paymentMethods = <CostPaymentMethod>{filter.paymentMethod!};
+    }
     _fromDate = filter.fromDate;
     _toDate = filter.toDate;
     _includeDrafts = filter.includeDrafts;
@@ -451,7 +468,7 @@ class _CostRegisterState extends State<_CostRegister> {
     await context.push(
       '/projects/${Uri.encodeComponent(widget.project.id)}/costs/new',
     );
-    if (mounted) await _reload();
+    if (mounted) await _reload(refreshFilterOptions: true);
   }
 
   Future<void> _openSpreadsheetImport() async {
@@ -464,7 +481,7 @@ class _CostRegisterState extends State<_CostRegister> {
       ),
     );
     if (!mounted || count == null) return;
-    await _reload();
+    await _reload(refreshFilterOptions: true);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -479,7 +496,7 @@ class _CostRegisterState extends State<_CostRegister> {
     await context.push(
       '/projects/${Uri.encodeComponent(widget.project.id)}/costs/${Uri.encodeComponent(entry.id)}',
     );
-    if (mounted) await _reload();
+    if (mounted) await _reload(refreshFilterOptions: true);
   }
 
   Future<void> _exportCsv() async {
@@ -538,7 +555,7 @@ class _CostRegisterState extends State<_CostRegister> {
       );
     }
     return RefreshIndicator(
-      onRefresh: _reload,
+      onRefresh: () => _reload(refreshFilterOptions: true),
       child: CustomScrollView(
         key: const ValueKey('costRegisterScroll'),
         controller: _scrollController,
@@ -1293,6 +1310,7 @@ class _CostFilterSelection {
     required this.stageId,
     required this.categoryId,
     required this.supplierId,
+    required this.contactId,
     required Set<CostPaymentMethod> paymentMethods,
     required Set<CostSource> sources,
     required Set<CostWarning> warnings,
@@ -1313,6 +1331,7 @@ class _CostFilterSelection {
   final String? stageId;
   final String? categoryId;
   final String? supplierId;
+  final String? contactId;
   final Set<CostPaymentMethod> paymentMethods;
   final Set<CostSource> sources;
   final Set<CostWarning> warnings;
@@ -1346,6 +1365,7 @@ class _CostFilterSheetState extends State<_CostFilterSheet> {
   String? _stageId;
   String? _categoryId;
   String? _supplierId;
+  String? _contactId;
   late Set<CostPaymentMethod> _paymentMethods;
   late Set<CostSource> _sources;
   late Set<CostWarning> _warnings;
@@ -1367,6 +1387,7 @@ class _CostFilterSheetState extends State<_CostFilterSheet> {
     _stageId = value.stageId;
     _categoryId = value.categoryId;
     _supplierId = value.supplierId;
+    _contactId = value.contactId;
     _paymentMethods = Set<CostPaymentMethod>.of(value.paymentMethods);
     _sources = Set<CostSource>.of(value.sources);
     _warnings = Set<CostWarning>.of(value.warnings);
@@ -1502,6 +1523,27 @@ class _CostFilterSheetState extends State<_CostFilterSheet> {
                         options: widget.options.supplierIds,
                         onChanged: (value) =>
                             setState(() => _supplierId = value),
+                      ),
+                      const SizedBox(height: 10),
+                      _StringFilterField(
+                        key: const ValueKey('costFilterContact'),
+                        label: localizations.costContactLabel,
+                        value: _contactId,
+                        options: widget.options.contacts
+                            .map((contact) => contact.id)
+                            .toList(growable: false),
+                        optionLabel: (value) {
+                          final contact = widget.options.contacts.firstWhere(
+                            (contact) => contact.id == value,
+                          );
+                          return contact.isArchived
+                              ? localizations.costContactArchived(
+                                  contact.displayName,
+                                )
+                              : contact.displayName;
+                        },
+                        onChanged: (value) =>
+                            setState(() => _contactId = value),
                       ),
                     ],
                   ),
@@ -1647,6 +1689,7 @@ class _CostFilterSheetState extends State<_CostFilterSheet> {
                               stageId: null,
                               categoryId: null,
                               supplierId: null,
+                              contactId: null,
                               paymentMethods: const <CostPaymentMethod>{},
                               sources: const <CostSource>{},
                               warnings: const <CostWarning>{},
@@ -1673,6 +1716,7 @@ class _CostFilterSheetState extends State<_CostFilterSheet> {
                             stageId: _stageId,
                             categoryId: _categoryId,
                             supplierId: _supplierId,
+                            contactId: _contactId,
                             paymentMethods: _paymentMethods,
                             sources: _sources,
                             warnings: _warnings,

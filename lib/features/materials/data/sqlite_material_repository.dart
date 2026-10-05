@@ -185,6 +185,11 @@ final class SqliteMaterialRepository implements MaterialRepository {
           returnCount: returnCount,
         );
       }
+      await transaction.delete(
+        AppDatabase.roomChoiceOutputsTable,
+        where: 'project_id = ? AND output_type = ? AND record_id = ?',
+        whereArgs: <Object?>[projectId, 'material', materialId],
+      );
       final changed = await transaction.delete(
         AppDatabase.materialsTable,
         where: 'project_id = ? AND id = ?',

@@ -308,6 +308,13 @@ class _CostDetailsState extends State<_CostDetails> {
                             input.supplierId ??
                             localizations.projectValueNotProvided,
                       ),
+                      _DetailRow(
+                        icon: Icons.person_outline_rounded,
+                        label: localizations.costContactLabel,
+                        value:
+                            _contactName(widget.data, input.contactId) ??
+                            localizations.projectValueNotProvided,
+                      ),
                       if (input.quantity != null)
                         _DetailRow(
                           icon: Icons.straighten_outlined,
@@ -734,3 +741,11 @@ String _historyLabel(AppLocalizations l10n, CostHistoryAction value) =>
       CostHistoryAction.statusChanged => l10n.costHistoryStatusChanged,
       CostHistoryAction.correctionAdded => l10n.costHistoryCorrectionAdded,
     };
+
+String? _contactName(CostEditorData data, String? contactId) {
+  if (contactId == null) return null;
+  for (final contact in data.contactOptions) {
+    if (contact.id == contactId) return contact.displayName;
+  }
+  return null;
+}

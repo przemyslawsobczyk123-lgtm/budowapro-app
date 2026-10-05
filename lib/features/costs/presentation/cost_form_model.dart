@@ -37,6 +37,7 @@ final class CostFormSubmission {
     required this.stageId,
     required this.categoryId,
     required this.supplierId,
+    this.contactId,
     required this.quantity,
     required this.unit,
     required this.paymentMethod,
@@ -54,6 +55,7 @@ final class CostFormSubmission {
   final String? stageId;
   final String? categoryId;
   final String? supplierId;
+  final String? contactId;
   final String quantity;
   final String unit;
   final CostPaymentMethod? paymentMethod;
@@ -102,6 +104,7 @@ CostEntryInput parseCostForm(
     stageId: submission.stageId,
     categoryId: submission.categoryId,
     supplierId: submission.supplierId,
+    contactId: submission.contactId,
     quantity: quantity,
     unit: quantity == null ? null : submission.unit,
     paymentMethod: submission.paymentMethod,

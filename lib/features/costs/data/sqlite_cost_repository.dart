@@ -112,6 +112,7 @@ final class SqliteCostRepository implements CostRepository {
         projectId: projectId,
         attachmentIds: input.input.attachmentIds,
       );
+      await _validateContact(transaction, input.input);
       final updated = CostEntry(
         id: existing.id,
         input: input.input,
@@ -127,6 +128,7 @@ final class SqliteCostRepository implements CostRepository {
         whereArgs: <Object?>[costEntryId, projectId],
       );
       await _linkAttachments(transaction, updated);
+      await _replaceContactLink(transaction, updated);
       await _appendRevision(
         transaction,
         updated,
@@ -161,6 +163,7 @@ final class SqliteCostRepository implements CostRepository {
         projectId: projectId,
         attachmentIds: sourceInput.attachmentIds,
       );
+      await _validateContact(transaction, sourceInput);
       final confirmed = CostEntry(
         id: existing.id,
         input: _copyInput(sourceInput, status: status),
@@ -176,6 +179,7 @@ final class SqliteCostRepository implements CostRepository {
         whereArgs: <Object?>[costEntryId, projectId],
       );
       await _linkAttachments(transaction, confirmed);
+      await _replaceContactLink(transaction, confirmed);
       await _appendRevision(
         transaction,
         confirmed,
@@ -252,6 +256,7 @@ final class SqliteCostRepository implements CostRepository {
         projectId: projectId,
         attachmentIds: updated.input.attachmentIds,
       );
+      await _validateContact(transaction, updated.input);
       await transaction.update(
         AppDatabase.costEntriesTable,
         _entryToRow(updated),
@@ -259,6 +264,7 @@ final class SqliteCostRepository implements CostRepository {
         whereArgs: <Object?>[costEntryId, projectId],
       );
       await _linkAttachments(transaction, updated);
+      await _replaceContactLink(transaction, updated);
       await _appendRevision(
         transaction,
         updated,
@@ -430,31 +436,6 @@ final class SqliteCostRepository implements CostRepository {
     final database = await _database.open();
     final currencyCode = await _projectCurrency(database, query.projectId);
     final predicate = _costPredicate(query.filters, tableAlias: 'e');
-    final entryTotals = await database.rawQuery('''
-        SELECT
-          COALESCE(SUM(
-            CASE
-              WHEN e.entry_type = 'planned' THEN e.gross_minor_units
-              ELSE 0
-            END
-          ), 0) AS planned,
-          COALESCE(SUM(
-            CASE
-              WHEN e.entry_type = 'cost' THEN e.gross_minor_units
-              ELSE 0
-            END
-          ), 0) AS actual
-        FROM ${AppDatabase.costEntriesTable} e
-        WHERE ${predicate.sql}
-      ''', predicate.arguments);
-    final correctionTotals = await database.rawQuery('''
-        SELECT COALESCE(SUM(c.gross_delta_minor_units), 0) AS corrections
-        FROM ${AppDatabase.costCorrectionsTable} c
-        INNER JOIN ${AppDatabase.costEntriesTable} e
-          ON e.id = c.cost_entry_id AND e.project_id = c.project_id
-        WHERE ${predicate.sql}
-          AND e.entry_type = 'cost'
-      ''', predicate.arguments);
     final componentRows = await database.rawQuery('''
         SELECT
           e.cost_component,
@@ -479,29 +460,32 @@ final class SqliteCostRepository implements CostRepository {
         WHERE ${predicate.sql}
         GROUP BY e.cost_component
       ''', predicate.arguments);
-    final plannedMinorUnits = entryTotals.single['planned']! as int;
-    final actualMinorUnits =
-        BigInt.from(entryTotals.single['actual']! as int) +
-        BigInt.from(correctionTotals.single['corrections']! as int);
+    var plannedMinorUnits = BigInt.zero;
+    var actualMinorUnits = BigInt.zero;
+    final componentTotals = <CostComponentTotals>[];
+    for (final row in componentRows) {
+      final planned = row['planned']! as int;
+      final actual = row['actual']! as int;
+      plannedMinorUnits += BigInt.from(planned);
+      actualMinorUnits += BigInt.from(actual);
+      componentTotals.add(
+        CostComponentTotals(
+          component: _componentFromStorage(row['cost_component']! as String),
+          planned: Money(minorUnits: planned, currencyCode: currencyCode),
+          actual: Money(minorUnits: actual, currencyCode: currencyCode),
+        ),
+      );
+    }
     return CostSummary.fromTotals(
-      planned: Money(minorUnits: plannedMinorUnits, currencyCode: currencyCode),
+      planned: Money.fromBigInt(
+        minorUnits: plannedMinorUnits,
+        currencyCode: currencyCode,
+      ),
       actual: Money.fromBigInt(
         minorUnits: actualMinorUnits,
         currencyCode: currencyCode,
       ),
-      componentTotals: componentRows.map(
-        (row) => CostComponentTotals(
-          component: _componentFromStorage(row['cost_component']! as String),
-          planned: Money(
-            minorUnits: row['planned']! as int,
-            currencyCode: currencyCode,
-          ),
-          actual: Money(
-            minorUnits: row['actual']! as int,
-            currencyCode: currencyCode,
-          ),
-        ),
-      ),
+      componentTotals: componentTotals,
     );
   }
 
@@ -546,10 +530,24 @@ final class SqliteCostRepository implements CostRepository {
           break;
       }
     }
+    final contactRows = await database.query(
+      AppDatabase.contactsTable,
+      columns: const <String>['id', 'display_name', 'is_archived'],
+      where: 'project_id = ?',
+      whereArgs: <Object?>[normalizedProjectId],
+      orderBy: 'display_name COLLATE NOCASE ASC, id ASC',
+    );
     return CostFilterOptions(
       stageIds: stageIds,
       categoryIds: categoryIds,
       supplierIds: supplierIds,
+      contacts: contactRows.map(
+        (row) => CostContactOption(
+          id: row['id']! as String,
+          displayName: row['display_name']! as String,
+          isArchived: row['is_archived'] == 1,
+        ),
+      ),
     );
   }
 
@@ -607,12 +605,44 @@ final class SqliteCostRepository implements CostRepository {
         projectId: projectId,
         costEntryId: costEntryId,
       );
+      await _deletePolymorphicRelations(
+        transaction,
+        projectId: projectId,
+        costEntryId: costEntryId,
+      );
       await transaction.delete(
         AppDatabase.costEntriesTable,
         where: 'id = ? AND project_id = ?',
         whereArgs: <Object?>[costEntryId, projectId],
       );
     });
+  }
+
+  static Future<void> _deletePolymorphicRelations(
+    DatabaseExecutor executor, {
+    required String projectId,
+    required String costEntryId,
+  }) async {
+    await executor.delete(
+      AppDatabase.roomChoiceOutputsTable,
+      where: 'project_id = ? AND output_type = ? AND record_id = ?',
+      whereArgs: <Object?>[projectId, 'planned_cost', costEntryId],
+    );
+    await executor.delete(
+      AppDatabase.roomRecordLinksTable,
+      where: 'project_id = ? AND record_type = ? AND record_id = ?',
+      whereArgs: <Object?>[projectId, 'cost', costEntryId],
+    );
+    await executor.delete(
+      AppDatabase.journalEntryLinksTable,
+      where: 'project_id = ? AND relation_type = ? AND target_id = ?',
+      whereArgs: <Object?>[projectId, 'cost', costEntryId],
+    );
+    await executor.delete(
+      AppDatabase.technicalPhotoLinksTable,
+      where: 'project_id = ? AND relation_type = ? AND target_id = ?',
+      whereArgs: <Object?>[projectId, 'cost', costEntryId],
+    );
   }
 
   Future<CostEntry> _insert(
@@ -626,6 +656,7 @@ final class SqliteCostRepository implements CostRepository {
       projectId: input.projectId,
       attachmentIds: input.attachmentIds,
     );
+    await _validateContact(executor, input);
     final timestamp = _utcNow();
     final entry = CostEntry(
       id: _idGenerator(),
@@ -640,6 +671,7 @@ final class SqliteCostRepository implements CostRepository {
       conflictAlgorithm: ConflictAlgorithm.abort,
     );
     await _linkAttachments(executor, entry);
+    await _replaceContactLink(executor, entry);
     await _appendRevision(
       executor,
       entry,
@@ -665,6 +697,7 @@ final class SqliteCostRepository implements CostRepository {
         'action': _historyActionToStorage(action),
         'snapshot_json': jsonEncode(<String, Object?>{
           ..._entryToRow(entry),
+          'contact_id': entry.input.contactId,
           'attachment_ids': entry.input.attachmentIds.toList(growable: false),
         }),
         'created_at_utc_ms': DatabaseValueCodec.dateTimeToUtcMilliseconds(
@@ -734,6 +767,28 @@ final class SqliteCostRepository implements CostRepository {
     }
   }
 
+  static Future<void> _validateContact(
+    DatabaseExecutor executor,
+    CostEntryInput input,
+  ) async {
+    final contactId = input.contactId;
+    if (contactId == null) return;
+    final rows = await executor.query(
+      AppDatabase.contactsTable,
+      columns: const <String>['id'],
+      where: 'project_id = ? AND id = ?',
+      whereArgs: <Object?>[input.projectId, contactId],
+      limit: 1,
+    );
+    if (rows.isEmpty) {
+      throw ArgumentError.value(
+        contactId,
+        'contactId',
+        'must reference a contact from the same project',
+      );
+    }
+  }
+
   static Future<void> _linkAttachments(
     DatabaseExecutor executor,
     CostEntry entry,
@@ -755,6 +810,28 @@ final class SqliteCostRepository implements CostRepository {
         conflictAlgorithm: ConflictAlgorithm.abort,
       );
     }
+  }
+
+  static Future<void> _replaceContactLink(
+    DatabaseExecutor executor,
+    CostEntry entry,
+  ) async {
+    await executor.delete(
+      AppDatabase.costEntryContactsTable,
+      where: 'project_id = ? AND cost_entry_id = ?',
+      whereArgs: <Object?>[entry.projectId, entry.id],
+    );
+    final contactId = entry.input.contactId;
+    if (contactId == null) return;
+    await executor.insert(
+      AppDatabase.costEntryContactsTable,
+      <String, Object?>{
+        'project_id': entry.projectId,
+        'cost_entry_id': entry.id,
+        'contact_id': contactId,
+      },
+      conflictAlgorithm: ConflictAlgorithm.abort,
+    );
   }
 
   static void _requireExistingAttachmentsPreserved(
@@ -822,11 +899,22 @@ final class SqliteCostRepository implements CostRepository {
           .putIfAbsent(row['cost_entry_id']! as String, () => <String>[])
           .add(row['attachment_id']! as String);
     }
+    final contactRows = await executor.query(
+      AppDatabase.costEntryContactsTable,
+      columns: const <String>['cost_entry_id', 'contact_id'],
+      where: 'cost_entry_id IN ($placeholders)',
+      whereArgs: ids,
+    );
+    final contactIdByEntry = <String, String>{
+      for (final row in contactRows)
+        row['cost_entry_id']! as String: row['contact_id']! as String,
+    };
     return rows
         .map(
           (row) => _entryFromRow(
             row,
             attachmentIdsByEntry[row['id']! as String] ?? const <String>[],
+            contactIdByEntry[row['id']! as String],
           ),
         )
         .toList(growable: false);
@@ -872,6 +960,7 @@ final class SqliteCostRepository implements CostRepository {
   static CostEntry _entryFromRow(
     Map<String, Object?> row,
     Iterable<String> attachmentIds,
+    String? contactId,
   ) {
     final currencyCode = row['currency_code']! as String;
     final rate = _vatRateFromStorage(row['vat_rate_basis_points']! as int);
@@ -907,6 +996,7 @@ final class SqliteCostRepository implements CostRepository {
         stageId: row['stage_id'] as String?,
         categoryId: row['category_id'] as String?,
         supplierId: row['supplier_id'] as String?,
+        contactId: contactId,
         quantity: quantityUnscaled == null || quantityScale == null
             ? null
             : DecimalQuantity(
@@ -976,6 +1066,7 @@ CostEntryInput _copyInput(CostEntryInput input, {required CostStatus status}) {
     stageId: input.stageId,
     categoryId: input.categoryId,
     supplierId: input.supplierId,
+    contactId: input.contactId,
     quantity: input.quantity,
     unit: input.unit,
     paymentMethod: input.paymentMethod,
@@ -1000,6 +1091,7 @@ CostEntryInput _copyDetails(
     stageId: details.stageId,
     categoryId: details.categoryId,
     supplierId: details.supplierId,
+    contactId: details.contactId,
     quantity: details.quantity,
     unit: details.unit,
     paymentMethod: details.paymentMethod,
@@ -1033,9 +1125,19 @@ _SqlPredicate _costPredicate(CostQuery query, {required String tableAlias}) {
         OR LOWER(COALESCE(${column('note')}, '')) LIKE ? ESCAPE '\\'
         OR LOWER(COALESCE(${column('category_id')}, '')) LIKE ? ESCAPE '\\'
         OR LOWER(COALESCE(${column('stage_id')}, '')) LIKE ? ESCAPE '\\'
+        OR EXISTS (
+          SELECT 1
+          FROM ${AppDatabase.costEntryContactsTable} search_contact_link
+          INNER JOIN ${AppDatabase.contactsTable} search_contact
+            ON search_contact.project_id = search_contact_link.project_id
+            AND search_contact.id = search_contact_link.contact_id
+          WHERE search_contact_link.project_id = ${column('project_id')}
+            AND search_contact_link.cost_entry_id = ${column('id')}
+            AND LOWER(search_contact.display_name) LIKE ? ESCAPE '\\'
+        )
       )
     ''');
-    arguments.addAll(List<Object?>.filled(5, pattern));
+    arguments.addAll(List<Object?>.filled(6, pattern));
   }
   _addInClause(
     clauses,
@@ -1058,14 +1160,42 @@ _SqlPredicate _costPredicate(CostQuery query, {required String tableAlias}) {
   _addInClause(clauses, arguments, column('stage_id'), query.stageIds);
   _addInClause(clauses, arguments, column('category_id'), query.categoryIds);
   _addInClause(clauses, arguments, column('supplier_id'), query.supplierIds);
+  if (query.contactIds.isNotEmpty) {
+    final values = query.contactIds.toList(growable: false)..sort();
+    clauses.add('''
+      EXISTS (
+        SELECT 1
+        FROM ${AppDatabase.costEntryContactsTable} contact_filter
+        WHERE contact_filter.project_id = ${column('project_id')}
+          AND contact_filter.cost_entry_id = ${column('id')}
+          AND contact_filter.contact_id IN (
+            ${List<String>.filled(values.length, '?').join(', ')}
+          )
+      )
+    ''');
+    arguments.addAll(values);
+  }
   for (final missing in query.missingAssignments) {
-    clauses.add(
-      '${column(switch (missing) {
-        CostMissingAssignment.stage => 'stage_id',
-        CostMissingAssignment.category => 'category_id',
-        CostMissingAssignment.supplier => 'supplier_id',
-      })} IS NULL',
-    );
+    if (missing == CostMissingAssignment.contact) {
+      clauses.add('''
+        NOT EXISTS (
+          SELECT 1
+          FROM ${AppDatabase.costEntryContactsTable} missing_contact
+          WHERE missing_contact.project_id = ${column('project_id')}
+            AND missing_contact.cost_entry_id = ${column('id')}
+        )
+      ''');
+    } else {
+      clauses.add(
+        '${column(switch (missing) {
+          CostMissingAssignment.stage => 'stage_id',
+          CostMissingAssignment.category => 'category_id',
+          CostMissingAssignment.supplier => 'supplier_id',
+          CostMissingAssignment.contact => throw StateError('unreachable'),
+          CostMissingAssignment.paymentMethod => 'payment_method',
+        })} IS NULL',
+      );
+    }
   }
   _addInClause(
     clauses,

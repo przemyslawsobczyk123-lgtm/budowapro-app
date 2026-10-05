@@ -115,6 +115,17 @@ final class ProjectsController extends AsyncNotifier<ProjectsState> {
   }
 
   static Future<ProjectsState> _load(ProjectRepository repository) async {
+    final results = await Future.wait<Object?>(<Future<Object?>>[
+      _listAll(repository),
+      repository.selected(),
+    ]);
+    return ProjectsState(
+      projects: results[0]! as List<Project>,
+      selectedProject: results[1] as Project?,
+    );
+  }
+
+  static Future<List<Project>> _listAll(ProjectRepository repository) async {
     final projects = <Project>[];
     var request = PageRequest(limit: PageRequest.maximumLimit);
     while (true) {
@@ -126,9 +137,6 @@ final class ProjectsController extends AsyncNotifier<ProjectsState> {
       }
       request = nextRequest;
     }
-    return ProjectsState(
-      projects: projects,
-      selectedProject: await repository.selected(),
-    );
+    return projects;
   }
 }

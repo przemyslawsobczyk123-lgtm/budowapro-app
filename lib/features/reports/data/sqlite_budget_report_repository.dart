@@ -52,37 +52,53 @@ final class SqliteBudgetReportRepository implements BudgetReportRepository {
             $_correctedCostsSelect
           ), breakdown AS (
             SELECT 'stage' AS dimension, stage_id AS group_key,
+              NULL AS group_label,
               SUM(corrected_gross) AS committed_minor_units,
               SUM(CASE WHEN financial_status = 'paid'
                 THEN corrected_gross ELSE 0 END) AS paid_minor_units,
               COUNT(*) AS record_count
             FROM corrected_costs GROUP BY stage_id
             UNION ALL
-            SELECT 'category', category_id,
+            SELECT 'category', category_id, NULL,
               SUM(corrected_gross),
               SUM(CASE WHEN financial_status = 'paid'
                 THEN corrected_gross ELSE 0 END),
               COUNT(*)
             FROM corrected_costs GROUP BY category_id
             UNION ALL
-            SELECT 'supplier', supplier_id,
+            SELECT 'supplier', supplier_id, NULL,
               SUM(corrected_gross),
               SUM(CASE WHEN financial_status = 'paid'
                 THEN corrected_gross ELSE 0 END),
               COUNT(*)
             FROM corrected_costs GROUP BY supplier_id
             UNION ALL
-            SELECT 'component', cost_component,
+            SELECT 'contact', contact_id, contact_name,
+              SUM(corrected_gross),
+              SUM(CASE WHEN financial_status = 'paid'
+                THEN corrected_gross ELSE 0 END),
+              COUNT(*)
+            FROM corrected_costs GROUP BY contact_id, contact_name
+            UNION ALL
+            SELECT 'component', cost_component, NULL,
               SUM(corrected_gross),
               SUM(CASE WHEN financial_status = 'paid'
                 THEN corrected_gross ELSE 0 END),
               COUNT(*)
             FROM corrected_costs GROUP BY cost_component
             UNION ALL
+            SELECT 'payment_method', payment_method, NULL,
+              SUM(corrected_gross),
+              SUM(CASE WHEN financial_status = 'paid'
+                THEN corrected_gross ELSE 0 END),
+              COUNT(*)
+            FROM corrected_costs GROUP BY payment_method
+            UNION ALL
             SELECT 'month',
               strftime(
                 '%Y-%m', entry_date_utc_ms / 1000, 'unixepoch', 'localtime'
               ),
+              NULL,
               SUM(corrected_gross),
               SUM(CASE WHEN financial_status = 'paid'
                 THEN corrected_gross ELSE 0 END),
@@ -123,6 +139,7 @@ final class SqliteBudgetReportRepository implements BudgetReportRepository {
             .add(
               BudgetReportSlice(
                 key: row['group_key'] as String?,
+                label: row['group_label'] as String?,
                 committed: _money(row['committed_minor_units']!, currencyCode),
                 paid: _money(row['paid_minor_units']!, currencyCode),
                 recordCount: row['record_count']! as int,
@@ -160,8 +177,11 @@ const _correctedCostsSelect =
     entry.stage_id,
     entry.category_id,
     entry.supplier_id,
+    contact_link.contact_id,
+    contact.display_name AS contact_name,
     entry.cost_component,
     entry.financial_status,
+    entry.payment_method,
     entry.entry_date_utc_ms,
     entry.gross_minor_units + COALESCE((
       SELECT SUM(correction.gross_delta_minor_units)
@@ -170,6 +190,12 @@ const _correctedCostsSelect =
         AND correction.cost_entry_id = entry.id
     ), 0) AS corrected_gross
   FROM ${AppDatabase.costEntriesTable} entry
+  LEFT JOIN ${AppDatabase.costEntryContactsTable} contact_link
+    ON contact_link.project_id = entry.project_id
+    AND contact_link.cost_entry_id = entry.id
+  LEFT JOIN ${AppDatabase.contactsTable} contact
+    ON contact.project_id = contact_link.project_id
+    AND contact.id = contact_link.contact_id
   WHERE entry.project_id = ?
     AND entry.lifecycle = 'confirmed'
     AND entry.entry_type = 'cost'
@@ -183,7 +209,9 @@ BudgetBreakdownDimension _dimensionFromDatabase(String value) =>
       'stage' => BudgetBreakdownDimension.stage,
       'category' => BudgetBreakdownDimension.category,
       'supplier' => BudgetBreakdownDimension.supplier,
+      'contact' => BudgetBreakdownDimension.contact,
       'component' => BudgetBreakdownDimension.component,
+      'payment_method' => BudgetBreakdownDimension.paymentMethod,
       'month' => BudgetBreakdownDimension.month,
       _ => throw FormatException('Unsupported report dimension: $value'),
     };

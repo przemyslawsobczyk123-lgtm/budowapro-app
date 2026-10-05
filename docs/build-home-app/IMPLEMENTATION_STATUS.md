@@ -694,6 +694,28 @@ for plugins that still apply the classic Kotlin Gradle plugin (`file_picker`,
 `google_mlkit_text_recognition`, `package_info_plus` and `share_plus`).
 Re-evaluate this when a package or Flutter is upgraded.
 
+### Refactor and performance pass - 2026-08-12
+
+- Budget search keeps the active field and debounce stable while results reload;
+  cost totals, filters and pages use focused database queries instead of loading
+  the full project ledger into memory.
+- Cost deletion, journal deletion and material deletion clean dependent links in
+  the same transaction. Repository tests cover rollback and link integrity.
+- CSV/XLSX import validates file signatures and archive limits before parsing,
+  bounds CSV input and preserves project currency rules.
+- Receipt and invoice scanning closes temporary files deterministically, bounds
+  prepared images and multi-page PDF work, and keeps review state explicit.
+- Projects, materials, technical photos and documents now start independent
+  repository reads concurrently. Preview loading begins as soon as the first
+  page is ready instead of waiting for unrelated metadata.
+- The seven-day schedule now loads independent plan data concurrently, limits
+  dependency reads to eight at a time and fetches each shared blocking event
+  only once while preserving dependency order.
+- The production-readiness re-audit is recorded in
+  `PRODUCTION_READINESS_AUDIT_2026-08-12.md`. Public legal pages return HTTP 200,
+  target SDK 36 and the existing validation AAB passed the 16 KB checks. A new
+  AAB still requires the final upload key and the current clean commit.
+
 Quality gate:
 
 ```bash
@@ -703,7 +725,8 @@ flutter test
 flutter build apk --debug
 ```
 
-All commands passed on 2026-08-09. The full suite contains 617 passing tests. Debug APK:
+All commands passed again on 2026-08-13. The full suite contains 639 passing
+tests when run with the same `--concurrency=1` setting as CI. Debug APK:
 
 ```text
 build/app/outputs/flutter-apk/app-debug.apk
@@ -717,12 +740,12 @@ gap summary in `PRODUCTION_GAP_AUDIT.md`. Version `1.0.0+1` is a technical R1
 release candidate. The frozen P0 scope is complete, an Android integration
 smoke passed on API 34, and CI passed it on API 28 and 36. The same workflow
 also passed 560 tests, debug APK and unsigned iOS 26 compilation. Public legal
-page sources are ready for GitHub Pages, while `budowaproapp.pl` still requires
-GitHub Pages certificate issuance and the final `Enforce HTTPS` switch described
-in `CUSTOM_DOMAIN_RELEASE.md`. Store copy, privacy worksheets, icon, Google Play
-feature graphic and four Android screenshots are ready. Store account
-declarations, signed current artifacts and physical-device evidence remain
-owner release gates.
+pages are live on `budowaproapp.pl` over HTTPS. Store copy, privacy worksheets,
+icon, Google Play feature graphic and four Android screenshots are ready. Store
+account declarations, a signed AAB from the current clean commit and
+physical-device evidence remain owner release gates. The last published GitHub
+workflow is red because one historical test failed; the current local suite is
+green and must be confirmed by a new CI run after these changes are pushed.
 
 ### Legal website and store-disclosure hardening
 
@@ -745,6 +768,33 @@ owner release gates.
   exact Google Play Data safety answers for the current ML Kit SDKs; Play
   Console submission still requires owner confirmation against the final
   signed artifact.
+
+### Cost-to-contact reporting - 2026-08-29
+
+- A cost can optionally reference one project contact representing a person or
+  company. The add and edit forms expose the complete contact list, preserve an
+  archived contact already assigned to a historical cost and keep the relation
+  project-scoped.
+- Budget filters and search understand assigned contacts. Reports can now break
+  corrected committed and paid totals down by contact and payment method in
+  addition to stage, material/labour component and the existing dimensions.
+- Accepting a contractor quote assigns its contractor contact to the generated
+  cost instead of storing the contact identifier in the legacy free-text
+  supplier field.
+- Schema version 20 adds `cost_entry_contacts`. The migration is idempotent,
+  project deletion cascades safely, direct deletion of a contact in use is
+  blocked, and previous-schema backups migrate before restoration.
+- Functional and technical criteria are recorded in
+  `COST_CONTACT_REPORTING_SPEC.md`.
+
+Quality gate completed on 2026-08-29:
+
+```text
+flutter analyze: no issues
+flutter test --concurrency=1: 646/646 passed
+flutter build apk --debug: passed
+Desktop APK SHA-256: 3F3C4403B1BFFA56EB51BA3DF667AE276D53D8C96C98AD7CC6D72F10E080E9C3
+```
 
 ## Next task
 

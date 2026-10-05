@@ -205,7 +205,7 @@ final class SqliteQuoteRepository implements QuoteRepository {
             amount: draft.amount,
             entryDate: _utcNow(),
             stageId: draft.stageId,
-            supplierId: draft.contactId,
+            contactId: draft.contactId,
             source: CostSource.offerConversion,
             attachmentIds: draft.attachmentIds,
             note: draft.note,

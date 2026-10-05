@@ -245,39 +245,117 @@ final class SchedulePlanController extends AsyncNotifier<SchedulePlanState> {
   ) async {
     final repository = await ref.read(scheduleRepositoryProvider.future);
     final notifications = ref.read(scheduleNotificationGatewayProvider);
-    final events = await repository.list(projectId: project.id, window: window);
-    final openEvents = await repository.listOpen(projectId: project.id);
-    final blockers = <String, List<ScheduleBlocker>>{};
-    for (final event in events) {
-      final dependencies = await repository.listDependencies(
-        projectId: project.id,
-        eventId: event.id,
-      );
-      final eventBlockers = <ScheduleBlocker>[];
-      for (final dependency in dependencies) {
-        final blockingEvent = await repository.findById(
-          projectId: project.id,
-          eventId: dependency.blockingEventId,
-        );
-        if (blockingEvent != null) {
-          eventBlockers.add(
-            ScheduleBlocker(dependency: dependency, event: blockingEvent),
-          );
-        }
-      }
-      blockers[event.id] = eventBlockers;
-    }
+    final eventDataFuture = _loadScheduleEventData(
+      repository: repository,
+      projectId: project.id,
+      window: window,
+    );
+    final openEventsFuture = repository.listOpen(projectId: project.id);
+    final preferencesFuture = repository.getReminderPreferences();
+    final permissionFuture = _permission(notifications);
+    final results = await Future.wait<Object>(<Future<Object>>[
+      eventDataFuture,
+      openEventsFuture,
+      preferencesFuture,
+      permissionFuture,
+    ]);
+    final eventData = results[0] as _ScheduleEventData;
     return SchedulePlanState(
       project: project,
       window: window,
       timeZoneId: timeZoneId,
-      events: events,
-      blockersByEventId: blockers,
-      openEvents: openEvents,
-      preferences: await repository.getReminderPreferences(),
-      permission: await _permission(notifications),
+      events: eventData.events,
+      blockersByEventId: eventData.blockersByEventId,
+      openEvents: results[1] as List<ScheduleEvent>,
+      preferences: results[2] as ReminderPreferences,
+      permission: results[3] as NotificationPermissionState,
     );
   }
+}
+
+const _maxConcurrentScheduleReads = 8;
+
+final class _ScheduleEventData {
+  const _ScheduleEventData({
+    required this.events,
+    required this.blockersByEventId,
+  });
+
+  final List<ScheduleEvent> events;
+  final Map<String, List<ScheduleBlocker>> blockersByEventId;
+}
+
+Future<_ScheduleEventData> _loadScheduleEventData({
+  required ScheduleRepository repository,
+  required String projectId,
+  required ScheduleWindow window,
+}) async {
+  final events = await repository.list(projectId: projectId, window: window);
+  final dependenciesByEvent = await _mapConcurrently(
+    events,
+    (event) =>
+        repository.listDependencies(projectId: projectId, eventId: event.id),
+  );
+  final blockingEventIds = <String>{};
+  for (final dependencies in dependenciesByEvent) {
+    blockingEventIds.addAll(
+      dependencies.map((dependency) => dependency.blockingEventId),
+    );
+  }
+  final uniqueBlockingEventIds = blockingEventIds.toList(growable: false);
+  final blockingEvents = await _mapConcurrently(
+    uniqueBlockingEventIds,
+    (eventId) => repository.findById(projectId: projectId, eventId: eventId),
+  );
+  final blockingEventsById = <String, ScheduleEvent>{};
+  for (var index = 0; index < uniqueBlockingEventIds.length; index += 1) {
+    final event = blockingEvents[index];
+    if (event != null) {
+      blockingEventsById[uniqueBlockingEventIds[index]] = event;
+    }
+  }
+  final blockersByEventId = <String, List<ScheduleBlocker>>{};
+  for (var index = 0; index < events.length; index += 1) {
+    final eventBlockers = <ScheduleBlocker>[];
+    for (final dependency in dependenciesByEvent[index]) {
+      final blockingEvent = blockingEventsById[dependency.blockingEventId];
+      if (blockingEvent != null) {
+        eventBlockers.add(
+          ScheduleBlocker(dependency: dependency, event: blockingEvent),
+        );
+      }
+    }
+    blockersByEventId[events[index].id] = eventBlockers;
+  }
+  return _ScheduleEventData(
+    events: events,
+    blockersByEventId: blockersByEventId,
+  );
+}
+
+Future<List<Result>> _mapConcurrently<Value, Result>(
+  List<Value> values,
+  Future<Result> Function(Value value) read,
+) async {
+  if (values.isEmpty) return <Result>[];
+  final results = List<Result?>.filled(values.length, null);
+  var nextIndex = 0;
+
+  Future<void> worker() async {
+    while (nextIndex < values.length) {
+      final index = nextIndex;
+      nextIndex += 1;
+      results[index] = await read(values[index]);
+    }
+  }
+
+  final workerCount = values.length.clamp(1, _maxConcurrentScheduleReads);
+  await Future.wait(List<Future<void>>.generate(workerCount, (_) => worker()));
+  return List<Result>.generate(
+    results.length,
+    (index) => results[index] as Result,
+    growable: false,
+  );
 }
 
 Future<String> _timeZoneId(ScheduleNotificationGateway notifications) async {

@@ -136,6 +136,15 @@ final class SqliteContactRepository implements ContactRepository {
     return _database.transaction<void>((transaction) async {
       final existing = await _findById(transaction, projectId, contactId);
       if (existing == null) throw const ContactNotFoundException();
+      final costs = await transaction.rawQuery(
+        'SELECT COUNT(*) AS total '
+        'FROM ${AppDatabase.costEntryContactsTable} '
+        'WHERE project_id = ? AND contact_id = ?',
+        <Object?>[projectId, contactId],
+      );
+      if (costs.single['total']! as int > 0) {
+        throw const ContactInUseException();
+      }
       try {
         await transaction.delete(
           AppDatabase.contactsTable,

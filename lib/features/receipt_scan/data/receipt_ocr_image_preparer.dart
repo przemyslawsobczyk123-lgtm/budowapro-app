@@ -175,8 +175,13 @@ final class LocalReceiptOcrImagePreparer implements ReceiptOcrImagePreparer {
       if (document.pages.isEmpty) {
         throw const FormatException('PDF has no pages');
       }
+      if (document.pages.length > maximumPdfPages) {
+        throw const ReceiptScanException(
+          ReceiptScanFailureKind.unsupportedInput,
+        );
+      }
       final targets = <Uri>[];
-      final pageCount = document.pages.length.clamp(1, maximumPdfPages);
+      final pageCount = document.pages.length;
       for (var index = 0; index < pageCount; index += 1) {
         final page = await document.pages[index].ensureLoaded();
         final scale = <double>[
