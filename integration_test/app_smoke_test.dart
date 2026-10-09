@@ -1,9 +1,12 @@
+import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:budowapro/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+
+import 'support/app_test_support.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -13,6 +16,11 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(const ProviderScope(child: MainApp()));
+    // A fresh install opens on the first-run legal gate.
+    await acceptLegalTermsThroughUi(
+      tester,
+      lookupAppLocalizations(const Locale('pl')),
+    );
     await _waitFor(tester, find.text('Utwórz projekt'));
 
     await tester.tap(find.text('Utwórz projekt'));

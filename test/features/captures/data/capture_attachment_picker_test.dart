@@ -9,7 +9,7 @@ void main() {
   test('accepts a supported local photo', () async {
     final picker = FilePickerCaptureAttachmentPicker(
       pickPhoto: () async => FilePickerResult(<PlatformFile>[
-        PlatformFile(name: 'budowa.png', size: 12, path: 'C:/temp/budowa.png'),
+        PlatformFile(name: 'budowa.png', size: 12, path: '/tmp/budowa.png'),
       ]),
     );
 
@@ -23,7 +23,7 @@ void main() {
   test('rejects a photo format unsupported by local image processing', () {
     final picker = FilePickerCaptureAttachmentPicker(
       pickPhoto: () async => FilePickerResult(<PlatformFile>[
-        PlatformFile(name: 'budowa.gif', size: 12, path: 'C:/temp/budowa.gif'),
+        PlatformFile(name: 'budowa.gif', size: 12, path: '/tmp/budowa.gif'),
       ]),
     );
 
