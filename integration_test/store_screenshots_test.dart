@@ -1,122 +1,227 @@
+import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:budowapro/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:pdfrx/pdfrx.dart';
 
+import 'store_demo_seed.dart';
+import 'support/app_test_support.dart';
+import 'support/host_capture_bridge.dart';
+
+/// Captures the Google Play screenshots from the real app on an emulator.
+///
+/// Run it only through the host driver, which takes the device screenshots:
+///
+///   STORE_SHOTS_DEVICE=emulator-5560 STORE_SHOTS_OUT=build/store_screenshots \
+///   flutter drive -d emulator-5560 \
+///     --driver=test_driver/store_screenshots_driver.dart \
+///     --target=integration_test/store_screenshots_test.dart
+///
+/// The app must be freshly installed: the test seeds one fictional project
+/// through the app repositories, then accepts the legal gate in the UI.
 void main() {
-  final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   WidgetController.hitTestWarningShouldBeFatal = true;
+  final host = HostCaptureBridge.register();
 
   testWidgets('captures Google Play screenshots with fictional data', (
     tester,
   ) async {
-    await tester.pumpWidget(const ProviderScope(child: MainApp()));
-    await _waitFor(tester, find.text('Utwórz projekt'));
+    final l10n = lookupAppLocalizations(const Locale('pl'));
+    await host.request(tester, HostCaptureBridge.setupRequest);
 
-    await tester.tap(find.text('Utwórz projekt'));
-    await _waitFor(tester, find.byKey(const ValueKey('projectNameField')));
-    await tester.enterText(
-      find.byKey(const ValueKey('projectNameField')),
-      'Dom rodzinny - projekt testowy',
+    await pdfrxFlutterInitialize();
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    final demo = await seedStoreDemoProject(container);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: const MainApp()),
     );
-    await tester.enterText(
-      find.byKey(const ValueKey('projectBudgetField')),
-      '750000',
+    await acceptLegalTermsThroughUi(tester, l10n);
+
+    // Start: project overview.
+    await waitForFinder(tester, find.byKey(const ValueKey('dashboardContent')));
+    await _capture(tester, host, 'start');
+
+    final dashboardScroll = find.descendant(
+      of: find.byKey(const ValueKey('dashboardContent')),
+      matching: find.byType(Scrollable),
     );
-    await _revealAndTap(tester, find.byKey(const ValueKey('projectFormSave')));
-    await _waitFor(tester, find.byKey(const ValueKey('dashboardEmptyProject')));
-
-    await tester.tap(find.text('Dodaj pierwszy koszt'));
-    await _waitFor(tester, find.byKey(const ValueKey('costNameField')));
-    await tester.enterText(
-      find.byKey(const ValueKey('costNameField')),
-      'Materiały fundamentowe',
+    await _revealInScrollable(
+      tester,
+      find.text(l10n.dashboardCritical),
+      dashboardScroll.first,
     );
-    await tester.enterText(
-      find.byKey(const ValueKey('costGrossField')),
-      '48500',
+    await _capture(tester, host, 'start-sekcje');
+
+    // Budget register with the material / labour split.
+    await _openSection(tester, l10n.navBudget);
+    await waitForFinder(
+      tester,
+      find.byKey(const ValueKey('costRegisterScroll')),
     );
-    await _revealAndTap(tester, find.byKey(const ValueKey('costSave')));
-    await _waitFor(tester, find.byType(NavigationDestination));
+    await waitForFinder(tester, find.text(l10n.costRegisterComponentSection));
+    await waitForAbsence(
+      tester,
+      find.byKey(const ValueKey('costRegisterReloadProgress')),
+    );
+    await _capture(tester, host, 'budzet');
+    await _revealInScrollable(
+      tester,
+      find.text(l10n.costRegisterComponentSection),
+      find
+          .descendant(
+            of: find.byKey(const ValueKey('costRegisterScroll')),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+      alignment: 0.05,
+    );
+    await _capture(tester, host, 'budzet-lista');
 
-    await binding.convertFlutterSurfaceToImage();
-    await tester.pump(const Duration(seconds: 1));
+    // Project tools (pushed routes). They come before Plan and Etapy: once
+    // both of those branches exist, the shell holds two FloatingActionButtons
+    // with the default hero tag and every push trips the debug-only
+    // duplicate-hero assertion.
+    await _openSection(tester, l10n.navMore);
+    await _openTool(tester, const ValueKey('moreBudgetReportTile'));
+    await waitForFinder(
+      tester,
+      find.byKey(const ValueKey('budgetReportContent')),
+    );
+    await _capture(tester, host, 'raport');
+    await _back(tester);
 
-    await _openSection(tester, 0);
-    await _waitFor(tester, find.byKey(const ValueKey('dashboardContent')));
-    await _capture(binding, tester, '01-dashboard');
+    await _openTool(tester, const ValueKey('moreDocumentsTile'));
+    await waitForFinder(
+      tester,
+      find.text('Notatka z wizyty kierownika budowy'),
+    );
+    await _capture(tester, host, 'dokumenty');
+    await _back(tester);
 
-    await _openSection(tester, 2);
-    await _waitFor(tester, find.text('Materiały fundamentowe'));
-    await _capture(binding, tester, '02-budget');
+    await _openTool(tester, const ValueKey('moreContactsTile'));
+    await waitForFinder(tester, find.byKey(const ValueKey('contactsContent')));
+    await waitForFinder(tester, find.text('Betoniarnia Kłodnica'));
+    await _capture(tester, host, 'kontakty');
+    await _back(tester);
 
-    await _openSection(tester, 3);
-    await _waitFor(tester, find.byKey(const ValueKey('stage-plan-screen')));
-    await _capture(binding, tester, '03-stages');
+    // Seven-day plan.
+    await _openSection(tester, l10n.navPlan);
+    await waitForFinder(tester, find.byKey(const ValueKey('scheduleAgenda')));
+    await waitForFinder(tester, find.text('Dostawa stropu Teriva'));
+    await _capture(tester, host, 'plan');
 
-    await _openSection(tester, 4);
-    await _waitFor(tester, find.byKey(const ValueKey('moreCapturesTile')));
-    await _capture(binding, tester, '04-more');
+    // Stages with checklist progress.
+    await _openSection(tester, l10n.navStages);
+    // The chip is built in the list's cache area but still off screen.
+    final currentStageChip = find.byKey(
+      ValueKey<String>('stage-tab-${demo.currentStageId}'),
+      skipOffstage: false,
+    );
+    await waitForFinder(tester, currentStageChip);
+    await waitForFinder(
+      tester,
+      find.text('Odbierz konstrukcję i elementy przed zakryciem'),
+    );
+    await Scrollable.ensureVisible(
+      tester.element(currentStageChip),
+      alignment: 0.5,
+    );
+    await _capture(tester, host, 'etapy');
+    final stageAppBar = find.descendant(
+      of: find.byType(SliverAppBar),
+      matching: find.byType(AppBar),
+    );
+    await _placeAt(
+      tester,
+      target: find.text(l10n.checklistHeading),
+      scrollable: find
+          .descendant(
+            of: find.byKey(const ValueKey<String>('stage-plan-screen')),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+      top: tester.getBottomLeft(stageAppBar.first).dy + 4,
+    );
+    await _capture(tester, host, 'etapy-lista');
 
+    await host.request(tester, HostCaptureBridge.finishRequest);
     expect(tester.takeException(), isNull);
   });
 }
 
-Future<void> _openSection(WidgetTester tester, int index) async {
-  final navigationBar = tester.getRect(find.byType(NavigationBar));
-  final segmentWidth = navigationBar.width / 5;
-  await tester.tapAt(
-    Offset(
-      navigationBar.left + segmentWidth * (index + 0.5),
-      navigationBar.center.dy,
-    ),
-  );
-  await tester.pump(const Duration(seconds: 1));
+Future<void> _settle(WidgetTester tester, {int frames = 12}) async {
+  for (var frame = 0; frame < frames; frame++) {
+    await tester.pump(const Duration(milliseconds: 250));
+  }
 }
 
 Future<void> _capture(
-  IntegrationTestWidgetsFlutterBinding binding,
   WidgetTester tester,
+  HostCaptureBridge host,
   String name,
 ) async {
-  await tester.pump(const Duration(milliseconds: 500));
-  final bytes = await binding.takeScreenshot(name);
-  expect(bytes, isNotEmpty);
-}
-
-Future<void> _revealAndTap(WidgetTester tester, Finder finder) async {
-  await tester.pump(const Duration(seconds: 1));
   FocusManager.instance.primaryFocus?.unfocus();
-  for (var attempt = 0; attempt < 4; attempt++) {
-    await SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
-    await tester.pump(const Duration(milliseconds: 500));
-  }
-  await tester.pump(const Duration(seconds: 1));
-  await tester.scrollUntilVisible(
-    finder,
-    280,
-    scrollable: find.byType(Scrollable).last,
-  );
-  await tester.pump(const Duration(milliseconds: 300));
-  await tester.ensureVisible(finder);
-  await tester.pump(const Duration(milliseconds: 300));
-  await tester.tap(finder);
+  await _settle(tester);
+  expect(tester.takeException(), isNull);
+  await host.request(tester, name);
 }
 
-Future<void> _waitFor(
+Future<void> _openSection(WidgetTester tester, String label) async {
+  await tester.tap(
+    find.descendant(of: find.byType(NavigationBar), matching: find.text(label)),
+  );
+  await _settle(tester, frames: 6);
+}
+
+Future<void> _openTool(WidgetTester tester, Key key) async {
+  // The tile may be built but scrolled out of view by a previous visit.
+  final tile = find.byKey(key, skipOffstage: false);
+  await waitForFinder(tester, tile);
+  await tester.ensureVisible(tile);
+  await _settle(tester, frames: 2);
+  await tester.tap(find.byKey(key));
+  await _settle(tester, frames: 6);
+}
+
+Future<void> _back(WidgetTester tester) async {
+  // pageBack() looks for the English "Back" tooltip; the app is Polish-only.
+  await tester.tap(find.byType(BackButton));
+  await _settle(tester, frames: 6);
+}
+
+/// Scrolls [scrollable] until [finder] is built, then aligns it at
+/// [alignment] of the viewport without animation.
+Future<void> _revealInScrollable(
   WidgetTester tester,
-  Finder finder, {
-  Duration timeout = const Duration(seconds: 30),
+  Finder finder,
+  Finder scrollable, {
+  double alignment = 0.02,
 }) async {
-  final deadline = DateTime.now().add(timeout);
-  while (finder.evaluate().isEmpty && DateTime.now().isBefore(deadline)) {
-    await tester.pump(const Duration(milliseconds: 250));
-  }
-  if (finder.evaluate().isEmpty) {
-    throw TestFailure(
-      'Timed out waiting for ${finder.describeMatch(Plurality.one)}.',
-    );
-  }
+  await tester.scrollUntilVisible(finder, 240, scrollable: scrollable);
+  await _settle(tester, frames: 4);
+  await Scrollable.ensureVisible(tester.element(finder), alignment: alignment);
+  await _settle(tester, frames: 4);
+}
+
+/// Scrolls [scrollable] so that the top of [target] lands at global [top].
+Future<void> _placeAt(
+  WidgetTester tester, {
+  required Finder target,
+  required Finder scrollable,
+  required double top,
+}) async {
+  final position = tester.state<ScrollableState>(scrollable).position;
+  final delta = tester.getTopLeft(target).dy - top;
+  position.jumpTo(
+    (position.pixels + delta).clamp(
+      position.minScrollExtent,
+      position.maxScrollExtent,
+    ),
+  );
+  await _settle(tester, frames: 4);
 }
