@@ -5,7 +5,6 @@ import 'package:budowapro/features/receipt_scan/domain/receipt_scan.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as image;
 import 'package:path/path.dart' as p;
-import 'package:pdf/widgets.dart' as pdf;
 
 void main() {
   late Directory temporaryDirectory;
@@ -121,21 +120,30 @@ void main() {
     final original = File(
       p.join(temporaryDirectory.path, 'too-many-pages.pdf'),
     );
-    final document = pdf.Document();
-    for (
-      var index = 0;
-      index < LocalReceiptOcrImagePreparer.maximumPdfPages + 1;
-      index += 1
-    ) {
-      document.addPage(pdf.Page(build: (_) => pdf.Text('Page ${index + 1}')));
-    }
-    await original.writeAsBytes(await document.save(), flush: true);
+    await original.writeAsString('%PDF-1.7\nfixture', flush: true);
+    // The default renderer needs the native PDFium library, which the Linux
+    // CI runner does not have; there the worker isolate died and the test
+    // only timed out. A fake renderer exercises the same limit everywhere.
+    late Directory renderDirectory;
+    final preparer = LocalReceiptOcrImagePreparer(
+      renderPdfPages: (source, targetDirectory) async {
+        renderDirectory = targetDirectory;
+        final pages = <Uri>[];
+        for (
+          var index = 0;
+          index < LocalReceiptOcrImagePreparer.maximumPdfPages + 1;
+          index += 1
+        ) {
+          final page = File(p.join(targetDirectory.path, 'page-$index.jpg'));
+          await page.writeAsBytes(<int>[1, 2, 3], flush: true);
+          pages.add(page.uri);
+        }
+        return pages;
+      },
+    );
 
     await expectLater(
-      LocalReceiptOcrImagePreparer().prepare(
-        originalUri: original.uri,
-        mediaType: 'application/pdf',
-      ),
+      preparer.prepare(originalUri: original.uri, mediaType: 'application/pdf'),
       throwsA(
         isA<ReceiptScanException>().having(
           (error) => error.kind,
@@ -144,5 +152,7 @@ void main() {
         ),
       ),
     );
+    expect(await renderDirectory.exists(), isFalse);
+    expect(await original.exists(), isTrue);
   });
 }
