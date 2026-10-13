@@ -523,14 +523,32 @@ final class _Repository {
     );
   }
 
+  /// Whether the worktree holds anything that is not in HEAD: changed content
+  /// in a tracked file, or an untracked file that is not ignored.
+  ///
+  /// Deliberately not `git status --porcelain`. With core.autocrlf on Windows
+  /// a generator that rewrites a file with other line endings (gen-l10n does,
+  /// depending on which Flutter command ran it) leaves the content identical
+  /// but changes the size Git cached for it, and status then reports the file
+  /// as modified without comparing content — which refused releases from
+  /// clean commits. `git diff` compares content.
   Future<bool> isDirty() async {
-    final result = await capture(
+    final changed = await capture(
       'Check Git worktree',
       gitExecutable,
-      const <String>['status', '--porcelain', '--untracked-files=all'],
+      const <String>['diff', '--name-only', 'HEAD', '--'],
       announce: false,
     );
-    return result.stdout.trim().isNotEmpty;
+    if (changed.stdout.trim().isNotEmpty) {
+      return true;
+    }
+    final untracked = await capture(
+      'Check untracked files',
+      gitExecutable,
+      const <String>['ls-files', '--others', '--exclude-standard'],
+      announce: false,
+    );
+    return untracked.stdout.trim().isNotEmpty;
   }
 
   Future<String> commitSha() async {
