@@ -220,6 +220,7 @@ final class _AndroidReleaseBuilder {
     final aabNativeLibraryCount = await _verify64BitNativeLibraries(
       candidateBundle,
     );
+    await _verifyPinnedNativeLibraries(candidateBundle);
     final apkVerification = await _verifyUniversalApk(
       repository: repository,
       java: java,
@@ -453,6 +454,29 @@ Future<void> _extractUniversalApk({
   } finally {
     await input.close();
   }
+}
+
+Future<void> _verifyPinnedNativeLibraries(File bundle) async {
+  stdout.writeln('[release] Verify pinned native libraries');
+  final input = InputFileStream(bundle.path);
+  final actual = <String, String>{};
+  try {
+    final archive = ZipDecoder().decodeStream(input);
+    for (final entry in archive) {
+      final name = entry.name.replaceAll(r'\', '/');
+      if (!entry.isFile || !pinnedNativeLibrarySha256.containsKey(name)) {
+        continue;
+      }
+      final bytes = entry.readBytes();
+      if (bytes == null) {
+        throw ReleaseFailure('Could not read native library $name.');
+      }
+      actual[name] = sha256.convert(bytes).toString();
+    }
+  } finally {
+    await input.close();
+  }
+  requirePinnedNativeLibraries(actual);
 }
 
 Future<int> _verify64BitNativeLibraries(File zipFile) async {

@@ -388,6 +388,55 @@ void main() {
       );
     });
   });
+
+  group('requirePinnedNativeLibraries', () {
+    const pins = <String, String>{
+      'base/lib/arm64-v8a/libpdfium.so': 'aa11',
+      'base/lib/x86_64/libpdfium.so': 'bb22',
+    };
+
+    test('accepts every pinned library with its pinned hash', () {
+      expect(
+        () => requirePinnedNativeLibraries(const <String, String>{
+          'base/lib/arm64-v8a/libpdfium.so': 'AA11',
+          'base/lib/x86_64/libpdfium.so': 'bb22',
+        }, pins: pins),
+        returnsNormally,
+      );
+    });
+
+    test('refuses a library whose hash changed', () {
+      expect(
+        () => requirePinnedNativeLibraries(const <String, String>{
+          'base/lib/arm64-v8a/libpdfium.so': 'aa11',
+          'base/lib/x86_64/libpdfium.so': 'cc33',
+        }, pins: pins),
+        throwsA(
+          isA<ReleaseFailure>().having(
+            (error) => error.message,
+            'message',
+            contains('base/lib/x86_64/libpdfium.so is cc33, pinned bb22'),
+          ),
+        ),
+      );
+    });
+
+    test('refuses a bundle that lost a pinned library', () {
+      expect(
+        () => requirePinnedNativeLibraries(const <String, String>{
+          'base/lib/arm64-v8a/libpdfium.so': 'aa11',
+        }, pins: pins),
+        throwsA(isA<ReleaseFailure>()),
+      );
+    });
+
+    test('pins all three PDFium ABIs with full SHA-256 values', () {
+      expect(pinnedNativeLibrarySha256, hasLength(3));
+      for (final value in pinnedNativeLibrarySha256.values) {
+        expect(value, matches(RegExp(r'^[0-9a-f]{64}$')));
+      }
+    });
+  });
 }
 
 Map<String, String> _validEnvironment({

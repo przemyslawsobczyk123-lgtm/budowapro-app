@@ -309,6 +309,48 @@ void requireSafeManifest(String manifest) {
   }
 }
 
+/// SHA-256 of native libraries that a dependency's build hook downloads at
+/// build time without verifying them.
+///
+/// pdfium_dart 0.2.5 fetches PDFium chromium/7811 from
+/// github.com/bblanchon/pdfium-binaries with no checksum, and PDFium parses
+/// untrusted PDFs in-process. On 2026-10-13 each archive matched the digest
+/// GitHub publishes for the release asset, and the library inside matched
+/// these values byte for byte (AGP packages it unmodified). A PDFium upgrade
+/// must update this map deliberately, after the same check.
+const Map<String, String> pinnedNativeLibrarySha256 = <String, String>{
+  'base/lib/arm64-v8a/libpdfium.so':
+      'ef8c440d29e2a0820a65554487d23020bd88756ee2d6aad8f8fb59bab3b2eb14',
+  'base/lib/armeabi-v7a/libpdfium.so':
+      '3d67be8a7f8a4f77e5a91530fbab69e0b27a8f4f4db5d4a0df512fbfaf40bd27',
+  'base/lib/x86_64/libpdfium.so':
+      'dd8c2880d41baf4c6406d5d2bf0c1beffe42b45e756ff08a9c612ad35d5a5c64',
+};
+
+/// Fails unless every pinned library is present with its pinned SHA-256.
+void requirePinnedNativeLibraries(
+  Map<String, String> actualSha256ByPath, {
+  Map<String, String> pins = pinnedNativeLibrarySha256,
+}) {
+  final problems = <String>[];
+  for (final MapEntry(key: path, value: expected) in pins.entries) {
+    final actual = actualSha256ByPath[path];
+    if (actual == null) {
+      problems.add('$path is missing');
+    } else if (actual.toLowerCase() != expected) {
+      problems.add('$path is $actual, pinned $expected');
+    }
+  }
+  if (problems.isNotEmpty) {
+    throw ReleaseFailure(
+      'Pinned native libraries do not match: ${problems.join('; ')}. '
+      'If a dependency upgraded them on purpose, verify the new binaries '
+      'against their published digests and update '
+      'pinnedNativeLibrarySha256.',
+    );
+  }
+}
+
 bool is64BitAndroidNativeLibrary(String path) {
   final normalized = path.replaceAll(r'\', '/').toLowerCase();
   return normalized.endsWith('.so') &&
