@@ -1556,6 +1556,10 @@ String _duplicateLabel(AppLocalizations l10n, ReceiptDuplicateReason reason) {
       l10n.receiptUnsupportedTitle,
       l10n.receiptUnsupportedMessage,
     ),
+    ReceiptScanFailureKind.pdfTooManyPages => (
+      l10n.receiptPdfTooManyPagesTitle,
+      l10n.receiptPdfTooManyPagesMessage(receiptOcrMaximumPdfPages),
+    ),
     ReceiptScanFailureKind.emptyText => (
       l10n.receiptEmptyTextTitle,
       l10n.receiptEmptyTextMessage,

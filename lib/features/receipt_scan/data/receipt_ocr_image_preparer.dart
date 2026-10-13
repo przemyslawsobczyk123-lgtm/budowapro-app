@@ -49,7 +49,7 @@ final class LocalReceiptOcrImagePreparer implements ReceiptOcrImagePreparer {
 
   static const int maximumWidth = 1600;
   static const int maximumHeight = 2400;
-  static const int maximumPdfPages = 20;
+  static const int maximumPdfPages = receiptOcrMaximumPdfPages;
 
   final RenderReceiptPdfPages _renderPdfPages;
 
@@ -105,7 +105,12 @@ final class LocalReceiptOcrImagePreparer implements ReceiptOcrImagePreparer {
     late final List<Uri> renderedPages;
     try {
       renderedPages = await _renderPdfPages(original, temporaryDirectory);
-      if (renderedPages.isEmpty || renderedPages.length > maximumPdfPages) {
+      if (renderedPages.length > maximumPdfPages) {
+        throw const ReceiptScanException(
+          ReceiptScanFailureKind.pdfTooManyPages,
+        );
+      }
+      if (renderedPages.isEmpty) {
         throw const FormatException('Rendered receipt page count is invalid');
       }
       for (final pageUri in renderedPages) {
@@ -177,7 +182,7 @@ final class LocalReceiptOcrImagePreparer implements ReceiptOcrImagePreparer {
       }
       if (document.pages.length > maximumPdfPages) {
         throw const ReceiptScanException(
-          ReceiptScanFailureKind.unsupportedInput,
+          ReceiptScanFailureKind.pdfTooManyPages,
         );
       }
       final targets = <Uri>[];

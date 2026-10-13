@@ -1075,6 +1075,8 @@
   "scheduleNextWeekTooltip": "Następne 7 dni",
   "scheduleReminderSettingsTooltip": "Ustawienia przypomnień",
   "scheduleAddEventTooltip": "Dodaj termin",
+  "scheduleNotificationChannelName": "Terminy budowy",
+  "scheduleNotificationChannelDescription": "Przypomnienia o zadaniach, wizytach, dostawach, odbiorach i płatnościach.",
   "scheduleItemsSummary": "Terminy: {count}",
   "@scheduleItemsSummary": {"placeholders": {"count": {"type": "int"}}},
   "scheduleBlockedSummary": "Blokowane: {count}",
@@ -1566,6 +1568,16 @@
   "receiptScannerUnavailableMessage": "Możesz zaimportować zdjęcie dokumentu albo PDF z pamięci telefonu.",
   "receiptUnsupportedTitle": "Nieobsługiwany plik",
   "receiptUnsupportedMessage": "Wybierz czytelny plik JPG, PNG, WEBP albo PDF.",
+  "receiptPdfTooManyPagesTitle": "Za dużo stron",
+  "receiptPdfTooManyPagesMessage": "Ten PDF ma więcej niż {maxPages} stron. Wybierz krótszy dokument albo zapisz tylko potrzebne strony.",
+  "@receiptPdfTooManyPagesMessage": {
+    "description": "Komunikat, gdy PDF do odczytu OCR przekracza limit stron.",
+    "placeholders": {
+      "maxPages": {
+        "type": "int"
+      }
+    }
+  },
   "receiptEmptyTextTitle": "Nie odczytano tekstu",
   "receiptEmptyTextMessage": "Ponów odczyt albo wpisz dane ręcznie. Oryginał pozostanie dołączony do kosztu.",
   "receiptStorageErrorTitle": "Nie udało się zabezpieczyć skanu",

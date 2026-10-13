@@ -1,27 +1,32 @@
+import 'dart:ui' show Locale;
+
 import 'package:budowapro/features/schedule/data/schedule_notification_payload.dart';
 import 'package:budowapro/features/schedule/data/schedule_reminder_time.dart';
 import 'package:budowapro/features/schedule/domain/schedule_event.dart';
 import 'package:budowapro/features/schedule/domain/schedule_notification_gateway.dart';
+import 'package:budowapro/l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
 const _scheduleChannelId = 'budowapro_schedule_reminders';
-const _scheduleChannelName = 'Terminy budowy';
-const _scheduleChannelDescription =
-    'Przypomnienia o zadaniach, wizytach, dostawach, odbiorach i platnosciach.';
 
-const scheduleNotificationDetails = NotificationDetails(
+// The channel name and description are shown in Android's notification
+// settings, so they come from the localization files like any other text.
+// No BuildContext here; the UI is Polish-only (l10n.yaml).
+final AppLocalizations _l10n = lookupAppLocalizations(const Locale('pl'));
+
+final scheduleNotificationDetails = NotificationDetails(
   android: AndroidNotificationDetails(
     _scheduleChannelId,
-    _scheduleChannelName,
-    channelDescription: _scheduleChannelDescription,
+    _l10n.scheduleNotificationChannelName,
+    channelDescription: _l10n.scheduleNotificationChannelDescription,
     importance: Importance.high,
     priority: Priority.high,
     visibility: NotificationVisibility.secret,
   ),
-  iOS: DarwinNotificationDetails(
+  iOS: const DarwinNotificationDetails(
     presentAlert: true,
     presentBanner: true,
     presentList: true,

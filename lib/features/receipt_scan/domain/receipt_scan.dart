@@ -5,10 +5,15 @@ enum ReceiptCaptureMethod { scanner, fileImport }
 enum ReceiptScanFailureKind {
   scannerUnavailable,
   unsupportedInput,
+  pdfTooManyPages,
   emptyText,
   storage,
   recognition,
 }
+
+/// Largest PDF the OCR flow accepts; longer documents are rejected with
+/// [ReceiptScanFailureKind.pdfTooManyPages] before any page is rendered.
+const int receiptOcrMaximumPdfPages = 20;
 
 final class ReceiptScanException implements Exception {
   const ReceiptScanException(this.kind);

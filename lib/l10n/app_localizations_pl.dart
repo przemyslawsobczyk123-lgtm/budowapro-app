@@ -2511,6 +2511,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get scheduleAddEventTooltip => 'Dodaj termin';
 
   @override
+  String get scheduleNotificationChannelName => 'Terminy budowy';
+
+  @override
+  String get scheduleNotificationChannelDescription =>
+      'Przypomnienia o zadaniach, wizytach, dostawach, odbiorach i płatnościach.';
+
+  @override
   String scheduleItemsSummary(int count) {
     return 'Terminy: $count';
   }
@@ -4010,6 +4017,14 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get receiptUnsupportedMessage =>
       'Wybierz czytelny plik JPG, PNG, WEBP albo PDF.';
+
+  @override
+  String get receiptPdfTooManyPagesTitle => 'Za dużo stron';
+
+  @override
+  String receiptPdfTooManyPagesMessage(int maxPages) {
+    return 'Ten PDF ma więcej niż $maxPages stron. Wybierz krótszy dokument albo zapisz tylko potrzebne strony.';
+  }
 
   @override
   String get receiptEmptyTextTitle => 'Nie odczytano tekstu';

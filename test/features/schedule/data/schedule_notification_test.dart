@@ -82,6 +82,14 @@ void main() {
       NotificationVisibility.secret,
     );
   });
+
+  test('channel texts shown in system settings come from l10n', () {
+    final android = scheduleNotificationDetails.android!;
+
+    expect(android.channelName, 'Terminy budowy');
+    // Used to be a hardcoded "platnosciach", without Polish diacritics.
+    expect(android.channelDescription, contains('płatnościach'));
+  });
 }
 
 ScheduleEvent _event({

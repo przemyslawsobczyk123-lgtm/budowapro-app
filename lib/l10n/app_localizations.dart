@@ -4306,6 +4306,18 @@ abstract class AppLocalizations {
   /// **'Dodaj termin'**
   String get scheduleAddEventTooltip;
 
+  /// No description provided for @scheduleNotificationChannelName.
+  ///
+  /// In pl, this message translates to:
+  /// **'Terminy budowy'**
+  String get scheduleNotificationChannelName;
+
+  /// No description provided for @scheduleNotificationChannelDescription.
+  ///
+  /// In pl, this message translates to:
+  /// **'Przypomnienia o zadaniach, wizytach, dostawach, odbiorach i płatnościach.'**
+  String get scheduleNotificationChannelDescription;
+
   /// No description provided for @scheduleItemsSummary.
   ///
   /// In pl, this message translates to:
@@ -7053,6 +7065,18 @@ abstract class AppLocalizations {
   /// In pl, this message translates to:
   /// **'Wybierz czytelny plik JPG, PNG, WEBP albo PDF.'**
   String get receiptUnsupportedMessage;
+
+  /// No description provided for @receiptPdfTooManyPagesTitle.
+  ///
+  /// In pl, this message translates to:
+  /// **'Za dużo stron'**
+  String get receiptPdfTooManyPagesTitle;
+
+  /// Komunikat, gdy PDF do odczytu OCR przekracza limit stron.
+  ///
+  /// In pl, this message translates to:
+  /// **'Ten PDF ma więcej niż {maxPages} stron. Wybierz krótszy dokument albo zapisz tylko potrzebne strony.'**
+  String receiptPdfTooManyPagesMessage(int maxPages);
 
   /// No description provided for @receiptEmptyTextTitle.
   ///

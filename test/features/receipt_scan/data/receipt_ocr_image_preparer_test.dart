@@ -148,7 +148,9 @@ void main() {
         isA<ReceiptScanException>().having(
           (error) => error.kind,
           'kind',
-          ReceiptScanFailureKind.unsupportedInput,
+          // Its own kind: "unsupported file" told the user to pick a PDF
+          // while they had just picked one.
+          ReceiptScanFailureKind.pdfTooManyPages,
         ),
       ),
     );
