@@ -59,6 +59,8 @@ class _StagePlanScreenState extends ConsumerState<StagePlanScreen> {
       floatingActionButton: _bulkMode || plan.value?.selectedStage == null
           ? null
           : FloatingActionButton.extended(
+              // Unique tag: see the schedule plan FAB, mounted alongside.
+              heroTag: 'stage-add-checklist-item-fab',
               onPressed: plan.value!.isSaving
                   ? null
                   : () => _addChecklistItem(context, ref),

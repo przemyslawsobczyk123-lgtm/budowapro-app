@@ -62,6 +62,9 @@ class _ScheduleWeekView extends ConsumerWidget {
           ? null
           : FloatingActionButton(
               key: const ValueKey('scheduleAddEventButton'),
+              // Plan and Etapy stay mounted side by side in the shell, so
+              // two default-tagged FABs collide on every pushed route.
+              heroTag: 'schedule-add-event-fab',
               tooltip: l10n.scheduleAddEventTooltip,
               onPressed: plan.value!.isSaving
                   ? null
