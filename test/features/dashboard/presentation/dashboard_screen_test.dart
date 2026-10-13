@@ -155,7 +155,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const ValueKey('dashboardContent')), findsOneWidget);
-    expect(find.text('86 420,00 zł'), findsWidgets);
+    expect(find.text('86 420,00 PLN'), findsWidgets);
     expect(find.text('Plan 30 dni'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.byKey(const ValueKey('dashboardCaptureInbox')),

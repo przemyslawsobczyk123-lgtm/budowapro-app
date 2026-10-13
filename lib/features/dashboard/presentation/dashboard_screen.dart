@@ -1034,7 +1034,9 @@ String _money(Money value) {
   for (var end = whole.length; end > 0; end -= 3) {
     groups.add(whole.substring((end - 3).clamp(0, end), end));
   }
-  final symbol = value.currencyCode == 'PLN' ? 'zł' : value.currencyCode;
+  // The currency code, as on every other screen and in exports: the
+  // dashboard alone used to print "zł" for PLN.
+  final symbol = value.currencyCode;
   return '${value.isNegative ? '-' : ''}'
       '${groups.reversed.join('\u00A0')},$fraction\u00A0$symbol';
 }
